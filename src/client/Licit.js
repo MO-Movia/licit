@@ -172,10 +172,16 @@ class Licit extends React.Component<any, any> {
 
   _onChange = (data: { state: EditorState, transaction: Transform }): void => {
     const { transaction } = data;
+    let isEmpty = false;
     this._connector.onEdit(transaction);
     if (transaction.docChanged) {
       const docJson = transaction.doc.toJSON();
-      this.state.onChangeCB(docJson);
+      if (docJson.content && docJson.content.length === 1) {
+        if (docJson.content[0].content && '' === docJson.content[0].content[0].text.trim()) {
+          isEmpty = true;
+        }
+      }
+      this.state.onChangeCB(docJson, isEmpty);
     }
   };
 

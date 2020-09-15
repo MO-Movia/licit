@@ -164,7 +164,7 @@ Please refer *licit\client\index.js* for getting more detailed idea on passing p
 
 |Event Name| Description|Parameter| 
 |--|--|--|
-|onChange | Fires after each significant change |data
+|onChange | Fires after each significant change |data,isEmpty
 |onReady| Fires once when the editor is ready |licit reference
  
 
