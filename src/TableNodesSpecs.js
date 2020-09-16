@@ -1,8 +1,8 @@
 // @flow
 
 import toCSSColor from './ui/toCSSColor';
-import {Node} from 'prosemirror-model';
-import {tableNodes} from 'prosemirror-tables';
+import { Node } from 'prosemirror-model';
+import { tableNodes } from 'prosemirror-tables';
 
 const NO_VISIBLE_BORDER_WIDTH = new Set(['0pt', '0px']);
 
@@ -14,7 +14,7 @@ const TableNodesSpecs = tableNodes({
     borderColor: {
       default: null,
       getFromDOM(dom) {
-        const {borderColor, borderWidth} = dom.style;
+        const { borderColor, borderWidth } = dom.style;
 
         if (NO_VISIBLE_BORDER_WIDTH.has(borderWidth)) {
           return 'transparent';
@@ -46,17 +46,19 @@ const TableNodesSpecs = tableNodes({
 // Override the default table node spec to support custom attributes.
 const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
   attrs: {
-    marginLeft: {default: null},
+    marginLeft: { default: null },
+    objectID: { default: null },
   },
   parseDOM: [
     {
       tag: 'table',
       getAttrs(dom: HTMLElement): ?Object {
-        const {marginLeft} = dom.style;
+        const { marginLeft } = dom.style;
+        const objectID = dom.getAttribute('objectID') || null;
         if (marginLeft && /\d+px/.test(marginLeft)) {
-          return {marginLeft: parseFloat(marginLeft)};
+          return { marginLeft: parseFloat(marginLeft), objectID: objectID };
         }
-        return undefined;
+        return { objectID: objectID };
       },
     },
   ],
@@ -65,14 +67,15 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
     // `TableNodeView`. This method is only called when user selects a
     // table node and copies it, which triggers the "serialize to HTML" flow
     //  that calles this method.
-    const {marginLeft} = node.attrs;
+    const { marginLeft, objectID } = node.attrs;
     const domAttrs = {};
+    domAttrs.objectID = objectID;
     if (marginLeft) {
       domAttrs.style = `margin-left: ${marginLeft}px`;
     }
     return ['table', domAttrs, 0];
   },
 });
-Object.assign(TableNodesSpecs, {table: TableNodeSpec});
+Object.assign(TableNodesSpecs, { table: TableNodeSpec });
 
 export default TableNodesSpecs;

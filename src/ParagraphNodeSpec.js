@@ -32,6 +32,7 @@ const ParagraphNodeSpec: NodeSpec = {
     paddingBottom: { default: null },
     // TODO: Add UI to let user edit / clear padding.
     paddingTop: { default: null },
+    objectID: { default: null },
   },
   content: 'inline*',
   group: 'block',
@@ -62,7 +63,9 @@ function getAttrs(dom: HTMLElement): Object {
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
 
   const id = dom.getAttribute('id') || '';
-  return { align, indent, lineSpacing, paddingTop, paddingBottom, id };
+  const objectID = dom.getAttribute('objectID') || null;
+  
+  return { align, indent, lineSpacing, paddingTop, paddingBottom, id,objectID };
 }
 
 function toDOM(node: Node): Array<any> {
@@ -73,6 +76,7 @@ function toDOM(node: Node): Array<any> {
     paddingTop,
     paddingBottom,
     id,
+    objectID,
   } = node.attrs;
   const attrs = {};
 
@@ -107,6 +111,7 @@ function toDOM(node: Node): Array<any> {
   if (id) {
     attrs.id = id;
   }
+  attrs.objectID = objectID;
 
   return ['p', attrs, 0];
 }
