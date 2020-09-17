@@ -28,8 +28,8 @@ function main(): void {
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
   const plugins = null;
   ReactDOM.render(<Licit docID={0} debug={false} width={'100vw'} height={'100vh'}
-    onChange={onChangeCB} onReady={onReadyCB} data={docJSON} embedded={false}
-    runtime={null} plugins={plugins} />, el);
+    onChange={onChangeCB} onReady={onReadyCB} data={docJSON} embedded={false} 
+    runtime={null} plugins={plugins} fitToContent={false} />, el);
 }
 
 function onChangeCB(data) {

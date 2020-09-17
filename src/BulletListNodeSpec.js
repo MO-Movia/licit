@@ -15,7 +15,7 @@ const BulletListNodeSpec: NodeSpec = {
     id: { default: null },
     indent: { default: 0 },
     listStyleType: { default: null },
-    objectID: { default: null },
+    objectId: { default: null },
   },
   group: 'block',
   content: LIST_ITEM + '+',
@@ -29,18 +29,18 @@ const BulletListNodeSpec: NodeSpec = {
         const indent = dom.hasAttribute(ATTRIBUTE_INDENT)
           ? parseInt(dom.getAttribute(ATTRIBUTE_INDENT), 10)
           : MIN_INDENT_LEVEL;
-        const objectID = dom.getAttribute('objectID') || null;
+        const objectId = dom.getAttribute('objectId') || null;
         return {
           indent,
           listStyleType,
-          objectID,
+          objectId,
         };
       },
     },
   ],
 
   toDOM(node: Node) {
-    const { indent, listStyleType, objectID } = node.attrs;
+    const { indent, listStyleType, objectId } = node.attrs;
     const attrs = {};
     // [FS] IRAD-947 2020-05-26
     // Bullet list type changing fix
@@ -57,7 +57,7 @@ const BulletListNodeSpec: NodeSpec = {
     }
 
     attrs.type = htmlListStyleType;
-    attrs.objectID = objectID;
+    attrs.objectId = objectId;
     return ['ul', attrs, 0];
   },
 };

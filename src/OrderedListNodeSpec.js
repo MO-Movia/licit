@@ -21,7 +21,7 @@ const OrderedListNodeSpec: NodeSpec = {
     listStyleType: {default: null},
     name: {default: null},
     start: { default: 1 },
-    objectID: { default: null },
+    objectId: { default: null },
   },
   group: 'block',
   content: LIST_ITEM + '+',
@@ -44,7 +44,7 @@ const OrderedListNodeSpec: NodeSpec = {
         const name = dom.getAttribute('name') || undefined;
 
         const following = dom.getAttribute(ATTRIBUTE_FOLLOWING) || undefined;
-        const objectID = dom.getAttribute('objectID') || null;
+        const objectId = dom.getAttribute('objectId') || null;
 
         return {
           counterReset,
@@ -53,7 +53,7 @@ const OrderedListNodeSpec: NodeSpec = {
           listStyleType,
           name,
           start,
-          objectID,
+          objectId,
         };
       },
     },
@@ -66,7 +66,7 @@ const OrderedListNodeSpec: NodeSpec = {
       counterReset,
       following,
       name,
-      objectID,
+      objectId,
     } = node.attrs;
     const attrs: Object = {
       [ATTRIBUTE_INDENT]: indent,
@@ -91,7 +91,7 @@ const OrderedListNodeSpec: NodeSpec = {
     if (name) {
       attrs.name = name;
     }
-    attrs.objectID = objectID;
+    attrs.objectId = objectId;
     let htmlListStyleType = listStyleType;
 
     if (!htmlListStyleType || htmlListStyleType === 'decimal') {

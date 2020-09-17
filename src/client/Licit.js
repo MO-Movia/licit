@@ -32,6 +32,7 @@ import './licit.css';
  *  disabled {boolean} [false] Disable the editor.
  *  embedded {boolean} [false] Disable/Enable inline behaviour.
  *  plugins [plugins] External Plugins into the editor.
+ *  fitToContent {boolean} [false] Fit to content behavour.
  */
 class Licit extends React.Component<any, any> {
   _runtime: EditorRuntime;
@@ -63,6 +64,7 @@ class Licit extends React.Component<any, any> {
     const data = props.data || null;
     const disabled = props.disabled || false;
     const embedded = props.embedded || false;// [FS] IRAD-996 2020-06-30
+    const fitToContent = props.fitToContent || false;// [FS] IRAD-996 2020-06-30
     // [FS] 2020-07-03
     // Handle Image Upload from Angular App
     const runtime = props.runtime ? props.runtime : new LicitRuntime();
@@ -87,6 +89,7 @@ class Licit extends React.Component<any, any> {
       debug,
       disabled,
       embedded,
+      fitToContent,
       runtime
     };
     // FS IRAD-1040 2020-26-08
@@ -151,7 +154,7 @@ class Licit extends React.Component<any, any> {
   }
 
   render(): React.Element<any> {
-    const { editorState, width, height, readOnly, disabled, embedded, runtime } = this.state;
+    const { editorState, width, height, readOnly, disabled, embedded, fitToContent, runtime } = this.state;
     // [FS] IRAD-978 2020-06-05
     // Using 100vw & 100vh (100% viewport) is not ideal for a component which is expected to be a part of a page,
     // so changing it to 100%  width & height which will occupy the area relative to its parent.
@@ -159,6 +162,7 @@ class Licit extends React.Component<any, any> {
       <RichTextEditor
         editorState={editorState}
         embedded={embedded}
+        fitToContent={fitToContent}
         height={height}
         onChange={this._onChange}
         onReady={this._onReady}
@@ -221,6 +225,7 @@ class Licit extends React.Component<any, any> {
   *  data {JSON} [null] Document data to be loaded into the editor.
   *  disabled {boolean} [false] Disable the editor.
   *  embedded {boolean} [false] Disable/Enable inline behaviour.
+  * fitToContent {boolean} [false] Fit to content behavour.
   */
   setProps = (props: any): void => {
     if (this.state.readOnly) {
