@@ -1,17 +1,17 @@
 // @flow
 
 import nullthrows from 'nullthrows';
-import {EditorState} from 'prosemirror-state';
-import {TextSelection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
 import insertTable from './insertTable';
-import {atAnchorRight} from './ui/PopUpPosition';
+import { atAnchorRight } from './ui/PopUpPosition';
 import TableGridSizeEditor from './ui/TableGridSizeEditor';
 import UICommand from './ui/UICommand';
 import createPopUp from './ui/createPopUp';
-import type {TableGridSizeEditorValue} from './ui/TableGridSizeEditor';
+import type { TableGridSizeEditorValue } from './ui/TableGridSizeEditor';
 
 class TableInsertCommand extends UICommand {
   _popUp = null;
@@ -22,11 +22,23 @@ class TableInsertCommand extends UICommand {
 
   isEnabled = (state: EditorState): boolean => {
     const tr = state;
-    const {selection} = tr;
+    let bOK = false;
+    const { selection } = tr;
     if (selection instanceof TextSelection) {
-      return selection.from === selection.to;
+      bOK = selection.from === selection.to;
+      // [FS] IRAD-1065 2020-09-18
+      // Disable create table menu if the selection is inside a table.
+      if (bOK) {
+        let $head = selection.$head
+        for (let d = $head.depth; d > 0; d--) {
+          if ($head.node(d).type.spec.tableRole == "row") {
+            return false;
+          }
+        }
+      }
+      return bOK;
     }
-    return false;
+    return bOK;
   };
 
   waitForUserInput = (
@@ -65,10 +77,10 @@ class TableInsertCommand extends UICommand {
     inputs: ?TableGridSizeEditorValue
   ): boolean => {
     if (dispatch) {
-      const {selection, schema} = state;
-      let {tr} = state;
+      const { selection, schema } = state;
+      let { tr } = state;
       if (inputs) {
-        const {rows, cols} = inputs;
+        const { rows, cols } = inputs;
         tr = tr.setSelection(selection);
         tr = insertTable(tr, schema, rows, cols);
       }
