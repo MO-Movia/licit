@@ -4,9 +4,13 @@ import cx from 'classnames';
 import * as React from 'react';
 
 import canUseCSSFont from './canUseCSSFont';
-import injectStyleSheet from './injectStyleSheet';
 
 import './czi-icon.css';
+
+// [FS] IRAD-1061 2020-09-19
+// Now loaded locally, so that it work in closed network as well.
+//import injectStyleSheet from './injectStyleSheet';
+import './icon-font.css';
 
 const VALID_CHARS = /[a-z_]+/;
 const cached = {};
@@ -19,7 +23,9 @@ const CSS_FONT = 'Material Icons';
   const fontSupported = await canUseCSSFont(CSS_FONT);
   if (!fontSupported) {
     console.info('Add CSS from ', CSS_CDN_URL);
-    injectStyleSheet(CSS_CDN_URL);
+    // [FS] IRAD-1061 2020-09-19
+    // Now loaded locally, so that it work in closed network as well.
+    //injectStyleSheet(CSS_CDN_URL);
   }
 })();
 

@@ -6,6 +6,7 @@ import * as React from 'react';
 import * as EditorCommands from '../EditorCommands';
 import FontSizeCommandMenuButton from './FontSizeCommandMenuButton';
 import FontTypeCommandMenuButton from './FontTypeCommandMenuButton';
+import HeadingCommandMenuButton from './HeadingCommandMenuButton';
 import Icon from './Icon';
 
 const ICON_LABEL_PATTERN = /\[([A-Za-z_\d]+)\](.*)/;
@@ -116,6 +117,7 @@ export const TABLE_COMMANDS_GROUP = [
   },
 ];
 
+
 // [FS] IRAD-1012 2020-07-14
 // Fix: Toolbar is poorly organized.
 
@@ -133,10 +135,7 @@ export const COMMAND_GROUPS = [
     '[format_strikethrough] Strike through': STRIKE,
     '[superscript] Superscript': SUPER,
     '[format_color_text] Text color': TEXT_COLOR,
-    '[border_color] Highlight color': TEXT_HIGHLIGHT,
-    
-  // },
-  // {
+    '[border_color] Highlight color': TEXT_HIGHLIGHT,   
     '[format_clear] Clear formats': CLEAR_FORMAT,
   },
   {
@@ -147,26 +146,17 @@ export const COMMAND_GROUPS = [
   },
   {
     '[format_indent_increase] Indent more': INDENT_MORE,
-    '[format_indent_decrease] Indent less': INDENT_LESS,
-  // },
-  // {
+    '[format_indent_decrease] Indent less': INDENT_LESS,  
     '[format_line_spacing] Line spacing': TEXT_LINE_SPACINGS,
   },
   {
     '[format_list_numbered] Ordered list': OL,
-    '[format_list_bulleted] Bulleted list': UL,
-  // },
-  // {
-    '[H1] Header 1': H1,
-    '[H2] Heading 2': H2,
-    '[keyboard_arrow_down] Headings...': [
-      {
-        'Header 3': H3,
-        'Header 4': H4,
-        'Header 5': H5,
-        'Header 6': H6,
-      },
-    ],
+    '[format_list_bulleted] Bulleted list': UL,  
+  },
+  // [FS] IRAD-1042 2020-09-09
+  // Changes the menu for include the custom styles.
+  {
+    '[H1] Header 1': HeadingCommandMenuButton, 
   },
   {
     '[link] Apply link': LINK_SET_URL,
@@ -175,12 +165,8 @@ export const COMMAND_GROUPS = [
         'Insert image by URL': IMAGE_FROM_URL,
         'Upload image from computer': IMAGE_UPLOAD,
       },
-    ],
-  // },
-  // {
-    '[grid_on] Table...': TABLE_COMMANDS_GROUP,
-  // },
-  // {
+    ],  
+    '[grid_on] Table...': TABLE_COMMANDS_GROUP,  
     '[hr] Horizontal line': HR,
     '[functions] Math': MATH_EDIT,
    

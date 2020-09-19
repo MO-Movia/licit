@@ -43,8 +43,18 @@ export default function convertFromJSON(
     return createEmptyEditorState(schema, plugins);
   }
 
+  // [FS] IRAD-1067 2020-09-19
+  // Handle gracefully when error thrown on invalid json
+  let doc = null;
+  
+  try {
+    doc = editorSchema.nodeFromJSON(json);
+  } catch (error) {
+    return null;
+  }
+
   return EditorState.create({
-    doc: editorSchema.nodeFromJSON(json),
+    doc: doc,
     schema: editorSchema,
     plugins: effectivePlugins,
   });

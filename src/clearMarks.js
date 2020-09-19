@@ -15,6 +15,7 @@ const {
   MARK_TEXT_COLOR,
   MARK_TEXT_HIGHLIGHT,
   MARK_UNDERLINE,
+  MARK_CUSTOMSTYLES
 } = MarkNames;
 
 const FORMAT_MARK_NAMES = [
@@ -26,6 +27,9 @@ const FORMAT_MARK_NAMES = [
   MARK_TEXT_COLOR,
   MARK_TEXT_HIGHLIGHT,
   MARK_UNDERLINE,
+  // [FS] IRAD-1042 2020-09-18
+  // Fix: To clear custom style format.
+  MARK_CUSTOMSTYLES,
 ];
 
 export function clearMarks(tr: Transform, schema: Schema): Transform {

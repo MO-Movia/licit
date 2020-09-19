@@ -6,12 +6,17 @@ import WebFontLoader from './WebFontLoader';
 
 import type {MarkSpec} from './Types';
 
+// [FS] IRAD-1061 2020-09-19
+// Now loaded locally, so that it work in closed network as well.
+//import injectStyleSheet from './injectStyleSheet';
+import './fonts.css';
+
 export const FONT_TYPE_NAMES = [
   // SERIF
   'Aclonica',
   'Acme',
   'Alegreya',
-  'Arial',
+  //'Arial',//??? - Commented out fonts that are not available to download using https://fonts.googleapis.com/css?family=
   'Arial Black',
   'Georgia',
   'Tahoma',
@@ -20,9 +25,9 @@ export const FONT_TYPE_NAMES = [
   'Verdana',
   // MONOSPACE
   'Courier New',
-  'Lucida Console',
-  'Monaco',
-  'monospace',
+  //'Lucida Console',//???
+  //'Monaco',//???
+  //'monospace',//???
 ];
 
 // FS IRAD-988 2020-06-18
@@ -38,7 +43,9 @@ function loadAndCacheFont(name) {
   // Cache custom fonts
   RESOLVED_FONT_NAMES.add(name);
   // https://github.com/typekit/webfontloader
-  WebFontLoader.load({google: {families: [name]}});
+  // [FS] IRAD-1061 2020-09-19
+  // Now loaded locally, so that it work in closed network as well.
+  //WebFontLoader.load({google: {families: [name]}});
 }
 
 // resolve each font after it is loaded.

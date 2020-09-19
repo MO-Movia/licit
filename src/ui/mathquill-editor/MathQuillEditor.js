@@ -7,7 +7,12 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import canUseCSSFont from './../canUseCSSFont';
 import cx from 'classnames';
-import injectStyleSheet from './../injectStyleSheet';
+
+// [FS] IRAD-1061 2020-09-19
+// Now loaded locally, so that it work in closed network as well.
+//import injectStyleSheet from './../injectStyleSheet';
+import './mathquill.min.css';
+
 
 // MathQuill requires this to get JQuery exported as global.
 // eslint-disable-next-line no-unused-vars
@@ -30,7 +35,9 @@ const CSS_FONT = 'Symbola';
   const fontSupported = await canUseCSSFont(CSS_FONT);
   if (!fontSupported) {
     console.info('Add CSS from ', CSS_CDN_URL);
-    injectStyleSheet(CSS_CDN_URL);
+    // [FS] IRAD-1061 2020-09-19
+    // Now loaded locally, so that it work in closed network as well.
+    //injectStyleSheet(CSS_CDN_URL);
   }
   // injectStyleSheet(CSS_CDN_URL);
 })();

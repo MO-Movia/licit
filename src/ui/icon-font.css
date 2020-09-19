@@ -1,0 +1,10 @@
+/* [FS] IRAD-1061 2020-09-19 */
+/* Now loaded locally, so that it work in closed network as well. */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'),
+       local('MaterialIcons-Regular'),
+       url(icon-font/MaterialIcons-Regular.ttf) format('truetype');
+}
