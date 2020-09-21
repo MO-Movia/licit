@@ -5,8 +5,8 @@ import katex from 'katex';
 
 // [FS] IRAD-1061 2020-09-19
 // Now loaded locally, so that it work in closed network as well.
-import injectStyleSheet from './injectStyleSheet';
-import './katex.min.css';
+//import injectStyleSheet from './injectStyleSheet';
+import 'katex/dist/katex.min.css';
 
 const latexEl: any = document.createElement('div');
 const cached: Object = {};
