@@ -10,9 +10,7 @@ import cx from 'classnames';
 
 // [FS] IRAD-1061 2020-09-19
 // Now loaded locally, so that it work in closed network as well.
-//import injectStyleSheet from './../injectStyleSheet';
 import 'node-mathquill/build/mathquill.css';
-
 
 // MathQuill requires this to get JQuery exported as global.
 // eslint-disable-next-line no-unused-vars

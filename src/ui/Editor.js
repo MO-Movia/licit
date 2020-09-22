@@ -37,10 +37,6 @@ import './czi-editor.css';
 
 import type { EditorRuntime } from '../Types';
 
-// [FS] IRAD-1061 2020-09-19
-// Now loaded locally, so that it work in closed network as well.
-import './fonts.css';
-
 export type EditorProps = {
   autoFocus?: ?boolean,
   disabled?: ?boolean,
