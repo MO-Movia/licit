@@ -5,8 +5,7 @@ import katex from 'katex';
 
 // [FS] IRAD-1061 2020-09-19
 // Now loaded locally, so that it work in closed network as well.
-import injectStyleSheet from './injectStyleSheet';
-import './katex.min.css';
+import 'katex/dist/katex.min.css';
 
 const latexEl: any = document.createElement('div');
 const cached: Object = {};
@@ -21,9 +20,9 @@ const CSS_FONT = 'KaTeX_Main';
 (async function() {
   const fontSupported = await canUseCSSFont(CSS_FONT);
   if (!fontSupported) {
-    console.info('Add CSS from ', CSS_CDN_URL);
     // [FS] IRAD-1061 2020-09-19
     // Now loaded locally, so that it work in closed network as well.
+    //console.info('Add CSS from ', CSS_CDN_URL);
     //injectStyleSheet(CSS_CDN_URL);
   }
 })();
