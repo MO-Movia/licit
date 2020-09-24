@@ -18,13 +18,15 @@ export type EditorFramesetProps = {
 export const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';
 
 function toCSS(val: ?(number | string)): string {
-  if (typeof val === 'number') {
-    return val + 'px';
+  if (!val || val === 'auto') {
+    // '', 0, null, false, 'auto' are all treated as undefined
+    // instead of auto... 
+    return undefined;
   }
-  if (val === undefined || val === null) {
-    return 'auto';
+  if (isNaN(val)) {
+    return `${val}`;
   }
-  return String(val);
+  return `${val}px`;
 }
 
 class EditorFrameset extends React.PureComponent<any, any> {
@@ -42,18 +44,18 @@ class EditorFrameset extends React.PureComponent<any, any> {
       width,
     } = this.props;
 
-    const useFixedLayout = width !== undefined || height !== undefined;
+    const mainStyle = {
+      width: toCSS(width),
+      height: toCSS(height),
+    };
 
     const mainClassName = cx(className, {
       'czi-editor-frameset': true,
-      'with-fixed-layout': useFixedLayout,
+      // Layout is fixed when either width or height is set.
+      'with-fixed-layout': mainStyle.width || mainStyle.height,
       embedded: embedded,
     });
 
-    const mainStyle = {
-      width: toCSS(width === undefined && useFixedLayout ? 'auto' : width),
-      height: toCSS(height === undefined && useFixedLayout ? 'auto' : height),
-    };
 
     const toolbarHeader =
       toolbarPlacement === 'header' || !toolbarPlacement ? toolbar : null;

@@ -60,8 +60,9 @@ class Licit extends React.Component<any, any> {
     const docID = props.docID || 0; // 0 < means collaborative.
     const collaborative = 0 < docID;
     const debug = props.debug || false;
-    const width = props.width || '100%';
-    const height = props.height || '100%';
+    // Default width and height to undefined
+    const width = props.width || undefined;
+    const height = props.height || undefined;
     const onChangeCB = (typeof props.onChange === 'function') ? props.onChange : noop;
     const onReadyCB = (typeof props.onReady === 'function') ? props.onReady : noop;
     const readOnly = props.readOnly || false;
