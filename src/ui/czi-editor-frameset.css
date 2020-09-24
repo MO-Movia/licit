@@ -23,11 +23,7 @@
 .czi-editor-frameset.embedded .czi-editor-frame-body-scroll {
   padding-top: unset;
 }
- /* FS IRAD-1040 2020-17-09
- avoid padding top for fit to content propery  */
-.czi-editor-frameset.fitToContent .czi-editor-frame-body-scroll {
-  padding-top: 0px;
-}
+
 .czi-editor-frameset.with-fixed-layout .czi-editor-frame-main {
   display: flex;
   flex-direction: column;
