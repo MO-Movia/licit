@@ -1,0 +1,13 @@
+.customedit-div {
+    /* padding: 10px; */
+    background-color: #ecebea;
+    color: white;
+    width: 350px;
+    height: 350px;
+    border: 1px solid black;
+}
+
+.customedit-head {
+    border: 1px solid black;
+    color: black;
+}

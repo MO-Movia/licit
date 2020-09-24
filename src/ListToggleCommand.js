@@ -12,10 +12,12 @@ import UICommand from './ui/UICommand';
 
 class ListToggleCommand extends UICommand {
   _ordered: boolean;
+  _orderedListType: string
 
-  constructor(ordered: boolean) {
+  constructor(ordered: boolean, type: string) {
     super();
     this._ordered = ordered;
+    this._orderedListType = type;
   }
 
   isActive = (state: EditorState): boolean => {
@@ -39,7 +41,7 @@ class ListToggleCommand extends UICommand {
       return tr;
     }
 
-    tr = toggleList(tr, schema, nodeType);
+    tr = toggleList(tr, schema, nodeType,this._orderedListType);
     if (tr.docChanged) {
       dispatch && dispatch(tr);
       return true;

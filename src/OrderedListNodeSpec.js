@@ -22,6 +22,7 @@ const OrderedListNodeSpec: NodeSpec = {
     name: {default: null},
     start: { default: 1 },
     objectId: { default: null },
+    type:{default:'decimal'},
   },
   group: 'block',
   content: LIST_ITEM + '+',
@@ -44,7 +45,8 @@ const OrderedListNodeSpec: NodeSpec = {
         const name = dom.getAttribute('name') || undefined;
 
         const following = dom.getAttribute(ATTRIBUTE_FOLLOWING) || undefined;
-        const objectId = dom.getAttribute('objectId') || null;
+         const objectId = dom.getAttribute('objectId') || null;
+         const type= dom.getAttribute('type') || undefined;
 
         return {
           counterReset,
@@ -54,6 +56,7 @@ const OrderedListNodeSpec: NodeSpec = {
           name,
           start,
           objectId,
+	  type,
         };
       },
     },
@@ -67,6 +70,7 @@ const OrderedListNodeSpec: NodeSpec = {
       following,
       name,
       objectId,
+      type,
     } = node.attrs;
     const attrs: Object = {
       [ATTRIBUTE_INDENT]: indent,
@@ -106,7 +110,8 @@ const OrderedListNodeSpec: NodeSpec = {
       `--czi-counter-reset: ${following ? 'none' : start - 1};` +
       `--czi-list-style-type: ${htmlListStyleType}`;
 
-    attrs.type = htmlListStyleType;
+    //attrs.type = htmlListStyleType;
+    attrs.type = type;
 
     return ['ol', attrs, 0];
   },

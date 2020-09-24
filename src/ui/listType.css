@@ -1,0 +1,15 @@
+.container {
+    
+    display: grid;
+    grid-template-columns: auto auto auto;
+    /* grid-template-rows: 33% 33% 33%;; */
+    border: 1px solid #bdb5b5;
+    padding: 5px;
+    grid-gap: 10px;
+    background: #fffefe;
+  }
+  .buttonSize{
+    height: 50px;
+    width: 50px;
+  }
+

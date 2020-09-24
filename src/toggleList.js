@@ -17,7 +17,8 @@ import type { SelectionMemo } from './transformAndPreserveTextSelection';
 export default function toggleList(
   tr: Transform,
   schema: Schema,
-  listNodeType: NodeType
+  listNodeType: NodeType,
+  listStyleType:string
 ): Transform {
   const { selection, doc } = tr;
   if (!selection || !doc) {
@@ -45,9 +46,9 @@ export default function toggleList(
   if (result) {
     tr = unwrapNodesFromList(tr, schema, result.pos);
   } else if (paragraph && p) {
-    tr = wrapNodesWithList(tr, schema, listNodeType, newselection);
+    tr = wrapNodesWithList(tr, schema, listNodeType,listStyleType, newselection);
   } else if (heading && h) {
-    tr = wrapNodesWithList(tr, schema, listNodeType, newselection);
+    tr = wrapNodesWithList(tr, schema, listNodeType,listStyleType, newselection);
   }
   return tr;
 }
@@ -68,20 +69,24 @@ export function unwrapNodesFromList(
 function wrapNodesWithList(
   tr: Transform,
   schema: Schema,
-  listNodeType: NodeType, newselection = null
+  listNodeType: NodeType,
+  listStyleType:string,
+  newselection = null
 ): Transform {
 
   return transformAndPreserveTextSelection(tr, schema, memo => {
     // [FS][04-AUG-2020][IRAD-955]
     // Fix Unable to apply list using Ctrl+A selection
-    return consolidateListNodes(wrapNodesWithListInternal(memo, listNodeType, newselection));
+    return consolidateListNodes(wrapNodesWithListInternal(memo, listNodeType,listStyleType,newselection));
   });
 
 }
 
 function wrapNodesWithListInternal(
   memo: SelectionMemo,
-  listNodeType: NodeType, newselection = null
+  listNodeType: NodeType,
+  listStyleType:String,
+  newselection = null
 ): Transform {
   const { schema } = memo;
   let { tr } = memo;
@@ -148,7 +153,7 @@ function wrapNodesWithListInternal(
   lists.reverse();
 
   lists.forEach(items => {
-    tr = wrapItemsWithListInternal(tr, schema, listNodeType, items);
+    tr = wrapItemsWithListInternal(tr, schema, listNodeType, items,listStyleType);
   });
 
   return tr;
@@ -158,7 +163,8 @@ function wrapItemsWithListInternal(
   tr: Transform,
   schema: Schema,
   listNodeType: NodeType,
-  items: Array<{ node: Node, pos: number }>
+  items: Array<{ node: Node, pos: number }>,
+  listStyleType:string
 ): Transform {
   const initialTr = tr;
   const paragraph = schema.nodes[PARAGRAPH];
@@ -224,7 +230,7 @@ function wrapItemsWithListInternal(
     listItemNodes.push(listItemNode);
   });
 
-  const listNodeAttrs = { indent: 0, start: 1 };
+  const listNodeAttrs = { indent: 0, start: 1,type:listStyleType};
   const $fromPos = tr.doc.resolve(fromPos);
   const $toPos = tr.doc.resolve(toPos);
 
