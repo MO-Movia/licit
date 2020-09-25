@@ -109,17 +109,6 @@
   width: unset;
 }
 
-/* FS IRAD-1040 2020-17-09
-  fit to content style  */
-.prosemirror-editor-wrapper.fitToContent .ProseMirror {
-  background: white;
-  border-radius: unset;
-   min-height: unset;
-  padding: 5px;
-  width: unset;
-  margin-bottom: 5px;
-}
-
 @media only print {
   .ProseMirror.ProseMirror[class] {
     border-radius: unset;
