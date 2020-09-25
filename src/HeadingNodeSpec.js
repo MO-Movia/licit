@@ -22,11 +22,12 @@ const TAG_NAME_TO_LEVEL = {
 export const HEADING_NAMES = [
   {
     "name": "Normal",
-    "customstyles": [
-      {
-        'fontsize': 16,
-        'fontname': 'Georgia',
-      }
+    "customstyles":  [
+      { 
+        'stylename':'Normal',
+        'fontsize' : 16,
+        'fontname' : 'Georgia',                
+      }      
     ]
   },
   {
@@ -47,27 +48,28 @@ export const HEADING_NAMES = [
   },
   {
     "name": "Title",
-    "customstyles": [
+    "customstyles":  [
       {
-        'stylename': 'Title',
+        'stylename':'Title',
         // 'fontsize' : 30,
         // 'fontname' : 'Acme',
-        'strong': true,
-        'em': true,
-        'color': 'Green',
-      }
+        'strong' : true,
+        'em' :true,
+        'color':'Green',         
+      }      
     ]
-  },
+  },  
   {
     "name": "Quote",
-    "customstyles": [
+    "customstyles":  [
       {
+        'stylename':'Quote',
         "fontsize": 20,
-        "fontname": "Acme",
+        "fontname": "Acme", 
       },
     ]
-  },
-  {
+  },   
+   {
     "name": "New Style..",
     "customstyles": 'newstyle'
   },
