@@ -40,7 +40,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         return (
             <div className="customedit-div">
                 <div className="customedit-head">
-                    <span class="closebtn">×</span><strong>Create Style</strong>
+                    <span className="closebtn" onClick={this._cancel}>×</span><strong>Create Style</strong>
                 </div>
             </div >
         );

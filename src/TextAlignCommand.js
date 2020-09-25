@@ -4,11 +4,10 @@ import { Schema } from 'prosemirror-model';
 import { AllSelection, EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
-import createPopUp from './ui/createPopUp';
-import CustomStyleEditor from './ui/CustomStyleEditor';
+
 import { BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
 import UICommand from './ui/UICommand';
-import { atViewportCenter } from './ui/PopUpPosition';
+
 
 export function setTextAlign(
   tr: Transform,
@@ -72,7 +71,6 @@ export function setTextAlign(
 
 class TextAlignCommand extends UICommand {
   _alignment: string;
-  _popUp: null;
   constructor(alignment: string) {
     super();
     this._alignment = alignment;
@@ -106,38 +104,21 @@ class TextAlignCommand extends UICommand {
     view: ?EditorView
   ): boolean => {
 
+    const { schema, selection } = state;
+    const tr = setTextAlign(
+      state.tr.setSelection(selection),
+      schema,
+      this._alignment
+    );
+    if (tr.docChanged) {
+      dispatch && dispatch(tr);
+      return true;
+    } else {
+      return false;
+    }
 
-    // ** Temperoraly commented  the textalign functionality//
-    // 2020-09-24
-
-    // const {schema, selection} = state;
-    // const tr = setTextAlign(
-    //   state.tr.setSelection(selection),
-    //   schema,
-    //   this._alignment
-    // );
-    // if (tr.docChanged) {
-    //   dispatch && dispatch(tr);
-    //   return true;
-    // } else {
-    //   return false;
-    // }
-    this.showAlert()
   };
 
-  showAlert() {
-    const anchor = null;
-    this._popUp = createPopUp(CustomStyleEditor, null, {
-      anchor,
-      position: atViewportCenter,
-      onClose: val => {
-        if (this._popUp) {
-          this._popUp = null;
-
-        }
-      },
-    });
-  }
 }
 
 export default TextAlignCommand;

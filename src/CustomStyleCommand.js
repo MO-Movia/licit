@@ -1,18 +1,21 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {toggleMark} from 'prosemirror-commands';
-import {findParentNodeOfType} from 'prosemirror-utils';
-import {EditorView} from 'prosemirror-view';
-import {AllSelection, TextSelection} from 'prosemirror-state';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { toggleMark } from 'prosemirror-commands';
+import { findParentNodeOfType } from 'prosemirror-utils';
+import { EditorView } from 'prosemirror-view';
+import { AllSelection, TextSelection } from 'prosemirror-state';
 import applyMark from './applyMark';
-import {MARK_CUSTOMSTYLES, MARK_TEXT_COLOR, MARK_STRONG} from './MarkNames';
-import {HEADING} from './NodeNames';
+import { MARK_CUSTOMSTYLES, MARK_TEXT_COLOR, MARK_STRONG } from './MarkNames';
+import { HEADING } from './NodeNames';
 import noop from './noop';
 import UICommand from './ui/UICommand';
- // [FS] IRAD-1042 2020-09-14
-  // Fix: To display selected style.
+import { atViewportCenter } from './ui/PopUpPosition';
+import createPopUp from './ui/createPopUp';
+import CustomStyleEditor from './ui/CustomStyleEditor';
+// [FS] IRAD-1042 2020-09-14
+// Fix: To display selected style.
 function toggleCustomStyle(markType, attrs, state, tr, dispatch) {
   var ref = state.selection;
   var empty = ref.empty;
@@ -43,7 +46,7 @@ function toggleCustomStyle(markType, attrs, state, tr, dispatch) {
         // if (has) {
         //   tr.removeMark($from$1.pos, $to$1.pos, markType);
         // } else {
-          tr.addMark($from$1.pos, $to$1.pos, markType.create(attrs));
+        tr.addMark($from$1.pos, $to$1.pos, markType.create(attrs));
         // }
       }
       return tr;
@@ -65,7 +68,7 @@ function markApplies(doc, ranges, type) {
       can = node.inlineContent && node.type.allowsMarkType(type);
     });
     if (can) {
-      return {v: true};
+      return { v: true };
     }
   };
 
@@ -85,7 +88,7 @@ function setCustomInlineStyle(
   if (!markType) {
     return tr;
   }
-  const {selection} = tr;
+  const { selection } = tr;
   if (
     !(selection instanceof TextSelection || selection instanceof AllSelection)
   ) {
@@ -101,11 +104,12 @@ function setCustomInlineStyle(
 class CustomStyleCommand extends UICommand {
   _customStyleName: string;
   _customStyle = [];
+  _popUp = null;
 
-  constructor(customStyle: any,customStyleName:string) {
+  constructor(customStyle: any, customStyleName: string) {
     super();
     this._customStyle = customStyle;
-    this._customStyleName =customStyleName;
+    this._customStyleName = customStyleName;
   }
 
   getTheInlineStyles = (isInline: boolean) => {
@@ -127,15 +131,15 @@ class CustomStyleCommand extends UICommand {
   };
 
   isEmpty = (obj) => {
-    for(var key in obj) {
+    for (var key in obj) {
       if (obj.hasOwnProperty(key)) {
-         return false;
+        return false;
       }
     }
     return true;
- }
+  }
 
-  isEnabled = (state: EditorState): boolean => {   
+  isEnabled = (state: EditorState): boolean => {
     return true;
   };
 
@@ -144,16 +148,20 @@ class CustomStyleCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    var {schema, selection, tr} = state;
+    var { schema, selection, tr } = state;
+    if ('newstyle' === this._customStyle) {
+      this._editWindow();
+      return false
+    }
     if (this._customStyle) {
-      var inlineStyles= this.getTheInlineStyles(true);
-      if(!this.isEmpty(inlineStyles)){
+      var inlineStyles = this.getTheInlineStyles(true);
+      if (!this.isEmpty(inlineStyles)) {
         tr = setCustomInlineStyle(
           tr.setSelection(selection),
           schema,
           inlineStyles
         );
-      }     
+      }
       var commonStyle = this.getTheInlineStyles(false);
       for (let key in commonStyle) {
         let markType = schema.marks[key];
@@ -176,6 +184,22 @@ class CustomStyleCommand extends UICommand {
     const fn = heading ? findParentNodeOfType(heading) : noop;
     return fn(state.selection);
   }
+
+  _editWindow() {
+
+    const anchor = null;
+    this._popUp = createPopUp(CustomStyleEditor, null, {
+      anchor,
+      position: atViewportCenter,
+      onClose: val => {
+        if (this._popUp) {
+          this._popUp = null;
+
+        }
+      },
+    });
+  }
 }
+
 
 export default CustomStyleCommand;

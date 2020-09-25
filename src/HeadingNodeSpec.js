@@ -1,11 +1,11 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 
 import ParagraphNodeSpec from './ParagraphNodeSpec';
-import {getParagraphNodeAttrs, toParagraphDOM} from './ParagraphNodeSpec';
+import { getParagraphNodeAttrs, toParagraphDOM } from './ParagraphNodeSpec';
 
-import type {NodeSpec} from './Types';
+import type { NodeSpec } from './Types';
 
 const TAG_NAME_TO_LEVEL = {
   H1: 1,
@@ -16,17 +16,17 @@ const TAG_NAME_TO_LEVEL = {
   H6: 6,
 };
 
-  // [FS] IRAD-1042 2020-09-09
-  // Fix: Changes the menu for include the custom styles.
+// [FS] IRAD-1042 2020-09-09
+// Fix: Changes the menu for include the custom styles.
 
 export const HEADING_NAMES = [
   {
     "name": "Normal",
-    "customstyles":  [
-      { 
-        'fontsize' : 16,
-        'fontname' : 'Georgia',                
-      }      
+    "customstyles": [
+      {
+        'fontsize': 16,
+        'fontname': 'Georgia',
+      }
     ]
   },
   {
@@ -47,26 +47,30 @@ export const HEADING_NAMES = [
   },
   {
     "name": "Title",
-    "customstyles":  [
+    "customstyles": [
       {
-        'stylename':'Title',
+        'stylename': 'Title',
         // 'fontsize' : 30,
         // 'fontname' : 'Acme',
-        'strong' : true,
-        'em' :true,
-        'color':'Green',         
-      }      
+        'strong': true,
+        'em': true,
+        'color': 'Green',
+      }
     ]
-  },  
+  },
   {
     "name": "Quote",
-    "customstyles":  [
+    "customstyles": [
       {
         "fontsize": 20,
-        "fontname": "Acme", 
+        "fontname": "Acme",
       },
     ]
-  },   
+  },
+  {
+    "name": "New Style..",
+    "customstyles": 'newstyle'
+  },
 ];
 
 // https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
@@ -76,16 +80,16 @@ const HeadingNodeSpec: NodeSpec = {
   ...ParagraphNodeSpec,
   attrs: {
     ...ParagraphNodeSpec.attrs,
-    level: {default: 1},
+    level: { default: 1 },
   },
   defining: true,
   parseDOM: [
-    {tag: 'h1', getAttrs},
-    {tag: 'h2', getAttrs},
-    {tag: 'h3', getAttrs},
-    {tag: 'h4', getAttrs},
-    {tag: 'h5', getAttrs},
-    {tag: 'h6', getAttrs},
+    { tag: 'h1', getAttrs },
+    { tag: 'h2', getAttrs },
+    { tag: 'h3', getAttrs },
+    { tag: 'h4', getAttrs },
+    { tag: 'h5', getAttrs },
+    { tag: 'h6', getAttrs },
   ],
   toDOM,
 };

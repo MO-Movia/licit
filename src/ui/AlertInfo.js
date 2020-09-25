@@ -40,7 +40,7 @@ class AlertInfo extends React.PureComponent<any, any> {
   render(): React.Element<any> {
     return (
       <div className="alert">
-        <span class="closebtn" onClick={this._cancel}>&times;</span>
+        <span className="closebtn" onClick={this._cancel}>&times;</span>
         <strong>Document Error!</strong> Unable to load the document. 
         <span> Have issues in Json format, please verify...</span>
          
