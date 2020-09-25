@@ -22,7 +22,12 @@ const TAG_NAME_TO_LEVEL = {
 export const HEADING_NAMES = [
   {
     "name": "Normal",
-    "level": 0
+    "customstyles":  [
+      { 
+        'fontsize' : 16,
+        'fontname' : 'Georgia',                
+      }      
+    ]
   },
   {
     "name": "Heading 1",
@@ -55,10 +60,10 @@ export const HEADING_NAMES = [
   },  
   {
     "name": "Quote",
-    "style":  [
+    "customstyles":  [
       {
-        "font-size": 20,
-        "font-name": "Arial", 
+        "fontsize": 20,
+        "fontname": "Acme", 
       },
     ]
   },   

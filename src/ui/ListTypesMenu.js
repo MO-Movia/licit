@@ -39,7 +39,7 @@ class ListTypeMenu extends React.PureComponent<any, any> {
         commandGroups.forEach((group, ii) => {
             Object.keys(group).forEach(label => {
                 const command = group[label];
-                children.push(<button key={label} id={label} value={command} onClick={() => this._onUIEnter(command, e)} className="buttonSize" >{command.label}</button>);
+                children.push(<button key={label} id={label} value={command} onClick={(e) => this._onUIEnter(command, e)} className="buttonSize" >{command.label}</button>);
             })
         });
         return (

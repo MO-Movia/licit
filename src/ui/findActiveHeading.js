@@ -23,3 +23,58 @@ export function findActiveHeading(state: EditorState): number {
 
   return 0;
 }
+
+// [FS] IRAD-1046 2020-09-24
+// To create a style object from the customstyles to show the styles in the example piece.
+export function getTheCustomStyles(customStyles: Object): Object {
+  var style = {
+    float: 'right' 
+};
+
+  for (const property in customStyles) {
+
+    switch (property) {
+      case 'strong':
+        style["fontWeight"] = 'bold';
+        break;
+
+      case 'em':
+        style["fontStyle"] = 'italic';
+        break;
+
+      case 'color':
+        style["color"] = customStyles[property] ;
+        break;
+
+      case 'fontsize':
+        style["fontSize"] = customStyles[property] ;
+        break;
+
+      case 'fontname':
+        style["fontName"] = customStyles[property] ;
+        break;
+
+      case 'strike':textDecorationLine
+      style["textDecorationLine"] = 'line-through';
+        break;
+
+      case 'super':
+         
+        break;
+
+      case 'text-highlight':
+        style["backgroundColor"] =customStyles[property] ; 
+        break;
+
+      case 'underline':
+        style["textDecoration"] ='underline'; 
+        
+        break;
+
+      default:
+         
+        break;
+    } 
+  }
+  return style;
+}

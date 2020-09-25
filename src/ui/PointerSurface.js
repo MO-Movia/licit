@@ -4,6 +4,7 @@ import cx from 'classnames';
 import * as React from 'react';
 
 import preventEventDefault from './preventEventDefault';
+import {getTheCustomStyles} from './findActiveHeading';
 
 export type PointerSurfaceProps = {
   active?: ?boolean,
@@ -37,6 +38,7 @@ class PointerSurface extends React.PureComponent<any, any> {
       style,
       title,
       children,
+      value
     } = this.props;
     const { pressed } = this.state;
 
@@ -45,7 +47,19 @@ class PointerSurface extends React.PureComponent<any, any> {
       disabled: disabled,
       pressed: pressed,
     });
-
+      
+  // [FS] IRAD-1046 2020-09-24
+  // To show the example piece to the menu and set the styles to it.
+    var styles;
+    var  text ='' ;   
+    if (value && value._customStyleName) {
+      text= 'AaBbCcDd';
+      let itemsArray = localStorage.getItem(value._customStyleName) ? JSON.parse(localStorage.getItem(value._customStyleName)) : [];
+    if(itemsArray){
+       styles= getTheCustomStyles(itemsArray[0]); 
+    }
+  } 
+ 
     return (
       <span
         aria-disabled={disabled}
@@ -61,9 +75,10 @@ class PointerSurface extends React.PureComponent<any, any> {
         role="button"
         style={style}
         tabIndex={disabled ? null : 0}
-        title={title}
+        title= {title}
       >
         {children}
+      <span style={styles} > {text} </span> 
       </span>
     );
   }

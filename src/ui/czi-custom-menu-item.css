@@ -11,6 +11,13 @@
   background-color: var(--czi-button-hover-background-color);
 }
 
+/*[FS] IRAD-1044 2020-09-22
+To adjust the width of the custom style menu dropdown.*/
+
+.custom-style-menu-item {
+  width:250px;
+} 
+
 .czi-custom-menu-item-separator {
   background-color: var(--czi-button-hover-background-color);
   height: 1px;

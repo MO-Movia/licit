@@ -7,6 +7,7 @@ import * as EditorCommands from '../EditorCommands';
 import FontSizeCommandMenuButton from './FontSizeCommandMenuButton';
 import FontTypeCommandMenuButton from './FontTypeCommandMenuButton';
 import ListTypeCommandButton from './ListTypeCommandButton';
+import HeadingCommandMenuButton from './HeadingCommandMenuButton';
 import Icon from './Icon';
 
 const ICON_LABEL_PATTERN = /\[([A-Za-z_\d]+)\](.*)/;
@@ -150,16 +151,12 @@ export const COMMAND_GROUPS = [
     // Added new command button that brings a popup
     '[format_list_numbered] Ordered list': ListTypeCommandButton,
     '[format_list_bulleted] Bulleted list': UL,
-    '[H1] Header 1': H1,
-    '[H2] Heading 2': H2,
-    '[keyboard_arrow_down] Headings...': [
-      {
-        'Header 3': H3,
-        'Header 4': H4,
-        'Header 5': H5,
-        'Header 6': H6,
-      },
-    ],
+
+  },
+  // [FS] IRAD-1042 2020-09-09
+  // Changes the menu for include the custom styles.
+  {
+    '[H1] Header 1': HeadingCommandMenuButton, 
   },
   {
     '[link] Apply link': LINK_SET_URL,

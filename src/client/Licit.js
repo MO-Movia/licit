@@ -210,7 +210,7 @@ class Licit extends React.Component<any, any> {
     if (transaction.docChanged) {
       const docJson = transaction.doc.toJSON();
       if (docJson.content && docJson.content.length === 1) {
-        if (docJson.content[0].content && '' === docJson.content[0].content[0].text.trim()) {
+        if (docJson.content[0].content && docJson.content[0].content[0].text && '' === docJson.content[0].content[0].text.trim()) {
           isEmpty = true;
         }
       }
