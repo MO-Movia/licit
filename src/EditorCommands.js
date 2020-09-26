@@ -59,6 +59,7 @@ const {
   MARK_EM,
   MARK_STRIKE,
   MARK_SUPER,
+  MARK_SUB,
   MARK_UNDERLINE,
 } = MarkNames;
 
@@ -98,6 +99,7 @@ export const PRINT = new PrintCommand();
 export const STRIKE = new MarkToggleCommand(MARK_STRIKE);
 export const STRONG = new MarkToggleCommand(MARK_STRONG);
 export const SUPER = new MarkToggleCommand(MARK_SUPER);
+export const SUB = new MarkToggleCommand(MARK_SUB);
 export const TABLE_ADD_COLUMN_AFTER = createCommand(addColumnAfter);
 export const TABLE_ADD_COLUMN_BEFORE = createCommand(addColumnBefore);
 export const TABLE_ADD_ROW_AFTER = createCommand(addRowAfter);

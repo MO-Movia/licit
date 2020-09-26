@@ -38,9 +38,9 @@
   hr not grayed out on editor disable state
   Temporary Fix need to bring image instead of content */
   content: '---';
- 
 
- 
+
+
   margin-top: -12px !important;
   margin-left: 0 !important;
   margin-right: 0 !important;
@@ -52,7 +52,7 @@
 .czi-icon.hr::before {
    content: '---';
    font-weight: bold;
- 
+
 }
 
 .czi-icon.superscript {
@@ -67,4 +67,18 @@
 .czi-icon .superscript-top {
   margin: 0 2px;
   vertical-align: super;
+}
+
+.czi-icon.subscript {
+  display: inline-block;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  height: 16px;
+  text-align: center;
+  width: 20px;
+}
+
+.czi-icon .subscript-bottom {
+  margin: 0 2px;
+  vertical-align: sub;
 }

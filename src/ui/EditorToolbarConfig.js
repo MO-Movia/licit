@@ -56,6 +56,7 @@ const {
   STRIKE,
   STRONG,
   SUPER,
+  SUB,
   TABLE_ADD_COLUMN_AFTER,
   TABLE_ADD_COLUMN_BEFORE,
   TABLE_ADD_ROW_AFTER,
@@ -134,8 +135,9 @@ export const COMMAND_GROUPS = [
     '[format_underline] Underline': UNDERLINE,
     '[format_strikethrough] Strike through': STRIKE,
     '[superscript] Superscript': SUPER,
+    '[subscript] Subscript': SUB,
     '[format_color_text] Text color': TEXT_COLOR,
-    '[border_color] Highlight color': TEXT_HIGHLIGHT,   
+    '[border_color] Highlight color': TEXT_HIGHLIGHT,
     '[format_clear] Clear formats': CLEAR_FORMAT,
   },
   {
@@ -146,17 +148,17 @@ export const COMMAND_GROUPS = [
   },
   {
     '[format_indent_increase] Indent more': INDENT_MORE,
-    '[format_indent_decrease] Indent less': INDENT_LESS,  
+    '[format_indent_decrease] Indent less': INDENT_LESS,
     '[format_line_spacing] Line spacing': TEXT_LINE_SPACINGS,
   },
   {
     '[format_list_numbered] Ordered list': OL,
-    '[format_list_bulleted] Bulleted list': UL,  
+    '[format_list_bulleted] Bulleted list': UL,
   },
   // [FS] IRAD-1042 2020-09-09
   // Changes the menu for include the custom styles.
   {
-    '[H1] Header 1': HeadingCommandMenuButton, 
+    '[H1] Header 1': HeadingCommandMenuButton,
   },
   {
     '[link] Apply link': LINK_SET_URL,
@@ -165,11 +167,11 @@ export const COMMAND_GROUPS = [
         'Insert image by URL': IMAGE_FROM_URL,
         'Upload image from computer': IMAGE_UPLOAD,
       },
-    ],  
-    '[grid_on] Table...': TABLE_COMMANDS_GROUP,  
+    ],
+    '[grid_on] Table...': TABLE_COMMANDS_GROUP,
     '[hr] Horizontal line': HR,
     '[functions] Math': MATH_EDIT,
-   
+
     // [FS][07-MAY-2020][IRAD-956]
     // '[format_quote] Block quote': BLOCKQUOTE_TOGGLE,
   },
@@ -179,6 +181,6 @@ export const COMMAND_GROUPS = [
   {
     '[undo] Undo': HISTORY_UNDO,
     '[redo] Redo': HISTORY_REDO,
-  },  
- 
+  },
+
 ];
