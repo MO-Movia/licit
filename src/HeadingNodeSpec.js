@@ -24,27 +24,55 @@ export const HEADING_NAMES = [
     "name": "Normal",
     "customstyles":  [
       { 
-        'stylename':'Normal',
-        'fontsize' : 16,
-        'fontname' : 'Georgia',                
+        'stylename':'Normal',         
+        // 'fontname' : 'Arial',                
+      }      
+    ]
+  },
+// [FS] IRAD-1042 2020-09-29
+// Fix:replace the headers to custom styles.
+  {
+    "name": "Heading 1",
+    "customstyles":  [
+      { 
+        'stylename':'Heading 1',  
+        'fontsize' : 30,       
+        'fontname' : 'Verdana',  
+        // 'underline':true,
       }      
     ]
   },
   {
-    "name": "Heading 1",
-    "level": 1
-  },
-  {
     "name": "Heading 2",
-    "level": 2
+    "customstyles":  [
+      { 
+        'stylename':'Heading 2', 
+        'fontsize' : 28,           
+        'fontname' : 'Times',  
+        'super':true,              
+      }      
+    ]
   },
   {
     "name": "Heading 3",
-    "level": 3
+    "customstyles":  [
+      { 
+        'stylename':'Heading 3',
+        'fontsize' : 26,     
+        'fontname' : 'Tahoma', 
+        'strike':true,
+      }      
+    ]
   },
   {
     "name": "Heading 4",
-    "level": 4
+    "customstyles":  [
+      { 
+        'stylename':'Heading 4',     
+        'fontsize' : 24,       
+        'fontname' : 'Arial Black',                
+      }      
+    ]
   },
   {
     "name": "Title",

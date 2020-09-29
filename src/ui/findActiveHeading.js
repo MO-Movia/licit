@@ -53,13 +53,14 @@ export function getTheCustomStyles(customStyles: Object): Object {
       case 'fontname':
         style["fontName"] = customStyles[property] ;
         break;
-
-      case 'strike':textDecorationLine
+      // [FS] IRAD-1042 2020-09-29
+      // Fix:icluded strike through in custom styles.
+      case 'strike':
       style["textDecorationLine"] = 'line-through';
         break;
 
       case 'super':
-         
+        style["verticalAlign"] = 'super'; 
         break;
 
       case 'text-highlight':
