@@ -19,7 +19,7 @@ module.exports = {
     "no-mixed-spaces-and-tabs": "error",
     "no-trailing-spaces": "error",
     "no-undef": "error",
-    "no-unused-expression": [true, "allow-fast-null-checks"],
+    "no-unused-expression": [1, "allow-fast-null-checks"],
     "no-unused-vars": ["error", { "vars": "all", "args": "none", "ignoreRestSiblings": false }],
     "no-var": "error",
     "prefer-const": "error",

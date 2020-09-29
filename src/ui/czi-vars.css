@@ -26,6 +26,8 @@
   --czi-doc-padding-default: 14.5mm;
   --czi-doc-width-us-letter-portrait: 216mm;
   --czi-doc-width-us-letter-landscape: 279mm;
+  --czi-doc-width-a4-portrait: 210mm;
+  --czi-doc-width-a4-landscape: 297mm;
   --czi-doc-width-us-desktop-screen-4-3: 120vh;
   --czi-doc-width-us-desktop-screen-16-9: 142vh;
 

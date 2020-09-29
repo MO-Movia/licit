@@ -25,12 +25,19 @@ function renderAttributes(editorState: EditorState): Object {
   let computedLayout;
   if (width) {
     const inWidth = width / 72;
-    if (!computedLayout && inWidth >= 11 && inWidth <= 11.5) {
+    const cmWidth = inWidth * 2.54;
+    if (!computedLayout && inWidth >= 10.9 && inWidth <= 11.1) {
       // Round up to letter size.
       computedLayout = LAYOUT.US_LETTER_LANDSCAPE;
-    } else if (!computedLayout && inWidth >= 8 && inWidth <= 8.6) {
+    } else if (!computedLayout && inWidth >= 8.4 && inWidth <= 8.6) {
       // Round up to letter size.
       computedLayout = LAYOUT.US_LETTER_PORTRAIT;
+    } else if (!computedLayout && cmWidth >= 29.5 && cmWidth <= 30.1) {
+      // Round up to letter size.
+      computedLayout = LAYOUT.A4_LANDSCAPE;
+    } else if (!computedLayout && cmWidth >= 20.5 && cmWidth <= 21.5) {
+      // Round up to letter size.
+      computedLayout = LAYOUT.A4_PORTRAIT;
     } else {
       // Use custom width (e.g. imported from google doc).
       style += `width: ${width}pt;`;
