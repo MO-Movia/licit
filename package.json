@@ -133,9 +133,6 @@
     ],
     "*.json": [
       "prettier --write"
-    ],
-    "*.{css,js,json}": [
-      "git add"
     ]
   }
 }
