@@ -3,7 +3,6 @@
     background-color: #ecebea;
     color: white;
     width: 350px;
-    height: 350px;
     border: 1px solid black;
 
     background: #fff;
@@ -25,8 +24,12 @@
 label{
     color: black;
 }
-input{
-    margin-left: 15px;
+.stylenameinput{
+    margin: 0 0 0 15px !important;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: unset;
+
 }
 .sectiondiv{
     margin:5px 0;

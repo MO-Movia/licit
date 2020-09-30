@@ -14,6 +14,7 @@ import UICommand from './ui/UICommand';
 import { atViewportCenter } from './ui/PopUpPosition';
 import createPopUp from './ui/createPopUp';
 import CustomStyleEditor from './ui/CustomStyleEditor';
+import MarkToggleCommand from './MarkToggleCommand';
 // [FS] IRAD-1042 2020-09-14
 // Fix: To display selected style.
 function toggleCustomStyle(markType, attrs, state, tr, dispatch) {
@@ -105,6 +106,13 @@ class CustomStyleCommand extends UICommand {
   _customStyleName: string;
   _customStyle = [];
   _popUp = null;
+  _commands = [
+    new MarkToggleCommand('strike'),
+    new MarkToggleCommand('em'),
+    new MarkToggleCommand('strong'),
+    new MarkToggleCommand('underline')
+
+  ];
 
   constructor(customStyle: any, customStyleName: string) {
     super();
@@ -153,21 +161,27 @@ class CustomStyleCommand extends UICommand {
       this._editWindow();
       return false
     }
-    if (this._customStyle) {
-      var inlineStyles = this.getTheInlineStyles(true);
-      if (!this.isEmpty(inlineStyles)) {
-        tr = setCustomInlineStyle(
-          tr.setSelection(selection),
-          schema,
-          inlineStyles
-        );
-      }
-      var commonStyle = this.getTheInlineStyles(false);
-      for (let key in commonStyle) {
-        let markType = schema.marks[key];
-        tr = toggleCustomStyle(markType, undefined, state, tr, dispatch);
-      }
-    }
+    // if (this._customStyle) {
+    //   var inlineStyles = this.getTheInlineStyles(true);
+    //   if (!this.isEmpty(inlineStyles)) {
+    //     tr = setCustomInlineStyle(
+    //       tr.setSelection(selection),
+    //       schema,
+    //       inlineStyles
+    //     );
+    //   }
+    //   var commonStyle = this.getTheInlineStyles(false);
+    //   for (let key in commonStyle) {
+    //     let markType = schema.marks[key];
+    //     tr = toggleCustomStyle(markType, undefined, state, tr, dispatch);
+    //   }
+    // }
+
+    // [FS] IRAD-1087 2020-09-29
+    // Fix: Apply the basic commands,need to check its working or not
+    this._commands.forEach(element => {
+      element.execute()
+    });
 
     if (tr.docChanged || tr.storedMarksSet) {
       // If selection is empty, the color is added to `storedMarks`, which

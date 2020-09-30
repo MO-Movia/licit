@@ -78,7 +78,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     <div className="sectiondiv">
                         <label for="test">Name</label>
                         <span>
-                            <input name="test" id="test"
+                            <input className="stylenameinput" id="test"
                                 type="text" placeholder="Enter style name" />
                         </span>
                     </div>
