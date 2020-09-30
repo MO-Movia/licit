@@ -37,7 +37,7 @@ class DocLayoutEditor extends React.PureComponent<any, any> {
     //   layout: PropTypes.string,
     //   width: PropTypes.number,
     // }),
-    
+
     close: function (props: any, propName: string) {
       var fn = props[propName];
       if (!fn.prototype ||
@@ -56,7 +56,7 @@ class DocLayoutEditor extends React.PureComponent<any, any> {
     this.state = {
       width,
       layout,
-      selectedValue: width || layout || LAYOUT.US_LETTER_PORTRAIT,
+      selectedValue: width || layout || LAYOUT.US_LETTER_PORTRAIT, // or LAYOUT.A4_PORTRAIT to define default layout
     };
   }
 
@@ -88,6 +88,18 @@ class DocLayoutEditor extends React.PureComponent<any, any> {
               label="US Letter - Landscape"
               onSelect={this._onSelect}
               value={LAYOUT.US_LETTER_LANDSCAPE}
+            />
+            <CustomRadioButton
+              checked={selectedValue === LAYOUT.A4_PORTRAIT}
+              label="A4 - Portrait"
+              onSelect={this._onSelect}
+              value={LAYOUT.A4_PORTRAIT}
+            />
+            <CustomRadioButton
+              checked={selectedValue === LAYOUT.A4_LANDSCAPE}
+              label="A4 - Landscape"
+              onSelect={this._onSelect}
+              value={LAYOUT.A4_LANDSCAPE}
             />
             <CustomRadioButton
               checked={selectedValue === LAYOUT.DESKTOP_SCREEN_4_3}
