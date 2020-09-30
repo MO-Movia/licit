@@ -7,9 +7,9 @@ import createPopUp from './ui/createPopUp';
 import findNodesWithSameMark from './findNodesWithSameMark';
 import isTextStyleMarkCommandEnabled from './isTextStyleMarkCommandEnabled';
 import nullthrows from 'nullthrows';
-import {EditorState} from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
-import {MARK_TEXT_COLOR} from './MarkNames';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import { MARK_TEXT_COLOR } from './MarkNames';
 import { Transform } from 'prosemirror-transform';
 
 class TextColorCommand extends UICommand {
@@ -33,16 +33,16 @@ class TextColorCommand extends UICommand {
       return Promise.resolve(undefined);
     }
 
-    const {doc, selection, schema} = state;
+    const { doc, selection, schema } = state;
     const markType = schema.marks[MARK_TEXT_COLOR];
     const anchor = event ? event.currentTarget : null;
-    const {from, to} = selection;
+    const { from, to } = selection;
     const result = findNodesWithSameMark(doc, from, to, markType);
     const hex = result ? result.mark.attrs.color : null;
     return new Promise(resolve => {
       this._popUp = createPopUp(
         ColorEditor,
-        {hex},
+        { hex },
         {
           anchor,
           onClose: val => {
@@ -63,10 +63,10 @@ class TextColorCommand extends UICommand {
     color: ?string
   ): boolean => {
     if (dispatch && color !== undefined) {
-      const {schema} = state;
-      let {tr} = state;
+      const { schema } = state;
+      let { tr } = state;
       const markType = schema.marks[MARK_TEXT_COLOR];
-      const attrs = color ? {color} : null;
+      const attrs = color ? { color } : null;
       tr = applyMark(
         state.tr.setSelection(state.selection),
         schema,
@@ -82,6 +82,27 @@ class TextColorCommand extends UICommand {
       }
     }
     return false;
+  };
+
+  // [FS] IRAD-1087 2020-09-30
+  // New method to execute new styling implementation of text color
+    executeCustom = (
+    state: EditorState,
+    tr
+  ): boolean => {
+    // if (color !== undefined) {
+    const { schema } = state;
+    const markType = schema.marks[MARK_TEXT_COLOR];
+    const attrs = { color: "#f20d0d" };
+    tr = applyMark(
+      tr,
+      schema,
+      markType,
+      attrs
+    );
+
+    // }
+    return tr;
   };
 }
 

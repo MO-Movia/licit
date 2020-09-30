@@ -26,7 +26,7 @@ export function findActiveHeading(state: EditorState): number {
 
 // [FS] IRAD-1046 2020-09-24
 // To create a style object from the customstyles to show the styles in the example piece.
-export function getTheCustomStyles(customStyles: Object): Object {
+export function getTheCustomStyles(customStyles) {
   var style = {
     float: 'right' 
 };

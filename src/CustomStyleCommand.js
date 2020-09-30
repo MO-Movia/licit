@@ -15,6 +15,8 @@ import { atViewportCenter } from './ui/PopUpPosition';
 import createPopUp from './ui/createPopUp';
 import CustomStyleEditor from './ui/CustomStyleEditor';
 import MarkToggleCommand from './MarkToggleCommand';
+import TextColorCommand from './TextColorCommand';
+import TextHighlightCommand from './TextHighlightCommand';
 // [FS] IRAD-1042 2020-09-14
 // Fix: To display selected style.
 function toggleCustomStyle(markType, attrs, state, tr, dispatch) {
@@ -106,11 +108,17 @@ class CustomStyleCommand extends UICommand {
   _customStyleName: string;
   _customStyle = [];
   _popUp = null;
+  // [FS] IRAD-1087 2020-09-29
+  // Fix: Added manually the commands in array need to generate this array 
+  // based on style selection from style create window.
   _commands = [
     new MarkToggleCommand('strike'),
     new MarkToggleCommand('em'),
     new MarkToggleCommand('strong'),
-    new MarkToggleCommand('underline')
+    new MarkToggleCommand('underline'),
+    new MarkToggleCommand('super'),
+    new TextColorCommand(),
+    new TextHighlightCommand(),
 
   ];
 
@@ -178,9 +186,16 @@ class CustomStyleCommand extends UICommand {
     // }
 
     // [FS] IRAD-1087 2020-09-29
-    // Fix: Apply the basic commands,need to check its working or not
+    // Fix: Iterate the Array and chekes the command type and execute the new command wrote in each
+    // command class.
+    // need to finalize the type check is needed
     this._commands.forEach(element => {
-      element.execute()
+      if (element instanceof MarkToggleCommand) {
+        tr = element.executeCustom(state, tr);
+      }
+      else {
+        tr = element.executeCustom(state, tr);
+      }
     });
 
     if (tr.docChanged || tr.storedMarksSet) {

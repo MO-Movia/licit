@@ -4,7 +4,7 @@ import {EditorState} from 'prosemirror-state';
 
 import {MARK_CUSTOMSTYLES} from '../MarkNames';
 import findActiveMark from '../findActiveMark'; 
-
+import FONT_TYPE_NAME_DEFAULT from './findActiveFontType';
 export const CUSTOMSTYLE_NAME_DEFAULT = 'Normal';
 // [FS] IRAD-1042 2020-09-17
 // To find the selected custom style
