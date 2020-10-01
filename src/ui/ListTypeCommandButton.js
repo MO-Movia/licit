@@ -2,6 +2,9 @@
 // Command button to handle different type of list types
 // Need to add Icons instead of label
 import * as React from 'react';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import ListToggleCommand from '../ListToggleCommand';
 import ListTypeButton from './ListTypeButton';
 
@@ -38,7 +41,7 @@ const LIST_TYPE_NAMES = [
 ];
 const LIST_TYPE_COMMANDS: Object = {
   ['decimal']: new ListToggleCommand(true, 'decimal')
-  
+
 };
 LIST_TYPE_NAMES.forEach(obj => {
   LIST_TYPE_COMMANDS[obj.name] = new ListToggleCommand(true, obj.name);
@@ -60,8 +63,8 @@ class ListTypeCommandButton extends React.PureComponent<any, any> {
     return (
       <ListTypeButton
         className="width-50 czi-icon format_list_numbered"
-        disabled={editorView && editorView.disabled ? true : false}
         commandGroups={COMMAND_GROUPS}
+        disabled={editorView && editorView.disabled ? true : false}
         dispatch={dispatch}
         editorState={editorState}
         editorView={editorView}

@@ -5,7 +5,6 @@ import type {
     ImageLike
 } from '../Types';
 import {
-    GET,
     POST
 } from './http';
 
@@ -19,7 +18,7 @@ class LicitRuntime {
     getProxyImageSrc(src: string): string {
         // This simulate a fake proxy.
         const suffix = 'proxied=1';
-        return src.indexOf('?') === -1 ? `${src}?${suffix}` : `${src}&${suffix}`
+        return src.indexOf('?') === -1 ? `${src}?${suffix}` : `${src}&${suffix}`;
     }
 
     // Image Upload
@@ -27,10 +26,10 @@ class LicitRuntime {
         return true;
     }
 
-    uploadImage(blob: Object): Promise < ImageLike > {
-        var img: ImageLike;
+    uploadImage(blob: Object): Promise<ImageLike> {
+        let img: ImageLike;
         // [FS-AFQ][03-MAR-2020][IRAD-884#2]
-        // Note: Resolving the promise blindly after 3 seconds causes two issues, 
+        // Note: Resolving the promise blindly after 3 seconds causes two issues,
         // 1. Even if an image upload finishes in 700ms, it will take 3s for resolving the promise.
         // 2. If the image upload takes more than 3s, then the promise will be incorrectly resolved before completing the upload.
         // The following structure may be good to solve the issue.

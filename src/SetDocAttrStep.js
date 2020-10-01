@@ -37,18 +37,20 @@ class SetDocAttrStep extends Step {
   }
 
   // [FS] IRAD-1010 2020-07-27
-  // Handle map properly so that undo works correctly for document attritube changes.  
+  // Handle map properly so that undo works correctly for document attritube changes.
   map(mapping: Mappable): ?SetDocAttrStep {
-    var from = mapping.mapResult(this.from, 1), to = mapping.mapResult(this.to, -1);
-    if (from.deleted && to.deleted) { return null }
+    const from = mapping.mapResult(this.from, 1), to = mapping.mapResult(this.to, -1);
+    if (from.deleted && to.deleted) { return null; }
     return new SetDocAttrStep(this.key, this.value, 'SetDocAttr');
   }
 
   merge(other: SetDocAttrStep): ?SetDocAttrStep {
     if (other instanceof SetDocAttrStep &&
-        other.mark.eq(this.mark) &&
+        // [FS] IRAD-1028 2020-09-30
+        // validate mark
+        other.mark && other.mark.eq(this.mark) &&
         this.from <= other.to && this.to >= other.from)
-      { return new SetDocAttrStep(this.key, this.value, 'SetDocAttr') }
+      { return new SetDocAttrStep(this.key, this.value, 'SetDocAttr'); }
   }
 
   toJSON(): SetDocAttrStepJSONValue {
@@ -64,8 +66,8 @@ class SetDocAttrStep extends Step {
   }
 }
 
-// [FS-AFQ][13-MAR-2020][IRAD-899]
-// Register this step so that capcomode can be dealt collaboratively.
-Step.jsonID("SetDocAttr", SetDocAttrStep);
+// [FS] IRAD-899 2020-03-13
+// Register this step so that document attrbute changes can be dealt collaboratively.
+Step.jsonID('SetDocAttr', SetDocAttrStep);
 
 export default SetDocAttrStep;

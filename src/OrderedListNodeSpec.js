@@ -1,12 +1,12 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 
-import {ATTRIBUTE_LIST_STYLE_TYPE} from './ListItemNodeSpec';
-import {LIST_ITEM} from './NodeNames';
-import {ATTRIBUTE_INDENT, MIN_INDENT_LEVEL} from './ParagraphNodeSpec';
+import { ATTRIBUTE_LIST_STYLE_TYPE } from './ListItemNodeSpec';
+import { LIST_ITEM } from './NodeNames';
+import { ATTRIBUTE_INDENT, MIN_INDENT_LEVEL } from './ParagraphNodeSpec';
 
-import type {NodeSpec} from './Types';
+import type { NodeSpec } from './Types';
 
 export const ATTRIBUTE_COUNTER_RESET = 'data-counter-reset';
 export const ATTRIBUTE_FOLLOWING = 'data-following';
@@ -14,15 +14,15 @@ const AUTO_LIST_STYLE_TYPES = ['decimal', 'lower-alpha', 'lower-roman'];
 
 const OrderedListNodeSpec: NodeSpec = {
   attrs: {
-    id: {default: null},
-    counterReset: {default: null},
-    indent: {default: MIN_INDENT_LEVEL},
-    following: {default: null},
-    listStyleType: {default: null},
-    name: {default: null},
+    id: { default: null },
+    counterReset: { default: null },
+    indent: { default: MIN_INDENT_LEVEL },
+    following: { default: null },
+    listStyleType: { default: null },
+    name: { default: null },
     start: { default: 1 },
     objectId: { default: null },
-    type:{default:'decimal'},
+    type: { default: 'decimal' },
   },
   group: 'block',
   content: LIST_ITEM + '+',
@@ -45,8 +45,8 @@ const OrderedListNodeSpec: NodeSpec = {
         const name = dom.getAttribute('name') || undefined;
 
         const following = dom.getAttribute(ATTRIBUTE_FOLLOWING) || undefined;
-         const objectId = dom.getAttribute('objectId') || null;
-         const type= dom.getAttribute('type') || undefined;
+        const objectId = dom.getAttribute('objectId') || null;
+        const type = dom.getAttribute('type') || undefined;
 
         return {
           counterReset,
@@ -56,7 +56,7 @@ const OrderedListNodeSpec: NodeSpec = {
           name,
           start,
           objectId,
-	  type,
+          type,
         };
       },
     },

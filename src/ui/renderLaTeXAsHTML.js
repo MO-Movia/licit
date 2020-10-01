@@ -10,11 +10,6 @@ import 'katex/dist/katex.min.css';
 const latexEl: any = document.createElement('div');
 const cached: Object = {};
 
-// Use KatexVersion "0.10.1" to fix format issue.
-// See https://github.com/sailinglab/pgm-spring-2019/pull/30
-const CSS_CDN_URL =
-  '//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.1/katex.min.css';
-
 const CSS_FONT = 'KaTeX_Main';
 
 (async function() {

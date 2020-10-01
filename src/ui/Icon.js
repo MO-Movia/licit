@@ -40,6 +40,17 @@ class SuperscriptIcon extends React.PureComponent<any, any> {
   }
 }
 
+class SubscriptIcon extends React.PureComponent<any, any> {
+  render(): React.Element<any> {
+    return (
+      <span className="subscript-wrap">
+        <span className="subscript-base">x</span>
+        <span className="subscript-bottom">y</span>
+      </span>
+    );
+  }
+}
+
 class Icon extends React.PureComponent<any, any> {
   // Get the static Icon.
   static get(type: string, title: ?string): React.Element<any> {
@@ -61,6 +72,9 @@ class Icon extends React.PureComponent<any, any> {
     if (type == 'superscript') {
       className = cx('czi-icon', {[type]: true});
       children = <SuperscriptIcon />;
+    } else if (type == 'subscript') {
+      className = cx('czi-icon', {[type]: true});
+      children = <SubscriptIcon />;
     } else if (!type || !VALID_CHARS.test(type)) {
       className = cx('czi-icon-unknown');
       children = title || type;

@@ -4,8 +4,6 @@ import { toggleMark } from 'prosemirror-commands';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
-import applyMark from './applyMark';
-
 import findNodesWithSameMark from './findNodesWithSameMark';
 import UICommand from './ui/UICommand';
 
@@ -58,14 +56,12 @@ class MarkToggleCommand extends UICommand {
   };
 
   // [FS] IRAD-1087 2020-09-30
-  // New method to execute new styling implementation of 
-  //strike, em, strong, underline,superscrpt
+  // Method to execute strike, em, strong, underline,superscrpt for custom styling implementation.
   executeCustom = (
     state: EditorState,
     tr
   ) => {
     const { schema, selection } = state;
-    // let { tr } = state
     const markType = schema.marks[this._markName];
     if (!markType) {
       return false;
@@ -84,19 +80,21 @@ class MarkToggleCommand extends UICommand {
       }
     }
 
-    return toggleCustomStyle(markType, null, state, tr)
+    return toggleCustomStyle(markType, null, state, tr);
 
   };
 }
 
 // [FS] IRAD-1042 2020-09-30
-// Fix: overrided the toggleMarks
-//in our use case no need of dispatch tr inside the toggle mark
+// Fix: overrided the toggleMarks for custom style implementation
+// Return Transform object
 function toggleCustomStyle(markType, attrs, state, tr) {
-  var ref = state.selection;
-  var empty = ref.empty;
-  var $cursor = ref.$cursor;
-  var ranges = ref.ranges;
+  const ref = state.selection;
+  const empty = ref.empty;
+  const $cursor = ref.$cursor;
+  const ranges = ref.ranges;
+  const startPos = ref.$from.before(1);
+  const endPos = ref.$to.after(1);
   if ((empty && !$cursor) || !markApplies(state.doc, ranges, markType)) {
     return false;
   }
@@ -104,38 +102,24 @@ function toggleCustomStyle(markType, attrs, state, tr) {
     if (markType.isInSet(state.storedMarks || $cursor.marks())) {
       tr = tr.removeStoredMark(markType);
     } else {
-      tr = tr.addStoredMark(markType.create(attrs));
+      tr.addMark(startPos, endPos, markType.create(attrs));
     }
   } else {
-    // var has = false;
-    // for (var i = 0; !has && i < ranges.length; i++) {
-    //   var ref$1 = ranges[i];
-    //   var $from = ref$1.$from;
-    //   var $to = ref$1.$to;
-    //   has = state.doc.rangeHasMark($from.pos, $to.pos, markType);
-    // }
-    for (var i$1 = 0; i$1 < ranges.length; i$1++) {
-      var ref$2 = ranges[i$1];
-      var $from$1 = ref$2.$from;
-      var $to$1 = ref$2.$to;
-      // if (has) {
-      //   tr.removeMark($from$1.pos, $to$1.pos, markType);
-      // } else {
-      tr.addMark($from$1.pos, $to$1.pos, markType.create(attrs));
-      // }
-    }
+
+    tr.addMark(startPos, endPos, markType.create(attrs));
     return tr;
   }
 
   return tr;
 }
-
+//overrided method from prosemirror Transform
 function markApplies(doc, ranges, type) {
-  var loop = function (i) {
-    var ref = ranges[i];
-    var $from = ref.$from;
-    var $to = ref.$to;
-    var can = $from.depth == 0 ? doc.type.allowsMarkType(type) : false;
+  const loop = function (i) {
+    const ref = ranges[i];
+    const $from = ref.$from;
+    const $to = ref.$to;
+    let can = $from.depth == 0 ? doc.type.allowsMarkType(type) : false;
+
     doc.nodesBetween($from.pos, $to.pos, function (node) {
       if (can) {
         return false;
@@ -147,8 +131,8 @@ function markApplies(doc, ranges, type) {
     }
   };
 
-  for (var i = 0; i < ranges.length; i++) {
-    var returned = loop(i);
+  for (let i = 0; i < ranges.length; i++) {
+    const returned = loop(i);
 
     if (returned) return returned.v;
   }

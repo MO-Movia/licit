@@ -38,12 +38,6 @@ const {
   CLEAR_FORMAT,
   DOC_LAYOUT,
   EM,
-  H1,
-  H2,
-  H3,
-  H4,
-  H5,
-  H6,
   HISTORY_REDO,
   HISTORY_UNDO,
   HR,
@@ -56,6 +50,7 @@ const {
   STRIKE,
   STRONG,
   SUPER,
+  SUB,
   TABLE_ADD_COLUMN_AFTER,
   TABLE_ADD_COLUMN_BEFORE,
   TABLE_ADD_ROW_AFTER,
@@ -115,6 +110,7 @@ export const TABLE_COMMANDS_GROUP = [
   },
 ];
 
+
 // [FS] IRAD-1012 2020-07-14
 // Fix: Toolbar is poorly organized.
 
@@ -131,6 +127,7 @@ export const COMMAND_GROUPS = [
     '[format_underline] Underline': UNDERLINE,
     '[format_strikethrough] Strike through': STRIKE,
     '[superscript] Superscript': SUPER,
+    '[subscript] Subscript': SUB,
     '[format_color_text] Text color': TEXT_COLOR,
     '[border_color] Highlight color': TEXT_HIGHLIGHT,
     '[format_clear] Clear formats': CLEAR_FORMAT,
@@ -156,7 +153,7 @@ export const COMMAND_GROUPS = [
   // [FS] IRAD-1042 2020-09-09
   // Changes the menu for include the custom styles.
   {
-    '[H1] Header 1': HeadingCommandMenuButton, 
+    '[H1] Header 1': HeadingCommandMenuButton,
   },
   {
     '[link] Apply link': LINK_SET_URL,

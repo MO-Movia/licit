@@ -1,7 +1,8 @@
 import * as React from 'react';
 import UICommand from './UICommand';
-import {EditorState} from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import uuid from './uuid';
 import './listType.css';
 
@@ -32,15 +33,14 @@ class ListTypeMenu extends React.PureComponent<any, any> {
     };
 
     render() {
-        const { commandGroups, editorState, editorView } = this.props;
+        const { commandGroups } = this.props;
         const children = [];
-        const jj = commandGroups.length - 1
 
         commandGroups.forEach((group, ii) => {
             Object.keys(group).forEach(label => {
                 const command = group[label];
-                children.push(<button key={label} id={label} value={command} onClick={(e) => this._onUIEnter(command, e)} className="buttonSize" >{command.label}</button>);
-            })
+                children.push(<button className="buttonSize" id={label} key={label} onClick={(e) => this._onUIEnter(command, e)} value={command} >{command.label}</button>);
+            });
         });
         return (
             <div className="container">{children}

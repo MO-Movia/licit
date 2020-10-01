@@ -56,7 +56,6 @@ class RichTextEditor extends React.PureComponent<any, any> {
       placeholder,
       readOnly,
       width,
-      fitToContent,
     } = this.props;
 
     let {editorState, runtime} = this.props;
@@ -85,7 +84,6 @@ class RichTextEditor extends React.PureComponent<any, any> {
           dispatchTransaction={this._dispatchTransaction}
           editorState={editorState}
           embedded={embedded}
-          fitToContent={fitToContent}
           id={this._id}
           nodeViews={nodeViews}
           onChange={onChange}
@@ -103,7 +101,6 @@ class RichTextEditor extends React.PureComponent<any, any> {
         body={body}
         className={className}
         embedded={embedded}
-        fitToContent={fitToContent}
         header={header}
         height={height}
         toolbar={toolbar}
@@ -123,11 +120,11 @@ class RichTextEditor extends React.PureComponent<any, any> {
       // Collaboration
       onChange({
         state: editorState || Editor.EDITOR_EMPTY_STATE,
-        transaction: tr        
+        transaction: tr
       });
     }
 
-    
+
   };
 
   _onReady = (editorView: EditorView): void => {

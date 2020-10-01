@@ -7,14 +7,19 @@ import createPopUp from './ui/createPopUp';
 import findNodesWithSameMark from './findNodesWithSameMark';
 import isTextStyleMarkCommandEnabled from './isTextStyleMarkCommandEnabled';
 import nullthrows from 'nullthrows';
-import { EditorState } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { MARK_TEXT_HIGHLIGHT } from './MarkNames';
 import { Transform } from 'prosemirror-transform';
 
 class TextHighlightCommand extends UICommand {
   _popUp = null;
-
+  _color: string;
+  
+  constructor(color: ?string) {
+    super();
+    this._color = color;
+  }
   isEnabled = (state: EditorState): boolean => {
     return isTextStyleMarkCommandEnabled(state, MARK_TEXT_HIGHLIGHT);
   };
@@ -80,17 +85,18 @@ class TextHighlightCommand extends UICommand {
   };
 
   // [FS] IRAD-1087 2020-09-30
-  // New method to execute new styling implementation of background color
+  // Method to execute custom styling implementation of Text Highlight
   executeCustom = (
     state: EditorState,
-    tr
-  ): boolean => {
-    // if (color !== undefined) {
-    const { schema } = state;
-    // let {tr} = state;
+    tr: Transform
+  ): Transform => {
+
+    const { schema, selection } = state;
+    const startPos = selection.$from.before(1);
+    const endPos = selection.$to.after(1);
     const markType = schema.marks[MARK_TEXT_HIGHLIGHT];
-    const attrs = { highlightColor: '#0df2f2' };
-    tr = applyMark(tr, schema, markType, attrs);
+    const attrs = { highlightColor: this._color };
+    tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, startPos, endPos)), schema, markType, attrs);
 
     return tr;
   };

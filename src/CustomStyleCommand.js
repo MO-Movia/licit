@@ -2,12 +2,8 @@
 
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { toggleMark } from 'prosemirror-commands';
 import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
-import { AllSelection, TextSelection } from 'prosemirror-state';
-import applyMark from './applyMark';
-import { MARK_CUSTOMSTYLES, MARK_TEXT_COLOR, MARK_STRONG } from './MarkNames';
 import { HEADING } from './NodeNames';
 import noop from './noop';
 import UICommand from './ui/UICommand';
@@ -17,110 +13,69 @@ import CustomStyleEditor from './ui/CustomStyleEditor';
 import MarkToggleCommand from './MarkToggleCommand';
 import TextColorCommand from './TextColorCommand';
 import TextHighlightCommand from './TextHighlightCommand';
-// [FS] IRAD-1042 2020-09-14
-// Fix: To display selected style.
-function toggleCustomStyle(markType, attrs, state, tr, dispatch) {
-  var ref = state.selection;
-  var empty = ref.empty;
-  var $cursor = ref.$cursor;
-  var ranges = ref.ranges;
-  if ((empty && !$cursor) || !markApplies(state.doc, ranges, markType)) {
-    return false;
-  }
-  if (dispatch) {
-    if ($cursor) {
-      if (markType.isInSet(state.storedMarks || $cursor.marks())) {
-        dispatch(tr.removeStoredMark(markType));
-      } else {
-        dispatch(tr.addStoredMark(markType.create(attrs)));
-      }
-    } else {
-      // var has = false;
-      // for (var i = 0; !has && i < ranges.length; i++) {
-      //   var ref$1 = ranges[i];
-      //   var $from = ref$1.$from;
-      //   var $to = ref$1.$to;
-      //   has = state.doc.rangeHasMark($from.pos, $to.pos, markType);
-      // }
-      for (var i$1 = 0; i$1 < ranges.length; i$1++) {
-        var ref$2 = ranges[i$1];
-        var $from$1 = ref$2.$from;
-        var $to$1 = ref$2.$to;
-        // if (has) {
-        //   tr.removeMark($from$1.pos, $to$1.pos, markType);
-        // } else {
-        tr.addMark($from$1.pos, $to$1.pos, markType.create(attrs));
-        // }
-      }
-      return tr;
+import TextAlignCommand from './TextAlignCommand';
+import FontTypeCommand from './FontTypeCommand';
+import FontSizeCommand from './FontSizeCommand';
+
+// [FS] IRAD-1042 2020-10-01
+// Creates commands based on custom style JSon object
+function getTheCustomStylesCommand(customStyles) {
+  const _commands = [];
+  const propval = null;
+  for (const property in customStyles) {
+
+    switch (property) {
+      case 'strong':
+        _commands.push(new MarkToggleCommand('strong'));
+        break;
+
+      case 'em':
+        _commands.push(new MarkToggleCommand('em'));
+        break;
+
+      case 'color':
+        _commands.push(new TextColorCommand(customStyles[property]));
+        break;
+
+      case 'fontsize':
+        _commands.push(new FontSizeCommand(Number(customStyles[property])));
+        break;
+
+      case 'fontname':
+        _commands.push(new FontTypeCommand(customStyles[property]));
+        break;
+
+      case 'strike':
+        _commands.push(new MarkToggleCommand('strike'));
+        break;
+
+      case 'super':
+        _commands.push(new MarkToggleCommand('super'));
+        break;
+
+      case 'text-highlight':
+        _commands.push(new TextHighlightCommand(customStyles[property]));
+        break;
+
+      case 'underline':
+        _commands.push(new MarkToggleCommand('underline'));
+        break;
+      case 'align':
+
+        _commands.push(new TextAlignCommand(customStyles[property]));
+        break;
+
+      default:
+        break;
     }
   }
-  return true;
-}
-
-function markApplies(doc, ranges, type) {
-  var loop = function (i) {
-    var ref = ranges[i];
-    var $from = ref.$from;
-    var $to = ref.$to;
-    var can = $from.depth == 0 ? doc.type.allowsMarkType(type) : false;
-    doc.nodesBetween($from.pos, $to.pos, function (node) {
-      if (can) {
-        return false;
-      }
-      can = node.inlineContent && node.type.allowsMarkType(type);
-    });
-    if (can) {
-      return { v: true };
-    }
-  };
-
-  for (var i = 0; i < ranges.length; i++) {
-    var returned = loop(i);
-
-    if (returned) return returned.v;
-  }
-  return false;
-}
-function setCustomInlineStyle(
-  tr: Transform,
-  schema: Schema,
-  customStyles: any
-): Transform {
-  const markType = schema.marks[MARK_CUSTOMSTYLES];
-  if (!markType) {
-    return tr;
-  }
-  const { selection } = tr;
-  if (
-    !(selection instanceof TextSelection || selection instanceof AllSelection)
-  ) {
-    return tr;
-  }
-
-  var attrs = customStyles;
-
-  tr = applyMark(tr, schema, markType, attrs);
-  return tr;
+  return _commands;
 }
 
 class CustomStyleCommand extends UICommand {
   _customStyleName: string;
   _customStyle = [];
   _popUp = null;
-  // [FS] IRAD-1087 2020-09-29
-  // Fix: Added manually the commands in array need to generate this array 
-  // based on style selection from style create window.
-  _commands = [
-    new MarkToggleCommand('strike'),
-    new MarkToggleCommand('em'),
-    new MarkToggleCommand('strong'),
-    new MarkToggleCommand('underline'),
-    new MarkToggleCommand('super'),
-    new TextColorCommand(),
-    new TextHighlightCommand(),
-
-  ];
 
   constructor(customStyle: any, customStyleName: string) {
     super();
@@ -129,8 +84,8 @@ class CustomStyleCommand extends UICommand {
   }
 
   getTheInlineStyles = (isInline: boolean) => {
-    var attrs = {};
-    var propsCopy = [];
+    let attrs = {};
+    let propsCopy = [];
     propsCopy = Object.assign(propsCopy, this._customStyle);
 
     propsCopy.forEach((style) => {
@@ -147,7 +102,7 @@ class CustomStyleCommand extends UICommand {
   };
 
   isEmpty = (obj) => {
-    for (var key in obj) {
+    for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
         return false;
       }
@@ -164,32 +119,24 @@ class CustomStyleCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    var { schema, selection, tr } = state;
+    let { schema, selection, tr } = state;
     if ('newstyle' === this._customStyle) {
       this._editWindow();
-      return false
+      return false;
     }
-    // if (this._customStyle) {
-    //   var inlineStyles = this.getTheInlineStyles(true);
-    //   if (!this.isEmpty(inlineStyles)) {
-    //     tr = setCustomInlineStyle(
-    //       tr.setSelection(selection),
-    //       schema,
-    //       inlineStyles
-    //     );
-    //   }
-    //   var commonStyle = this.getTheInlineStyles(false);
-    //   for (let key in commonStyle) {
-    //     let markType = schema.marks[key];
-    //     tr = toggleCustomStyle(markType, undefined, state, tr, dispatch);
-    //   }
-    // }
 
     // [FS] IRAD-1087 2020-09-29
-    // Fix: Iterate the Array and chekes the command type and execute the new command wrote in each
+    // Fix: Iterate the Command Array and chekes the command type and execute the command wrote in each
     // command class.
-    // need to finalize the type check is needed
-    this._commands.forEach(element => {
+    // need to check the type check is needed
+
+    const _commands = getTheCustomStylesCommand(this._customStyle[0]);
+    const startPos = selection.$from.before(1);
+    const endPos = selection.$to.after(1);
+    // to remove all applied marks in the selection
+    tr = tr.removeMark(startPos, endPos, null);
+
+    _commands.forEach(element => {
       if (element instanceof MarkToggleCommand) {
         tr = element.executeCustom(state, tr);
       }

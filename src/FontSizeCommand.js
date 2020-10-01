@@ -3,18 +3,18 @@
 import UICommand from './ui/UICommand';
 import applyMark from './applyMark';
 import isTextStyleMarkCommandEnabled from './isTextStyleMarkCommandEnabled';
-import {EditorState} from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
-import {MARK_FONT_SIZE} from './MarkNames';
-import {Schema} from 'prosemirror-model';
-import {Transform} from 'prosemirror-transform';
+import { EditorState, TextSelection } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import { MARK_FONT_SIZE } from './MarkNames';
+import { Schema } from 'prosemirror-model';
+import { Transform } from 'prosemirror-transform';
 
 function setFontSize(tr: Transform, schema: Schema, pt: number): Transform {
   const markType = schema.marks[MARK_FONT_SIZE];
   if (!markType) {
     return tr;
   }
-  const attrs = pt ? {pt} : null;
+  const attrs = pt ? { pt } : null;
   tr = applyMark(tr, schema, markType, attrs);
   return tr;
 }
@@ -37,7 +37,7 @@ class FontSizeCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const {schema, selection} = state;
+    const { schema, selection } = state;
     const tr = setFontSize(state.tr.setSelection(selection), schema, this._pt);
     if (tr.docChanged || tr.storedMarksSet) {
       // If selection is empty, the color is added to `storedMarks`, which
@@ -47,6 +47,19 @@ class FontSizeCommand extends UICommand {
       return true;
     }
     return false;
+  };
+
+  // [FS] IRAD-1087 2020-10-01
+  // Method to execute custom styling implementation of font size
+  executeCustom = (
+    state: EditorState,
+    tr: Transform
+  ): Transform => {
+    const { schema, selection } = state;
+    const startPos = selection.$from.before(1);
+    const endPos = selection.$to.after(1);
+    tr = setFontSize(tr.setSelection(TextSelection.create(tr.doc, startPos, endPos)), schema, this._pt);
+    return tr;
   };
 }
 

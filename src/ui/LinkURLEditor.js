@@ -16,8 +16,8 @@ const BAD_CHARACTER_PATTER = /\s/;
 type Props = {
   href: ?string,
   close: (href: ?string) => void,
-};  
-  
+};
+
 class LinkURLEditor extends React.PureComponent<any, any> {
 
   // [FS] IRAD-1005 2020-07-07
@@ -26,7 +26,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
   static propsTypes = {
     href: PropTypes.string,
 	close: function(props:any, propName:string) {
-        var fn = props[propName];
+        const fn = props[propName];
         if(!fn.prototype ||
            (typeof fn.prototype.constructor !== 'function' &&
             fn.prototype.constructor.length !== 1)) {

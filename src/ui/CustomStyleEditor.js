@@ -19,7 +19,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     static propsTypes = {
         initialValue: PropTypes.object,
         close: function (props: any, propName: string) {
-            var fn = props[propName];
+            const fn = props[propName];
             if (!fn.prototype ||
                 (typeof fn.prototype.constructor !== 'function' &&
                     fn.prototype.constructor.length !== 1)) {
@@ -40,33 +40,33 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     render(): React.Element<any> {
         const font = [
             {
-                label: "Arial",
-                value: "Arial"
+                label: 'Arial',
+                value: 'Arial'
             },
-            { label: "Acme", value: "Acme" },
-            { label: "Tahoma", value: "Tahoma" }
+            { label: 'Acme', value: 'Acme' },
+            { label: 'Tahoma', value: 'Tahoma' }
         ];
 
         const fontSize = [
             {
-                label: "11",
-                value: "11"
+                label: '11',
+                value: '11'
             },
-            { label: "12", value: "12" },
-            { label: "12", value: "12" }
+            { label: '12', value: '12' },
+            { label: '12', value: '12' }
         ];
 
         const indenting = [
             {
-                label: "None",
-                value: "None"
+                label: 'None',
+                value: 'None'
             }
 
         ];
         const numbering = [
             {
-                label: "None",
-                value: "None"
+                label: 'None',
+                value: 'None'
             }
         ];
         return (
@@ -79,7 +79,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         <label for="test">Name</label>
                         <span>
                             <input className="stylenameinput" id="test"
-                                type="text" placeholder="Enter style name" />
+                                placeholder="Enter style name" type="text" />
                         </span>
                     </div>
                     <div className="sectiondiv">
@@ -136,7 +136,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                 </select>
                             </span>
                         </div>
-                        <div name="body" className="textAreadiv">
+                        <div className="textAreadiv" name="body">
                         </div>
 
                     </div>

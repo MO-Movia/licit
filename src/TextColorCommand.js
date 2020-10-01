@@ -7,14 +7,19 @@ import createPopUp from './ui/createPopUp';
 import findNodesWithSameMark from './findNodesWithSameMark';
 import isTextStyleMarkCommandEnabled from './isTextStyleMarkCommandEnabled';
 import nullthrows from 'nullthrows';
-import { EditorState } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { MARK_TEXT_COLOR } from './MarkNames';
 import { Transform } from 'prosemirror-transform';
 
 class TextColorCommand extends UICommand {
   _popUp = null;
+  _color: string;
 
+  constructor(color: ?string) {
+    super();
+    this._color = color;
+  }
   isEnabled = (state: EditorState): boolean => {
     return isTextStyleMarkCommandEnabled(state, MARK_TEXT_COLOR);
   };
@@ -84,24 +89,21 @@ class TextColorCommand extends UICommand {
     return false;
   };
 
-  // [FS] IRAD-1087 2020-09-30
-  // New method to execute new styling implementation of text color
-    executeCustom = (
-    state: EditorState,
-    tr
-  ): boolean => {
-    // if (color !== undefined) {
-    const { schema } = state;
-    const markType = schema.marks[MARK_TEXT_COLOR];
-    const attrs = { color: "#f20d0d" };
-    tr = applyMark(
-      tr,
-      schema,
-      markType,
-      attrs
-    );
 
-    // }
+  // [FS] IRAD-1087 2020-09-30
+  // Method to execute custom styling implementation of Text color
+  executeCustom = (
+    state: EditorState,
+    tr: Transform
+  ): Transform => {
+
+    const { schema, selection } = state;
+    const startPos = selection.$from.before(1);
+    const endPos = selection.$to.after(1);
+    const markType = schema.marks[MARK_TEXT_COLOR];
+    const attrs = { color: this._color };
+
+    tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, startPos, endPos)), schema, markType, attrs);
     return tr;
   };
 }

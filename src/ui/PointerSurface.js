@@ -47,19 +47,19 @@ class PointerSurface extends React.PureComponent<any, any> {
       disabled: disabled,
       pressed: pressed,
     });
-      
+
   // [FS] IRAD-1046 2020-09-24
   // To show the example piece to the menu and set the styles to it.
-    var styles;
-    var  text ='' ;   
+    let styles;
+    let  text ='' ;
     if (value && value._customStyleName) {
       text= 'AaBbCcDd';
-      let itemsArray = localStorage.getItem(value._customStyleName) ? JSON.parse(localStorage.getItem(value._customStyleName)) : [];
+      const itemsArray = localStorage.getItem(value._customStyleName) ? JSON.parse(localStorage.getItem(value._customStyleName)) : [];
     if(itemsArray){
-       styles= getTheCustomStyles(itemsArray[0]); 
+       styles= getTheCustomStyles(itemsArray[0]);
     }
-  } 
- 
+  }
+
     return (
       <span
         aria-disabled={disabled}
@@ -78,7 +78,7 @@ class PointerSurface extends React.PureComponent<any, any> {
         title= {title}
       >
         {children}
-      <span style={styles} > {text} </span> 
+      <span style={styles} > {text} </span>
       </span>
     );
   }

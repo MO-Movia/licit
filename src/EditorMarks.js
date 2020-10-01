@@ -18,8 +18,8 @@ import TextNoWrapMarkSpec from './TextNoWrapMarkSpec';
 import TextNodeSpec from './TextNodeSpec';
 import TextSelectionMarkSpec from './TextSelectionMarkSpec';
 import TextSuperMarkSpec from './TextSuperMarkSpec';
+import TextSubMarkSpec from './TextSubMarkSpec';
 import TextUnderlineMarkSpec from './TextUnderlineMarkSpec';
-import CustomStyleMarkSpec from './CustomStyleMarkSpec';
 
 const {
   MARK_CODE,
@@ -31,13 +31,13 @@ const {
   MARK_STRIKE,
   MARK_STRONG,
   MARK_SUPER,
+  MARK_SUB,
   MARK_TEXT_COLOR,
   MARK_TEXT_HIGHLIGHT,
   MARK_TEXT_SELECTION,
   MARK_UNDERLINE,
   MARK_SPACER,
-  MARK_CUSTOMSTYLES,
-} = MarkNames;
+  } = MarkNames;
 
 // These nodes are required to build basic marks.
 const nodes = {
@@ -59,12 +59,12 @@ const marks = {
   [MARK_STRIKE]: StrikeMarkSpec,
   [MARK_STRONG]: StrongMarkSpec,
   [MARK_SUPER]: TextSuperMarkSpec,
+  [MARK_SUB]: TextSubMarkSpec,
   [MARK_TEXT_COLOR]: TextColorMarkSpec,
   [MARK_TEXT_HIGHLIGHT]: TextHighlightMarkSpec,
   [MARK_TEXT_SELECTION]: TextSelectionMarkSpec,
   [MARK_UNDERLINE]: TextUnderlineMarkSpec,
-  [MARK_CUSTOMSTYLES]: CustomStyleMarkSpec,
-};
+  };
 
 const schema = new Schema({ nodes, marks });
 const EditorMarks = schema.spec.marks;

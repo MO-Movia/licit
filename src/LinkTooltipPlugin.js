@@ -182,7 +182,7 @@ class LinkTooltipView {
           tr = tr.setSelection(linkSelection);
           const attrs = href ? {href} : null;
           tr = applyMark(tr, schema, markType, attrs);
-		  
+
           // [FS] IRAD-1005 2020-07-09
           // Upgrade outdated packages.
           // reset selection to original using the latest doc.

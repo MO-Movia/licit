@@ -30,7 +30,7 @@
   font-size: var(--czi-content-font-size);
   line-height: var(--czi-content-line-height);
   /*[FS] IRAD-1011 2020-07-10
-    White space issue in FF 
+    White space issue in FF
     https://github.com/ProseMirror/prosemirror-view/commit/06147b49efec62f06738ce593a365f0d1d953858#diff-a2771f42f3074df8a6954ad49a080d84
     */
   white-space: break-spaces;
@@ -88,6 +88,22 @@
   width: var(--czi-doc-width-us-letter-landscape);
 }
 
+.ProseMirror[data-layout='a4_portrait'] {
+  min-height: 297mm;
+  padding: var(--czi-doc-padding-default);
+  width: var(--czi-doc-width-a4-portrait);
+
+  /* [FS] IRAD-992 2020-06-25
+  Fix:Image exceeds the canvas */
+  overflow: hidden;
+}
+
+.ProseMirror[data-layout='a4_landscape'] {
+  min-height: 210mm;
+  padding: var(--czi-doc-padding-default);
+  width: var(--czi-doc-width-a4-landscape);
+}
+
 .ProseMirror[data-layout='desktop_screen_4_3'] {
   min-height: 90vh;
   padding: var(--czi-doc-padding-default);
@@ -107,17 +123,6 @@
   min-height: unset;
   padding: unset;
   width: unset;
-}
-
-/* FS IRAD-1040 2020-17-09
-  fit to content style  */
-.prosemirror-editor-wrapper.fitToContent .ProseMirror {
-  background: white;
-  border-radius: unset;
-   min-height: unset;
-  padding: 5px;
-  width: unset;
-  margin-bottom: 5px;
 }
 
 @media only print {
