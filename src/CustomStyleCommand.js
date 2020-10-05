@@ -1,13 +1,18 @@
 // @flow
 
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { findParentNodeOfType } from 'prosemirror-utils';
-import { EditorView } from 'prosemirror-view';
-import { HEADING } from './NodeNames';
-import noop from './noop';
+import {
+  EditorState
+} from 'prosemirror-state';
+import {
+  Transform
+} from 'prosemirror-transform';
+import {
+  EditorView
+} from 'prosemirror-view';
 import UICommand from './ui/UICommand';
-import { atViewportCenter } from './ui/PopUpPosition';
+import {
+  atViewportCenter
+} from './ui/PopUpPosition';
 import createPopUp from './ui/createPopUp';
 import CustomStyleEditor from './ui/CustomStyleEditor';
 import MarkToggleCommand from './MarkToggleCommand';
@@ -16,12 +21,12 @@ import TextHighlightCommand from './TextHighlightCommand';
 import TextAlignCommand from './TextAlignCommand';
 import FontTypeCommand from './FontTypeCommand';
 import FontSizeCommand from './FontSizeCommand';
+import TextLineSpacingCommand from './TextLineSpacingCommand';
 
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
 function getTheCustomStylesCommand(customStyles) {
   const _commands = [];
-  const propval = null;
   for (const property in customStyles) {
 
     switch (property) {
@@ -60,9 +65,13 @@ function getTheCustomStylesCommand(customStyles) {
       case 'underline':
         _commands.push(new MarkToggleCommand('underline'));
         break;
-      case 'align':
 
+      case 'textalign':
         _commands.push(new TextAlignCommand(customStyles[property]));
+        break;
+
+      case 'lineheight':
+        _commands.push(new TextLineSpacingCommand(customStyles[property]));
         break;
 
       default:
@@ -82,6 +91,10 @@ class CustomStyleCommand extends UICommand {
     this._customStyle = customStyle;
     this._customStyleName = customStyleName;
   }
+
+  renderLabel = (state: EditorState): any => {
+    return this._customStyleName;
+  };
 
   getTheInlineStyles = (isInline: boolean) => {
     let attrs = {};
@@ -119,7 +132,10 @@ class CustomStyleCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    let { schema, selection, tr } = state;
+    let {
+      selection,
+      tr
+    } = state;
     if ('newstyle' === this._customStyle) {
       this._editWindow();
       return false;
@@ -137,30 +153,29 @@ class CustomStyleCommand extends UICommand {
     tr = tr.removeMark(startPos, endPos, null);
 
     _commands.forEach(element => {
-      if (element instanceof MarkToggleCommand) {
-        tr = element.executeCustom(state, tr);
+      // to set the node attribute for text-align
+      if (element instanceof TextAlignCommand) {
+        tr = this._setNodeAttribute(state, tr, startPos, endPos, this._customStyle[0].textalign, 'align');
+        // to set the node attribute for line-height
+      } else if (element instanceof TextLineSpacingCommand) {
+        tr = this._setNodeAttribute(state, tr, startPos, endPos, this._customStyle[0].lineheight, 'lineSpacing');
       }
+      // to set the marks for the node
       else {
-        tr = element.executeCustom(state, tr);
+        tr = element.executeCustom(state, tr, startPos, endPos);
       }
     });
+    // to set custom styleName attribute for node
+    tr = this._setNodeAttribute(state, tr, startPos, endPos, this._customStyle[0].stylename, 'styleName');
 
     if (tr.docChanged || tr.storedMarksSet) {
-      // If selection is empty, the color is added to `storedMarks`, which
-      // works like `toggleMark`
-      // (see https://prosemirror.net/docs/ref/#commands.toggleMark).
       dispatch && dispatch(tr);
       return true;
     }
     return false;
   };
 
-  _findHeading(state: EditorState): ?Object {
-    const heading = state.schema.nodes[HEADING];
-    const fn = heading ? findParentNodeOfType(heading) : noop;
-    return fn(state.selection);
-  }
-
+  // shows the create style popup
   _editWindow() {
 
     const anchor = null;
@@ -174,6 +189,23 @@ class CustomStyleCommand extends UICommand {
         }
       },
     });
+  }
+
+  // [FS] IRAD-1088 2020-10-05
+  // set custom style for node
+  _setNodeAttribute(state: EditorState, tr: Transform,
+    from: Number, to: Number, style: String, attribute: String): Transform {
+
+    state.doc.nodesBetween(from, to, (node, startPos) => {
+
+      if (node.type.name === 'paragraph') {
+        const newattrs = Object.assign({}, node.attrs);
+        newattrs[attribute] = style;
+        tr = tr.setNodeMarkup(startPos, undefined, newattrs);
+      }
+
+    });
+    return tr;
   }
 }
 

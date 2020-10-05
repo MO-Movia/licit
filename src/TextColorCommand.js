@@ -13,6 +13,7 @@ import { MARK_TEXT_COLOR } from './MarkNames';
 import { Transform } from 'prosemirror-transform';
 
 class TextColorCommand extends UICommand {
+  
   _popUp = null;
   _color: string;
 
@@ -94,16 +95,16 @@ class TextColorCommand extends UICommand {
   // Method to execute custom styling implementation of Text color
   executeCustom = (
     state: EditorState,
-    tr: Transform
+    tr: Transform,
+    from: Number,
+    to: Number
   ): Transform => {
 
-    const { schema, selection } = state;
-    const startPos = selection.$from.before(1);
-    const endPos = selection.$to.after(1);
+    const { schema } = state;
     const markType = schema.marks[MARK_TEXT_COLOR];
     const attrs = { color: this._color };
 
-    tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, startPos, endPos)), schema, markType, attrs);
+    tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, from, to)), schema, markType, attrs);
     return tr;
   };
 }

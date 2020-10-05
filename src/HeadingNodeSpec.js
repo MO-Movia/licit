@@ -22,82 +22,84 @@ const TAG_NAME_TO_LEVEL = {
 export const HEADING_NAMES = [
   {
     'name': 'Normal',
-    'customstyles':  [
+    'customstyles': [
       {
-        'stylename':'Normal',
+        'stylename': 'Normal',
         // 'fontname' : 'Arial',
       }
     ]
   },
-// [FS] IRAD-1042 2020-09-29
-// Fix:replace the headers to custom styles.
+  // [FS] IRAD-1042 2020-09-29
+  // Fix:replace the headers to custom styles.
   {
     'name': 'Heading 1',
-    'customstyles':  [
+    'customstyles': [
       {
-        'stylename':'Heading 1',
-        'fontsize' : 30,
-        'fontname' : 'Verdana',
+        'stylename': 'Heading 1',
+        'fontsize': 30,
+        'fontname': 'Verdana',
         // 'underline':true,
       }
     ]
   },
   {
     'name': 'Heading 2',
-    'customstyles':  [
+    'customstyles': [
       {
-        'stylename':'Heading 2',
-        'fontsize' : 28,
-        'fontname' : 'Times',
-        'super':true,
+        'stylename': 'Heading 2',
+        'fontsize': 28,
+        'fontname': 'Times',
+        'super': true,
       }
     ]
   },
   {
     'name': 'Heading 3',
-    'customstyles':  [
+    'customstyles': [
       {
-        'stylename':'Heading 3',
-        'fontsize' : 26,
-        'fontname' : 'Tahoma',
-        'strike':true,
+        'stylename': 'Heading 3',
+        'fontsize': 26,
+        'fontname': 'Tahoma',
+        'strike': true,
       }
     ]
   },
   {
     'name': 'Heading 4',
-    'customstyles':  [
+    'customstyles': [
       {
-        'stylename':'Heading 4',
-        'fontsize' : 24,
-        'fontname' : 'Arial Black',
+        'stylename': 'Heading 4',
+        'fontsize': 24,
+        'fontname': 'Arial Black',
       }
     ]
   },
   {
     'name': 'Title',
-    'customstyles':  [
+    'customstyles': [
       {
-        'stylename':'Title',
+        'stylename': 'Title',
         // 'fontsize' : 30,
         // 'fontname' : 'Acme',
-        'strong' : true,
-        'em' :true,
-        'color':'Green',
+        'strong': true,
+        'em': true,
+        'color': 'Green',
       }
     ]
   },
   {
     'name': 'Quote',
-    'customstyles':  [
+    'customstyles': [
       {
-        'stylename':'Quote',
+        'stylename': 'Quote',
         'fontsize': 20,
         'fontname': 'Acme',
+        'textalign': 'center',
+        'lineheight': '165%'
       },
     ]
   },
-   {
+  {
     'name': 'New Style..',
     'customstyles': 'newstyle'
   },

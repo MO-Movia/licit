@@ -6,10 +6,6 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import './custom-style-edit.css';
 
-type Props = {
-    close: (href: ?ImageLike) => void,
-};
-
 class CustomStyleEditor extends React.PureComponent<any, any> {
     _unmounted = false;
 

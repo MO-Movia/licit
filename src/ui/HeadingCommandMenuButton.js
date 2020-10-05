@@ -4,13 +4,11 @@ import CommandMenuButton from './CommandMenuButton';
 import HeadingCommand from '../HeadingCommand';
 import CustomStyleCommand from '../CustomStyleCommand';
 import * as React from 'react';
-import {findActiveHeading} from './findActiveHeading';
-import findActiveCustomStyle from './findActiveCustomStyle';
-import {EditorState} from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
-import {HEADING_NAMES} from '../HeadingNodeSpec';
-import {HEADING_NAME_DEFAULT} from './findActiveHeading';
-import {Transform} from 'prosemirror-transform';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import { HEADING_NAMES } from '../HeadingNodeSpec';
+import { HEADING_NAME_DEFAULT } from './findActiveHeading';
+import { Transform } from 'prosemirror-transform';
 
 // [FS] IRAD-1042 2020-09-09
 // To include custom styles in the toolbar
@@ -19,20 +17,17 @@ const HEADING_COMMANDS: Object = {
   [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
 };
 
-
 HEADING_NAMES.forEach(obj => {
-  if(obj.level){
+  if (obj.level) {
     HEADING_COMMANDS[obj.name] = new HeadingCommand(obj.level);
   }
-  else
-  {
+  else {
     // This code is added to save the styles to localstorage for testing the functionality
     // remove the below code once the create customs style UI is implemented.
     localStorage.setItem(obj.name, JSON.stringify(obj.customstyles));
-    HEADING_COMMANDS[obj.name] = new CustomStyleCommand(obj.customstyles,obj.name);
+    HEADING_COMMANDS[obj.name] = new CustomStyleCommand(obj.customstyles, obj.name);
   }
 });
-
 
 const COMMAND_GROUPS = [HEADING_COMMANDS];
 
@@ -44,33 +39,34 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
   };
 
   findHeadingName(level: Number) {
-    for (let i=0; i < HEADING_NAMES.length; i++){
-       if (HEADING_NAMES[i].level == level){
-      return HEADING_NAMES[i].name;
-    }
+    for (let i = 0; i < HEADING_NAMES.length; i++) {
+      if (HEADING_NAMES[i].level == level) {
+        return HEADING_NAMES[i].name;
+      }
     }
   }
 
   render(): React.Element<any> {
-    const {dispatch, editorState, editorView} = this.props;
-    let customStyleName;
-    const headingLevel= findActiveHeading(editorState);
-    if(0<headingLevel)
-    {
-      customStyleName =this.findHeadingName(headingLevel);
-    }
-    else{
-      customStyleName = findActiveCustomStyle(editorState);
-    }
 
+    const { dispatch, editorState, editorView } = this.props;
+    const { selection, doc } = editorState;
+    const { from, to } = selection;
+    let customStyleName;
+    // [FS] IRAD-1088 2020-10-05
+    // get the custom style name from node attribute
+    doc.nodesBetween(from, to, (node, pos) => {
+      if (node.attrs.styleName) {
+        customStyleName = node.attrs.styleName;
+      }
+    });
 
     return (
       <CommandMenuButton
         className="width-100"
-         // [FS] IRAD-1008 2020-07-16
-         // Disable font type menu on editor disable state
+        // [FS] IRAD-1008 2020-07-16
+        // Disable font type menu on editor disable state
         commandGroups={COMMAND_GROUPS}
-        disabled={editorView && editorView.disabled? true:false}
+        disabled={editorView && editorView.disabled ? true : false}
         dispatch={dispatch}
         editorState={editorState}
         editorView={editorView}

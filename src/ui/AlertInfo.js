@@ -4,11 +4,8 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import './czi-form.css';
 
-type Props = {
-  close: (href) => void,
-};
-
 class AlertInfo extends React.PureComponent<any, any> {
+
   _unmounted = false;
 
   // [FS] IRAD-1005 2020-07-07
@@ -44,7 +41,6 @@ class AlertInfo extends React.PureComponent<any, any> {
       </div>
     );
   }
-
 
   _cancel = (): void => {
     this.props.close();

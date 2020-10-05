@@ -15,7 +15,7 @@ import { Transform } from 'prosemirror-transform';
 class TextHighlightCommand extends UICommand {
   _popUp = null;
   _color: string;
-  
+
   constructor(color: ?string) {
     super();
     this._color = color;
@@ -88,15 +88,15 @@ class TextHighlightCommand extends UICommand {
   // Method to execute custom styling implementation of Text Highlight
   executeCustom = (
     state: EditorState,
-    tr: Transform
+    tr: Transform,
+    from: Number,
+    to: Number
   ): Transform => {
 
-    const { schema, selection } = state;
-    const startPos = selection.$from.before(1);
-    const endPos = selection.$to.after(1);
+    const { schema } = state;
     const markType = schema.marks[MARK_TEXT_HIGHLIGHT];
     const attrs = { highlightColor: this._color };
-    tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, startPos, endPos)), schema, markType, attrs);
+    tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, from, to)), schema, markType, attrs);
 
     return tr;
   };

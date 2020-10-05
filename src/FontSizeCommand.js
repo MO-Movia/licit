@@ -53,12 +53,13 @@ class FontSizeCommand extends UICommand {
   // Method to execute custom styling implementation of font size
   executeCustom = (
     state: EditorState,
-    tr: Transform
+    tr: Transform,
+    from: Number,
+    to: Number
   ): Transform => {
-    const { schema, selection } = state;
-    const startPos = selection.$from.before(1);
-    const endPos = selection.$to.after(1);
-    tr = setFontSize(tr.setSelection(TextSelection.create(tr.doc, startPos, endPos)), schema, this._pt);
+
+    const { schema } = state;
+    tr = setFontSize(tr.setSelection(TextSelection.create(tr.doc, from, to)), schema, this._pt);
     return tr;
   };
 }

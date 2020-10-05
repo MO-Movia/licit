@@ -5,7 +5,6 @@ import type {
     ImageLike
 } from '../../src/Types';
 import {
-    GET,
     POST
 } from '../../src/client/http';
 
@@ -27,7 +26,7 @@ class CustomLicitRuntime {
         return true;
     }
 
-    uploadImage(blob: Object): Promise < ImageLike > {
+    uploadImage(blob: Object): Promise<ImageLike> {
         var img: ImageLike;
         // Note: While looking at the uploadImage() function, it is found that a promise is resolved blindly after 3 seconds. Is it a
         // requirement? If not, then I think it causes two issues, 1. Even if an image upload finishes in 700ms, it will take 3s for

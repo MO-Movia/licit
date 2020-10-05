@@ -63,6 +63,14 @@ export function getTheCustomStyles(customStyles) {
         style['textDecoration'] = 'underline';
         break;
 
+      case 'text-align':
+        style['textAlign'] = customStyles[property];;
+        break;
+
+      case 'line-height':
+        style['lineHeight'] = customStyles[property];;
+        break;
+
       default:
         break;
     }

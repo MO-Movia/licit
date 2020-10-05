@@ -1,14 +1,10 @@
 // @flow
 
 import {Node} from 'prosemirror-model';
-
-import WebFontLoader from './WebFontLoader';
-
 import type {MarkSpec} from './Types';
 
 // [FS] IRAD-1061 2020-09-19
 // Now loaded locally, so that it work in closed network as well.
-//import injectStyleSheet from './injectStyleSheet';
 
 export const FONT_TYPE_NAMES = [
   // SERIF

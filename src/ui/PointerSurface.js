@@ -4,7 +4,7 @@ import cx from 'classnames';
 import * as React from 'react';
 
 import preventEventDefault from './preventEventDefault';
-import {getTheCustomStyles} from './findActiveHeading';
+import { getTheCustomStyles } from './findActiveHeading';
 
 export type PointerSurfaceProps = {
   active?: ?boolean,
@@ -48,17 +48,18 @@ class PointerSurface extends React.PureComponent<any, any> {
       pressed: pressed,
     });
 
-  // [FS] IRAD-1046 2020-09-24
-  // To show the example piece to the menu and set the styles to it.
+    // [FS] IRAD-1046 2020-09-24
+    // To show the example piece to the menu and set the styles to it.
     let styles;
-    let  text ='' ;
+    let text = '';
     if (value && value._customStyleName) {
-      text= 'AaBbCcDd';
+      text = 'AaBbCcDd';
       const itemsArray = localStorage.getItem(value._customStyleName) ? JSON.parse(localStorage.getItem(value._customStyleName)) : [];
-    if(itemsArray){
-       styles= getTheCustomStyles(itemsArray[0]);
+
+      if (itemsArray) {
+        styles = getTheCustomStyles(itemsArray[0]);
+      }
     }
-  }
 
     return (
       <span
@@ -75,10 +76,10 @@ class PointerSurface extends React.PureComponent<any, any> {
         role="button"
         style={style}
         tabIndex={disabled ? null : 0}
-        title= {title}
+        title={title}
       >
         {children}
-      <span style={styles} > {text} </span>
+        <span style={styles} > {text} </span>
       </span>
     );
   }

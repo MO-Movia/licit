@@ -62,24 +62,24 @@ label{
     border-style: solid;
     border-color: #a59b9b;
     border-image: initial;
-    padding: 2px
+    padding: 2px;
 }
 
 .fonttype{
-    width: 77PX;
+    width: 77px;
     height: 22px;
     margin-left: 5px;
 }
 .fontsize{
-    width: 233PX;
+    width: 233px;
     height: 22px;
 }
 .numbering{
-    width: 183PX;
+    width: 183px;
     height: 22px;
 }
 .indenting{
-    width: 186PX;
+    width: 186px;
     height: 22px;
     margin-left: 10px;
 }
