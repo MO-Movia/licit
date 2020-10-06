@@ -151,14 +151,15 @@ class CustomStyleCommand extends UICommand {
     const endPos = selection.$to.after(1);
     // to remove all applied marks in the selection
     tr = tr.removeMark(startPos, endPos, null);
-
+    let node = this._getNode(state, startPos, endPos);
+    const newattrs = Object.assign({}, node.attrs);
     _commands.forEach(element => {
       // to set the node attribute for text-align
       if (element instanceof TextAlignCommand) {
-        tr = this._setNodeAttribute(state, tr, startPos, endPos, this._customStyle[0].textalign, 'align');
+        newattrs['align'] = this._customStyle[0].textalign;
         // to set the node attribute for line-height
       } else if (element instanceof TextLineSpacingCommand) {
-        tr = this._setNodeAttribute(state, tr, startPos, endPos, this._customStyle[0].lineheight, 'lineSpacing');
+        newattrs['lineSpacing'] = this._customStyle[0].lineheight;
       }
       // to set the marks for the node
       else {
@@ -166,7 +167,8 @@ class CustomStyleCommand extends UICommand {
       }
     });
     // to set custom styleName attribute for node
-    tr = this._setNodeAttribute(state, tr, startPos, endPos, this._customStyle[0].stylename, 'styleName');
+    newattrs['styleName'] = this._customStyle[0].stylename;
+    tr = this._setNodeAttribute(state, tr, startPos, endPos, newattrs);
 
     if (tr.docChanged || tr.storedMarksSet) {
       dispatch && dispatch(tr);
@@ -185,7 +187,6 @@ class CustomStyleCommand extends UICommand {
       onClose: val => {
         if (this._popUp) {
           this._popUp = null;
-
         }
       },
     });
@@ -194,18 +195,25 @@ class CustomStyleCommand extends UICommand {
   // [FS] IRAD-1088 2020-10-05
   // set custom style for node
   _setNodeAttribute(state: EditorState, tr: Transform,
-    from: Number, to: Number, style: String, attribute: String): Transform {
+    from: Number, to: Number, attribute): Transform {
 
     state.doc.nodesBetween(from, to, (node, startPos) => {
-
       if (node.type.name === 'paragraph') {
-        const newattrs = Object.assign({}, node.attrs);
-        newattrs[attribute] = style;
-        tr = tr.setNodeMarkup(startPos, undefined, newattrs);
+        tr = tr.setNodeMarkup(startPos, undefined, attribute);
       }
-
     });
     return tr;
+  }
+
+  //to get the selected node 
+  _getNode(state: EditorState, from: Number, to: Number,): Node {
+    let selectedNode = null;
+    state.doc.nodesBetween(from, to, (node, startPos) => {
+      if (node.type.name === 'paragraph') {
+        selectedNode = node;
+      }
+    });
+    return selectedNode;
   }
 }
 
