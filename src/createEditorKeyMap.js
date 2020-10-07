@@ -30,6 +30,7 @@ const {
   KEY_TAB,
   KEY_TOGGLE_BOLD,
   KEY_TOGGLE_ITALIC,
+  KEY_TOGGLE_UNDERLINE,
   KEY_UNDO,
 } = EditorKeyMap;
 
@@ -49,6 +50,7 @@ const {
   TABLE_MOVE_TO_PREV_CELL,
   TEXT_INSERT_TAB_SPACE,
   STRONG,
+  UNDERLINE,
 } = EditorCommands;
 
 function bindCommands(...commands: Array<UICommand>): UserKeyCommand {
@@ -85,6 +87,7 @@ export default function createEditorKeyMap(): UserKeyMap {
     ),
     [KEY_TOGGLE_BOLD.common]: STRONG.execute,
     [KEY_TOGGLE_ITALIC.common]: EM.execute,
+    [KEY_TOGGLE_UNDERLINE.common]: UNDERLINE.execute,
     [KEY_UNDO.common]: HISTORY_UNDO.execute,
     // [FS][07-MAY-2020][IRAD-956]
     // [KEY_INSERT_NEW_LINE_IN_BLOCKQUOTE.common]:
