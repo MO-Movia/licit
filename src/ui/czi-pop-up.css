@@ -11,6 +11,14 @@
   z-index: 5000;
 }
 
+ /* [FS] IRAD-1048 2020-10-07
+ To handle child dialog window  */
+.child-modal
+ {
+  background-color:unset !important;
+  z-index: 10006!important;
+}
+
 .czi-pop-up-element {
   background-color: transparent;
   height: auto;

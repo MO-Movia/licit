@@ -3,7 +3,7 @@
 import './czi-vars.css';
 import './czi-pop-up.css';
 
-import type {PopUpParams, ViewProps} from './PopUp';
+import type { PopUpParams, ViewProps } from './PopUp';
 
 import PopUp from './PopUp';
 // eslint-disable-next-line no-unused-vars
@@ -22,14 +22,22 @@ let popUpsCount = 0;
 const Z_INDEX_BASE = 9999;
 const MODAL_MASK_ID = 'pop-up-modal-mask-' + uuid();
 
-function showModalMask(): void {
+function showModalMask(IsChildDialog: ?boolean): void {
   const root: any = document.body || document.documentElement;
   let element = document.getElementById(MODAL_MASK_ID);
   if (!element) {
     element = document.createElement('div');
     element.id = MODAL_MASK_ID;
-    element.className = 'czi-pop-up-modal-mask';
-    element.setAttribute('data-mask-type', 'czi-pop-up-modal-mask');
+    // [FS] IRAD-1048 2020-10-07
+    // To handle child dialog window 
+    if (IsChildDialog) {
+      element.className = 'czi-pop-up-modal-mask child-modal';
+      element.setAttribute('data-mask-type', 'czi-pop-up-modal-mask child-modal');
+    } else {
+      element.className = 'czi-pop-up-modal-mask';
+      element.setAttribute('data-mask-type', 'czi-pop-up-modal-mask');
+    }
+
     element.setAttribute('role', 'dialog');
     element.setAttribute('aria-modal', 'true');
   }
@@ -76,10 +84,15 @@ function getRootElement(
   if (popUpParams && popUpParams.modal) {
     element.setAttribute('data-pop-up-modal', 'y');
   }
+  // [FS] IRAD-1048 2020-10-07
+  // To handle child dialog window 
+  if (popUpParams && popUpParams.IsChildDialog) {
+    element.className = 'czi-pop-up-element child-modal czi-vars';
+  } else {
+    element.className = 'czi-pop-up-element czi-vars';
+  }
 
-  element.className = 'czi-pop-up-element czi-vars';
   element.id = id;
-
   const style: any = element.style;
   const modalZIndexOffset = popUpParams && popUpParams.modal ? 1 : 0;
   if (!(popUpParams && popUpParams.container)) {
@@ -117,7 +130,7 @@ function renderPopUp(
   }
 
   if (modalsCount > 0) {
-    showModalMask();
+    showModalMask(popUpParams.IsChildDialog);
   } else {
     hideModalMask();
   }

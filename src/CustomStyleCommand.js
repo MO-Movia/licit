@@ -137,7 +137,7 @@ class CustomStyleCommand extends UICommand {
       tr
     } = state;
     if ('newstyle' === this._customStyle) {
-      this._editWindow();
+      this.editWindow();
       return false;
     }
 
@@ -178,15 +178,15 @@ class CustomStyleCommand extends UICommand {
   };
 
   // shows the create style popup
-  _editWindow() {
+  editWindow() {
 
-    const anchor = null;
-    this._popUp = createPopUp(CustomStyleEditor, null, {
-      anchor,
+    this._popUp = createPopUp(CustomStyleEditor, this.createCustomObject(), {
+      autoDismiss: false,
       position: atViewportCenter,
       onClose: val => {
         if (this._popUp) {
           this._popUp = null;
+          //handle save style object part here
         }
       },
     });
@@ -215,7 +215,25 @@ class CustomStyleCommand extends UICommand {
     });
     return selectedNode;
   }
-}
 
+  // creates a sample style object
+  createCustomObject() {
+    return {
+      name: 'Test',
+      strike: true,
+      strong: true,
+      em: true,
+      super: false,
+      underline: false,
+      color: 'red',
+      fontsize: '14',
+      fontname: 'Acme',
+      texthighlight: '',
+      align: '',
+      lineheight: ''
+    };
+
+  }
+}
 
 export default CustomStyleCommand;

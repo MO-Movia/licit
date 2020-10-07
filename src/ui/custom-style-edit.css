@@ -47,9 +47,8 @@ label{
 }
 
 .textAreadiv{
-    width: 100%;
+    width: 95%;
     height: 129px;
-    background-color: aliceblue;
     -webkit-rtl-ordering: logical;
     flex-direction: column;
     resize: auto;
@@ -57,31 +56,37 @@ label{
     white-space: pre-wrap;
     overflow-wrap: break-word;
     margin: 0em;
-    font: 400 13.3333px Arial;
+    font: 400 11px Arial;
     border-width: 1px;
     border-style: solid;
     border-color: #a59b9b;
     border-image: initial;
-    padding: 2px;
+    padding: 8px;
+    color: black;
+    /* font-size: 11px; */
 }
-
-.fonttype{
+.sampletext{
+    color: gray;
+}
+.fontsize {
     width: 77px;
     height: 22px;
     margin-left: 5px;
 }
-.fontsize{
+.fonttype{
     width: 233px;
     height: 22px;
 }
 .numbering{
     width: 183px;
     height: 22px;
+    font-size: 13px;
 }
 .indenting{
     width: 186px;
     height: 22px;
     margin-left: 10px;
+    font-size: 13px;
 }
 .btns{
     text-align: right;
