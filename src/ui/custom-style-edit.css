@@ -91,3 +91,25 @@ label{
 .btns{
     text-align: right;
 }
+.align-menu-button{
+    width: 38px;
+    margin: 0;
+    background: transparent;
+    border: none;
+    white-space: nowrap;
+    margin-left: 13px;
+}
+.align-menu-button-icon {
+    margin-left: -6px;
+}
+.align-menu-dropdown-icon {
+    margin-left: -4px;
+}
+.dropdown-div{
+    border: 1px solid black;
+    background: #fff;
+    box-shadow: 0 1px 3px rgb(90 45 45 / 26%);
+}
+.dropdown-buttons{
+    margin: 5px 8px;
+}

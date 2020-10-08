@@ -9,6 +9,7 @@ import ColorEditor from './ColorEditor';
 import createPopUp from './createPopUp';
 import { FONT_PT_SIZES } from './FontSizeCommandMenuButton';
 import { FONT_TYPE_NAMES } from '../FontTypeMarkSpec';
+import CustomStyleDropdown from './CustomStyleDropdown'
 
 // export type CustomStyleProps = {
 //     strike: ?boolean,
@@ -22,6 +23,8 @@ import { FONT_TYPE_NAMES } from '../FontTypeMarkSpec';
 //     texthighlight: ?string,
 //     align: ?string,
 //     lineheight:?string,
+//     numbering:?string,
+//     indent:?string,
 // };
 
 // Values to show in indent drop-down
@@ -68,44 +71,15 @@ const INDENT_VALUES = [
 ];
 // Values to show in numbering drop-down
 const NUMBERING_VALUES = [
-    {
-        label: 'None',
-        value: 'None'
-    },
-    {
-        label: '1.',
-        value: '1'
-    },
-    {
-        label: '1.1.',
-        value: '2'
-    },
-    {
-        label: '1.1.1.',
-        value: '3'
-
-    },
-    {
-        label: '1.1.1.1.',
-        value: '4'
-    },
-    {
-        label: '1.1.1.1.1.',
-        value: '5'
-    },
-    {
-        label: '1.1.1.1.1.1.',
-        value: '6'
-    },
-    {
-        label: '1.1.1.1.1.1.1.',
-        value: '7'
-    },
-    {
-        label: '1.1.1.1.1.1.1.1.',
-        value: '8'
-    }
-
+    'None',
+    '1.',
+    '1.1.',
+    '1.1.1.',
+    '1.1.1.1.',
+    '1.1.1.1.1.',
+    '1.1.1.1.1.1.',
+    '1.1.1.1.1.1.1.',
+    '1.1.1.1.1.1.1.1.',
 ];
 
 class CustomStyleEditor extends React.PureComponent<any, any> {
@@ -182,7 +156,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             default:
                 break;
         }
-        this.buildStyle();
+        // this.buildStyle();
     }
 
     // Build styles to display the example piece
@@ -205,7 +179,21 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             style.fontStyle = 'italic';
         }
         if (this.state.texthighlight) {
-            style.backgroundColor = this.state.texthighlight
+            style.backgroundColor = this.state.texthighlight;
+        }
+        if (this.state.align) {
+            style.textAlign = this.state.align;
+        }
+        if (this.state.lineheight) {
+            style.lineHeight = this.state.lineheight;
+        }
+        if (this.state.indent) {
+            style.marginLeft = `${this.state.indent * 2}px`;
+        }
+        if (this.state.numbering) {
+            // if (document.getElementById('sampletextdiv')) {
+            //     document.getElementById('sampletextdiv').innerText = `${this.state.numbering}'  '${document.getElementById('sampletextdiv').innerText}`;
+            // }
         }
         return style;
     }
@@ -220,8 +208,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         this.setState({ fontsize: e.target.value });
     }
 
+    // handles numbering drop down change
+    onNumberingChange(e) {
+        this.setState({ numbering: e.target.value });
+    }
+
+    // handles indentt dropdown change
+    onIndentChange(e) {
+        this.setState({ indent: e.target.value });
+    }
+
     // shows color dialog based on input text-color/text-heighlight
-    showColorDialog(ISTextColor, event) {
+    showColorDialog(isTextColor, event) {
         const anchor = event ? event.currentTarget : null;
         const hex = null;
         this._popUp = createPopUp(
@@ -234,18 +232,54 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 onClose: val => {
                     if (this._popUp) {
                         this._popUp = null;
-                        if (ISTextColor) {
-                            this.setState({ color: val });
-                        }
-                        else {
-                            this.setState({ texthighlight: val });
+                        if (undefined !== val) {
+                            if (isTextColor) {
+                                this.setState({ color: val });
+                            }
+                            else {
+                                this.setState({ texthighlight: val });
+                            }
                         }
                     }
                 },
             }
         );
     }
-
+    //shows the alignment and line spacing option
+    showAlignmentDialog(isAlignment, event) {
+        const anchor = event ? event.currentTarget : null;
+        // close the popup toggling effect
+        if (this._popUp) {
+            this._popUp.close();
+            this._popUp = null;
+            return;
+        }
+        this._popUp = createPopUp(
+            CustomStyleDropdown,
+            {
+                isAlignment: isAlignment,
+                value: isAlignment ? this.state.align : this.state.lineheight
+            },
+            {
+                anchor,
+                IsChildDialog: true,
+                onClose: val => {
+                    if (this._popUp) {
+                        this._popUp = null;
+                        if (undefined !== val) {
+                            if (isAlignment) {
+                                this.setState({ align: val });
+                            }
+                            else {
+                                this.setState({ lineheight: val });
+                            }
+                        }
+                    }
+                },
+            }
+        );
+    }
+    
     render(): React.Element<any> {
 
 
@@ -299,19 +333,23 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         <div className="sectiondiv">
                             <label for="test">Numbering </label>
                             <span>
-                                <select className="numbering">
-                                    {NUMBERING_VALUES.map(({ label, value }) => (
+                                <select className="numbering" value={this.state.numbering} onChange={this.onNumberingChange.bind(this)}>
+                                    {NUMBERING_VALUES.map((value) => (
                                         <option key={value} value={value}>
-                                            {label}
+                                            {value}
                                         </option>
                                     ))}
                                 </select>
                             </span>
+                            <button className="align-menu-button" onClick={this.showAlignmentDialog.bind(this, true)}>
+                                <span class="czi-icon format_align_left">format_align_left</span>
+                                <span class="czi-icon expand_more align-menu-dropdown-icon">expand_more</span>
+                            </button>
                         </div>
                         <div className="sectiondiv">
                             <label for="test">Indenting </label>
                             <span>
-                                <select className="indenting">
+                                <select className="indenting" value={this.state.indent} onChange={this.onIndentChange.bind(this)}>
                                     {INDENT_VALUES.map(({ label, value }) => (
                                         <option key={value} value={value}>
                                             {label}
@@ -319,16 +357,20 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     ))}
                                 </select>
                             </span>
+                            <button className="align-menu-button" onClick={this.showAlignmentDialog.bind(this, false)}>
+                                <span class="czi-icon format_line_spacing align-menu-button-icon">format_line_spacing</span>
+
+                            </button>
                         </div>
                         <div className="textAreadiv" name="body">
                             <div className="sampletext">
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                         </div>
-                            <div style={this.buildStyle()}>
+                            <div style={this.buildStyle()} id="sampletextdiv">
                                 Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample
                                 Sample Text Sample Text Sample Text Sample Text Sample Text
                         </div>
-                            <div className="sampletext" >
+                            <div className="sampletext">
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                         </div>
@@ -337,7 +379,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     </div>
                     <div className="btns">
                         <button onClick={this._cancel}>Cancel</button>
-                        <button>Save</button>
+                        <button onClick={this._save.bind(this)}>Save</button>
                     </div>
                 </div>
             </div >
@@ -347,6 +389,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
     _cancel = (): void => {
         this.props.close();
+    };
+    _save = (): void => {
+        this.props.close(this.state);
     };
 
 }

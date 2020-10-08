@@ -187,6 +187,7 @@ class CustomStyleCommand extends UICommand {
         if (this._popUp) {
           this._popUp = null;
           //handle save style object part here
+          console.log(val);
         }
       },
     });
@@ -229,8 +230,10 @@ class CustomStyleCommand extends UICommand {
       fontsize: '14',
       fontname: 'Acme',
       texthighlight: '',
-      align: '',
-      lineheight: ''
+      align: 'center',
+      lineheight: '165%',
+      numbering: '1.1.1.',
+      indent:'2'
     };
 
   }
