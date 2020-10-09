@@ -34,9 +34,12 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema): Transform 
   if (!selection || !doc) {
     return tr;
   }
-  const { from, to, empty } = selection;
+  let { from, to, empty } = selection;
   if (empty) {
-    return tr;
+   // [FS] IRAD-1053 2020-10-09
+   // to get the start and end position of a paragrapgh
+    from = selection.$from.before(1);
+    to = selection.$to.after(1);
   }
 
   const markTypesToRemove = new Set(
@@ -45,7 +48,7 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema): Transform 
 
   if (!markTypesToRemove.size) {
     return tr;
-  }
+  } 
 
   const tasks = [];
   doc.nodesBetween(from, to, (node, pos) => {
