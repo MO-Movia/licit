@@ -42,7 +42,7 @@ export default function findActiveFontSize(state: EditorState): string {
     return sm ? String(sm.attrs.pt || defaultSize) : defaultSize;
   }
 
-  const mark = findActiveMark(doc, from, to, markType);
+  const mark = markType ? findActiveMark(doc, from, to, markType) : null;
   if (mark) {
     return String(mark.attrs.pt);
   }

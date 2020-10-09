@@ -23,7 +23,7 @@ import FontTypeCommand from './FontTypeCommand';
 import FontSizeCommand from './FontSizeCommand';
 import TextLineSpacingCommand from './TextLineSpacingCommand';
 import { clearCustomStyleMarks } from './clearCustomStyleMarks';
-
+import { saveStyle } from './customStyle';
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
 function getTheCustomStylesCommand(customStyles) {
@@ -59,7 +59,7 @@ function getTheCustomStylesCommand(customStyles) {
         _commands.push(new MarkToggleCommand('super'));
         break;
 
-      case 'text-highlight':
+      case 'texthighlight':
         _commands.push(new TextHighlightCommand(customStyles[property]));
         break;
 
@@ -67,7 +67,7 @@ function getTheCustomStylesCommand(customStyles) {
         _commands.push(new MarkToggleCommand('underline'));
         break;
 
-      case 'textalign':
+      case 'align':
         _commands.push(new TextAlignCommand(customStyles[property]));
         break;
 
@@ -137,19 +137,20 @@ class CustomStyleCommand extends UICommand {
       selection,
       tr
     } = state;
+    
     if ('newstyle' === this._customStyle) {
       this.editWindow();
       return false;
     }
-   // [FS] IRAD-1053 2020-10-08 
-   // to remove the custom styles applied in the selected paragraph
-   else if ('clearstyle' === this._customStyle) {
-     tr = clearCustomStyleMarks(state.tr.setSelection(state.selection), state.schema);
-     if (dispatch && tr.docChanged) { 
-      dispatch(tr);
-      return true;
-    }
-    return false;
+    // [FS] IRAD-1053 2020-10-08 
+    // to remove the custom styles applied in the selected paragraph
+    else if ('clearstyle' === this._customStyle) {
+      tr = clearCustomStyleMarks(state.tr.setSelection(state.selection), state.schema);
+      if (dispatch && tr.docChanged) {
+        dispatch(tr);
+        return true;
+      }
+      return false;
     }
 
     // [FS] IRAD-1087 2020-09-29
@@ -157,7 +158,7 @@ class CustomStyleCommand extends UICommand {
     // command class.
     // need to check the type check is needed
 
-    const _commands = getTheCustomStylesCommand(this._customStyle[0]);
+    const _commands = getTheCustomStylesCommand(this._customStyle);
     const startPos = selection.$from.before(1);
     const endPos = selection.$to.after(1);
     // to remove all applied marks in the selection
@@ -167,10 +168,10 @@ class CustomStyleCommand extends UICommand {
     _commands.forEach(element => {
       // to set the node attribute for text-align
       if (element instanceof TextAlignCommand) {
-        newattrs['align'] = this._customStyle[0].textalign;
+        newattrs['align'] = this._customStyle.align;
         // to set the node attribute for line-height
       } else if (element instanceof TextLineSpacingCommand) {
-        newattrs['lineSpacing'] = this._customStyle[0].lineheight;
+        newattrs['lineSpacing'] = this._customStyle.lineheight;
       }
       // to set the marks for the node
       else {
@@ -178,7 +179,7 @@ class CustomStyleCommand extends UICommand {
       }
     });
     // to set custom styleName attribute for node
-    newattrs['styleName'] = this._customStyle[0].stylename;
+    newattrs['styleName'] = this._customStyleName;
     tr = this._setNodeAttribute(state, tr, startPos, endPos, newattrs);
 
     if (tr.docChanged || tr.storedMarksSet) {
@@ -198,7 +199,10 @@ class CustomStyleCommand extends UICommand {
         if (this._popUp) {
           this._popUp = null;
           //handle save style object part here
-          console.log(val);
+          if (undefined !== val) {
+            console.log(val);
+            this.saveStyleObject(val);
+          }
         }
       },
     });
@@ -231,22 +235,15 @@ class CustomStyleCommand extends UICommand {
   // creates a sample style object
   createCustomObject() {
     return {
-      name: 'Test',
-      strike: true,
-      strong: true,
-      em: true,
-      super: false,
-      underline: false,
-      color: 'red',
-      fontsize: '14',
-      fontname: 'Acme',
-      texthighlight: '',
-      align: 'center',
-      lineheight: '165%',
-      numbering: '1.1.1.',
-      indent:'2'
-    };
+      stylename: '',
+      styles: {}
+    }
 
+  }
+
+  // locally save style object
+  saveStyleObject(style) {
+    saveStyle(style);
   }
 }
 

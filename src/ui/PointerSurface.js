@@ -5,6 +5,7 @@ import * as React from 'react';
 
 import preventEventDefault from './preventEventDefault';
 import { getTheCustomStyles } from './findActiveHeading';
+import { getCustomStylesByName } from '../customStyle';
 
 export type PointerSurfaceProps = {
   active?: ?boolean,
@@ -53,11 +54,10 @@ class PointerSurface extends React.PureComponent<any, any> {
     let styles;
     let text = '';
     if (value && value._customStyleName) {
-      text = 'AaBbCcDd';
-      const itemsArray = localStorage.getItem(value._customStyleName) ? JSON.parse(localStorage.getItem(value._customStyleName)) : [];
-
-      if (itemsArray) {
-        styles = getTheCustomStyles(itemsArray[0]);
+      text = this.sampleText(value._customStyle);
+      const style = getCustomStylesByName(value._customStyleName);
+      if (style) {
+        styles = getTheCustomStyles(style);
       }
     }
 
@@ -90,6 +90,18 @@ class PointerSurface extends React.PureComponent<any, any> {
       this._mul = false;
       document.removeEventListener('mouseup', this._onMouseUpCapture, true);
     }
+  }
+  // temp method to clear sample text for new and clear command menu item
+  sampleText(styleCommand): String {
+
+    let text = 'AaBbCcDd';
+    if ('newstyle' === styleCommand ||
+      'clearstyle' === styleCommand) {
+      text = '';
+
+    }
+    return text;
+
   }
 
   _onMouseEnter = (e: SyntheticEvent<*>): void => {

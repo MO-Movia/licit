@@ -2,7 +2,7 @@
 
 import { EditorState } from 'prosemirror-state';
 // import { HEADING } from '../NodeNames';
-export const HEADING_NAME_DEFAULT = 'Normal';
+export const HEADING_NAME_DEFAULT = 'None';
 // [FS] IRAD-1042 2020-09-15
 // To find the selected heading
 

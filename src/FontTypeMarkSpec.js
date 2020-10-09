@@ -11,6 +11,7 @@ export const FONT_TYPE_NAMES = [
   'Aclonica',
   'Acme',
   'Alegreya',
+  'Arial',
   //'Arial',//??? - Commented out fonts that are not available to download using https://fonts.googleapis.com/css?family=
   'Arial Black',
   'Georgia',

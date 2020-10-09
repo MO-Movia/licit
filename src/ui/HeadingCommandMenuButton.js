@@ -6,9 +6,10 @@ import CustomStyleCommand from '../CustomStyleCommand';
 import * as React from 'react';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
-import { HEADING_NAMES } from '../HeadingNodeSpec';
+// import { HEADING_NAMES } from '../HeadingNodeSpec';
 import { HEADING_NAME_DEFAULT } from './findActiveHeading';
 import { Transform } from 'prosemirror-transform';
+import { getCustomStyles } from '../customStyle';
 
 // [FS] IRAD-1042 2020-09-09
 // To include custom styles in the toolbar
@@ -16,18 +17,18 @@ import { Transform } from 'prosemirror-transform';
 const HEADING_COMMANDS: Object = {
   [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
 };
-
+//get custom styles from local storage
+let HEADING_NAMES = getCustomStyles();
 HEADING_NAMES.forEach(obj => {
-  if (obj.level) {
-    HEADING_COMMANDS[obj.name] = new HeadingCommand(obj.level);
-  }
-  else {
-    // This code is added to save the styles to localstorage for testing the functionality
-    // remove the below code once the create customs style UI is implemented.
-    localStorage.setItem(obj.name, JSON.stringify(obj.customstyles));
-    HEADING_COMMANDS[obj.name] = new CustomStyleCommand(obj.customstyles, obj.name);
-  }
+  // This code is added to save the styles to localstorage for testing the functionality
+  // remove the below code once the create customs style UI is implemented.
+  // localStorage.setItem(obj.name, JSON.stringify(obj.customstyles));
+  HEADING_COMMANDS[obj.stylename] = new CustomStyleCommand(obj.styles, obj.stylename);
+
 });
+
+HEADING_COMMANDS['newstyle'] = new CustomStyleCommand('newstyle', 'New Style..');
+HEADING_COMMANDS['clearstyle'] = new CustomStyleCommand('clearstyle', 'Clear Style');
 
 const COMMAND_GROUPS = [HEADING_COMMANDS];
 
@@ -38,14 +39,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     editorView: ?EditorView,
   };
 
-  findHeadingName(level: Number) {
-    for (let i = 0; i < HEADING_NAMES.length; i++) {
-      if (HEADING_NAMES[i].level == level) {
-        return HEADING_NAMES[i].name;
-      }
-    }
-  }
-
+ 
   render(): React.Element<any> {
 
     const { dispatch, editorState, editorView } = this.props;
