@@ -9,6 +9,7 @@ import {
 import {
   EditorView
 } from 'prosemirror-view';
+import { Node } from 'prosemirror-model';
 import UICommand from './ui/UICommand';
 import {
   atViewportCenter
@@ -134,18 +135,22 @@ class CustomStyleCommand extends UICommand {
     view: ?EditorView
   ): boolean => {
     let {
-      selection,
       tr
     } = state;
-    
+    const {
+      selection
+    } = state;
+
+
     if ('newstyle' === this._customStyle) {
       this.editWindow();
       return false;
     }
-    // [FS] IRAD-1053 2020-10-08 
+    // [FS] IRAD-1053 2020-10-08
     // to remove the custom styles applied in the selected paragraph
     else if ('clearstyle' === this._customStyle) {
-      tr = clearCustomStyleMarks(state.tr.setSelection(state.selection), state.schema);
+
+      tr = clearCustomStyleMarks(state.tr.setSelection(selection), state.schema);
       if (dispatch && tr.docChanged) {
         dispatch(tr);
         return true;
@@ -163,7 +168,7 @@ class CustomStyleCommand extends UICommand {
     const endPos = selection.$to.after(1);
     // to remove all applied marks in the selection
     tr = tr.removeMark(startPos, endPos, null);
-    let node = this._getNode(state, startPos, endPos);
+    const node = this._getNode(state, startPos, endPos);
     const newattrs = Object.assign({}, node.attrs);
     _commands.forEach(element => {
       // to set the node attribute for text-align
@@ -221,7 +226,7 @@ class CustomStyleCommand extends UICommand {
     return tr;
   }
 
-  //to get the selected node 
+  //to get the selected node
   _getNode(state: EditorState, from: Number, to: Number,): Node {
     let selectedNode = null;
     state.doc.nodesBetween(from, to, (node, startPos) => {
@@ -237,7 +242,7 @@ class CustomStyleCommand extends UICommand {
     return {
       stylename: '',
       styles: {}
-    }
+    };
 
   }
 

@@ -13,7 +13,7 @@ const {
   MARK_STRONG,
   MARK_TEXT_COLOR,
   MARK_TEXT_HIGHLIGHT,
-  MARK_UNDERLINE, 
+  MARK_UNDERLINE,
 } = MarkNames;
 
 const FORMAT_MARK_NAMES = [
@@ -24,20 +24,21 @@ const FORMAT_MARK_NAMES = [
   MARK_STRONG,
   MARK_TEXT_COLOR,
   MARK_TEXT_HIGHLIGHT,
-  MARK_UNDERLINE, 
+  MARK_UNDERLINE,
 ];
 
-// [FS] IRAD-1053 2020-10-08 
+// [FS] IRAD-1053 2020-10-08
 // to clear the custom styles in the selected paragrapgh
 export function clearCustomStyleMarks(tr: Transform, schema: Schema): Transform {
   const { doc, selection } = tr;
   if (!selection || !doc) {
     return tr;
   }
-  let { from, to, empty } = selection;
+  let { from, to } = selection;
+  const { empty } = selection;
   if (empty) {
-   // [FS] IRAD-1053 2020-10-09
-   // to get the start and end position of a paragrapgh
+    // [FS] IRAD-1053 2020-10-09
+    // to get the start and end position of a paragrapgh
     from = selection.$from.before(1);
     to = selection.$to.after(1);
   }
@@ -48,12 +49,12 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema): Transform 
 
   if (!markTypesToRemove.size) {
     return tr;
-  } 
+  }
 
   const tasks = [];
   doc.nodesBetween(from, to, (node, pos) => {
-    if(node.content && node.content.content&&node.content.content.length){
-      if (node.content && node.content.content&& node.content.content[0].marks && node.content.content[0].marks.length) {
+    if (node.content && node.content.content && node.content.content.length) {
+      if (node.content && node.content.content && node.content.content[0].marks && node.content.content[0].marks.length) {
         node.content.content[0].marks.some(mark => {
           if (markTypesToRemove.has(mark.type)) {
             tasks.push({ node, pos, mark });
@@ -61,7 +62,7 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema): Transform 
         });
         return true;
       }
-    }   
+    }
     return true;
   });
   if (!tasks.length) {
@@ -69,7 +70,7 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema): Transform 
   }
 
   tasks.forEach(job => {
-    const { node, mark, pos } = job;     
+    const { node, mark, pos } = job;
     tr = tr.removeMark(pos, pos + node.nodeSize, mark.type);
     // reset the custom style name to NONE after remove the styles
     node.attrs.styleName = 'None';

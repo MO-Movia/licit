@@ -31,7 +31,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
   getCommandGroups() {
 
     //get custom styles from local storage
-    let HEADING_NAMES = getCustomStyles();
+    const HEADING_NAMES = getCustomStyles();
     HEADING_NAMES.forEach(obj => {
       // This code is added to save the styles to localstorage for testing the functionality
       // remove the below code once the create customs style UI is implemented.

@@ -13,7 +13,7 @@ import { MARK_TEXT_COLOR } from './MarkNames';
 import { Transform } from 'prosemirror-transform';
 
 class TextColorCommand extends UICommand {
-  
+
   _popUp = null;
   _color: string;
 

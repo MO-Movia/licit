@@ -9,23 +9,9 @@ import ColorEditor from './ColorEditor';
 import createPopUp from './createPopUp';
 import { FONT_PT_SIZES } from './FontSizeCommandMenuButton';
 import { FONT_TYPE_NAMES } from '../FontTypeMarkSpec';
-import CustomStyleDropdown from './CustomStyleDropdown'
+import CustomStyleDropdown from './CustomStyleDropdown';
 
-// export type CustomStyleProps = {
-//     strike: ?boolean,
-//     strong: ?boolean,
-//     em: ?boolean,
-//     super: ?boolean,
-//     underline: ?boolean,
-//     color: ?string,
-//     fontsize: ?string,
-//     fontname: ?string,
-//     texthighlight: ?string,
-//     align: ?string,
-//     lineheight:?string,
-//     numbering:?string,
-//     indent:?string,
-// };
+
 
 // Values to show in indent drop-down
 const INDENT_VALUES = [
@@ -91,7 +77,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         super(props);
         this.state = {
             ...props
-        }
+        };
     };
 
     // [FS] IRAD-1005 2020-09-24
@@ -163,7 +149,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     // Build styles to display the example piece
     buildStyle() {
 
-        let style = {}
+        const style = {};
         if (this.state.styles.fontname) {
             style.fontFamily = this.state.styles.fontname;
         }
@@ -298,18 +284,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         <label>Name</label>
                         <span>
                             <input className="stylenameinput" key="name"
-                                placeholder="Enter style name" type="text" value={this.state.styles.stylename} onChange={this.onStyleClick.bind(this, 'name')} />
+                                onChange={this.onStyleClick.bind(this, 'name')} placeholder="Enter style name" type="text" value={this.state.styles.stylename} />
                         </span>
                     </div>
                     <div className="sectiondiv">
-                        <select className="fonttype" value={this.state.styles.fontname} onChange={this.onFontNameChange.bind(this)}>
+                        <select className="fonttype" onChange={this.onFontNameChange.bind(this)} value={this.state.styles.fontname}>
                             {FONT_TYPE_NAMES.map((value) => (
                                 <option key={value} value={value}>
                                     {value}
                                 </option>
                             ))}
                         </select>
-                        <select className="fontsize" value={this.state.styles.fontsize} onChange={this.onFontSizeChange.bind(this)}>
+                        <select className="fontsize" onChange={this.onFontSizeChange.bind(this)} value={this.state.styles.fontsize}>
                             {FONT_PT_SIZES.map((value) => (
                                 <option key={value} value={value}>
                                     {value}
@@ -320,19 +306,19 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     <div className="sectiondiv editorsection">
 
                         <div class="czi-custom-buttons">
-                            <span aria-label=" Bold" class="czi-tooltip-surface" onClick={this.onStyleClick.bind(this, 'strong')} data-tooltip=" Bold" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strong ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
+                            <span aria-label=" Bold" class="czi-tooltip-surface" data-tooltip=" Bold" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strong')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strong ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
                                 <span class="iconspan czi-icon format_bold">format_bold</span></span></span>
-                            <span aria-label=" Italic" class="czi-tooltip-surface" onClick={this.onStyleClick.bind(this, 'em')} data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
+                            <span aria-label=" Italic" class="czi-tooltip-surface" data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'em')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
                                 <span class="iconspan czi-icon format_italic">format_italic</span><span>  </span></span></span>
-                            <span aria-label=" Underline" class="czi-tooltip-surface" onClick={this.onStyleClick.bind(this, 'underline')} data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
+                            <span aria-label=" Underline" class="czi-tooltip-surface" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
                                 <span class="iconspan czi-icon format_underline">format_underline</span><span>  </span></span></span><span aria-label=" Strike through" class="czi-tooltip-surface" data-tooltip=" Strike through" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
 
                                     <span class="iconspan czi-icon format_strikethrough">format_strikethrough</span><span>  </span></span></span><span aria-label=" Superscript" class="czi-tooltip-surface" data-tooltip=" Superscript" id="86bad6e0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
                                         <span class="czi-icon superscript" style={{ width: '32px' }}>
                                             <span class="iconspan superscript-wrap"><span class="superscript-base">x</span><span class="superscript-top">y</span></span></span><span>  </span></span></span>
-                            <span aria-label=" Text color" class="czi-tooltip-surface" onClick={this.showColorDialog.bind(this, true)} data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
+                            <span aria-label=" Text color" class="czi-tooltip-surface" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
                                 <span class="iconspan czi-icon format_color_text" style={{ color: this.state.styles.color }}>format_color_text</span><span>  </span></span></span>
-                            <span aria-label=" Highlight color" class="czi-tooltip-surface" onClick={this.showColorDialog.bind(this, false)} data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
+                            <span aria-label=" Highlight color" class="czi-tooltip-surface" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
                                 <span class=" iconspan czi-icon border_color" style={{ color: this.state.styles.texthighlight }}>border_color</span><span>  </span></span></span>
 
                         </div>
@@ -340,7 +326,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         <div className="sectiondiv">
                             <label for="test">Numbering </label>
                             <span>
-                                <select className="numbering" value={this.state.styles.numbering} onChange={this.onNumberingChange.bind(this)}>
+                                <select className="numbering" onChange={this.onNumberingChange.bind(this)} value={this.state.styles.numbering}>
                                     {NUMBERING_VALUES.map((value) => (
                                         <option key={value} value={value}>
                                             {value}
@@ -356,7 +342,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         <div className="sectiondiv">
                             <label for="test">Indenting </label>
                             <span>
-                                <select className="indenting" value={this.state.styles.indent} onChange={this.onIndentChange.bind(this)}>
+                                <select className="indenting" onChange={this.onIndentChange.bind(this)} value={this.state.styles.indent}>
                                     {INDENT_VALUES.map(({ label, value }) => (
                                         <option key={value} value={value}>
                                             {label}
@@ -373,7 +359,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                             <div className="sampletext">
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                         </div>
-                            <div style={this.buildStyle()} id="sampletextdiv">
+                            <div id="sampletextdiv" style={this.buildStyle()}>
                                 Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample
                                 Sample Text Sample Text Sample Text Sample Text Sample Text
                         </div>

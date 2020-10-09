@@ -29,7 +29,7 @@ function showModalMask(IsChildDialog: ?boolean): void {
     element = document.createElement('div');
     element.id = MODAL_MASK_ID;
     // [FS] IRAD-1048 2020-10-07
-    // To handle child dialog window 
+    // To handle child dialog window
     if (IsChildDialog) {
       element.className = 'czi-pop-up-modal-mask child-modal';
       element.setAttribute('data-mask-type', 'czi-pop-up-modal-mask child-modal');
@@ -85,7 +85,7 @@ function getRootElement(
     element.setAttribute('data-pop-up-modal', 'y');
   }
   // [FS] IRAD-1048 2020-10-07
-  // To handle child dialog window 
+  // To handle child dialog window
   if (popUpParams && popUpParams.IsChildDialog) {
     element.className = 'czi-pop-up-element child-modal czi-vars';
   } else {
