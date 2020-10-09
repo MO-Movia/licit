@@ -22,6 +22,7 @@ import TextAlignCommand from './TextAlignCommand';
 import FontTypeCommand from './FontTypeCommand';
 import FontSizeCommand from './FontSizeCommand';
 import TextLineSpacingCommand from './TextLineSpacingCommand';
+import { clearCustomStyleMarks } from './clearCustomStyleMarks';
 
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
@@ -139,6 +140,16 @@ class CustomStyleCommand extends UICommand {
     if ('newstyle' === this._customStyle) {
       this.editWindow();
       return false;
+    }
+   // [FS] IRAD-1053 2020-10-08 
+   // to remove the custom styles applied in the selected paragraph
+   else if ('clearstyle' === this._customStyle) {
+     tr = clearCustomStyleMarks(state.tr.setSelection(state.selection), state.schema);
+     if (dispatch && tr.docChanged) { 
+      dispatch(tr);
+      return true;
+    }
+    return false;
     }
 
     // [FS] IRAD-1087 2020-09-29

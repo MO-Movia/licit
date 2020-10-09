@@ -103,6 +103,10 @@ export const HEADING_NAMES = [
     'name': 'New Style..',
     'customstyles': 'newstyle'
   },
+  {
+    'name': 'Clear Style',
+    'customstyles': 'clearstyle'
+  },
 ];
 
 // https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
