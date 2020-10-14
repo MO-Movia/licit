@@ -14,7 +14,7 @@ import { getCustomStyles } from '../customStyle';
 // [FS] IRAD-1042 2020-09-09
 // To include custom styles in the toolbar
 
-const HEADING_COMMANDS: Object = {
+let HEADING_COMMANDS: Object = {
   [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
 };
 
@@ -31,12 +31,17 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
   getCommandGroups() {
 
     //get custom styles from local storage
+    // let HEADING_COMMANDS = this.clearCommands();
     const HEADING_NAMES = getCustomStyles();
+    HEADING_COMMANDS = null;
+    HEADING_COMMANDS = {
+      [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
+    };
     HEADING_NAMES.forEach(obj => {
       // This code is added to save the styles to localstorage for testing the functionality
       // remove the below code once the create customs style UI is implemented.
       // localStorage.setItem(obj.name, JSON.stringify(obj.customstyles));
-      HEADING_COMMANDS[obj.stylename] = new CustomStyleCommand(obj.styles, obj.stylename);
+      HEADING_COMMANDS[obj.stylename] = new CustomStyleCommand(obj, obj.stylename);
 
     });
 

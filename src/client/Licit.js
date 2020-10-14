@@ -15,8 +15,9 @@ import CollabConnector from './CollabConnector';
 import { EMPTY_DOC_JSON } from '../createEmptyEditorState';
 import type { EditorRuntime } from '../Types';
 import createPopUp from '../ui/createPopUp';
-import {atViewportCenter} from '../ui/PopUpPosition';
+import { atViewportCenter } from '../ui/PopUpPosition';
 import AlertInfo from '../ui/AlertInfo';
+import SetDocAttrStep from '../SetDocAttrStep';
 
 import './licit.css';
 
@@ -112,7 +113,7 @@ class Licit extends React.Component<any, any> {
   // [FS] IRAD-1067 2020-09-19
   // Alert funtion to show document is corrupted
   showAlert() {
-    const anchor =  null;
+    const anchor = null;
     this._popUp = createPopUp(AlertInfo, null, {
       anchor,
       position: atViewportCenter,
@@ -127,18 +128,21 @@ class Licit extends React.Component<any, any> {
   }
 
   setContent = (content: any = {}): void => {
-    const { doc, tr, schema } = this._connector.getState();
+    const { doc, schema } = this._connector.getState();
+    let { tr } = this._connector.getState();
     const document = content
       ? schema.nodeFromJSON(content)
       : schema.nodeFromJSON(EMPTY_DOC_JSON);
 
     const selection = TextSelection.create(doc, 0, doc.content.size);
-    const transaction = tr
+	 tr = tr
       .setSelection(selection)
       .replaceSelectionWith(document, false);
-
+    // [FS] 2020-10-14
+    // to keep the objectId attribute in document
+    tr = tr.step(new SetDocAttrStep('objectId', document.attrs.objectId || null));
     this._skipSCU = true;
-    this._editorView.dispatch(transaction);
+    this._editorView.dispatch(tr);
   }
 
   shouldComponentUpdate(nextProps: any, nextState: any) {
@@ -187,7 +191,6 @@ class Licit extends React.Component<any, any> {
     // so changing it to 100%  width & height which will occupy the area relative to its parent.
     return (
       <RichTextEditor
-        disabled={disabled}
         editorState={editorState}
         embedded={embedded}
         height={height}
@@ -196,6 +199,7 @@ class Licit extends React.Component<any, any> {
         readOnly={readOnly}
         runtime={runtime}
         width={width}
+        disabled={disabled}
       />
     );
   }
@@ -256,7 +260,7 @@ class Licit extends React.Component<any, any> {
     if (this.state.readOnly) {
       // It should be possible to load content into the editor in readonly as well.
       // It should not be necessary to make the component writable any time during the process
-      const propsCopy = {};
+      let propsCopy = {};
       this._skipSCU = true;
       Object.assign(propsCopy, props);
       // make writable without content change

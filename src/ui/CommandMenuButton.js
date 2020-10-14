@@ -111,9 +111,9 @@ class CommandMenuButton extends React.PureComponent<any, any> {
       //[FS] IRAD-1085 2020-10-09
       // to reload the create custom style
       // temp fix need to change
-      if (this.props.parent) {
-        this.props.parent.getCommandGroups();
-      }
+      // if (this.props.parent) {
+      //   this.props.parent.getCommandGroups();
+      // }
       this._menu = createPopUp(CommandMenu, menuProps, {
         anchor: document.getElementById(this._id),
         onClose: this._onClose,

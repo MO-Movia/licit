@@ -113,3 +113,9 @@ label{
 .dropdown-buttons{
     margin: 5px 8px;
 }
+.visible-sampletext{
+    display: block;
+}
+.hide-sampletext{
+    display: none;
+}

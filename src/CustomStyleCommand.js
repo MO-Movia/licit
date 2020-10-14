@@ -1,7 +1,7 @@
 // @flow
 
 import {
-  EditorState
+  EditorState, TextSelection
 } from 'prosemirror-state';
 import {
   Transform
@@ -143,7 +143,7 @@ class CustomStyleCommand extends UICommand {
 
 
     if ('newstyle' === this._customStyle) {
-      this.editWindow();
+      this.editWindow(state, view);
       return false;
     }
     // [FS] IRAD-1053 2020-10-08
@@ -158,34 +158,7 @@ class CustomStyleCommand extends UICommand {
       return false;
     }
 
-    // [FS] IRAD-1087 2020-09-29
-    // Fix: Iterate the Command Array and chekes the command type and execute the command wrote in each
-    // command class.
-    // need to check the type check is needed
-
-    const _commands = getTheCustomStylesCommand(this._customStyle);
-    const startPos = selection.$from.before(1);
-    const endPos = selection.$to.after(1);
-    // to remove all applied marks in the selection
-    tr = tr.removeMark(startPos, endPos, null);
-    const node = this._getNode(state, startPos, endPos);
-    const newattrs = Object.assign({}, node.attrs);
-    _commands.forEach(element => {
-      // to set the node attribute for text-align
-      if (element instanceof TextAlignCommand) {
-        newattrs['align'] = this._customStyle.align;
-        // to set the node attribute for line-height
-      } else if (element instanceof TextLineSpacingCommand) {
-        newattrs['lineSpacing'] = this._customStyle.lineheight;
-      }
-      // to set the marks for the node
-      else {
-        tr = element.executeCustom(state, tr, startPos, endPos);
-      }
-    });
-    // to set custom styleName attribute for node
-    newattrs['styleName'] = this._customStyleName;
-    tr = this._setNodeAttribute(state, tr, startPos, endPos, newattrs);
+    tr = this.applyStyle(this._customStyle.styles, this._customStyle.stylename, state, tr);
 
     if (tr.docChanged || tr.storedMarksSet) {
       dispatch && dispatch(tr);
@@ -195,7 +168,11 @@ class CustomStyleCommand extends UICommand {
   };
 
   // shows the create style popup
-  editWindow() {
+  editWindow(state: EditorState, view: EditorView) {
+
+    const { dispatch } = view;
+    let tr = state.tr;
+    const doc = state.doc;
 
     this._popUp = createPopUp(CustomStyleEditor, this.createCustomObject(), {
       autoDismiss: false,
@@ -207,6 +184,11 @@ class CustomStyleCommand extends UICommand {
           if (undefined !== val) {
             console.log(val);
             this.saveStyleObject(val);
+            tr = tr.setSelection(TextSelection.create(doc, 0, 0));
+            // Apply created styles to document
+            tr = this.applyStyle(val.styles, val.stylename, state, tr);
+            dispatch(tr);
+            view.focus();
           }
         }
       },
@@ -244,6 +226,40 @@ class CustomStyleCommand extends UICommand {
       styles: {}
     };
 
+  }
+
+  // [FS] IRAD-1087 2020-10-14
+  // Apply selected styles to document
+  applyStyle(style, styleName: String, state: EditorState, tr: Transform) {
+
+    const {
+      selection
+    } = state;
+
+    const _commands = getTheCustomStylesCommand(style);
+    const startPos = selection.$from.before(1);
+    const endPos = selection.$to.after(1);
+    // to remove all applied marks in the selection
+    tr = tr.removeMark(startPos, endPos, null);
+    const node = this._getNode(state, startPos, endPos);
+    const newattrs = Object.assign({}, node.attrs);
+    _commands.forEach(element => {
+      // to set the node attribute for text-align
+      if (element instanceof TextAlignCommand) {
+        newattrs['align'] = style.align;
+        // to set the node attribute for line-height
+      } else if (element instanceof TextLineSpacingCommand) {
+        newattrs['lineSpacing'] = style.lineheight;
+      }
+      // to set the marks for the node
+      else {
+        tr = element.executeCustom(state, tr, startPos, endPos);
+      }
+    });
+    // to set custom styleName attribute for node
+    newattrs['styleName'] = styleName;
+    tr = this._setNodeAttribute(state, tr, startPos, endPos, newattrs);
+    return tr;
   }
 
   // locally save style object

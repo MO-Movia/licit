@@ -68,6 +68,8 @@ const NUMBERING_VALUES = [
     '1.1.1.1.1.1.1.1.',
 ];
 
+const SAMPLE_TEXT = `Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample
+Sample Text Sample Text Sample Text Sample Text Sample Text`
 class CustomStyleEditor extends React.PureComponent<any, any> {
 
     _unmounted = false;
@@ -153,6 +155,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         if (this.state.styles.fontname) {
             style.fontFamily = this.state.styles.fontname;
         }
+        if (this.state.styles.fontsize) {
+            style.fontSize = `${this.state.styles.fontsize}px`;
+        }
         if (this.state.styles.strong) {
             style.fontWeight = 'bold';
         }
@@ -160,7 +165,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             style.color = this.state.styles.color;
         }
         if (this.state.styles.underline) {
-            style.textDecoration = 'underline';
+            style.textDecoration = undefined !== style.textDecoration ? `${style.textDecoration}${' underline'}` :
+                'underline'
+
+        }
+        if (this.state.styles.strike) {
+            style.textDecoration = undefined !== style.textDecoration ? `${style.textDecoration}${' line-through'}` :
+                'line-through'
+
         }
         if (this.state.styles.em) {
             style.fontStyle = 'italic';
@@ -178,9 +190,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             style.marginLeft = `${this.state.styles.indent * 2}px`;
         }
         if (this.state.styles.numbering) {
-            // if (document.getElementById('sampletextdiv')) {
-            //     document.getElementById('sampletextdiv').innerText = `${this.state.styles.numbering}'  '${document.getElementById('sampletextdiv').innerText}`;
-            // }
+            if (document.getElementById('sampletextdiv')) {
+                document.getElementById('sampletextdiv').innerText = `${this.state.styles.numbering}${SAMPLE_TEXT}`;
+            }
         }
         return style;
     }
@@ -310,12 +322,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                 <span class="iconspan czi-icon format_bold">format_bold</span></span></span>
                             <span aria-label=" Italic" class="czi-tooltip-surface" data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'em')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
                                 <span class="iconspan czi-icon format_italic">format_italic</span><span>  </span></span></span>
-                            <span aria-label=" Underline" class="czi-tooltip-surface" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
-                                <span class="iconspan czi-icon format_underline">format_underline</span><span>  </span></span></span><span aria-label=" Strike through" class="czi-tooltip-surface" data-tooltip=" Strike through" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-
-                                    <span class="iconspan czi-icon format_strikethrough">format_strikethrough</span><span>  </span></span></span><span aria-label=" Superscript" class="czi-tooltip-surface" data-tooltip=" Superscript" id="86bad6e0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
-                                        <span class="czi-icon superscript" style={{ width: '32px' }}>
-                                            <span class="iconspan superscript-wrap"><span class="superscript-base">x</span><span class="superscript-top">y</span></span></span><span>  </span></span></span>
+                            <span aria-label=" Underline" class="czi-tooltip-surface" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
+                                <span class="iconspan czi-icon format_underline">format_underline</span><span>  </span></span></span>
+                            <span aria-label=" Strike through" class="czi-tooltip-surface" data-tooltip=" Strike through" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strike')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strike ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
+                                <span class="iconspan czi-icon format_strikethrough">format_strikethrough</span><span>  </span></span></span>
+                            <span aria-label=" Superscript" class="czi-tooltip-surface" data-tooltip=" Superscript" id="86bad6e0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'super')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.super ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
+                                <span class="czi-icon superscript" style={{ width: '32px', height: '27px' }}> <span class="iconspan superscript-wrap"><span class="superscript-base">x</span><span class="superscript-top">y</span></span></span><span>  </span></span></span>
                             <span aria-label=" Text color" class="czi-tooltip-surface" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
                                 <span class="iconspan czi-icon format_color_text" style={{ color: this.state.styles.color }}>format_color_text</span><span>  </span></span></span>
                             <span aria-label=" Highlight color" class="czi-tooltip-surface" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
@@ -359,10 +371,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                             <div className="sampletext">
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                         </div>
-                            <div id="sampletextdiv" style={this.buildStyle()}>
-                                Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample
-                                Sample Text Sample Text Sample Text Sample Text Sample Text
-                        </div>
+                            <div id="sampletextdiv" style={this.buildStyle()} className={this.state.styles.super ? 'hide-sampletext' : 'visible-sampletext'}>
+                                {SAMPLE_TEXT}
+                            </div>
+                            <sup id="mo-sup" style={this.buildStyle()} className={this.state.styles.super ? 'visible-sampletext' : 'hide-sampletext'}>
+                                {SAMPLE_TEXT}
+                            </sup>
                             <div className="sampletext">
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
