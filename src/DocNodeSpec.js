@@ -18,9 +18,10 @@ export function getAttrs(el: HTMLElement): Object {
     layout: null,
     width: null,
     padding: null,
+    objectId: null
   };
 
-  const {width, maxWidth, padding} = el.style || {};
+  const { width, maxWidth, padding } = el.style || {};
   const ww = convertToCSSPTValue(width) || convertToCSSPTValue(maxWidth);
   const pp = convertToCSSPTValue(padding);
   if (ww) {
@@ -52,9 +53,10 @@ export function getAttrs(el: HTMLElement): Object {
 
 const DocNodeSpec = {
   attrs: {
-    layout: {default: null},
-    padding: {default: null},
-    width: {default: null},
+    layout: { default: null },
+    padding: { default: null },
+    width: { default: null },
+    objectId: { default: null },
   },
   content: 'block+',
 };

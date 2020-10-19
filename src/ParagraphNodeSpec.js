@@ -12,7 +12,7 @@ export const INDENT_MARGIN_PT_SIZE = 36;
 export const MIN_INDENT_LEVEL = 0;
 export const MAX_INDENT_LEVEL = 7;
 export const ATTRIBUTE_INDENT = 'data-indent';
-const cssVal = new Set<string>(['', '0%', '0pt', '0px'])
+const cssVal = new Set<string>(['', '0%', '0pt', '0px']);
 
 export const EMPTY_CSS_VALUE = cssVal;
 
@@ -111,7 +111,6 @@ function toDOM(node: Node): Array<any> {
   if (id) {
     attrs.id = id;
   }
-  attrs.objectId = objectId;
 
   return ['p', attrs, 0];
 }
