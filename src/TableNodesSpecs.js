@@ -47,18 +47,15 @@ const TableNodesSpecs = tableNodes({
 const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
   attrs: {
     marginLeft: { default: null },
-    objectId: { default: null },
   },
   parseDOM: [
     {
       tag: 'table',
       getAttrs(dom: HTMLElement): ?Object {
         const { marginLeft } = dom.style;
-        const objectId = dom.getAttribute('objectId') || null;
         if (marginLeft && /\d+px/.test(marginLeft)) {
-          return { marginLeft: parseFloat(marginLeft), objectId: objectId };
+          return { marginLeft: parseFloat(marginLeft) };
         }
-        return { objectId: objectId };
       },
     },
   ],
@@ -67,9 +64,8 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
     // `TableNodeView`. This method is only called when user selects a
     // table node and copies it, which triggers the "serialize to HTML" flow
     //  that calles this method.
-    const { marginLeft, objectId } = node.attrs;
+    const { marginLeft } = node.attrs;
     const domAttrs = {};
-    domAttrs.objectId = objectId;
     if (marginLeft) {
       domAttrs.style = `margin-left: ${marginLeft}px`;
     }

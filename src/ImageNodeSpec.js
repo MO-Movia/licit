@@ -63,7 +63,6 @@ function getAttrs(dom: HTMLElement) {
     src: dom.getAttribute('src') || null,
     title: dom.getAttribute('title') || null,
     width: parseInt(width, 10) || null,
-    objectId: dom.getAttribute('objectId') || null,
   };
 }
 
@@ -79,7 +78,6 @@ const ImageNodeSpec: NodeSpec = {
     src: { default: null },
     title: { default: '' },
     width: { default: null },
-    objectId: { default: null },
   },
   group: 'inline',
   draggable: true,

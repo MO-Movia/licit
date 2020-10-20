@@ -126,6 +126,12 @@ class Licit extends React.Component<any, any> {
 
 
   }
+  getDeletedArtifactIds() {
+
+    if (this._connector.getDeletedArtifactIds) {
+      this._connector.getDeletedArtifactIds(this.state.editorState.schema);
+    }
+  }
 
   setContent = (content: any = {}): void => {
     const { doc, schema } = this._connector.getState();
@@ -135,7 +141,7 @@ class Licit extends React.Component<any, any> {
       : schema.nodeFromJSON(EMPTY_DOC_JSON);
 
     const selection = TextSelection.create(doc, 0, doc.content.size);
-	 tr = tr
+    tr = tr
       .setSelection(selection)
       .replaceSelectionWith(document, false);
     // [FS] 2020-10-14

@@ -17,7 +17,7 @@ const router = new Router();
 // [FS] IRAD-1040 2020-09-02
 let effectiveSchema = EditorSchema;
 let lastUpdatedSchema = null;
-
+let deletedObjectIds = null;
 function handleCollabRequest(req: any, resp: any) {
   // [FS] IRAD-1040 2020-09-02
   initEditorSchema(effectiveSchema);
@@ -249,16 +249,30 @@ handle("POST", ["docs", null, "schema"], (data, id, req) => {
   const updatedSchema = Flatted.stringify(data);
   // Do a string comparison to see if they are same or not.
   // if same, don't update
-  if(lastUpdatedSchema !== updatedSchema) {
+  if (lastUpdatedSchema !== updatedSchema) {
     lastUpdatedSchema = updatedSchema;
-	  const spec = data['spec'];  
-	  updateSpec(spec, 'nodes');
-	  updateSpec(spec, 'marks');
-	  effectiveSchema = new Schema({ nodes: effectiveSchema.spec.nodes, marks: effectiveSchema.spec.marks });
-	  setEditorSchema(effectiveSchema);
+    const spec = data['spec'];
+    updateSpec(spec, 'nodes');
+    updateSpec(spec, 'marks');
+    effectiveSchema = new Schema({ nodes: effectiveSchema.spec.nodes, marks: effectiveSchema.spec.marks });
+    setEditorSchema(effectiveSchema);
   }
   return Output.json({ result: 'success' });
 }, true)
+
+// [FS] IRAD-1091 2020-10-20
+// An endpoint for store deleted object Id's
+handle("POST", ["docs", null, "getobjectId"], (data, id, req) => {
+  deletedObjectIds = JSON.stringify(data);
+  return Output.json({ result: 'success' });
+}, true)
+
+// [FS] IRAD-1091 2020-10-20
+// An endpoint that returs deleted object Id's
+handle("GET", ["docs", null, "objectId"], () => {
+  return Output.json(deletedObjectIds);
+})
+
 
 function updateSpec(spec, attrName) {
   // clear current array
@@ -266,6 +280,6 @@ function updateSpec(spec, attrName) {
   const collection = spec[attrName]['content'];
   // update current array with the latest info
   for (var i = 0; i < collection.length; i += 2) {
-    effectiveSchema.spec[attrName] = effectiveSchema.spec[attrName].update(collection[i], collection[i+1]);
+    effectiveSchema.spec[attrName] = effectiveSchema.spec[attrName].update(collection[i], collection[i + 1]);
   }
 }
