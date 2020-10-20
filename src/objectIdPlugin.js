@@ -24,7 +24,7 @@ const isTargetNodeAllowed = (node) => {
 const ATTR_NAME = "objectId";
 const DOC_NAME = "doc";
 
-const ALLOWED_NODES = [DOC_NAME, "paragraph", "bullet_list", "heading", "image", "list_item", "ordered_list", "table"];
+const ALLOWED_NODES = [DOC_NAME, "paragraph", "bullet_list", "heading", "image", "ordered_list", "table"];
 
 const requiredAddAttr = (node) => {
 	return isTargetNodeAllowed(node) && !isNodeHasAttribute(node, ATTR_NAME);
@@ -115,10 +115,11 @@ function nodeAssignment(state) {
 
 // track the deleted nodes
 function trackDeletedObjectId(prevState, nextState) {
+  const deletedIds = new Set();
+
   if (prevState.doc !== nextState.doc) {
     let prevNodesById = {};
-    let nextNodesById = {};
-    const deletedIds = new Set();
+    let nextNodesById = {};    
 
     prevNodesById = nodeAssignment(prevState);
     nextNodesById = nodeAssignment(nextState);
@@ -127,27 +128,20 @@ function trackDeletedObjectId(prevState, nextState) {
       if (nextNodesById[id] === undefined) {
         deletedIds.add(id);
       }
-    }
-    // console.log({
-    // 	deletedIds
-    // });
-    if (deletedIds.size > 0) {
-      updateDeleteIds(deletedIds);
-    }
+    }    
+  }
+  
+  // return an Array of deleted objectIds.
+  if(0 < deletedIds.size) {
+	  updateDeleteIds([...deletedIds]);
   }
 }
 
-function updateDeleteIds(ids) {
-  // to avoid cyclic reference error, use flatted string.
-  let delId = [];
-  ids.forEach(obj => {
-    delId.push(obj);
-  });
-  const delids = JSON.stringify(delId);
+function updateDeleteIds(deletedIds) {
+  const delids = JSON.stringify(deletedIds);
   POST(url + '/objectid/', delids, 'application/json').then(
     data => {
       console.log("objectids updated");
-
     },
     err => {
       console.log("error on update");

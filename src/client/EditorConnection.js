@@ -259,11 +259,9 @@ class EditorConnection {
         data = JSON.parse(data);
         if (data) {
           console.log(data);
-
         }
       },
       err => {
-
       }
     );
   }

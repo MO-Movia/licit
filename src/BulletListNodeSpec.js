@@ -15,7 +15,6 @@ const BulletListNodeSpec: NodeSpec = {
     id: { default: null },
     indent: { default: 0 },
     listStyleType: { default: null },
-    
   },
   group: 'block',
   content: LIST_ITEM + '+',

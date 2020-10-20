@@ -262,14 +262,14 @@ handle("POST", ["docs", null, "schema"], (data, id, req) => {
 
 // [FS] IRAD-1091 2020-10-20
 // An endpoint for store deleted object Id's
-handle("POST", ["docs", null, "getobjectId"], (data, id, req) => {
+handle("POST", ["docs", null, "objectId"], (data, id, req) => {
   deletedObjectIds = JSON.stringify(data);
   return Output.json({ result: 'success' });
 }, true)
 
 // [FS] IRAD-1091 2020-10-20
 // An endpoint that returs deleted object Id's
-handle("GET", ["docs", null, "objectId"], () => {
+handle("GET", ["docs", null, "getobjectId"], () => {
   return Output.json(deletedObjectIds);
 })
 

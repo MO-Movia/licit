@@ -16,7 +16,6 @@ import TablePlugins from './TablePlugins';
 import buildInputRules from './buildInputRules';
 import createEditorKeyMap from './createEditorKeyMap';
 
-
 // Creates the default plugin for the editor.
 export default function buildEditorPlugins(schema: Schema): Array<Plugin> {
 

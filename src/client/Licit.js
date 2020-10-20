@@ -123,11 +123,9 @@ class Licit extends React.Component<any, any> {
         }
       },
     });
-
-
   }
-  getDeletedArtifactIds() {
 
+  getDeletedArtifactIds() {
     if (this._connector.getDeletedArtifactIds) {
       this._connector.getDeletedArtifactIds(this.state.editorState.schema);
     }
