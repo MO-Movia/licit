@@ -12,7 +12,7 @@ import CustomButton from './CustomButton';
 import UICommand from './UICommand';
 import createPopUp from './createPopUp';
 import uuid from './uuid';
-import ListTypeMenu from './ListTypesMenu';
+import ListTypeMenu from './ListTypeMenu';
 import './czi-custom-menu-button.css';
 
 class ListTypeButton extends React.PureComponent<any, any> {

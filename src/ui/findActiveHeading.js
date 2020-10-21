@@ -3,18 +3,6 @@
 import { EditorState } from 'prosemirror-state';
 // import { HEADING } from '../NodeNames';
 export const HEADING_NAME_DEFAULT = 'None';
-// [FS] IRAD-1042 2020-09-15
-// To find the selected heading
-
-export function findActiveHeading(state: EditorState): number {
-  // const { schema } = state;
-  // const markType = schema.nodes[HEADING];
-
-  // if (!markType) {
-  return HEADING_NAME_DEFAULT;
-  // }
-
-}
 
 // [FS] IRAD-1046 2020-09-24
 // To create a style object from the customstyles to show the styles in the example piece.

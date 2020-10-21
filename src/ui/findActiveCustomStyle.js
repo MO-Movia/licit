@@ -29,11 +29,10 @@ export default function findActiveCustomStyle(state: EditorState): string {
     return (sm && sm.attrs.stylename) || CUSTOMSTYLE_NAME_DEFAULT;
   }
 
-  const mark = markType ? findActiveMark(doc, from, to, markType) : null;
+  const mark = findActiveMark(doc, from, to, markType);
   const name = mark && mark.attrs.stylename;
   if (!name) {
     return CUSTOMSTYLE_NAME_DEFAULT;
   }
-
   return name;
 }

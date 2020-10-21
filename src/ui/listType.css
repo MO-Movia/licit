@@ -1,5 +1,4 @@
-.container {
-    
+.container {    
     display: grid;
     grid-template-columns: auto auto auto;
     /* grid-template-rows: 33% 33% 33%;; */
@@ -8,8 +7,16 @@
     grid-gap: 10px;
     background: #fffefe;
   }
+
   .buttonSize{
     height: 50px;
     width: 50px;
+  }
+
+  /* [FS] IRAD-1076 2020-10-15 
+  Style for paste popup menu*/
+  .pasteMenu{
+    height: 35px;
+    width: 72px;
   }
 

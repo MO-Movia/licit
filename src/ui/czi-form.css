@@ -31,7 +31,7 @@
   padding: 0;
 }
 
-.czi-form input[type="text"] {
+.czi-form input[type='text'] {
   border-width: 0 0 2px 0;
   border: var(--czi-border-blue);
   box-sizing: border-box;
