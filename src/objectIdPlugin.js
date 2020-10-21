@@ -1,12 +1,14 @@
 // [FS] IRAD-??? 2020-10-19
 // Plugin to handle automatic assign unique id to the block nodes.
 import {
-  Plugin,
-  PluginKey
+	Plugin,
+	PluginKey
 } from "prosemirror-state"
 import uuid from './uuid';
 import SetDocAttrStep from './SetDocAttrStep';
-import { POST } from './client/http';
+import {
+	POST
+} from './client/http';
 
 const SPEC = "spec";
 const ATTR_OBJID = "objectId";
@@ -59,9 +61,9 @@ export default class ObjectIdPlugin extends Plugin {
 		});
 	}
 
-  getEffectiveSchema(schema) {
-    return applyEffectiveSchema(schema);
-  }
+	getEffectiveSchema(schema) {
+		return applyEffectiveSchema(schema);
+	}
 }
 
 function guidGenerator() {
@@ -113,97 +115,109 @@ function nodeAssignment(state) {
 
 // track the deleted nodes
 function trackDeletedObjectId(prevState, nextState, tr) {
-  const deletedIds = new Set();
+	const deletedIds = new Set();
 
-  if (prevState.doc !== nextState.doc) {
-    let prevNodesById = {};
-    let nextNodesById = {};    
+	if (prevState.doc !== nextState.doc) {
+		let prevNodesById = {};
+		let nextNodesById = {};
 
-    prevNodesById = nodeAssignment(prevState);
-    nextNodesById = nodeAssignment(nextState);
+		prevNodesById = nodeAssignment(prevState);
+		nextNodesById = nodeAssignment(nextState);
 
-    for (const [id] of Object.entries(prevNodesById)) {
-      if (nextNodesById[id] === undefined) {
-        deletedIds.add(id);
-      }
-    }    
-  }
-  
-  // return an Array of deleted objectIds.
-  if(0 < deletedIds.size) {
-	  if(null == tr) {
-		tr = nextState.tr;
-	  }
-	  tr = tr.step(new SetDocAttrStep(ATTR_DELETEDOBJIDS, [...deletedIds]));
-  }
-  
-  return tr;
+		for (const [id] of Object.entries(prevNodesById)) {
+			if (nextNodesById[id] === undefined) {
+				deletedIds.add(id);
+			}
+		}
+	}
+
+	if (0 < deletedIds.size) {
+		if (null == tr) {
+			tr = nextState.tr;
+		}
+
+		let existingIDs = nextState.doc.attrs[ATTR_DELETEDOBJIDS];
+		let mergedIDs = [];
+		if (existingIDs) {
+			mergedIDs = existingIDs.concat([...deletedIds]);
+		}
+		tr = tr.step(new SetDocAttrStep(ATTR_DELETEDOBJIDS, mergedIDs));
+	}
+
+	return tr;
 }
 
 function createNodeAttributes(node, nodeName) {
-  let requiredAttrs = NEWATTRS;
-  
-  if(DOC_NAME == nodeName) {
-	  requiredAttrs.push(ATTR_DELETEDOBJIDS);
-  }
-  
-  requiredAttrs.forEach(key => {
-    let newAttr = node.attrs[key];
-    if (node.attrs && !newAttr) {
-      let existingAttr = node.attrs[Object.keys(node.attrs)[0]];
-      newAttr = Object.assign(
-        Object.create(Object.getPrototypeOf(existingAttr)),
-        existingAttr
-      );
-      newAttr.default = null;
-      node.attrs[key] = newAttr;
-    }
-  });
+	let requiredAttrs = [...NEWATTRS];
+
+	if (DOC_NAME == nodeName) {
+		requiredAttrs.push(ATTR_DELETEDOBJIDS);
+	}
+
+	requiredAttrs.forEach(key => {
+		let newAttr = node.attrs[key];
+		if (node.attrs && !newAttr) {
+			let existingAttr = node.attrs[Object.keys(node.attrs)[0]];
+			newAttr = Object.assign(
+				Object.create(Object.getPrototypeOf(existingAttr)),
+				existingAttr
+			);
+			newAttr.default = null;
+			node.attrs[key] = newAttr;
+		}
+	});
 }
 
 function createNewAttributes(schema) {
-  let nodes = [];
+	let nodes = [];
 
-  ALLOWED_NODES.forEach((name) => {
-    getRequiredNodes(nodes, name, schema);
-  });
+	ALLOWED_NODES.forEach((name) => {
+		getRequiredNodes(nodes, name, schema);
+	});
 
-  for (let i = 0, name = ''; i < nodes.length; i++) {
-    if(i < nodes.length-1) {
-	    name = nodes[i+1].name;
-    }
-    createNodeAttributes(nodes[i], name);
-  }
+	for (let i = 0, name = ''; i < nodes.length; i++) {
+		if (i < nodes.length - 1) {
+			// even items are content.
+			// odd items are nodes.
+			// Hence name is available only in the node.
+			if (0 === i % 2) {
+				name = nodes[i + 1].name;
+			}
+		} else {
+			name = '';
+		}
+		createNodeAttributes(nodes[i], name);
+	}
 
-  return schema;
+	return schema;
 }
 
 function getRequiredNodes(nodes, nodeName, schema) {
-  nodes.push(getContent(nodeName, schema));
-  nodes.push(schema.nodes[nodeName]);
+	nodes.push(getContent(nodeName, schema));
+	nodes.push(schema.nodes[nodeName]);
 }
 
 function applyEffectiveSchema(schema) {
-  if (schema && schema[SPEC]) {
-    createNewAttributes(schema);
-  }
+	if (schema && schema[SPEC]) {
+		createNewAttributes(schema);
+	}
 
-  return schema;
+	return schema;
 }
 
 function getContent(type, schema) {
-  let content = null;
-  const contentArr = schema[SPEC]['nodes']['content'];
-  let len = contentArr.length;
-  // check even index to find the content type name
-  for (let i = 0; i < len; i += 2) {
-    if (type == contentArr[i]) {
-      // found, so get the actual content which is in the next index.
-      content = contentArr[i + 1];
-      // break the loop;
-      i = len;
-    }
-  }
+	let content = null;
+	const contentArr = schema[SPEC]['nodes']['content'];
+	let len = contentArr.length;
+	// check even index to find the content type name
+	for (let i = 0; i < len; i += 2) {
+		if (type == contentArr[i]) {
+			// found, so get the actual content which is in the next index.
+			content = contentArr[i + 1];
+			// break the loop;
+			i = len;
+		}
+	}
 
-  return content;
+	return content;
 }
