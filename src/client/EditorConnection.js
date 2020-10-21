@@ -250,22 +250,6 @@ class EditorConnection {
     );
   }
 
-  // [FS] IRAD-1091 2020-09-02
-  // returns deleted objectIds
-  getDeletedArtifactIds() {
-    this.run(GET(this.url + '/getobjectId')).then(
-      data => {
-        this.report.success();
-        data = JSON.parse(data);
-        if (data) {
-          console.log(data);
-        }
-      },
-      err => {
-      }
-    );
-  }
-
   // Try to recover from an error
   recover(err: Error): void {
     const newBackOff = this.backOff ? Math.min(this.backOff * 2, 6e4) : 200;

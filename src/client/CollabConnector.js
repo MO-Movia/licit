@@ -64,12 +64,6 @@ class CollabConnector extends SimpleConnector {
   updateSchema = (schema: Schema) => {
     this._connection.updateSchema(schema);
   };
-
-  // [FS] IRAD-1040 2020-09-02
-  // Send the modified schema to server
-  getDeletedArtifactIds = () => {
-    this._connection.getDeletedArtifactIds();
-  };
 }
 
 export default CollabConnector;
