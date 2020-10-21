@@ -17,7 +17,7 @@ const router = new Router();
 // [FS] IRAD-1040 2020-09-02
 let effectiveSchema = EditorSchema;
 let lastUpdatedSchema = null;
-let deletedObjectIds = null;
+
 function handleCollabRequest(req: any, resp: any) {
   // [FS] IRAD-1040 2020-09-02
   initEditorSchema(effectiveSchema);
@@ -259,20 +259,6 @@ handle("POST", ["docs", null, "schema"], (data, id, req) => {
   }
   return Output.json({ result: 'success' });
 }, true)
-
-// [FS] IRAD-1091 2020-10-20
-// An endpoint for store deleted object Id's
-handle("POST", ["docs", null, "objectId"], (data, id, req) => {
-  deletedObjectIds = JSON.stringify(data);
-  return Output.json({ result: 'success' });
-}, true)
-
-// [FS] IRAD-1091 2020-10-20
-// An endpoint that returs deleted object Id's
-handle("GET", ["docs", null, "getobjectId"], () => {
-  return Output.json(deletedObjectIds);
-})
-
 
 function updateSpec(spec, attrName) {
   // clear current array

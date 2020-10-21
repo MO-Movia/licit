@@ -9,10 +9,9 @@ import SetDocAttrStep from './SetDocAttrStep';
 import { POST } from './client/http';
 
 const SPEC = "spec";
-const OBJECTID = ['objectId', 'objectMetaData'];
-const url = window.location.protocol + '\/\/' +
-  window.location.hostname + ':3002/docs/' +
-  1;
+const ATTR_OBJID = "objectId";
+const NEWATTRS = [ATTR_OBJID, 'objectMetaData'];
+
 const isNodeHasAttribute = (node, attrName) => {
 	return (node.attrs && node.attrs[attrName]);
 }
@@ -21,13 +20,13 @@ const isTargetNodeAllowed = (node) => {
 	return ALLOWED_NODES.includes(node.type.name);
 }
 
-const ATTR_NAME = "objectId";
+const ATTR_DELETEDOBJIDS = "deletedObjectIds";
 const DOC_NAME = "doc";
 
 const ALLOWED_NODES = [DOC_NAME, "paragraph", "bullet_list", "heading", "image", "ordered_list", "table"];
 
 const requiredAddAttr = (node) => {
-	return isTargetNodeAllowed(node) && !isNodeHasAttribute(node, ATTR_NAME);
+	return isTargetNodeAllowed(node) && !isNodeHasAttribute(node, ATTR_OBJID);
 }
 
 export default class ObjectIdPlugin extends Plugin {
@@ -53,7 +52,7 @@ export default class ObjectIdPlugin extends Plugin {
 				let tr = null;
 				if (isDocChanged(transactions)) {
 					tr = assingIDsForMissing(prevState, nextState);
-					trackDeletedObjectId(prevState, nextState);
+					tr = trackDeletedObjectId(prevState, nextState, tr);
 				}
 				return tr;
 			},
@@ -80,9 +79,8 @@ function assingIDsForMissing(prevState, nextState) {
 	let modified = false;
 	// Adds a unique id to the document
 	if (requiredAddAttr(nextState.doc)) {
-		tr = tr.step(new SetDocAttrStep(ATTR_NAME, guidGenerator()));
+		tr = tr.step(new SetDocAttrStep(ATTR_OBJID, guidGenerator()));
 		modified = true;
-		//docModified = true;
 	}
 
 	// Adds a unique id to a node
@@ -91,7 +89,7 @@ function assingIDsForMissing(prevState, nextState) {
 			const attrs = node.attrs;
 			tr.setNodeMarkup(pos, undefined, {
 				...attrs,
-				[ATTR_NAME]: guidGenerator()
+				[ATTR_OBJID]: guidGenerator()
 			});
 			modified = true;
 		}
@@ -114,7 +112,7 @@ function nodeAssignment(state) {
 }
 
 // track the deleted nodes
-function trackDeletedObjectId(prevState, nextState) {
+function trackDeletedObjectId(prevState, nextState, tr) {
   const deletedIds = new Set();
 
   if (prevState.doc !== nextState.doc) {
@@ -133,68 +131,67 @@ function trackDeletedObjectId(prevState, nextState) {
   
   // return an Array of deleted objectIds.
   if(0 < deletedIds.size) {
-	  updateDeleteIds([...deletedIds]);
+	  if(null == tr) {
+		tr = nextState.tr;
+	  }
+	  tr = tr.step(new SetDocAttrStep(ATTR_DELETEDOBJIDS, [...deletedIds]));
   }
+  
+  return tr;
 }
 
-function updateDeleteIds(deletedIds) {
-  const delids = JSON.stringify(deletedIds);
-  POST(url + '/objectid/', delids, 'application/json').then(
-    data => {
-      console.log("objectids updated");
-    },
-    err => {
-      console.log("error on update");
-    }
-  );
-}
-
-function createAttribute(content, value) {
-
-  OBJECTID.forEach(key => {
-
-    let objectIdAttr = content.attrs[key];
-    if (content.attrs && !objectIdAttr) {
-      let contentAttr = content.attrs[Object.keys(content.attrs)[0]];
-      objectIdAttr = Object.assign(
-        Object.create(Object.getPrototypeOf(contentAttr)),
-        contentAttr
+function createNodeAttributes(node, nodeName) {
+  let requiredAttrs = NEWATTRS;
+  
+  if(DOC_NAME == nodeName) {
+	  requiredAttrs.push(ATTR_DELETEDOBJIDS);
+  }
+  
+  requiredAttrs.forEach(key => {
+    let newAttr = node.attrs[key];
+    if (node.attrs && !newAttr) {
+      let existingAttr = node.attrs[Object.keys(node.attrs)[0]];
+      newAttr = Object.assign(
+        Object.create(Object.getPrototypeOf(existingAttr)),
+        existingAttr
       );
-      objectIdAttr.default = value;
-      content.attrs[key] = objectIdAttr;
+      newAttr.default = null;
+      node.attrs[key] = newAttr;
     }
   });
-
 }
 
-function createObjectIdAttribute(schema) {
-
-  let contentArr = []
+function createNewAttributes(schema) {
+  let nodes = [];
 
   ALLOWED_NODES.forEach((name) => {
-    getContentArray(contentArr, name, schema);
+    getRequiredNodes(nodes, name, schema);
   });
 
-  contentArr.forEach((content) => {
-    createAttribute(content);
-  });
+  for (let i = 0, name = ''; i < nodes.length; i++) {
+    if(i < nodes.length-1) {
+	    name = nodes[i+1].name;
+    }
+    createNodeAttributes(nodes[i], name);
+  }
+
   return schema;
 }
 
-function getContentArray(contentArr, nodeName, schema) {
-  contentArr.push(getContent(nodeName, schema));
-  contentArr.push(schema.nodes[nodeName]);
+function getRequiredNodes(nodes, nodeName, schema) {
+  nodes.push(getContent(nodeName, schema));
+  nodes.push(schema.nodes[nodeName]);
 }
+
 function applyEffectiveSchema(schema) {
   if (schema && schema[SPEC]) {
-    createObjectIdAttribute(schema);
+    createNewAttributes(schema);
   }
 
   return schema;
 }
 
 function getContent(type, schema) {
-
   let content = null;
   const contentArr = schema[SPEC]['nodes']['content'];
   let len = contentArr.length;
