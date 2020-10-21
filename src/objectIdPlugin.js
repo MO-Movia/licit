@@ -3,26 +3,26 @@
 import {
 	Plugin,
 	PluginKey
-} from "prosemirror-state"
+} from 'prosemirror-state';
 import uuid from './uuid';
 import SetDocAttrStep from './SetDocAttrStep';
 
 const isNodeHasAttribute = (node, attrName) => {
 	return (node.attrs && node.attrs[attrName]);
-}
+};
 
 const isTargetNodeAllowed = (node) => {
 	return ALLOWED_NODES.includes(node.type.name);
-}
+};
 
-const ATTR_NAME = "objectId";
-const DOC_NAME = "doc";
+const ATTR_NAME = 'objectId';
+const DOC_NAME = 'doc';
 
-const ALLOWED_NODES = [DOC_NAME, "paragraph", "bullet_list", "heading", "image", "list_item", "ordered_list", "table"];
+const ALLOWED_NODES = [DOC_NAME, 'paragraph', 'bullet_list', 'heading', 'image', 'list_item', 'ordered_list', 'table'];
 
 const requiredAddAttr = (node) => {
 	return isTargetNodeAllowed(node) && !isNodeHasAttribute(node, ATTR_NAME);
-}
+};
 
 export default class ObjectIdPlugin extends Plugin {
 
@@ -53,7 +53,7 @@ export default class ObjectIdPlugin extends Plugin {
 						tr = tr.step(new SetDocAttrStep(ATTR_NAME, guidGenerator()));
 						modified = true;
 					}
-					
+
 					// Adds a unique id to a node
 					nextState.doc.descendants((node, pos) => {
 						if (requiredAddAttr(node)) {

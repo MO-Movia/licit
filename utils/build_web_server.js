@@ -34,7 +34,7 @@ const server =
   new WebpackDevServer(compiler, {
     hot: true,
     contentBase: path.join(__dirname, '../bin'),
-    headers: { 'Access-Control-Allow-Origin': '*' },     
+    headers: { 'Access-Control-Allow-Origin': '*' },
   });
 
 server.listen(env.PORT);

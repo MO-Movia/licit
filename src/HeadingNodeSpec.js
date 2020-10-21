@@ -21,47 +21,47 @@ const TAG_NAME_TO_LEVEL = {
 
 export const HEADING_NAMES = [
   {
-    "name": "Normal",
-    "level": 0
+    'name': 'Normal',
+    'level': 0
   },
   {
-    "name": "Heading 1",
-    "level": 1
+    'name': 'Heading 1',
+    'level': 1
   },
   {
-    "name": "Heading 2",
-    "level": 2
+    'name': 'Heading 2',
+    'level': 2
   },
   {
-    "name": "Heading 3",
-    "level": 3
+    'name': 'Heading 3',
+    'level': 3
   },
   {
-    "name": "Heading 4",
-    "level": 4
+    'name': 'Heading 4',
+    'level': 4
   },
   {
-    "name": "Title",
-    "customstyles":  [
+    'name': 'Title',
+    'customstyles':  [
       {
         'stylename':'Title',
         // 'fontsize' : 30,
         // 'fontname' : 'Acme',
         'strong' : true,
         'em' :true,
-        'color':'Green',         
-      }      
+        'color':'Green',
+      }
     ]
-  },  
+  },
   {
-    "name": "Quote",
-    "style":  [
+    'name': 'Quote',
+    'style':  [
       {
-        "font-size": 20,
-        "font-name": "Arial", 
+        'font-size': 20,
+        'font-name': 'Arial',
       },
     ]
-  },   
+  },
 ];
 
 // https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js

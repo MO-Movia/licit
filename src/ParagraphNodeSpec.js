@@ -64,7 +64,7 @@ function getAttrs(dom: HTMLElement): Object {
 
   const id = dom.getAttribute('id') || '';
   const objectId = dom.getAttribute('objectId') || null;
-  
+
   return { align, indent, lineSpacing, paddingTop, paddingBottom, id,objectId };
 }
 

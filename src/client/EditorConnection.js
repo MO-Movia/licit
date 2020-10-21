@@ -42,7 +42,7 @@ class EditorConnection {
   schema: Schema;
 
   constructor(onReady: Function, report: any, url: string) {
-    this.schema = null;  
+    this.schema = null;
     this.report = report;
     this.url = url;
     this.state = new State(null, 'start');
@@ -53,7 +53,7 @@ class EditorConnection {
     this.ready = false;
     this.onReady = onReady;
   }
-  
+
   // [FS] IRAD-1040 2020-09-08
   getEffectiveSchema(): Schema {
     return (null != this.schema) ? this.schema : EditorSchema;
@@ -236,7 +236,7 @@ class EditorConnection {
   // Send the modified schema to server
   updateSchema(schema: Schema) {
 	// to avoid cyclic reference error, use flatted string.
-	const schemaFlatted = stringify(schema);	
+	const schemaFlatted = stringify(schema);
     this.run(POST(this.url + '/schema/', schemaFlatted, 'text/plain')).then(
       data => {
         console.log("collab server's schema updated");

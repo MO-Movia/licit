@@ -15,7 +15,7 @@ import SelectionPlaceholderPlugin from './SelectionPlaceholderPlugin';
 import TablePlugins from './TablePlugins';
 import buildInputRules from './buildInputRules';
 import createEditorKeyMap from './createEditorKeyMap';
-import ObjectIdPlugin  from './ObjectIdPlugin'
+import ObjectIdPlugin  from './ObjectIdPlugin';
 
 // Creates the default plugin for the editor.
 export default function buildEditorPlugins(schema: Schema): Array<Plugin> {
