@@ -151,7 +151,7 @@ class ImageUploadPlaceholderPlugin extends Plugin {
   constructor() {
     super({
       // [FS] IRAD-1005 2020-07-07
-      // Upgrade outdated packages.    
+      // Upgrade outdated packages.
       key: new PluginKey('ImageUploadPlaceholderPlugin'),
       state: {
         init() {

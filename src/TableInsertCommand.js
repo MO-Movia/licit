@@ -29,9 +29,9 @@ class TableInsertCommand extends UICommand {
       // [FS] IRAD-1065 2020-09-18
       // Disable create table menu if the selection is inside a table.
       if (bOK) {
-        let $head = selection.$head
+        const $head = selection.$head;
         for (let d = $head.depth; d > 0; d--) {
-          if ($head.node(d).type.spec.tableRole == "row") {
+          if ($head.node(d).type.spec.tableRole == 'row') {
             return false;
           }
         }

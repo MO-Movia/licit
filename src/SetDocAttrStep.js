@@ -37,10 +37,10 @@ class SetDocAttrStep extends Step {
   }
 
   // [FS] IRAD-1010 2020-07-27
-  // Handle map properly so that undo works correctly for document attritube changes.  
+  // Handle map properly so that undo works correctly for document attritube changes.
   map(mapping: Mappable): ?SetDocAttrStep {
-    var from = mapping.mapResult(this.from, 1), to = mapping.mapResult(this.to, -1);
-    if (from.deleted && to.deleted) { return null }
+    const from = mapping.mapResult(this.from, 1), to = mapping.mapResult(this.to, -1);
+    if (from.deleted && to.deleted) { return null; }
     return new SetDocAttrStep(this.key, this.value, 'SetDocAttr');
   }
 
@@ -50,7 +50,7 @@ class SetDocAttrStep extends Step {
         // validate mark
         other.mark && other.mark.eq(this.mark) &&
         this.from <= other.to && this.to >= other.from)
-      { return new SetDocAttrStep(this.key, this.value, 'SetDocAttr') }
+      { return new SetDocAttrStep(this.key, this.value, 'SetDocAttr'); }
   }
 
   toJSON(): SetDocAttrStepJSONValue {
@@ -68,6 +68,6 @@ class SetDocAttrStep extends Step {
 
 // [FS] IRAD-899 2020-03-13
 // Register this step so that document attrbute changes can be dealt collaboratively.
-Step.jsonID("SetDocAttr", SetDocAttrStep);
+Step.jsonID('SetDocAttr', SetDocAttrStep);
 
 export default SetDocAttrStep;

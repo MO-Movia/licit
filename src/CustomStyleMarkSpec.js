@@ -10,7 +10,7 @@ const CustomStyleMarkSpec: MarkSpec = {
     fontsize: { default: null },
     color: { default: null },
     highlightColor: { default: null },
-     
+
   },
   inline: true,
   group: 'inline',
@@ -40,10 +40,10 @@ const CustomStyleMarkSpec: MarkSpec = {
     }
     if (color) {
       style += `color: ${color};`;
-    } 
-    
-    attrs.style = style;    
-    return  ['span', attrs]    
+    }
+
+    attrs.style = style;
+    return  ['span', attrs];
   },
 };
 

@@ -25,11 +25,11 @@ export function toClosestFontPtSize(styleValue: string): number {
         90,
       ];
     const originalPTValue = convertToCSSPTValue(styleValue);
-  
+
     if (FONT_PT_SIZES.includes(originalPTValue)) {
       return originalPTValue;
     }
-  
+
     return FONT_PT_SIZES.reduce((prev, curr) => {
       return Math.abs(curr - originalPTValue) < Math.abs(prev - originalPTValue)
         ? curr

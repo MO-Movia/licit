@@ -3,7 +3,7 @@
 import {EditorState} from 'prosemirror-state';
 
 import {MARK_CUSTOMSTYLES} from '../MarkNames';
-import findActiveMark from '../findActiveMark'; 
+import findActiveMark from '../findActiveMark';
 
 export const CUSTOMSTYLE_NAME_DEFAULT = 'Normal';
 // [FS] IRAD-1042 2020-09-17
@@ -36,4 +36,4 @@ export default function findActiveCustomStyle(state: EditorState): string {
   }
 
   return name;
-} 
+}

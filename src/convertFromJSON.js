@@ -18,9 +18,9 @@ export default function convertFromJSON(
 
   // [FS][IRAD-???? 2020-08-17]
   // Loads plugins and its curresponding schema in editor
-  let effectivePlugins = EditorPlugins;
+  const effectivePlugins = EditorPlugins;
   if (plugins) {
-    for (let p of plugins) {
+    for (const p of plugins) {
       if (!effectivePlugins.includes(p)) {
         effectivePlugins.push(p);
         if (p.getEffectiveSchema) {
@@ -46,7 +46,7 @@ export default function convertFromJSON(
   // [FS] IRAD-1067 2020-09-19
   // Handle gracefully when error thrown on invalid json
   let doc = null;
-  
+
   try {
     doc = editorSchema.nodeFromJSON(json);
   } catch (error) {

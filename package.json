@@ -10,12 +10,13 @@
     "url": "git+https://github.com/MO-Movia/licit.git"
   },
   "scripts": {
+    "build:bom": "cyclonedx-bom -o dist/bom.xml",
     "build:clean": "rm -rf dist/ && rm -f modusoperandi-licit-*.*.*.tgz",
     "build:css": "cp src/ui/*.css dist/ui && cp src/ui/mathquill-editor/*.css dist/ui/mathquill-editor && cp src/client/*.css dist/client && cp src/*.css dist",
     "build:fonts": "mkdirp ./dist/fonts && cp -r fonts/* dist/fonts",
     "build:babel": "babel src --out-dir dist",
     "build:flow": "flow-copy-source -v -i '**/__tests__/**' src dist",
-    "build:dist": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts",
+    "build:dist": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts && npm run build:bom",
     "build:licit": "node utils/build_bin.js",
     "flow": "flow",
     "lint:css": "stylelint \"**/*.css\"",
@@ -45,6 +46,7 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-flow": "^7.10.4",
     "@babel/preset-react": "^7.10.4",
+    "@cyclonedx/bom": "^2.0.1",
     "babel-eslint": "10.1.0",
     "babel-loader": "8.1.0",
     "babel-plugin-flow-react-proptypes": "26.0.0",

@@ -20,7 +20,7 @@ export const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';
 function toCSS(val: ?(number | string)): string {
   if (!val || val === 'auto') {
     // '', 0, null, false, 'auto' are all treated as undefined
-    // instead of auto... 
+    // instead of auto...
     return undefined;
   }
   if (isNaN(val)) {
