@@ -63,6 +63,8 @@ export function clearMarks(tr: Transform, schema: Schema): Transform {
     return true;
   });
   if (!tasks.length) {
+    // It should clear text alignment.
+  tr = setTextAlign(tr, schema, null);
     return tr;
   }
 

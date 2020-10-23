@@ -52,6 +52,7 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema): Transform 
   }
 
   const tasks = [];
+  const textAlignNode = [];
   doc.nodesBetween(from, to, (node, pos) => {
     if (node.content && node.content.content && node.content.content.length) {
       if (node.content && node.content.content && node.content.content[0].marks && node.content.content[0].marks.length) {
@@ -62,10 +63,22 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema): Transform 
         });
         return true;
       }
+      // [FS] IRAD-1053 2020-10-21
+      // Clear Style not removes the text align styles 
+      else{
+        textAlignNode.push({ node, pos});
+      }
     }
     return true;
   });
   if (!tasks.length) {
+  // [FS] IRAD-1053 2020-10-21
+  // Clear Style not removes the text align styles 
+    textAlignNode.forEach(eachnode => {
+      const { node } = eachnode;
+      node.attrs.styleName = 'None';
+    });
+    tr = setTextAlign(tr, schema, null); 
     return tr;
   }
 

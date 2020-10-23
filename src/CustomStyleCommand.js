@@ -24,7 +24,8 @@ import FontTypeCommand from './FontTypeCommand';
 import FontSizeCommand from './FontSizeCommand';
 import TextLineSpacingCommand from './TextLineSpacingCommand';
 import { clearCustomStyleMarks } from './clearCustomStyleMarks';
-import { saveStyle } from './customStyle';
+import { saveStyle } from './customStyle'; 
+
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
 function getTheCustomStylesCommand(customStyles) {
@@ -125,9 +126,25 @@ class CustomStyleCommand extends UICommand {
     return true;
   }
 
-  isEnabled = (state: EditorState): boolean => {
-    return true;
+  isEnabled = (state: EditorState,view: EditorView, menuTitle:string): boolean => {
+  // [FS] IRAD-1053 2020-10-22
+  // Disable the Clear style menu when no styles applied to a paragraph
+    return !('clearstyle' == menuTitle && 'None' == this.isCustomStyleApplied(state)); 
   };
+
+  // [FS] IRAD-1053 2020-10-22
+  // returns the applied style of a paragraph
+  isCustomStyleApplied(editorState){
+    const { selection, doc } = editorState;
+    const { from, to } = selection;
+    let customStyleName = 'None';
+    doc.nodesBetween(from, to, (node, pos) => {
+      if (node.attrs.styleName) {
+        customStyleName = node.attrs.styleName;
+      }
+    });
+    return customStyleName;
+  }
 
   execute = (
     state: EditorState,
@@ -149,7 +166,6 @@ class CustomStyleCommand extends UICommand {
     // [FS] IRAD-1053 2020-10-08
     // to remove the custom styles applied in the selected paragraph
     else if ('clearstyle' === this._customStyle) {
-
       tr = clearCustomStyleMarks(state.tr.setSelection(selection), state.schema);
       if (dispatch && tr.docChanged) {
         dispatch(tr);
@@ -240,9 +256,15 @@ class CustomStyleCommand extends UICommand {
     const startPos = selection.$from.before(1);
     const endPos = selection.$to.after(1);
     // to remove all applied marks in the selection
-    tr = tr.removeMark(startPos, endPos, null);
-    const node = this._getNode(state, startPos, endPos);
+    tr = tr.removeMark(startPos, endPos, null); 
+    const node = this._getNode(state, startPos, endPos); 
     const newattrs = Object.assign({}, node.attrs);
+    // [FS] IRAD-1074 2020-10-22
+    // Issue fix on not removing center alignment when switch style with center 
+    // alignment to style with left alignment
+    newattrs['align'] = null;
+    newattrs['lineSpacing'] = null;
+
     _commands.forEach(element => {
       // to set the node attribute for text-align
       if (element instanceof TextAlignCommand) {
