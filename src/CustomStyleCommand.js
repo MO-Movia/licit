@@ -34,11 +34,18 @@ function getTheCustomStylesCommand(customStyles) {
 
     switch (property) {
       case 'strong':
-        _commands.push(new MarkToggleCommand('strong'));
+        // [FS] IRAD-1043 2020-10-23
+        // Issue fix : unselect a style when creating a new style
+        // and that unselected styles also applied in selected paragrapgh
+        if (customStyles[property])
+          _commands.push(new MarkToggleCommand('strong'));
         break;
 
       case 'em':
-        _commands.push(new MarkToggleCommand('em'));
+        // [FS] IRAD-1043 2020-10-23
+        // Issue fix : unselect a style when creating a new style
+        // and that unselected styles also applied in selected paragrapgh
+        if (customStyles[property]) _commands.push(new MarkToggleCommand('em'));
         break;
 
       case 'color':
@@ -54,7 +61,11 @@ function getTheCustomStylesCommand(customStyles) {
         break;
 
       case 'strike':
-        _commands.push(new MarkToggleCommand('strike'));
+        // [FS] IRAD-1043 2020-10-23
+        // Issue fix : unselect a style when creating a new style
+        // and that unselected styles also applied in selected paragrapgh
+        if (customStyles[property])
+          _commands.push(new MarkToggleCommand('strike'));
         break;
 
       case 'super':
