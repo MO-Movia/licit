@@ -54,7 +54,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
           let disabledVal = true;
           try {
             disabledVal =
-              !editorView || !command.isEnabled(editorState, editorView);
+              !editorView || !command.isEnabled(editorState,editorView, label);              
           } catch (ex) {
             disabledVal = false;
           }

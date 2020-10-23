@@ -52,11 +52,11 @@ export function getTheCustomStyles(customStyles) {
         break;
 
       case 'text-align':
-        style['textAlign'] = customStyles[property];;
+        style['textAlign'] = customStyles[property];
         break;
 
       case 'line-height':
-        style['lineHeight'] = customStyles[property];;
+        style['lineHeight'] = customStyles[property];
         break;
 
       default:
