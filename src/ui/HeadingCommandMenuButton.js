@@ -1,12 +1,11 @@
 // @flow
 
-import CommandMenuButton from './CommandMenuButton';
+import CustomMenuButton from './CustomMenuButton';
 import HeadingCommand from '../HeadingCommand';
 import CustomStyleCommand from '../CustomStyleCommand';
 import * as React from 'react';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
-// import { HEADING_NAMES } from '../HeadingNodeSpec';
 import { HEADING_NAME_DEFAULT } from './findActiveHeading';
 import { Transform } from 'prosemirror-transform';
 import { getCustomStyles } from '../customStyle';
@@ -45,12 +44,16 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
 
     });
 
-    HEADING_COMMANDS['newstyle'] = new CustomStyleCommand('newstyle', 'New Style..');
-    HEADING_COMMANDS['clearstyle'] = new CustomStyleCommand('clearstyle', 'Clear Style');
-
-    // const COMMAND_GROUPS = [HEADING_COMMANDS];
+    
 
     return [HEADING_COMMANDS];
+  }
+  staticCommands() {
+    let MENU_COMMANDS: Object = {
+      ['newstyle']: new CustomStyleCommand('newstyle', 'New Style..')
+    };
+    MENU_COMMANDS['clearstyle'] = new CustomStyleCommand('clearstyle', 'Clear Style');
+    return [MENU_COMMANDS];
   }
   render(): React.Element<any> {
 
@@ -67,11 +70,12 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     });
 
     return (
-      <CommandMenuButton
+      <CustomMenuButton
         className="width-100"
         // [FS] IRAD-1008 2020-07-16
         // Disable font type menu on editor disable state
         commandGroups={this.getCommandGroups()}
+        staticCommand={this.staticCommands()}
         disabled={editorView && editorView.disabled ? true : false}
         dispatch={dispatch}
         editorState={editorState}
