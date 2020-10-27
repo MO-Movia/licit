@@ -3,29 +3,29 @@
 import {
 	Plugin,
 	PluginKey
-} from "prosemirror-state"
+} from 'prosemirror-state';
 import uuid from './uuid';
 import SetDocAttrStep from './SetDocAttrStep';
 import {
 	POST
 } from './client/http';
 
-const SPEC = "spec";
-const ATTR_OBJID = "objectId";
+const SPEC = 'spec';
+const ATTR_OBJID = 'objectId';
 const NEWATTRS = [ATTR_OBJID, 'objectMetaData'];
 
 const isNodeHasAttribute = (node, attrName) => {
 	return (node.attrs && node.attrs[attrName]);
-}
+};
 
 const isTargetNodeAllowed = (node) => {
 	return ALLOWED_NODES.includes(node.type.name);
-}
+};
 
-const ATTR_DELETEDOBJIDS = "deletedObjectIds";
-const DOC_NAME = "doc";
+const ATTR_DELETEDOBJIDS = 'deletedObjectIds';
+const DOC_NAME = 'doc';
 
-const ALLOWED_NODES = [DOC_NAME, "paragraph", "bullet_list", "heading", "image", "ordered_list", "table"];
+const ALLOWED_NODES = [DOC_NAME, 'paragraph', 'bullet_list', 'heading', 'image', 'ordered_list', 'table'];
 
 const requiredAddAttr = (node) => {
 	return isTargetNodeAllowed(node) && !isNodeHasAttribute(node, ATTR_OBJID);
