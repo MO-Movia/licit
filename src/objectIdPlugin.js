@@ -54,7 +54,7 @@ export default class ObjectIdPlugin extends Plugin {
 				let tr = null;
 				if (isDocChanged(transactions)) {
 					tr = assingIDsForMissing(prevState, nextState);
-					tr = trackDeletedObjectId(prevState, nextState, tr); 
+					tr = trackDeletedObjectId(prevState, nextState, tr);
 				}
 				return tr;
 			},
@@ -138,6 +138,11 @@ function trackDeletedObjectId(prevState, nextState, tr) {
 
 		let existingIDs = nextState.doc.attrs[ATTR_DELETEDOBJIDS];
 		let mergedIDs = [];
+		
+		if (!existingIDs) {
+			existingIDs = [];
+		}
+
 		if (existingIDs) {
 			mergedIDs = existingIDs.concat([...deletedIds]);
 		}
