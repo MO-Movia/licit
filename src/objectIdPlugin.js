@@ -6,9 +6,6 @@ import {
 } from 'prosemirror-state';
 import uuid from './uuid';
 import SetDocAttrStep from './SetDocAttrStep';
-import {
-	POST
-} from './client/http';
 
 const SPEC = 'spec';
 const ATTR_OBJID = 'objectId';
@@ -79,7 +76,7 @@ function isDocChanged(transactions) {
 function assingIDsForMissing(prevState, nextState) {
 	let tr = nextState.tr;
 	let modified = false;
-	let objIds = [];
+	const objIds = [];
 
 	// Adds a unique id to the document
 	if (requiredAddAttr(nextState.doc)) {
@@ -93,7 +90,7 @@ function assingIDsForMissing(prevState, nextState) {
 		if (requiredAddAttr(node)) {
 			required = true;
 		} else {
-			let objId = node.attrs[ATTR_OBJID];
+			const objId = node.attrs[ATTR_OBJID];
 			if(objIds.includes(objId)) {
 				// objectId already exists, recreate
 				required = true;
@@ -104,7 +101,7 @@ function assingIDsForMissing(prevState, nextState) {
 			}
 		}
 		if (required) {
-			let newId = guidGenerator();
+			const newId = guidGenerator();
 			objIds.push(newId);
 
 			const attrs = node.attrs;
@@ -157,7 +154,7 @@ function trackDeletedObjectId(prevState, nextState, tr) {
 
 		let existingIDs = nextState.doc.attrs[ATTR_DELETEDOBJIDS];
 		let mergedIDs = [];
-		
+
 		if (!existingIDs) {
 			existingIDs = [];
 		}
@@ -172,7 +169,7 @@ function trackDeletedObjectId(prevState, nextState, tr) {
 }
 
 function createNodeAttributes(node, nodeName) {
-	let requiredAttrs = [...NEWATTRS];
+	const requiredAttrs = [...NEWATTRS];
 
 	if (DOC_NAME == nodeName) {
 		requiredAttrs.push(ATTR_DELETEDOBJIDS);
@@ -181,7 +178,7 @@ function createNodeAttributes(node, nodeName) {
 	requiredAttrs.forEach(key => {
 		let newAttr = node.attrs[key];
 		if (node.attrs && !newAttr) {
-			let existingAttr = node.attrs[Object.keys(node.attrs)[0]];
+			const existingAttr = node.attrs[Object.keys(node.attrs)[0]];
 			newAttr = Object.assign(
 				Object.create(Object.getPrototypeOf(existingAttr)),
 				existingAttr
@@ -193,7 +190,7 @@ function createNodeAttributes(node, nodeName) {
 }
 
 function createNewAttributes(schema) {
-	let nodes = [];
+	const nodes = [];
 
 	ALLOWED_NODES.forEach((name) => {
 		getRequiredNodes(nodes, name, schema);
@@ -232,7 +229,7 @@ function applyEffectiveSchema(schema) {
 function getContent(type, schema) {
 	let content = null;
 	const contentArr = schema[SPEC]['nodes']['content'];
-	let len = contentArr.length;
+	const len = contentArr.length;
 	// check even index to find the content type name
 	for (let i = 0; i < len; i += 2) {
 		if (type == contentArr[i]) {
