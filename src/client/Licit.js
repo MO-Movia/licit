@@ -195,6 +195,7 @@ class Licit extends React.Component<any, any> {
     // so changing it to 100%  width & height which will occupy the area relative to its parent.
     return (
       <RichTextEditor
+        disabled={disabled}
         editorState={editorState}
         embedded={embedded}
         height={height}
@@ -203,7 +204,6 @@ class Licit extends React.Component<any, any> {
         readOnly={readOnly}
         runtime={runtime}
         width={width}
-        disabled={disabled}
       />
     );
   }
@@ -264,7 +264,7 @@ class Licit extends React.Component<any, any> {
     if (this.state.readOnly) {
       // It should be possible to load content into the editor in readonly as well.
       // It should not be necessary to make the component writable any time during the process
-      let propsCopy = {};
+      const propsCopy = {};
       this._skipSCU = true;
       Object.assign(propsCopy, props);
       // make writable without content change

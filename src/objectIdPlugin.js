@@ -54,7 +54,7 @@ export default class ObjectIdPlugin extends Plugin {
 				let tr = null;
 				if (isDocChanged(transactions)) {
 					tr = assingIDsForMissing(prevState, nextState);
-					tr = trackDeletedObjectId(prevState, nextState, tr);
+					tr = trackDeletedObjectId(prevState, nextState, tr); 
 				}
 				return tr;
 			},

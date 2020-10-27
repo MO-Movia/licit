@@ -25,13 +25,13 @@ function main(): void {
   // null means it will take licit EditorRuntime
   const runTime = new CustomLicitRuntime();
 
-  // To pass prosemirror plugins to editor pass it to plugins property which accept array of plugin object. 
+  // To pass prosemirror plugins to editor pass it to plugins property which accept array of plugin object.
   // null means no custom plugins to pass
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
   const plugins = [new ObjectIdPlugin()];
   ReactDOM.render(<Licit docID={0} debug={true} width={'100vw'} height={'100vh'}
-    onChange={onChangeCB} onReady={onReadyCB} data={docJSON} embedded={false}
-    runtime={null} plugins={plugins} />, el);
+  onChange={onChangeCB} onReady={onReadyCB} data={docJSON} embedded={false}
+  runtime={null} plugins={plugins} />, el);
 }
 
 function onChangeCB(data) {

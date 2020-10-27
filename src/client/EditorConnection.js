@@ -235,8 +235,8 @@ class EditorConnection {
   // [FS] IRAD-1040 2020-09-02
   // Send the modified schema to server
   updateSchema(schema: Schema) {
-    // to avoid cyclic reference error, use flatted string.
-    const schemaFlatted = stringify(schema);
+	// to avoid cyclic reference error, use flatted string.
+	const schemaFlatted = stringify(schema);
     this.run(POST(this.url + '/schema/', schemaFlatted, 'text/plain')).then(
       data => {
         console.log("collab server's schema updated");

@@ -40,9 +40,9 @@ class SetDocAttrStep extends Step {
   }
 
   // [FS] IRAD-1010 2020-07-27
-  // Handle map properly so that undo works correctly for document attritube changes.  
+  // Handle map properly so that undo works correctly for document attritube changes.
   map(mapping: Mappable): ?SetDocAttrStep {
-    var from = mapping.mapResult(this.from, 1), to = mapping.mapResult(this.to, -1);
+    const from = mapping.mapResult(this.from, 1), to = mapping.mapResult(this.to, -1);
     if (from.deleted && to.deleted) { return null }
     return new SetDocAttrStep(this.key, this.value, STEPNAME_SDA);
   }
