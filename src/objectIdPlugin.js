@@ -79,6 +79,8 @@ function isDocChanged(transactions) {
 function assingIDsForMissing(prevState, nextState) {
 	let tr = nextState.tr;
 	let modified = false;
+	let objIds = [];
+
 	// Adds a unique id to the document
 	if (requiredAddAttr(nextState.doc)) {
 		tr = tr.step(new SetDocAttrStep(ATTR_OBJID, guidGenerator()));
@@ -87,11 +89,28 @@ function assingIDsForMissing(prevState, nextState) {
 
 	// Adds a unique id to a node
 	nextState.doc.descendants((node, pos) => {
+		let required = false;
 		if (requiredAddAttr(node)) {
+			required = true;
+		} else {
+			let objId = node.attrs[ATTR_OBJID];
+			if(objIds.includes(objId)) {
+				// objectId already exists, recreate
+				required = true;
+			} else {
+				if(objId) {
+					objIds.push(objId);
+				}
+			}
+		}
+		if (required) {
+			let newId = guidGenerator();
+			objIds.push(newId);
+
 			const attrs = node.attrs;
 			tr.setNodeMarkup(pos, undefined, {
 				...attrs,
-				[ATTR_OBJID]: guidGenerator()
+				[ATTR_OBJID]: newId
 			});
 			modified = true;
 		}
