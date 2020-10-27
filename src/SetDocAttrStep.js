@@ -9,13 +9,15 @@ type SetDocAttrStepJSONValue = {
   value: any,
 };
 
+const STEPNAME_SDA = 'SetDocAttr';
+
 // https://discuss.prosemirror.net/t/changing-doc-attrs/784/17
 class SetDocAttrStep extends Step {
   key: string;
   stepType: string;
   value: any;
 
-  constructor(key: string, value: any, stepType?: string = 'SetDocAttr') {
+  constructor(key: string, value: any, stepType?: string = STEPNAME_SDA) {
     super();
     this.stepType = stepType;
     this.key = key;
@@ -24,24 +26,25 @@ class SetDocAttrStep extends Step {
 
   apply(doc: Node): void {
     this.prevValue = doc.attrs[this.key];
-    const attrs = {
-      ...doc.attrs,
-      [this.key]: this.value,
-    };
-    const docNew = doc.type.create(attrs, doc.content, doc.marks);
-    return StepResult.ok(docNew);
+    // avoid clobbering doc.type.defaultAttrs
+    // this shall take care of focus out issue too.
+    if (doc.attrs === doc.type.defaultAttrs) {
+        doc.attrs = Object.assign({}, doc.attrs);
+    }
+    doc.attrs[this.key] = this.value;
+    return StepResult.ok(doc);
   }
 
   invert(): SetDocAttrStep {
-    return new SetDocAttrStep(this.key, this.prevValue, 'revertSetDocAttr');
+    return new SetDocAttrStep(this.key, this.prevValue, 'revert'+STEPNAME_SDA);
   }
 
   // [FS] IRAD-1010 2020-07-27
   // Handle map properly so that undo works correctly for document attritube changes.
   map(mapping: Mappable): ?SetDocAttrStep {
     const from = mapping.mapResult(this.from, 1), to = mapping.mapResult(this.to, -1);
-    if (from.deleted && to.deleted) { return null; }
-    return new SetDocAttrStep(this.key, this.value, 'SetDocAttr');
+    if (from.deleted && to.deleted) { return null }
+    return new SetDocAttrStep(this.key, this.value, STEPNAME_SDA);
   }
 
   merge(other: SetDocAttrStep): ?SetDocAttrStep {
@@ -50,7 +53,7 @@ class SetDocAttrStep extends Step {
         // validate mark
         other.mark && other.mark.eq(this.mark) &&
         this.from <= other.to && this.to >= other.from)
-      { return new SetDocAttrStep(this.key, this.value, 'SetDocAttr'); }
+      { return new SetDocAttrStep(this.key, this.value, STEPNAME_SDA) }
   }
 
   toJSON(): SetDocAttrStepJSONValue {
@@ -68,6 +71,6 @@ class SetDocAttrStep extends Step {
 
 // [FS] IRAD-899 2020-03-13
 // Register this step so that document attrbute changes can be dealt collaboratively.
-Step.jsonID('SetDocAttr', SetDocAttrStep);
+Step.jsonID(STEPNAME_SDA, SetDocAttrStep);
 
 export default SetDocAttrStep;
