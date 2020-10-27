@@ -61,7 +61,7 @@ function getAttrs(dom: HTMLElement): Object {
 
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
 
-  const id = dom.getAttribute('id') || '';  
+  const id = dom.getAttribute('id') || '';
   return { align, indent, lineSpacing, paddingTop, paddingBottom, id };
 }
 
