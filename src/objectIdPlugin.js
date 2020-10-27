@@ -29,7 +29,7 @@ const ALLOWED_NODES = [DOC_NAME, 'paragraph', 'bullet_list', 'heading', 'image',
 
 const requiredAddAttr = (node) => {
 	return isTargetNodeAllowed(node) && !isNodeHasAttribute(node, ATTR_OBJID);
-}
+};
 
 export default class ObjectIdPlugin extends Plugin {
 
@@ -69,7 +69,7 @@ export default class ObjectIdPlugin extends Plugin {
 function guidGenerator() {
 	// returns new guid
 	// prefix with "new:" to identify the newly created ids.
-	return "new:" + uuid();
+	return 'new:' + uuid();
 }
 
 function isDocChanged(transactions) {
