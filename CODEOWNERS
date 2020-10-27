@@ -3,9 +3,9 @@
 
 # These owners will be the default owners for everything in
 # the repo. Unless a later match takes precedence,
-# @MO-Movia and @rodgersgb will be requested for
+# @MO-Movia, @rodgersgb, and @tranqui341 will be requested for
 # review when someone opens a pull request.
-* @MO-Movia @rodgersgb
+* @MO-Movia @rodgersgb @tranqui341
 
 # Order is important; the last matching pattern takes the most
 # precedence. When someone opens a pull request that only
