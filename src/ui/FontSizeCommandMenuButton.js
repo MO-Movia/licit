@@ -52,8 +52,8 @@ class FontSizeCommandMenuButton extends React.PureComponent<any, any> {
         className={className}
          // [FS] IRAD-1008 2020-07-16
          // Disable font size menu on editor disable state
-        disabled={editorView && editorView.disabled? true:false}
         commandGroups={COMMAND_GROUPS}
+        disabled={editorView && editorView.disabled? true:false}
         dispatch={dispatch}
         editorState={editorState}
         editorView={editorView}

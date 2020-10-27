@@ -120,11 +120,11 @@ class RichTextEditor extends React.PureComponent<any, any> {
       // Collaboration
       onChange({
         state: editorState || Editor.EDITOR_EMPTY_STATE,
-        transaction: tr        
+        transaction: tr
       });
     }
 
-    
+
   };
 
   _onReady = (editorView: EditorView): void => {

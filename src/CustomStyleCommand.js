@@ -14,10 +14,10 @@ import UICommand from './ui/UICommand';
  // [FS] IRAD-1042 2020-09-14
   // Fix: To display selected style.
 function toggleCustomStyle(markType, attrs, state, tr, dispatch) {
-  var ref = state.selection;
-  var empty = ref.empty;
-  var $cursor = ref.$cursor;
-  var ranges = ref.ranges;
+  const ref = state.selection;
+  const empty = ref.empty;
+  const $cursor = ref.$cursor;
+  const ranges = ref.ranges;
   if ((empty && !$cursor) || !markApplies(state.doc, ranges, markType)) {
     return false;
   }
@@ -36,10 +36,10 @@ function toggleCustomStyle(markType, attrs, state, tr, dispatch) {
       //   var $to = ref$1.$to;
       //   has = state.doc.rangeHasMark($from.pos, $to.pos, markType);
       // }
-      for (var i$1 = 0; i$1 < ranges.length; i$1++) {
-        var ref$2 = ranges[i$1];
-        var $from$1 = ref$2.$from;
-        var $to$1 = ref$2.$to;
+      for (let i$1 = 0; i$1 < ranges.length; i$1++) {
+        const ref$2 = ranges[i$1];
+        const $from$1 = ref$2.$from;
+        const $to$1 = ref$2.$to;
         // if (has) {
         //   tr.removeMark($from$1.pos, $to$1.pos, markType);
         // } else {
@@ -53,11 +53,11 @@ function toggleCustomStyle(markType, attrs, state, tr, dispatch) {
 }
 
 function markApplies(doc, ranges, type) {
-  var loop = function (i) {
-    var ref = ranges[i];
-    var $from = ref.$from;
-    var $to = ref.$to;
-    var can = $from.depth == 0 ? doc.type.allowsMarkType(type) : false;
+  const loop = function (i) {
+    const ref = ranges[i];
+    const $from = ref.$from;
+    const $to = ref.$to;
+    let can = $from.depth == 0 ? doc.type.allowsMarkType(type) : false;
     doc.nodesBetween($from.pos, $to.pos, function (node) {
       if (can) {
         return false;
@@ -69,8 +69,8 @@ function markApplies(doc, ranges, type) {
     }
   };
 
-  for (var i = 0; i < ranges.length; i++) {
-    var returned = loop(i);
+  for (let i = 0; i < ranges.length; i++) {
+    const returned = loop(i);
 
     if (returned) return returned.v;
   }
@@ -92,7 +92,7 @@ function setCustomInlineStyle(
     return tr;
   }
 
-  var attrs = customStyles;
+  const attrs = customStyles;
 
   tr = applyMark(tr, schema, markType, attrs);
   return tr;
@@ -109,8 +109,8 @@ class CustomStyleCommand extends UICommand {
   }
 
   getTheInlineStyles = (isInline: boolean) => {
-    var attrs = {};
-    var propsCopy = [];
+    let attrs = {};
+    let propsCopy = [];
     propsCopy = Object.assign(propsCopy, this._customStyle);
 
     propsCopy.forEach((style) => {
@@ -127,7 +127,7 @@ class CustomStyleCommand extends UICommand {
   };
 
   isEmpty = (obj) => {
-    for(var key in obj) {
+    for(const key in obj) {
       if (obj.hasOwnProperty(key)) {
          return false;
       }
@@ -135,7 +135,7 @@ class CustomStyleCommand extends UICommand {
     return true;
  }
 
-  isEnabled = (state: EditorState): boolean => {   
+  isEnabled = (state: EditorState): boolean => {
     return true;
   };
 
@@ -144,19 +144,19 @@ class CustomStyleCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    var {schema, selection, tr} = state;
+    let {schema, selection, tr} = state;
     if (this._customStyle) {
-      var inlineStyles= this.getTheInlineStyles(true);
+      const inlineStyles= this.getTheInlineStyles(true);
       if(!this.isEmpty(inlineStyles)){
         tr = setCustomInlineStyle(
           tr.setSelection(selection),
           schema,
           inlineStyles
         );
-      }     
-      var commonStyle = this.getTheInlineStyles(false);
-      for (let key in commonStyle) {
-        let markType = schema.marks[key];
+      }
+      const commonStyle = this.getTheInlineStyles(false);
+      for (const key in commonStyle) {
+        const markType = schema.marks[key];
         tr = toggleCustomStyle(markType, undefined, state, tr, dispatch);
       }
     }

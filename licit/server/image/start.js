@@ -6,12 +6,12 @@ const formidable = require('formidable');
 const mv = require('mv');
 const uuidv4 = require('uuid').v4;
 
-var app = express();
+const app = express();
 
 const PORT = process.env.PORT || 3004;
 
 //allow OPTIONS on all resources
-app.options('*', cors())
+app.options('*', cors());
 app.use(cors());
 
 // Handle asset GET url.
