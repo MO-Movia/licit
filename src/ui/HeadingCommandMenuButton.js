@@ -37,9 +37,6 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
       [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
     };
     HEADING_NAMES.forEach(obj => {
-      // This code is added to save the styles to localstorage for testing the functionality
-      // remove the below code once the create customs style UI is implemented.
-      // localStorage.setItem(obj.name, JSON.stringify(obj.customstyles));
       HEADING_COMMANDS[obj.stylename] = new CustomStyleCommand(obj, obj.stylename);
 
     });
@@ -61,11 +58,15 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     const { selection, doc } = editorState;
     const { from, to } = selection;
     let customStyleName;
+    let selectedStyleCount=0;
     // [FS] IRAD-1088 2020-10-05
     // get the custom style name from node attribute
     doc.nodesBetween(from, to, (node, pos) => {
       if (node.attrs.styleName) {
-        customStyleName = node.attrs.styleName;
+        // [FS] IRAD-1043 2020-10-27
+        // Show blank as style name when select paragrapghs with multiple custom styles applied
+        selectedStyleCount++;
+        customStyleName =  selectedStyleCount === 1 ? node.attrs.styleName : '';        
       }
     });
 

@@ -236,7 +236,7 @@ class CustomStyleCommand extends UICommand {
   }
 
   //to get the selected node
-  _getNode(state: EditorState, from: Number, to: Number,): Node {
+  _getNode(state: EditorState, from: Number, to: Number): Node {
     let selectedNode = null;
     state.doc.nodesBetween(from, to, (node, startPos) => {
       if (node.type.name === 'paragraph') {
@@ -250,7 +250,7 @@ class CustomStyleCommand extends UICommand {
   createCustomObject() {
     return {
       stylename: '',
-      styles: {}
+      styles: {},
     };
 
   }
@@ -276,7 +276,7 @@ class CustomStyleCommand extends UICommand {
     newattrs['align'] = null;
     newattrs['lineSpacing'] = null;
 
-    _commands.forEach(element => {
+    _commands.forEach((element) => {
       // to set the node attribute for text-align
       if (element instanceof TextAlignCommand) {
         newattrs['align'] = style.align;

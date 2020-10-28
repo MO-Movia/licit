@@ -1,9 +1,9 @@
 // @flow
 
 import cx from 'classnames';
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
 
 import CommandMenu from './CommandMenu';
@@ -17,7 +17,7 @@ import './czi-custom-menu-button.css';
 class CommandMenuButton extends React.PureComponent<any, any> {
   props: {
     className?: ?string,
-    commandGroups: Array<{ [string]: UICommand }>,
+    commandGroups: Array<{[string]: UICommand}>,
     disabled?: ?boolean,
     dispatch: (tr: Transform) => void,
     editorState: EditorState,
@@ -62,7 +62,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
         });
       });
 
-    const { expanded } = this.state;
+    const {expanded} = this.state;
     const buttonClassName = cx(className, {
       'czi-custom-menu-button': true,
       expanded,
@@ -108,12 +108,6 @@ class CommandMenuButton extends React.PureComponent<any, any> {
     if (menu) {
       menu.update(menuProps);
     } else {
-      //[FS] IRAD-1085 2020-10-09
-      // to reload the create custom style
-      // temp fix need to change
-      // if (this.props.parent) {
-      //   this.props.parent.getCommandGroups();
-      // }
       this._menu = createPopUp(CommandMenu, menuProps, {
         anchor: document.getElementById(this._id),
         onClose: this._onClose,
@@ -122,13 +116,13 @@ class CommandMenuButton extends React.PureComponent<any, any> {
   };
 
   _onCommand = (): void => {
-    this.setState({ expanded: false });
+    this.setState({expanded: false});
     this._hideMenu();
   };
 
   _onClose = (): void => {
     if (this._menu) {
-      this.setState({ expanded: false });
+      this.setState({expanded: false});
       this._menu = null;
     }
   };

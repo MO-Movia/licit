@@ -1,11 +1,11 @@
 // @flow
 
-import { Step } from "prosemirror-transform"
-import { Schema } from 'prosemirror-model'
+import { Step } from 'prosemirror-transform';
+import { Schema } from 'prosemirror-model';
 
-import Router from "./route"
-import EditorSchema from "../../../src/EditorSchema"
-import { getInstance, instanceInfo, setEditorSchema, initEditorSchema } from "./instance"
+import Router from './route';
+import EditorSchema from '../../../src/EditorSchema';
+import { getInstance, instanceInfo, setEditorSchema, initEditorSchema } from './instance';
 // [FS] IRAD-1040 2020-09-02
 import * as Flatted from 'flatted';
 
@@ -39,23 +39,23 @@ function handleCollabRequest(req: any, resp: any) {
   }
 }
 
-export default handleCollabRequest
+export default handleCollabRequest;
 
 // Object that represents an HTTP response.
 class Output {
   // fix_flow_errors:  declarion to  avoid flow errors
   code = null;
   body = null;
-  type = "text/plain";
+  type = 'text/plain';
   //end
   constructor(code, body, type) {
-    this.code = code
-    this.body = body
-    this.type = type || "text/plain"
+    this.code = code;
+    this.body = body;
+    this.type = type || 'text/plain';
   }
 
   static json(data) {
-    return new Output(200, JSON.stringify(data), "application/json")
+    return new Output(200, JSON.stringify(data), 'application/json');
   }
 
   // Write the response.
@@ -64,8 +64,8 @@ class Output {
       'Access-Control-Allow-Origin': '*',
       'Content-Type': this.type
     };
-    resp.writeHead(this.code, headers)
-    resp.end(this.body)
+    resp.writeHead(this.code, headers);
+    resp.end(this.body);
 
   }
 }
@@ -80,29 +80,29 @@ class CustomError extends Error {
 // : (stream.Readable, Function)
 // Invoke a callback with a stream's data.
 function readStreamAsJSON(stream, callback) {
-  let data = ""
-  stream.on("data", chunk => data += chunk)
-  stream.on("end", () => {
-    let result, error
-    try { result = JSON.parse(data) }
-    catch (e) { error = e }
-    callback(error, result)
-  })
-  stream.on("error", e => callback(e))
+  let data = '';
+  stream.on('data', chunk => data += chunk);
+  stream.on('end', () => {
+    let result, error;
+    try { result = JSON.parse(data); }
+    catch (e) { error = e; }
+    callback(error, result);
+  });
+  stream.on('error', e => callback(e));
 }
 
 // : (stream.Readable, Function)
 // Invoke a callback with a stream's data.
 function readStreamAsFlatted(stream, callback) {
-  let data = ""
-  stream.on("data", chunk => data += chunk)
-  stream.on("end", () => {
-    let result, error
-    try { result = Flatted.parse(data) }
-    catch (e) { error = e }
-    callback(error, result)
-  })
-  stream.on("error", e => callback(e))
+  let data = '';
+  stream.on('data', chunk => data += chunk);
+  stream.on('end', () => {
+    let result, error;
+    try { result = Flatted.parse(data); }
+    catch (e) { error = e; }
+    callback(error, result);
+  });
+  stream.on('error', e => callback(e));
 }
 
 // : (string, Array, Function)
@@ -110,50 +110,50 @@ function readStreamAsFlatted(stream, callback) {
 function handle(method, url, f, readFlatted = false) {
   router.add(method, url, (req, resp, ...args) => {
     function finish() {
-      let output
+      let output;
       try {
-        output = f(...args, req, resp)
+        output = f(...args, req, resp);
       } catch (err) {
-        console.log(err.stack)
-        output = new Output(err.status || 500, err.toString())
+        console.log(err.stack);
+        output = new Output(err.status || 500, err.toString());
       }
-      if (output) output.resp(resp)
+      if (output) output.resp(resp);
     }
 
-    if (method == "PUT" || method == "POST") {
+    if (method == 'PUT' || method == 'POST') {
       const readMethod = readFlatted ? readStreamAsFlatted : readStreamAsJSON;
       readMethod(req, (err, val) => {
-        if (err) new Output(500, err.toString()).resp(resp)
-        else { args.unshift(val); finish() }
-      })
+        if (err) new Output(500, err.toString()).resp(resp);
+        else { args.unshift(val); finish(); }
+      });
     }
     else
-      finish()
-  })
+      finish();
+  });
 }
 
 // The root endpoint outputs a list of the collaborative
 // editing document instances.
-handle("GET", ["docs"], () => {
-  return Output.json(instanceInfo())
-})
+handle('GET', ['docs'], () => {
+  return Output.json(instanceInfo());
+});
 
 // Output the current state of a document instance.
-handle("GET", ["docs", null], (id, req) => {
-  let inst = getInstance(id, reqIP(req))
+handle('GET', ['docs', null], (id, req) => {
+  const inst = getInstance(id, reqIP(req));
   return Output.json({
     doc_json: inst.doc.toJSON(),
     users: inst.userCount,
     version: inst.version
-  })
-})
+  });
+});
 
 function nonNegInteger(str) {
-  let num = Number(str)
-  if (!isNaN(num) && Math.floor(num) == num && num >= 0) return num
-  let err = new CustomError("Not a non-negative integer: " + str)
-  err.status = 400
-  throw err
+  const num = Number(str);
+  if (!isNaN(num) && Math.floor(num) == num && num >= 0) return num;
+  const err = new CustomError('Not a non-negative integer: ' + str);
+  err.status = 400;
+  throw err;
 }
 
 // An object to assist in waiting for a collaborative editing
@@ -168,28 +168,28 @@ class Waiting {
   done = false
   //end
   constructor(resp, inst, ip, finish) {
-    this.resp = resp
-    this.inst = inst
-    this.ip = ip
-    this.finish = finish
-    this.done = false
+    this.resp = resp;
+    this.inst = inst;
+    this.ip = ip;
+    this.finish = finish;
+    this.done = false;
     resp.setTimeout(1000 * 60 * 5, () => {
-      this.abort()
-      this.send(Output.json({}))
-    })
+      this.abort();
+      this.send(Output.json({}));
+    });
   }
 
   abort() {
     if (this.inst.waiting) {
-      let found = this.inst.waiting.indexOf(this)
-      if (found > -1) this.inst.waiting.splice(found, 1)
+      const found = this.inst.waiting.indexOf(this);
+      if (found > -1) this.inst.waiting.splice(found, 1);
     }
   }
 
   send(output) {
-    if (this.done) return
-    output.resp(this.resp)
-    this.done = true
+    if (this.done) return;
+    output.resp(this.resp);
+    this.done = true;
   }
 }
 
@@ -199,70 +199,70 @@ function outputEvents(inst, data) {
     steps: data.steps.map(s => s.toJSON()),
     clientIDs: data.steps.map(step => step.clientID),
     users: data.users
-  })
+  });
 }
 
 // An endpoint for a collaborative document instance which
 // returns all events between a given version and the server's
 // current version of the document.
-handle("GET", ["docs", null, "events"], (id, req, resp) => {
-  let version = nonNegInteger(req.query.version)
+handle('GET', ['docs', null, 'events'], (id, req, resp) => {
+  const version = nonNegInteger(req.query.version);
 
-  let inst = getInstance(id, reqIP(req))
-  let data = inst.getEvents(version)
+  const inst = getInstance(id, reqIP(req));
+  const data = inst.getEvents(version);
   if (data === false)
-    return new Output(410, "History no longer available")
+    return new Output(410, 'History no longer available');
   // If the server version is greater than the given version,
   // return the data immediately.
   if (data.steps.length)
-    return outputEvents(inst, data)
+    return outputEvents(inst, data);
   // If the server version matches the given version,
   // wait until a new version is published to return the event data.
-  let wait = new Waiting(resp, inst, reqIP(req), () => {
-    wait.send(outputEvents(inst, inst.getEvents(version)))
-  })
-  inst.waiting.push(wait)
-  resp.on("close", () => wait.abort())
-})
+  const wait = new Waiting(resp, inst, reqIP(req), () => {
+    wait.send(outputEvents(inst, inst.getEvents(version)));
+  });
+  inst.waiting.push(wait);
+  resp.on('close', () => wait.abort());
+});
 
 function reqIP(request) {
-  return request.headers["x-forwarded-for"] || request.socket.remoteAddress
+  return request.headers['x-forwarded-for'] || request.socket.remoteAddress;
 }
 
 // The event submission endpoint, which a client sends an event to.
-handle("POST", ["docs", null, "events"], (data, id, req) => {
-  let version = nonNegInteger(data.version)
-  let steps = data.steps.map(s => Step.fromJSON(effectiveSchema, s))
-  let result = getInstance(id, reqIP(req)).addEvents(version, steps, data.clientID)
+handle('POST', ['docs', null, 'events'], (data, id, req) => {
+  const version = nonNegInteger(data.version);
+  const steps = data.steps.map(s => Step.fromJSON(effectiveSchema, s));
+  const result = getInstance(id, reqIP(req)).addEvents(version, steps, data.clientID);
   if (!result)
-    return new Output(409, "Version not current")
+    return new Output(409, 'Version not current');
   else
-    return Output.json(result)
-})
+    return Output.json(result);
+});
 
 // [FS] IRAD-1040 2020-09-02
 // set the effective schema from client to work the plugins collaboratively
-handle("POST", ["docs", null, "schema"], (data, id, req) => {
+handle('POST', ['docs', null, 'schema'], (data, id, req) => {
   const updatedSchema = Flatted.stringify(data);
   // Do a string comparison to see if they are same or not.
   // if same, don't update
-  if (lastUpdatedSchema !== updatedSchema) {
+  if(lastUpdatedSchema !== updatedSchema) {
     lastUpdatedSchema = updatedSchema;
-    const spec = data['spec'];
-    updateSpec(spec, 'nodes');
-    updateSpec(spec, 'marks');
-    effectiveSchema = new Schema({ nodes: effectiveSchema.spec.nodes, marks: effectiveSchema.spec.marks });
-    setEditorSchema(effectiveSchema);
+	  const spec = data['spec'];
+	  updateSpec(spec, 'nodes');
+	  updateSpec(spec, 'marks');
+	  effectiveSchema = new Schema({ nodes: effectiveSchema.spec.nodes, marks: effectiveSchema.spec.marks });
+	  setEditorSchema(effectiveSchema);
   }
   return Output.json({ result: 'success' });
-}, true)
+}, true);
 
 function updateSpec(spec, attrName) {
   // clear current array
   effectiveSchema.spec[attrName].content.splice(0, effectiveSchema.spec[attrName].content.length);
   const collection = spec[attrName]['content'];
   // update current array with the latest info
-  for (var i = 0; i < collection.length; i += 2) {
-    effectiveSchema.spec[attrName] = effectiveSchema.spec[attrName].update(collection[i], collection[i + 1]);
+  for (let i = 0; i < collection.length; i += 2) {
+    effectiveSchema.spec[attrName] = effectiveSchema.spec[attrName].update(collection[i], collection[i+1]);
   }
 }

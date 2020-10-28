@@ -26,7 +26,8 @@ export default function applyMark(
   tr: Transform,
   schema: Schema,
   markType: Mark,
-  attrs?: ?Object
+  attrs?: ?Object,
+  isCustomStyleApplied?: ?boolean
 ): Transform {
   if (!tr.selection || !tr.doc || !markType) {
     return tr;
@@ -48,9 +49,11 @@ export default function applyMark(
   }
   for (let i = 0; i < ranges.length; i++) {
     const {$from, $to} = ranges[i];
-    if (has) {
-      tr = tr.removeMark($from.pos, $to.pos, markType);
-    }
+    // [FS] IRAD-1043 2020-10-27
+    // No need to remove the applied custom styles when select the custom style mutiple times.
+    // if (has && !isCustomStyleApplied) {
+    //   tr = tr.removeMark($from.pos, $to.pos, markType);
+    // }
     if (attrs) {
       tr = tr.addMark($from.pos, $to.pos, markType.create(attrs));
     }

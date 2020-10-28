@@ -99,11 +99,13 @@ function toggleCustomStyle(markType, attrs, state, tr) {
     return false;
   }
   if ($cursor) {
-    if (markType.isInSet(state.storedMarks || $cursor.marks())) {
-      tr = tr.removeStoredMark(markType);
-    } else {
+    // [FS] IRAD-1043 2020-10-27
+    // No need to remove the applied custom style, if user select the same style multiple times.
+    // if (markType.isInSet(state.storedMarks || $cursor.marks())) {
+    //   tr = tr.removeStoredMark(markType);
+    // } else {
       tr.addMark(startPos, endPos, markType.create(attrs));
-    }
+    // }
   } else {
 
     tr.addMark(startPos, endPos, markType.create(attrs));

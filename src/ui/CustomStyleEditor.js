@@ -167,12 +167,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         if (this.state.styles.underline) {
             style.textDecoration = undefined !== style.textDecoration ? `${style.textDecoration}${' underline'}` :
                 'underline'
-
         }
         if (this.state.styles.strike) {
             style.textDecoration = undefined !== style.textDecoration ? `${style.textDecoration}${' line-through'}` :
                 'line-through'
-
         }
         if (this.state.styles.em) {
             style.fontStyle = 'italic';
@@ -284,8 +282,6 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
 
     render(): React.Element<any> {
-
-
         return (
             <div className="customedit-div" >
                 <div className="customedit-head">
@@ -398,6 +394,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         this.props.close();
     };
     _save = (): void => {
+        if('' != this.state.stylename)
         this.props.close(this.state);
     };
 

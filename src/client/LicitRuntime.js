@@ -5,6 +5,7 @@ import type {
     ImageLike
 } from '../Types';
 import {
+    GET,
     POST
 } from './http';
 
@@ -26,7 +27,7 @@ class LicitRuntime {
         return true;
     }
 
-    uploadImage(blob: Object): Promise<ImageLike> {
+    uploadImage(blob: Object): Promise < ImageLike > {
         let img: ImageLike;
         // [FS-AFQ][03-MAR-2020][IRAD-884#2]
         // Note: Resolving the promise blindly after 3 seconds causes two issues,

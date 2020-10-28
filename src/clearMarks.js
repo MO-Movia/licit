@@ -70,7 +70,9 @@ export function clearMarks(tr: Transform, schema: Schema): Transform {
 
   tasks.forEach(job => {
     const { node, mark, pos } = job;
-    tr = tr.removeMark(pos, pos + node.nodeSize, mark.type);
+    // [FS] IRAD-1043 2020-10-27
+    // Issue fix on when clear the format of a selected word, the entire paragrapghs style removed
+    tr = tr.removeMark(from, to, mark.type);
   });
 
   // It should also clear text alignment.
