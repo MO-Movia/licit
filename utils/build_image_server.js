@@ -7,7 +7,7 @@ const path = require('path');
 
 const config = {
   mode: 'production',//development
-  entry: { 
+  entry: {
     run_image_server: path.join(__dirname, '../licit', 'server/image', 'start.js'),
   },
   target: 'node',
@@ -43,10 +43,10 @@ const config = {
     ],
   },
   plugins: [
-    // type checker 
+    // type checker
     ... (env.NODE_ENV === 'development') ? [new FlowWebpackPlugin()] : [],
     // To take care of formidable.
-    new webpack.DefinePlugin({ "global.GENTLY": false }),
+    new webpack.DefinePlugin({ 'global.GENTLY': false }),
     // clean the web folder
     new CleanWebpackPlugin(),
     // expose and write the allowed env vars on the compiled bundle

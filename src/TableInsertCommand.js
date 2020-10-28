@@ -36,6 +36,7 @@ class TableInsertCommand extends UICommand {
           }
         }
       }
+      return bOK;
     }
     return bOK;
   };
