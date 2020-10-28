@@ -560,9 +560,7 @@ function batchMouseHandler(
   let view = null;
   const onMouseEvent = () => {
     if (view && target) {
-      const pointerEvent: PointerEvent;
-
-      pointerEvent = {
+      const pointerEvent: PointerEvent = {
         target,
         clientX,
         clientY,
