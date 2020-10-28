@@ -139,9 +139,7 @@ class Licit extends React.Component<any, any> {
       : schema.nodeFromJSON(EMPTY_DOC_JSON);
 
     const selection = TextSelection.create(doc, 0, doc.content.size);
-	 tr = tr
-      .setSelection(selection)
-      .replaceSelectionWith(document, false);
+	  tr = tr.setSelection(selection).replaceSelectionWith(document, false);
     // [FS] 2020-10-14
     // to keep the objectId attribute in document
     tr = tr.step(new SetDocAttrStep('objectId', document.attrs.objectId || null));

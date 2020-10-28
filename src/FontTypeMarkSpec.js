@@ -1,9 +1,6 @@
 // @flow
 
 import {Node} from 'prosemirror-model';
-
-import WebFontLoader from './WebFontLoader';
-
 import type {MarkSpec} from './Types';
 
 // [FS] IRAD-1061 2020-09-19

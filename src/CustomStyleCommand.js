@@ -2,12 +2,12 @@
 
 import {EditorState} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
-import {toggleMark} from 'prosemirror-commands';
+import {Schema} from 'prosemirror-model';
 import {findParentNodeOfType} from 'prosemirror-utils';
 import {EditorView} from 'prosemirror-view';
 import {AllSelection, TextSelection} from 'prosemirror-state';
 import applyMark from './applyMark';
-import {MARK_CUSTOMSTYLES, MARK_TEXT_COLOR, MARK_STRONG} from './MarkNames';
+import {MARK_CUSTOMSTYLES} from './MarkNames';
 import {HEADING} from './NodeNames';
 import noop from './noop';
 import UICommand from './ui/UICommand';
@@ -63,10 +63,12 @@ function markApplies(doc, ranges, type) {
         return false;
       }
       can = node.inlineContent && node.type.allowsMarkType(type);
+      return true;
     });
     if (can) {
       return {v: true};
     }
+    return false;
   };
 
   for (let i = 0; i < ranges.length; i++) {
@@ -144,7 +146,8 @@ class CustomStyleCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    let {schema, selection, tr} = state;
+    let {tr} = state;
+    const {schema, selection} = state;
     if (this._customStyle) {
       const inlineStyles= this.getTheInlineStyles(true);
       if(!this.isEmpty(inlineStyles)){

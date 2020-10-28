@@ -2,13 +2,7 @@
 
 import * as React from 'react';
 import PropTypes from 'prop-types';
-
-import CustomButton from './CustomButton';
 import './czi-form.css';
-
-type Props = {
-  close: (href: ?ImageLike) => void,
-};
 
 class AlertInfo extends React.PureComponent<any, any> {
   _unmounted = false;
@@ -25,6 +19,7 @@ class AlertInfo extends React.PureComponent<any, any> {
           fn.prototype.constructor.length !== 1)) {
         return new Error(propName + 'must be a function with 1 arg of type ImageLike');
       }
+      return null;
     }
   }
 

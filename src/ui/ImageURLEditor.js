@@ -10,13 +10,6 @@ import resolveImage from './resolveImage';
 import './czi-form.css';
 import './czi-image-url-editor.css';
 
-import type {ImageLike} from '../Types';
-
-type Props = {
-  initialValue: ?ImageLike,
-  close: (href: ?ImageLike) => void,
-};
-
 class ImageURLEditor extends React.PureComponent<any, any> {
   _img = null;
   _unmounted = false;
@@ -33,6 +26,7 @@ class ImageURLEditor extends React.PureComponent<any, any> {
             fn.prototype.constructor.length !== 1)) {
             return new Error(propName + 'must be a function with 1 arg of type ImageLike');
         }
+        return null;
     }
   }
 

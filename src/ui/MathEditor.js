@@ -10,11 +10,6 @@ import uuid from './uuid';
 
 import './czi-form.css';
 
-type Props = {
-  initialValue: ?string,
-  close: (latex: ?string) => void,
-};
-
 class MathEditor extends React.PureComponent<any, any> {
   // [FS] IRAD-1005 2020-07-07
   // Upgrade outdated packages.
@@ -28,6 +23,7 @@ class MathEditor extends React.PureComponent<any, any> {
           fn.prototype.constructor.length !== 1)) {
         return new Error(propName + 'must be a function with 1 arg of type string');
       }
+      return null;
     }
   }
 

@@ -8,7 +8,7 @@ export const HEADING_NAME_DEFAULT = 'Normal';
 // To find the selected heading
 
 export function findActiveHeading(state: EditorState): number {
-  const {schema, doc, selection, tr} = state;
+  const {schema} = state;
   const markType = schema.nodes[HEADING];
   if (!markType) {
     return HEADING_NAME_DEFAULT;
