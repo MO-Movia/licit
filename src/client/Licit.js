@@ -17,8 +17,6 @@ import type { EditorRuntime } from '../Types';
 import createPopUp from '../ui/createPopUp';
 import { atViewportCenter } from '../ui/PopUpPosition';
 import AlertInfo from '../ui/AlertInfo';
-import SetDocAttrStep from '../SetDocAttrStep';
-
 import './licit.css';
 
 /**
