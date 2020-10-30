@@ -39,11 +39,15 @@ function toggleCustomStyle(markType, attrs, state, tr, dispatch) {
 }
 
 function markApplies(doc, ranges, type) {
+  let returned = false;
+
   const loop = function (i) {
     const ref = ranges[i];
     const $from = ref.$from;
     const $to = ref.$to;
     let can = $from.depth == 0 ? doc.type.allowsMarkType(type) : false;
+    let bOk = false;
+
     doc.nodesBetween($from.pos, $to.pos, function (node) {
       if (can) {
         return false;
@@ -51,18 +55,20 @@ function markApplies(doc, ranges, type) {
       can = node.inlineContent && node.type.allowsMarkType(type);
       return true;
     });
+
     if (can) {
-      return { v: true };
+      bOk = true;
     }
-    return false;
+    return bOk;
   };
 
   for (let i = 0; i < ranges.length; i++) {
-    const returned = loop(i);
-
-    if (returned) return returned.v;
+    returned = loop(i);
+    if (returned) {
+      return returned;
+    }
   }
-  return false;
+  return returned;
 }
 
 function setCustomInlineStyle(
@@ -70,19 +76,19 @@ function setCustomInlineStyle(
   schema: Schema,
   customStyles: any
 ): Transform {
+
   const markType = schema.marks[MARK_CUSTOMSTYLES];
+  const attrs = customStyles;
+  const { selection } = tr;
+
   if (!markType) {
     return tr;
   }
-  const { selection } = tr;
   if (
     !(selection instanceof TextSelection || selection instanceof AllSelection)
   ) {
     return tr;
   }
-
-  const attrs = customStyles;
-
   tr = applyMark(tr, schema, markType, attrs);
   return tr;
 }
