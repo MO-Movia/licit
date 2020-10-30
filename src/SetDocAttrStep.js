@@ -1,7 +1,7 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
-import {Step, StepResult, Mappable} from 'prosemirror-transform';
+import { Node } from 'prosemirror-model';
+import { Step, StepResult, Mappable } from 'prosemirror-transform';
 
 type SetDocAttrStepJSONValue = {
   key: string,
@@ -29,31 +29,31 @@ class SetDocAttrStep extends Step {
     // avoid clobbering doc.type.defaultAttrs
     // this shall take care of focus out issue too.
     if (doc.attrs === doc.type.defaultAttrs) {
-        doc.attrs = Object.assign({}, doc.attrs);
+      doc.attrs = Object.assign({}, doc.attrs);
     }
     doc.attrs[this.key] = this.value;
     return StepResult.ok(doc);
   }
 
   invert(): SetDocAttrStep {
-    return new SetDocAttrStep(this.key, this.prevValue, 'revert'+STEPNAME_SDA);
+    return new SetDocAttrStep(this.key, this.prevValue, 'revert' + STEPNAME_SDA);
   }
 
   // [FS] IRAD-1010 2020-07-27
   // Handle map properly so that undo works correctly for document attritube changes.
   map(mapping: Mappable): ?SetDocAttrStep {
     const from = mapping.mapResult(this.from, 1), to = mapping.mapResult(this.to, -1);
-    if (from.deleted && to.deleted) { return null }
+    if (from.deleted && to.deleted) { return null; }
     return new SetDocAttrStep(this.key, this.value, STEPNAME_SDA);
   }
 
   merge(other: SetDocAttrStep): ?SetDocAttrStep {
     if (other instanceof SetDocAttrStep &&
-        // [FS] IRAD-1028 2020-09-30
-        // validate mark
-        other.mark && other.mark.eq(this.mark) &&
-        this.from <= other.to && this.to >= other.from)
-      { return new SetDocAttrStep(this.key, this.value, STEPNAME_SDA) }
+      // [FS] IRAD-1028 2020-09-30
+      // validate mark
+      other.mark && other.mark.eq(this.mark) &&
+      this.from <= other.to && this.to >= other.from) { return new SetDocAttrStep(this.key, this.value, STEPNAME_SDA); }
+    return null;
   }
 
   toJSON(): SetDocAttrStepJSONValue {
@@ -64,13 +64,20 @@ class SetDocAttrStep extends Step {
     };
   }
 
-  static fromJSON(schema:any, json: SetDocAttrStepJSONValue) {
+  static fromJSON(schema: any, json: SetDocAttrStepJSONValue) {
     return new SetDocAttrStep(json.key, json.value, json.stepType);
   }
-}
 
-// [FS] IRAD-899 2020-03-13
-// Register this step so that document attrbute changes can be dealt collaboratively.
-Step.jsonID(STEPNAME_SDA, SetDocAttrStep);
+  static register() {
+    try {
+      // [FS] IRAD-899 2020-03-13
+      // Register this step so that document attrbute changes can be dealt collaboratively.
+      Step.jsonID(STEPNAME_SDA, SetDocAttrStep);
+    } catch (err) {
+      if (err.message !== `Duplicate use of step JSON ID ${STEPNAME_SDA}`) throw err;
+    }
+    return true;
+  }
+}
 
 export default SetDocAttrStep;

@@ -56,6 +56,7 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
         if (marginLeft && /\d+px/.test(marginLeft)) {
           return { marginLeft: parseFloat(marginLeft) };
         }
+        return null;
       },
     },
   ],

@@ -13,11 +13,6 @@ import './czi-image-url-editor.css';
 
 const BAD_CHARACTER_PATTER = /\s/;
 
-type Props = {
-  href: ?string,
-  close: (href: ?string) => void,
-};
-
 class LinkURLEditor extends React.PureComponent<any, any> {
 
   // [FS] IRAD-1005 2020-07-07
@@ -32,6 +27,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
             fn.prototype.constructor.length !== 1)) {
             return new Error(propName + 'must be a function with 1 arg of type string');
         }
+        return null;
     }
   }
 

@@ -5,7 +5,6 @@ import type {
     ImageLike
 } from '../Types';
 import {
-    GET,
     POST
 } from './http';
 

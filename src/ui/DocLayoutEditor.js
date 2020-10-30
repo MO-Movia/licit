@@ -14,11 +14,6 @@ export type DocLayoutEditorValue = {
   width: ?number,
 };
 
-type Props = {
-  initialValue: ?DocLayoutEditorValue,
-  close: (val: ?DocLayoutEditorValue) => void,
-};
-
 type State = {
   layout: ?string,
   selectedValue: any,
@@ -45,6 +40,7 @@ class DocLayoutEditor extends React.PureComponent<any, any> {
           fn.prototype.constructor.length !== 1)) {
         return new Error(propName + 'must be a function with 1 arg of type DocLayoutEditorValue');
       }
+      return null;
     }
   }
 

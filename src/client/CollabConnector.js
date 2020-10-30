@@ -43,7 +43,6 @@ class CollabConnector extends SimpleConnector {
 
     this._connection.view = {
       updateState: (s) => {
-        console.log('update', s);
         setState({ editorState: s }, () => { });
       },
     };

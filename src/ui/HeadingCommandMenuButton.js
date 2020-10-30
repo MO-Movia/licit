@@ -41,12 +41,15 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     editorView: ?EditorView,
   };
 
-  findHeadingName(level: integer) {
+  findHeadingName(level: number) {
+    let headingName = '';
     for (let i=0; i < HEADING_NAMES.length; i++){
        if (HEADING_NAMES[i].level == level){
-      return HEADING_NAMES[i].name;
+        headingName = HEADING_NAMES[i].name;
+      return headingName;
+     }
     }
-    }
+    return headingName;
   }
 
   render(): React.Element<any> {
