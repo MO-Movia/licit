@@ -1,55 +1,41 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {Schema} from 'prosemirror-model';
-import {findParentNodeOfType} from 'prosemirror-utils';
-import {EditorView} from 'prosemirror-view';
-import {AllSelection, TextSelection} from 'prosemirror-state';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { Schema } from 'prosemirror-model';
+import { EditorView } from 'prosemirror-view';
+import { AllSelection, TextSelection } from 'prosemirror-state';
 import applyMark from './applyMark';
-import {MARK_CUSTOMSTYLES} from './MarkNames';
-import {HEADING} from './NodeNames';
-import noop from './noop';
+import { MARK_CUSTOMSTYLES } from './MarkNames';
 import UICommand from './ui/UICommand';
- // [FS] IRAD-1042 2020-09-14
-  // Fix: To display selected style.
+
+// [FS] IRAD-1042 2020-09-14
+// Fix: To display selected style.
 function toggleCustomStyle(markType, attrs, state, tr, dispatch) {
   const ref = state.selection;
   const empty = ref.empty;
   const $cursor = ref.$cursor;
   const ranges = ref.ranges;
   if ((empty && !$cursor) || !markApplies(state.doc, ranges, markType)) {
-    return false;
+    return tr;
   }
   if (dispatch) {
     if ($cursor) {
       if (markType.isInSet(state.storedMarks || $cursor.marks())) {
-        dispatch(tr.removeStoredMark(markType));
+        tr = tr.removeStoredMark(markType);
       } else {
-        dispatch(tr.addStoredMark(markType.create(attrs)));
+        tr = tr.addStoredMark(markType.create(attrs));
       }
     } else {
-      // var has = false;
-      // for (var i = 0; !has && i < ranges.length; i++) {
-      //   var ref$1 = ranges[i];
-      //   var $from = ref$1.$from;
-      //   var $to = ref$1.$to;
-      //   has = state.doc.rangeHasMark($from.pos, $to.pos, markType);
-      // }
       for (let i$1 = 0; i$1 < ranges.length; i$1++) {
         const ref$2 = ranges[i$1];
         const $from$1 = ref$2.$from;
         const $to$1 = ref$2.$to;
-        // if (has) {
-        //   tr.removeMark($from$1.pos, $to$1.pos, markType);
-        // } else {
-          tr.addMark($from$1.pos, $to$1.pos, markType.create(attrs));
-        // }
+        tr.addMark($from$1.pos, $to$1.pos, markType.create(attrs));
       }
-      return tr;
     }
   }
-  return true;
+  return tr;
 }
 
 function markApplies(doc, ranges, type) {
@@ -66,7 +52,7 @@ function markApplies(doc, ranges, type) {
       return true;
     });
     if (can) {
-      return {v: true};
+      return { v: true };
     }
     return false;
   };
@@ -78,6 +64,7 @@ function markApplies(doc, ranges, type) {
   }
   return false;
 }
+
 function setCustomInlineStyle(
   tr: Transform,
   schema: Schema,
@@ -87,7 +74,7 @@ function setCustomInlineStyle(
   if (!markType) {
     return tr;
   }
-  const {selection} = tr;
+  const { selection } = tr;
   if (
     !(selection instanceof TextSelection || selection instanceof AllSelection)
   ) {
@@ -104,10 +91,10 @@ class CustomStyleCommand extends UICommand {
   _customStyleName: string;
   _customStyle = [];
 
-  constructor(customStyle: any,customStyleName:string) {
+  constructor(customStyle: any, customStyleName: string) {
     super();
     this._customStyle = customStyle;
-    this._customStyleName =customStyleName;
+    this._customStyleName = customStyleName;
   }
 
   getTheInlineStyles = (isInline: boolean) => {
@@ -129,15 +116,16 @@ class CustomStyleCommand extends UICommand {
   };
 
   isEmpty = (obj) => {
-    for(const key in obj) {
+    for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
-         return false;
+        return false;
       }
     }
     return true;
- }
+  }
 
   isEnabled = (state: EditorState): boolean => {
+    //now the button is always enabled
     return true;
   };
 
@@ -146,11 +134,12 @@ class CustomStyleCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    let {tr} = state;
-    const {schema, selection} = state;
+
+    let { tr } = state;
+    const { schema, selection } = state;
     if (this._customStyle) {
-      const inlineStyles= this.getTheInlineStyles(true);
-      if(!this.isEmpty(inlineStyles)){
+      const inlineStyles = this.getTheInlineStyles(true);
+      if (!this.isEmpty(inlineStyles)) {
         tr = setCustomInlineStyle(
           tr.setSelection(selection),
           schema,
@@ -174,11 +163,6 @@ class CustomStyleCommand extends UICommand {
     return false;
   };
 
-  _findHeading(state: EditorState): ?Object {
-    const heading = state.schema.nodes[HEADING];
-    const fn = heading ? findParentNodeOfType(heading) : noop;
-    return fn(state.selection);
-  }
 }
 
 export default CustomStyleCommand;
