@@ -18,7 +18,6 @@ export function getAttrs(el: HTMLElement): Object {
     layout: null,
     width: null,
     padding: null,
-    objectId: null,
   };
 
   const { width, maxWidth, padding } = el.style || {};
@@ -56,10 +55,7 @@ const DocNodeSpec = {
     layout: { default: null },
     padding: { default: null },
     width: { default: null },
-    objectId: { default: null },
   },
   content: 'block+',
 };
-
-
 export default DocNodeSpec;

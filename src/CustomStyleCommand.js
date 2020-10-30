@@ -24,7 +24,7 @@ import FontTypeCommand from './FontTypeCommand';
 import FontSizeCommand from './FontSizeCommand';
 import TextLineSpacingCommand from './TextLineSpacingCommand';
 import { clearCustomStyleMarks } from './clearCustomStyleMarks';
-import { saveStyle } from './customStyle'; 
+import { saveStyle } from './customStyle';
 
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
@@ -140,7 +140,7 @@ class CustomStyleCommand extends UICommand {
   isEnabled = (state: EditorState,view: EditorView, menuTitle:string): boolean => {
   // [FS] IRAD-1053 2020-10-22
   // Disable the Clear style menu when no styles applied to a paragraph
-    return !('clearstyle' == menuTitle && 'None' == this.isCustomStyleApplied(state)); 
+    return !('clearstyle' == menuTitle && 'None' == this.isCustomStyleApplied(state));
   };
 
   // [FS] IRAD-1053 2020-10-22
@@ -267,11 +267,11 @@ class CustomStyleCommand extends UICommand {
     const startPos = selection.$from.before(1);
     const endPos = selection.$to.after(1);
     // to remove all applied marks in the selection
-    tr = tr.removeMark(startPos, endPos, null); 
-    const node = this._getNode(state, startPos, endPos); 
+    tr = tr.removeMark(startPos, endPos, null);
+    const node = this._getNode(state, startPos, endPos);
     const newattrs = Object.assign({}, node.attrs);
     // [FS] IRAD-1074 2020-10-22
-    // Issue fix on not removing center alignment when switch style with center 
+    // Issue fix on not removing center alignment when switch style with center
     // alignment to style with left alignment
     newattrs['align'] = null;
     newattrs['lineSpacing'] = null;

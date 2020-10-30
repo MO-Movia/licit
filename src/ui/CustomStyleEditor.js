@@ -69,7 +69,7 @@ const NUMBERING_VALUES = [
 ];
 
 const SAMPLE_TEXT = `Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample
-Sample Text Sample Text Sample Text Sample Text Sample Text`
+Sample Text Sample Text Sample Text Sample Text Sample Text`;
 class CustomStyleEditor extends React.PureComponent<any, any> {
 
     _unmounted = false;
@@ -166,11 +166,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         }
         if (this.state.styles.underline) {
             style.textDecoration = undefined !== style.textDecoration ? `${style.textDecoration}${' underline'}` :
-                'underline'
+                'underline';
         }
         if (this.state.styles.strike) {
             style.textDecoration = undefined !== style.textDecoration ? `${style.textDecoration}${' line-through'}` :
-                'line-through'
+                'line-through';
         }
         if (this.state.styles.em) {
             style.fontStyle = 'italic';

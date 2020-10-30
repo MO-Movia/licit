@@ -61,9 +61,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                     dispatch={dispatch}
                     editorState={editorState}
                     editorView={editorView}
+                    hasText={true}
                     label={label}
                     onClick={this._onUIEnter}
-                    hasText={true}
                 ></CustomStyleItem>);
             });
         });
@@ -76,15 +76,15 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                     dispatch={dispatch}
                     editorState={editorState}
                     editorView={editorView}
+                    hasText={false}
                     label={command._customStyleName}
                     onClick={this._onUIEnter}
-                    hasText={false}
                 ></CustomStyleItem>);
             });
         });
         return (
             <div>
-                <div id={this._id} className="dropbtn">
+                <div className="dropbtn" id={this._id}>
                     {children}
                     <hr></hr>
                     {children1}

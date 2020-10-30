@@ -75,14 +75,14 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         className="width-100"
         // [FS] IRAD-1008 2020-07-16
         // Disable font type menu on editor disable state
-        commandGroups={this.getCommandGroups()}
-        staticCommand={this.staticCommands()}
+        commandGroups={this.getCommandGroups()}        
         disabled={editorView && editorView.disabled ? true : false}
         dispatch={dispatch}
         editorState={editorState}
         editorView={editorView}
         label={customStyleName}
         parent={this}
+	staticCommand={this.staticCommands()}
       />
     );
   }

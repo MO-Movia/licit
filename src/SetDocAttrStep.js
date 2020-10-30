@@ -43,7 +43,7 @@ class SetDocAttrStep extends Step {
   // Handle map properly so that undo works correctly for document attritube changes.
   map(mapping: Mappable): ?SetDocAttrStep {
     const from = mapping.mapResult(this.from, 1), to = mapping.mapResult(this.to, -1);
-    if (from.deleted && to.deleted) { return null }
+    if (from.deleted && to.deleted) { return null; }
     return new SetDocAttrStep(this.key, this.value, STEPNAME_SDA);
   }
 

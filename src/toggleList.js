@@ -27,7 +27,8 @@ export default function toggleList(
 
   // [FS][04-AUG-2020][IRAD-955]
   // Fix Unable to apply list using Ctrl+A selection
-  let { from, to } = selection;
+  let {from} = selection;
+  const {to} = selection;
   let newselection = null;
 
   if (from === 0) {
