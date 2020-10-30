@@ -1,7 +1,5 @@
 // @flow
 
-import { EditorState } from 'prosemirror-state';
-// import { HEADING } from '../NodeNames';
 export const HEADING_NAME_DEFAULT = 'None';
 
 // [FS] IRAD-1046 2020-09-24

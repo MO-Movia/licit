@@ -103,7 +103,7 @@ const handleDOMEvents = {
 
 // [FS] IRAD-1076 2020-10-19
 // overrides the behavior of pasting.
-function handlePaste(view, event, slice): boolean{ 
+function handlePaste(view, event, slice): boolean{
   event.preventDefault(true);
 popupPasteMenu(view, event,slice);
 return true;
@@ -112,21 +112,21 @@ return true;
 // [FS] IRAD-1076 2020-10-20
 // show a pop up menu with options while pasting.
 function popupPasteMenu(view, event,slice:Slice){
-  var  _popUp = null;
+  let  _popUp = null;
   _popUp = createPopUp(
     PasteMenu,
-    {view, event,slice},
+    {view},
     {
       modal: true,
       autoDismiss: true,
       onClose: val => {
         if (_popUp) {
-          _popUp = null; 
+          _popUp = null;
           if(val==='keepTextOnly'){
-            pasteAsPlainText(slice); 
+            pasteAsPlainText(slice);
         }
          handleEditorPaste(view, event);
-         var tr = view.state.tr.replaceSelection(slice);
+         const tr = view.state.tr.replaceSelection(slice);
          view.dispatch(tr);
         }
       },

@@ -53,7 +53,8 @@ class SetDocAttrStep extends Step {
         // validate mark
         other.mark && other.mark.eq(this.mark) &&
         this.from <= other.to && this.to >= other.from)
-      { return new SetDocAttrStep(this.key, this.value, STEPNAME_SDA) }
+      { return new SetDocAttrStep(this.key, this.value, STEPNAME_SDA); }
+      return null;
   }
 
   toJSON(): SetDocAttrStepJSONValue {

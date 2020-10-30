@@ -19,6 +19,7 @@ class AlertInfo extends React.PureComponent<any, any> {
           fn.prototype.constructor.length !== 1)) {
         return new Error(propName + 'must be a function with 1 arg of type ImageLike');
       }
+      return null;
     }
   }
 

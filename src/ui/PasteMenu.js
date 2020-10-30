@@ -11,8 +11,6 @@ class PasteMenu extends React.PureComponent<any, any> {
   _activeCommand: ?UICommand = null;
   props: {
     view: EditorView,
-    event: ClipboardEvent,
-    slice: Slice,
     close: (?string) => void,
   };
 
@@ -52,7 +50,7 @@ class PasteMenu extends React.PureComponent<any, any> {
   }
 
   _onUIEnter = (id: string) => {
-    this.props.close(id);    
+    this.props.close(id);
   };
 }
 

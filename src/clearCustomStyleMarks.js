@@ -64,7 +64,7 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema): Transform 
         return true;
       }
       // [FS] IRAD-1053 2020-10-21
-      // Clear Style not removes the text align styles 
+      // Clear Style not removes the text align styles
       else{
         textAlignNode.push({ node, pos});
       }
@@ -73,12 +73,12 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema): Transform 
   });
   if (!tasks.length) {
   // [FS] IRAD-1053 2020-10-21
-  // Clear Style not removes the text align styles 
+  // Clear Style not removes the text align styles
     textAlignNode.forEach(eachnode => {
       const { node } = eachnode;
       node.attrs.styleName = 'None';
     });
-    tr = setTextAlign(tr, schema, null); 
+    tr = setTextAlign(tr, schema, null);
     return tr;
   }
 

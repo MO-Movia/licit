@@ -94,6 +94,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     fn.prototype.constructor.length !== 1)) {
                 return new Error(propName + 'must be a function with 1 arg of type ImageLike');
             }
+            return null;
         }
     }
 
@@ -367,10 +368,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                             <div className="sampletext">
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                         </div>
-                            <div id="sampletextdiv" style={this.buildStyle()} className={this.state.styles.super ? 'hide-sampletext' : 'visible-sampletext'}>
+                            <div className={this.state.styles.super ? 'hide-sampletext' : 'visible-sampletext'} id="sampletextdiv" style={this.buildStyle()}>
                                 {SAMPLE_TEXT}
                             </div>
-                            <sup id="mo-sup" style={this.buildStyle()} className={this.state.styles.super ? 'visible-sampletext' : 'hide-sampletext'}>
+                            <sup className={this.state.styles.super ? 'visible-sampletext' : 'hide-sampletext'} id="mo-sup" style={this.buildStyle()}>
                                 {SAMPLE_TEXT}
                             </sup>
                             <div className="sampletext">
@@ -395,7 +396,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     };
     _save = (): void => {
         if('' != this.state.stylename)
-        this.props.close(this.state);
+        {
+            this.props.close(this.state);
+        }        
     };
 
 }

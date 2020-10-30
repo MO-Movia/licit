@@ -41,12 +41,12 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
 
     });
 
-    
+
 
     return [HEADING_COMMANDS];
   }
   staticCommands() {
-    let MENU_COMMANDS: Object = {
+    const MENU_COMMANDS: Object = {
       ['newstyle']: new CustomStyleCommand('newstyle', 'New Style..')
     };
     MENU_COMMANDS['clearstyle'] = new CustomStyleCommand('clearstyle', 'Clear Style');
@@ -66,7 +66,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         // [FS] IRAD-1043 2020-10-27
         // Show blank as style name when select paragrapghs with multiple custom styles applied
         selectedStyleCount++;
-        customStyleName =  selectedStyleCount === 1 ? node.attrs.styleName : '';        
+        customStyleName =  selectedStyleCount === 1 ? node.attrs.styleName : '';
       }
     });
 
@@ -75,7 +75,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         className="width-100"
         // [FS] IRAD-1008 2020-07-16
         // Disable font type menu on editor disable state
-        commandGroups={this.getCommandGroups()}        
+        commandGroups={this.getCommandGroups()}
         disabled={editorView && editorView.disabled ? true : false}
         dispatch={dispatch}
         editorState={editorState}

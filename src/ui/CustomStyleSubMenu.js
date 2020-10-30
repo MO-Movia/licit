@@ -3,6 +3,7 @@
 import './czi-custom-button.css';
 import * as React from 'react';
 import './custom-dropdown.css';
+import UICommand from './UICommand';
 
 class CustomStyleSubMenu extends React.PureComponent<any, any> {
     props: {
@@ -17,7 +18,7 @@ class CustomStyleSubMenu extends React.PureComponent<any, any> {
         return (
 
 
-            <div id='mo-submenu' class="dropdown-content">
+            <div class="dropdown-content" id='mo-submenu'>
                 <a  onClick={this.onButtonClick.bind(this, { type: 'modify', command: command })}>Modify Style..</a>
                 <a  onClick={this.onButtonClick.bind(this, { type: 'rename', command: command })}>Rename Style..</a>
                 <a  onClick={this.onButtonClick.bind(this, { type: 'remove', command: command })}>Remove Style..</a>

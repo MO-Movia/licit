@@ -9,7 +9,6 @@ import CustomStyleItem from './CustomStyleItem';
 
 import createPopUp from './createPopUp';
 import CustomStyleSubMenu from './CustomStyleSubMenu';
-import CustomStyleDropdown from './CustomStyleDropdown';
 
 // [FS] IRAD-1039 2020-09-24
 // UI to show the list buttons
