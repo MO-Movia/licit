@@ -40,7 +40,7 @@ function toggleCustomStyle(markType, attrs, state, tr, dispatch) {
 
 function markApplies(doc, ranges, type) {
   let returned = false;
-
+  const len = ranges.length;
   const loop = function (i) {
     const ref = ranges[i];
     const $from = ref.$from;
@@ -62,10 +62,11 @@ function markApplies(doc, ranges, type) {
     return bOk;
   };
 
-  for (let i = 0; i < ranges.length; i++) {
+  for (let i = 0; i < len; i++) {
     returned = loop(i);
     if (returned) {
-      return returned;
+      // break the loop
+      i = len + 1;
     }
   }
   return returned;
