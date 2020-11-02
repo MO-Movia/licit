@@ -24,11 +24,11 @@ import FontTypeCommand from './FontTypeCommand';
 import FontSizeCommand from './FontSizeCommand';
 import TextLineSpacingCommand from './TextLineSpacingCommand';
 import { clearCustomStyleMarks } from './clearCustomStyleMarks';
-import { saveStyle } from './customStyle';
+import { saveStyle, getCustomStylesByName } from './customStyle';
 
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
-function getTheCustomStylesCommand(customStyles) {
+export function getTheCustomStylesCommand(customStyles) {
   const _commands = [];
   for (const property in customStyles) {
 
@@ -137,15 +137,15 @@ class CustomStyleCommand extends UICommand {
     return true;
   }
 
-  isEnabled = (state: EditorState,view: EditorView, menuTitle:string): boolean => {
-  // [FS] IRAD-1053 2020-10-22
-  // Disable the Clear style menu when no styles applied to a paragraph
+  isEnabled = (state: EditorState, view: EditorView, menuTitle: string): boolean => {
+    // [FS] IRAD-1053 2020-10-22
+    // Disable the Clear style menu when no styles applied to a paragraph
     return !('clearstyle' == menuTitle && 'None' == this.isCustomStyleApplied(state));
   };
 
   // [FS] IRAD-1053 2020-10-22
   // returns the applied style of a paragraph
-  isCustomStyleApplied(editorState){
+  isCustomStyleApplied(editorState) {
     const { selection, doc } = editorState;
     const { from, to } = selection;
     let customStyleName = 'None';
@@ -222,18 +222,7 @@ class CustomStyleCommand extends UICommand {
     });
   }
 
-  // [FS] IRAD-1088 2020-10-05
-  // set custom style for node
-  _setNodeAttribute(state: EditorState, tr: Transform,
-    from: Number, to: Number, attribute): Transform {
 
-    state.doc.nodesBetween(from, to, (node, startPos) => {
-      if (node.type.name === 'paragraph') {
-        tr = tr.setNodeMarkup(startPos, undefined, attribute);
-      }
-    });
-    return tr;
-  }
 
   //to get the selected node
   _getNode(state: EditorState, from: Number, to: Number): Node {
@@ -291,7 +280,7 @@ class CustomStyleCommand extends UICommand {
     });
     // to set custom styleName attribute for node
     newattrs['styleName'] = styleName;
-    tr = this._setNodeAttribute(state, tr, startPos, endPos, newattrs);
+    tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
     return tr;
   }
 
@@ -301,4 +290,42 @@ class CustomStyleCommand extends UICommand {
   }
 }
 
+// Need to change this function code duplicates with applyStyle()
+export function applyStyle_New(styleName: String, state: EditorState, tr: Transform, node, startPos, endPos) {
+  const style = getCustomStylesByName(styleName);
+  const _commands = getTheCustomStylesCommand(style);
+  // tr = tr.removeMark(startPos, endPos, null);
+  // const node = this._getNode(state, startPos, endPos);
+  const newattrs = Object.assign({}, node.attrs);
+  newattrs['align'] = null;
+  newattrs['lineSpacing'] = null;
+  _commands.forEach((element) => {
+    // to set the node attribute for text-align
+    if (element instanceof TextAlignCommand) {
+      newattrs['align'] = style.align;
+      // to set the node attribute for line-height
+    } else if (element instanceof TextLineSpacingCommand) {
+      newattrs['lineSpacing'] = style.lineheight;
+    }
+    // to set the marks for the node
+    else {
+      tr = element.executeCustom(state, tr, startPos, endPos);
+    }
+  });
+  // to set custom styleName attribute for node
+  newattrs['styleName'] = 'abc';
+  newattrs['color'] = 'red';
+  tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
+  return tr;
+}
+// [FS] IRAD-1088 2020-10-05
+// set custom style for node
+function _setNodeAttribute(state, tr, from, to, attribute) {
+  state.doc.nodesBetween(from, to, (node, startPos) => {
+    if (node.type.name === 'paragraph') {
+      tr = tr.setNodeMarkup(startPos, undefined, attribute);
+    }
+  });
+  return tr;
+}
 export default CustomStyleCommand;

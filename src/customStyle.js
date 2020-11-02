@@ -36,3 +36,27 @@ export function getCustomStylesByName(name: String) {
     return style;
 }
 
+export function editStyle(name, style) {
+    removeFromLocalStorage(name);
+    addToLocalStorage(style);
+}
+export function removeStyle(name, style) {
+    removeFromLocalStorage(name);
+}
+function removeFromLocalStorage(name) {
+    const existingStyle = getCustomStylesByName(name);
+    const itemsArray = localStorage.getItem('customStyleList') ? JSON.parse(localStorage.getItem('customStyleList')) : [];
+    if (itemsArray.includes(existingStyle)) {
+        for (let i = 0; i < itemsArray.length; i++) {
+            if (itemsArray[i] === existingStyle) {
+                itemsArray.splice(i, 1);
+            }
+        }
+        localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
+    }
+}
+function addToLocalStorage(style) {
+    const itemsArray = localStorage.getItem('customStyleList') ? JSON.parse(localStorage.getItem('customStyleList')) : [];
+    itemsArray.push(style);
+    localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
+}
