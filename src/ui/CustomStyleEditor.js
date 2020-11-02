@@ -398,7 +398,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         if('' != this.state.stylename)
         {
             this.props.close(this.state);
-        }        
+        }
     };
 
 }

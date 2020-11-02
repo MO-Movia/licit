@@ -96,49 +96,49 @@ function toggleCustomStyle(markType, attrs, state, tr) {
   const startPos = ref.$from.before(1);
   const endPos = ref.$to.after(1);
   if ((empty && !$cursor) || !markApplies(state.doc, ranges, markType)) {
-    return false;
+    return tr;
   }
   if ($cursor) {
     // [FS] IRAD-1043 2020-10-27
     // No need to remove the applied custom style, if user select the same style multiple times.
-    // if (markType.isInSet(state.storedMarks || $cursor.marks())) {
-    //   tr = tr.removeStoredMark(markType);
-    // } else {
-      tr.addMark(startPos, endPos, markType.create(attrs));
-    // }
+    tr.addMark(startPos, endPos, markType.create(attrs));
   } else {
 
     tr.addMark(startPos, endPos, markType.create(attrs));
-    return tr;
   }
 
   return tr;
 }
 //overrided method from prosemirror Transform
 function markApplies(doc, ranges, type) {
+  let returned = false;
   const loop = function (i) {
     const ref = ranges[i];
     const $from = ref.$from;
     const $to = ref.$to;
     let can = $from.depth == 0 ? doc.type.allowsMarkType(type) : false;
+    let bOk = false;
 
     doc.nodesBetween($from.pos, $to.pos, function (node) {
       if (can) {
         return false;
       }
       can = node.inlineContent && node.type.allowsMarkType(type);
+      return true;
     });
     if (can) {
-      return { v: true };
+      bOk = true;
     }
+    return bOk;
   };
 
   for (let i = 0; i < ranges.length; i++) {
-    const returned = loop(i);
-
-    if (returned) return returned.v;
+    returned = loop(i);
+    if (returned) {
+      return returned;
+    }
   }
-  return false;
+  return returned;
 }
 
 
