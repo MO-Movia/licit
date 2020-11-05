@@ -30,76 +30,89 @@ import {
 } from './clearCustomStyleMarks';
 import {
     saveStyle,
-    getCustomStylesByName
+    getCustomStyleByName
 } from './customStyle';
+
+export const STRONG = 'strong';
+export const EM = 'em';
+export const COLOR = 'color';
+export const FONTSIZE = 'fontsize';
+export const FONTNAME = 'fontname';
+export const STRIKE = 'strike';
+export const SUPER = 'super';
+export const TEXTHL = 'texthighlight';
+export const UNDERLINE = 'underline';
+export const ALIGN = 'align';
+export const LHEIGHT = 'lineheight';
+export const NONE = 'None';
 
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
-export function getTheCustomStylesCommand(customStyles) {
-    const _commands = [];
-    for (const property in customStyles) {
+export function getCustomStyleCommands(customStyle) {
+    const commands = [];
+    for (const property in customStyle) {
 
         switch (property) {
-            case 'strong':
+            case STRONG:
                 // [FS] IRAD-1043 2020-10-23
                 // Issue fix : unselect a style when creating a new style
                 // and that unselected styles also applied in selected paragrapgh
-                if (customStyles[property])
-                    _commands.push(new MarkToggleCommand('strong'));
+                if (customStyle[property])
+                    commands.push(new MarkToggleCommand('strong'));
                 break;
 
-            case 'em':
+            case EM:
                 // [FS] IRAD-1043 2020-10-23
                 // Issue fix : unselect a style when creating a new style
                 // and that unselected styles also applied in selected paragrapgh
-                if (customStyles[property]) _commands.push(new MarkToggleCommand('em'));
+                if (customStyle[property]) commands.push(new MarkToggleCommand('em'));
                 break;
 
-            case 'color':
-                _commands.push(new TextColorCommand(customStyles[property]));
+            case COLOR:
+                commands.push(new TextColorCommand(customStyle[property]));
                 break;
 
-            case 'fontsize':
-                _commands.push(new FontSizeCommand(Number(customStyles[property])));
+            case FONTSIZE:
+                commands.push(new FontSizeCommand(Number(customStyle[property])));
                 break;
 
-            case 'fontname':
-                _commands.push(new FontTypeCommand(customStyles[property]));
+            case FONTNAME:
+                commands.push(new FontTypeCommand(customStyle[property]));
                 break;
 
-            case 'strike':
+            case STRIKE:
                 // [FS] IRAD-1043 2020-10-23
                 // Issue fix : unselect a style when creating a new style
                 // and that unselected styles also applied in selected paragrapgh
-                if (customStyles[property])
+                if (customStyle[property])
                     _commands.push(new MarkToggleCommand('strike'));
                 break;
 
-            case 'super':
-                _commands.push(new MarkToggleCommand('super'));
+            case SUPER:
+                commands.push(new MarkToggleCommand('super'));
                 break;
 
-            case 'texthighlight':
-                _commands.push(new TextHighlightCommand(customStyles[property]));
+            case TEXTHL:
+                commands.push(new TextHighlightCommand(customStyle[property]));
                 break;
 
-            case 'underline':
-                _commands.push(new MarkToggleCommand('underline'));
+            case UNDERLINE:
+                commands.push(new MarkToggleCommand('underline'));
                 break;
 
-            case 'align':
-                _commands.push(new TextAlignCommand(customStyles[property]));
+            case ALIGN:
+                commands.push(new TextAlignCommand(customStyle[property]));
                 break;
 
-            case 'lineheight':
-                _commands.push(new TextLineSpacingCommand(customStyles[property]));
+            case LHEIGHT:
+                commands.push(new TextLineSpacingCommand(customStyle[property]));
                 break;
 
             default:
                 break;
         }
     }
-    return _commands;
+    return commands;
 }
 
 class CustomStyleCommand extends UICommand {
@@ -147,7 +160,7 @@ class CustomStyleCommand extends UICommand {
     isEnabled = (state: EditorState, view: EditorView, menuTitle: string): boolean => {
         // [FS] IRAD-1053 2020-10-22
         // Disable the Clear style menu when no styles applied to a paragraph
-        return !('clearstyle' == menuTitle && 'None' == this.isCustomStyleApplied(state));
+        return !('clearstyle' == menuTitle && NONE == this.isCustomStyleApplied(state));
     };
 
     // [FS] IRAD-1053 2020-10-22
@@ -161,7 +174,7 @@ class CustomStyleCommand extends UICommand {
             from,
             to
         } = selection;
-        let customStyleName = 'None';
+        let customStyleName = NONE;
         doc.nodesBetween(from, to, (node, pos) => {
             if (node.attrs.styleName) {
                 customStyleName = node.attrs.styleName;
@@ -279,16 +292,67 @@ class CustomStyleCommand extends UICommand {
     }
 }
 
+function retainOverrideStyle(style, tr, node, startPos, endPos) {
+	//node.content.content[0].marks[0].type.name
+	
+	for (const property in style) {
+
+        switch (property) {
+            case STRONG:
+                //if (style[property])
+                break;
+
+            case EM:
+                break;
+
+            case COLOR:
+                break;
+
+            case FONTSIZE:
+                break;
+
+            case FONTNAME:
+                break;
+
+            case STRIKE:
+                break;
+
+            case SUPER:
+                break;
+
+            case TEXTHL:
+                break;
+
+            case UNDERLINE:
+                break;
+
+            case ALIGN:
+                break;
+
+            case LHEIGHT:
+                break;
+
+            default:
+                break;
+        }
+    }
+	
+	return tr;
+}
+
 function applyStyleEx(style, styleName: String, state: EditorState, tr: Transform, node, startPos, endPos) {
     const loading = !style;
     if (loading) {
-        style = getCustomStylesByName(styleName);
+        style = getCustomStyleByName(styleName);
     }
-    const _commands = getTheCustomStylesCommand(style);
+    const _commands = getCustomStyleCommands(style);
 
-    // TODO: Implement override logic here.
-    // to remove all applied marks in the selection
-    tr = tr.removeMark(startPos, endPos, null);
+	//if (loading) {		
+		tr = retainOverrideStyle(style, tr, node, startPos, endPos);
+	//} else {
+		// to remove all applied marks in the selection
+		tr = tr.removeMark(startPos, endPos, null);		
+	//}
 
     const newattrs = Object.assign({}, node.attrs);
     // [FS] IRAD-1074 2020-10-22
@@ -311,10 +375,8 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
         }
     });
 
-    if (loading) {
-        // to set custom styleName attribute for node
-        newattrs['styleName'] = styleName;
-    }
+	// to set custom styleName attribute for node
+	newattrs['styleName'] = styleName;
     tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
     return tr;
 }

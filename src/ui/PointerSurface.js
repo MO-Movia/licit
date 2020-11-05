@@ -4,8 +4,8 @@ import cx from 'classnames';
 import * as React from 'react';
 
 import preventEventDefault from './preventEventDefault';
-import { getTheCustomStyles } from './findActiveHeading';
-import { getCustomStylesByName } from '../customStyle';
+import { getCustomStyle } from './findActiveHeading';
+import { getCustomStyleByName } from '../customStyle';
 
 export type PointerSurfaceProps = {
   active?: ?boolean,
@@ -51,13 +51,13 @@ class PointerSurface extends React.PureComponent<any, any> {
 
     // [FS] IRAD-1046 2020-09-24
     // To show the example piece to the menu and set the styles to it.
-    let styles;
+    let customStyle;
     let text = '';
     if (value && value._customStyleName) {
       text = this.sampleText(value._customStyle);
-      const style = getCustomStylesByName(value._customStyleName);
+      const style = getCustomStyleByName(value._customStyleName);
       if (style) {
-        styles = getTheCustomStyles(style);
+        customStyle = getCustomStyle(style);
       }
     }
 
@@ -79,7 +79,7 @@ class PointerSurface extends React.PureComponent<any, any> {
         title={title}
       >
         {children}
-        <span style={styles} > {text} </span>
+        <span style={customStyle} > {text} </span>
       </span>
     );
   }

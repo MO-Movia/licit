@@ -21,8 +21,8 @@ export function getCustomStyles() {
     return localStorage.getItem('customStyleList') ? JSON.parse(localStorage.getItem('customStyleList')) : [];
 }
 
-// get a style by stylaName
-export function getCustomStylesByName(name: String) {
+// get a style by styleName
+export function getCustomStyleByName(name: String) {
 
     const itemsArray = localStorage.getItem('customStyleList') ? JSON.parse(localStorage.getItem('customStyleList')) : [];
     let style = null;

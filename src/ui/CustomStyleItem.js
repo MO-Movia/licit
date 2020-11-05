@@ -7,8 +7,8 @@ import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import './custom-dropdown.css';
-import { getCustomStylesByName } from '../customStyle';
-import { getTheCustomStyles } from './findActiveHeading';
+import { getCustomStyleByName } from '../customStyle';
+import { getCustomStyle } from './findActiveHeading';
 class CustomStyleItem extends React.PureComponent<any, any> {
     props: {
         command: UICommand,
@@ -25,18 +25,18 @@ class CustomStyleItem extends React.PureComponent<any, any> {
 
         const { command, label, onClick, hasText } = this.props;
         let text = '';
-        let styles;
+        let customStyle;
         text = this.sampleText();
-        const style = getCustomStylesByName(label);
+        const style = getCustomStyleByName(label);
         if (style) {
-            styles = getTheCustomStyles(style);
+            customStyle = getCustomStyle(style);
         }
 
         return (
             <div id="container1" tag={label}>
 
                 <div onClick={(e) => this._onUIEnter(command, e)}>{label}</div>
-                <div onClick={(e) => this._onUIEnter(command, e)} style={styles}> {text}</div>
+                <div onClick={(e) => this._onUIEnter(command, e)} style={customStyle}> {text}</div>
                 <div class="arrow_right" onClick={onClick.bind(this, command)} style={hasText ? { display: 'block' } : { display: 'none' }}>
                     <span class="czi-icon keyboard_arrow_down">keyboard_arrow_down</span>
                 </div>

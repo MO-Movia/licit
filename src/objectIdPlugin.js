@@ -35,21 +35,23 @@ export default class ObjectIdPlugin extends Plugin {
 		super({
 			key: new PluginKey('ObjectIdPlugin'),
 			state: {
-				init(config, state) {},
+				init(config, state) {
+					this.loaded = false;
+				},
 				apply(tr, set) {}
 			},
 			props: {
 				handleDOMEvents: {
 					keydown(view, event) {
 						const charCode = event.key;
-						console.log(charCode);
 					}
 				},
 				nodeViews: []
 			},
 			appendTransaction: (transactions, prevState, nextState) => {
 				let tr = null;
-				if (isDocChanged(transactions)) {
+				if (!this.loaded || isDocChanged(transactions)) {
+					this.loaded = true;
 					tr = assingIDsForMissing(prevState, nextState);
 					tr = trackDeletedObjectId(prevState, nextState, tr);
 				}
