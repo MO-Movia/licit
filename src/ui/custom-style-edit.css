@@ -1,52 +1,92 @@
 .customedit-div {
     /* padding: 10px; */
-    background-color: #ecebea;
     color: white;
     width: 350px;
-    border: 1px solid black;
-
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.26);
+    height: 500px;
+    border: 1px solid #4a4949;
+    font-family: Arial;
+    background: #e6e6e6;
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.26); */
     box-sizing: border-box;
     overflow: hidden;
     position: relative;
 }
 
-.customedit-head {
-    border-bottom: 1px solid black;
-    color: black;
-    height: 20px;
+.spacingdiv {
+    border: 1px solid gray;
+    padding: 5px;
+}
+.spacingdiv label {
+    color: #464343;
+    margin: 4px 0;
+    font-size: 14px;
 }
 
-.customedit-body{
-        padding: 10px;
+.formp {
+    color: #464343;
+    margin: 4px 0;
+    font-size: 14px;
 }
-label{
-    color: black;
+.linespacing{
+    width: 140px;
+    height: 22px;
 }
-.stylenameinput{
-    margin: 0 0 0 15px !important;
+.spacinginput {
+    /* margin: 0 0 0 15px !important; */
     font-family: inherit;
     font-size: 13px;
     line-height: unset;
+    width: 50px;
+}
 
+.customedit-head {
+    border-bottom: 1px solid #d0bfbf;
+    height: 26px;
+    padding: 5px;
+    color: #47adec;
+    font-family: Arial;
+    font-size: 25px;
+    font-family: sans-serif;
 }
-.sectiondiv{
-    margin:5px 0;
+
+.customedit-body {
+    padding: 10px;
+    color: #464343;
 }
-.iconspan{
+
+label {
+    color: black;
+}
+
+.stylenameinput {
+    /* margin: 0 0 0 15px !important; */
+    font-family: inherit;
+    font-size: 13px;
+    line-height: unset;
+    width: 97%;
+    margin-bottom: 5px;
+    color: black;
+}
+
+.sectiondiv {
+    /* margin: 5px 0; */
+    padding: 5px
+}
+
+.iconspan {
     margin: 0 10px;
 }
-.editorsection{
+
+.editorsection {
     background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.26);
     box-sizing: border-box;
     overflow: hidden;
-    padding: 2px 7px 2px 0;
+    /* padding: 2px 7px 2px 0; */
     position: relative;
 }
 
-.textAreadiv{
+.textAreadiv {
     width: 95%;
     height: 129px;
     -webkit-rtl-ordering: logical;
@@ -65,33 +105,45 @@ label{
     color: black;
     /* font-size: 11px; */
 }
-.sampletext{
+
+.sampletext {
     color: gray;
 }
+
 .fontsize {
-    width: 77px;
+    width: 62px;
     height: 22px;
     margin-left: 5px;
 }
-.fonttype{
-    width: 233px;
+
+.fonttype {
+    width: 210px;
     height: 22px;
 }
-.numbering{
+
+.leveltype {
+    width: 150px;
+    height: 22px;
+}
+
+.numbering {
     width: 183px;
     height: 22px;
     font-size: 13px;
 }
-.indenting{
+
+.indenting {
     width: 186px;
     height: 22px;
     margin-left: 10px;
     font-size: 13px;
 }
-.btns{
+
+.btns {
     text-align: right;
 }
-.align-menu-button{
+
+.align-menu-button {
     width: 38px;
     margin: 0;
     background: transparent;
@@ -99,23 +151,79 @@ label{
     white-space: nowrap;
     margin-left: 13px;
 }
+
 .align-menu-button-icon {
     margin-left: -6px;
 }
+
 .align-menu-dropdown-icon {
     margin-left: -4px;
 }
-.dropdown-div{
+
+.dropdown-div {
     border: 1px solid black;
     background: #fff;
     box-shadow: 0 1px 3px rgb(90 45 45 / 26%);
 }
-.dropdown-buttons{
+
+.dropdown-buttons {
     margin: 5px 8px;
 }
-.visible-sampletext{
+
+.visible-sampletext {
     display: block;
 }
-.hide-sampletext{
+
+.hide-sampletext {
     display: none;
+}
+
+.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 5px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+    border: 1px solid lightgray;
+}
+
+.accactive,
+.accordion:hover {
+    background-color: #ccc;
+}
+
+.accordion:after {
+    content: '\002B';
+    color: #777;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.accactive:after {
+    content: "\2212";
+}
+
+.panel,
+.panel1,
+.panel2 {
+    padding: 0 7px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+.alignbuttons {
+    width: 70px;
+    background-color: #f0f0f0;
+    border-color: #555;
+    outline: none;
+    text-align: center;
+    padding: 0
 }

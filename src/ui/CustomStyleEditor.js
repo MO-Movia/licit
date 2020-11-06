@@ -55,21 +55,31 @@ const INDENT_VALUES = [
 
 
 ];
+
+// Values to show in Linespacing drop-down
+const LINE_SPACE = [
+    'Single',
+    '1.15',
+    '1.5',
+    'Double'
+];
 // Values to show in numbering drop-down
-const NUMBERING_VALUES = [
+const LEVEL_VALUES = [
     'None',
-    '1.',
-    '1.1.',
-    '1.1.1.',
-    '1.1.1.1.',
-    '1.1.1.1.1.',
-    '1.1.1.1.1.1.',
-    '1.1.1.1.1.1.1.',
-    '1.1.1.1.1.1.1.1.',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10'
 ];
 
 const SAMPLE_TEXT = `Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample
-Sample Text Sample Text Sample Text Sample Text Sample Text`;
+Sample Text Sample Text Sample Text Sample Text Sample Text`
 class CustomStyleEditor extends React.PureComponent<any, any> {
 
     _unmounted = false;
@@ -94,7 +104,6 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     fn.prototype.constructor.length !== 1)) {
                 return new Error(propName + 'must be a function with 1 arg of type ImageLike');
             }
-            return null;
         }
     }
 
@@ -143,6 +152,31 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     );
                 }
                 break;
+
+            case 'description':
+                if (undefined !== event) {
+                    this.setState({
+                        description: event.target.value
+                    }
+                    );
+                }
+                break;
+            case 'before':
+                if (undefined !== event) {
+
+                    this.setState({
+                        styles: { ...this.state.styles, spacebefore: event.target.value }
+                    });
+
+                }
+                break;
+            case 'after':
+                if (undefined !== event) {
+                    this.setState({
+                        styles: { ...this.state.styles, spaceafter: event.target.value }
+                    });
+                }
+                break;
             default:
                 break;
         }
@@ -167,11 +201,13 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         }
         if (this.state.styles.underline) {
             style.textDecoration = undefined !== style.textDecoration ? `${style.textDecoration}${' underline'}` :
-                'underline';
+                'underline'
+
         }
         if (this.state.styles.strike) {
             style.textDecoration = undefined !== style.textDecoration ? `${style.textDecoration}${' line-through'}` :
-                'line-through';
+                'line-through'
+
         }
         if (this.state.styles.em) {
             style.fontStyle = 'italic';
@@ -188,9 +224,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         if (this.state.styles.indent) {
             style.marginLeft = `${this.state.styles.indent * 2}px`;
         }
-        if (this.state.styles.numbering) {
+        if (this.state.styles.level) {
             if (document.getElementById('sampletextdiv')) {
-                document.getElementById('sampletextdiv').innerText = `${this.state.styles.numbering}${SAMPLE_TEXT}`;
+                document.getElementById('sampletextdiv').innerText = `${this.state.styles.level}${SAMPLE_TEXT}`;
             }
         }
         return style;
@@ -208,10 +244,15 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
     }
 
-    // handles numbering drop down change
-    onNumberingChange(e) {
+    // handles line space  change
+    onLineSpaceChange(e) {
+        this.setState({ styles: { ...this.state.styles, lineheight: e.target.value } });
 
-        this.setState({ styles: { ...this.state.styles, numbering: e.target.value } });
+    }
+    // handles Level drop down change
+    onLevelChange(e) {
+
+        this.setState({ styles: { ...this.state.styles, level: e.target.value } });
     }
 
     // handles indentt dropdown change
@@ -282,112 +323,258 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         );
     }
 
+    //handles the option button click, close the popup with selected values
+    onAlignButtonClick(val, event) {
+        // this.props.close(val);
+        this.setState({ styles: { ...this.state.styles, align: val } });
+    }
+
+    componentDidMount() {
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function () {
+                this.classList.toggle("accactive");
+                var panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+        var mp = document.getElementsByClassName("panel")[0];
+        mp.style.maxHeight = mp.scrollHeight + "px";
+
+        var ac = document.getElementById("accordion1");
+        ac.classList.toggle("accactive");
+    }
+
     render(): React.Element<any> {
+
         return (
             <div className="customedit-div" >
                 <div className="customedit-head">
-                    <span className="closebtn" onClick={this._cancel}>×</span><strong>Create Style</strong>
+                    <strong>Create Style</strong>
                 </div>
                 <div className="customedit-body" >
                     <div className="sectiondiv">
-                        <label>Name</label>
+
+                        <p className="formp">Style Name:</p>
                         <span>
                             <input className="stylenameinput" key="name"
-                                onChange={this.onStyleClick.bind(this, 'name')} placeholder="Enter style name" type="text" value={this.state.styles.stylename} />
+                                onChange={this.onStyleClick.bind(this, 'name')} type="text" value={this.state.stylename} />
+                        </span>
+                        <p className="formp">Description:</p>
+                        <span>
+                            <input className="stylenameinput" key="description"
+                                onChange={this.onStyleClick.bind(this, 'description')} type="text" value={this.state.description} />
                         </span>
                     </div>
-                    <div className="sectiondiv">
-                        <select className="fonttype" onChange={this.onFontNameChange.bind(this)} value={this.state.styles.fontname}>
-                            {FONT_TYPE_NAMES.map((value) => (
-                                <option key={value} value={value}>
-                                    {value}
-                                </option>
-                            ))}
-                        </select>
-                        <select className="fontsize" onChange={this.onFontSizeChange.bind(this)} value={this.state.styles.fontsize}>
-                            {FONT_PT_SIZES.map((value) => (
-                                <option key={value} value={value}>
-                                    {value}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+
                     <div className="sectiondiv editorsection">
 
-                        <div class="czi-custom-buttons">
-                            <span aria-label=" Bold" class="czi-tooltip-surface" data-tooltip=" Bold" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strong')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strong ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-                                <span class="iconspan czi-icon format_bold">format_bold</span></span></span>
-                            <span aria-label=" Italic" class="czi-tooltip-surface" data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'em')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-                                <span class="iconspan czi-icon format_italic">format_italic</span><span>  </span></span></span>
-                            <span aria-label=" Underline" class="czi-tooltip-surface" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-                                <span class="iconspan czi-icon format_underline">format_underline</span><span>  </span></span></span>
-                            <span aria-label=" Strike through" class="czi-tooltip-surface" data-tooltip=" Strike through" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strike')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strike ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-                                <span class="iconspan czi-icon format_strikethrough">format_strikethrough</span><span>  </span></span></span>
-                            <span aria-label=" Superscript" class="czi-tooltip-surface" data-tooltip=" Superscript" id="86bad6e0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'super')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.super ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-                                <span class="czi-icon superscript" style={{ width: '32px', height: '27px' }}> <span class="iconspan superscript-wrap"><span class="superscript-base">x</span><span class="superscript-top">y</span></span></span><span>  </span></span></span>
-                            <span aria-label=" Text color" class="czi-tooltip-surface" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
-                                <span class="iconspan czi-icon format_color_text" style={{ color: this.state.styles.color }}>format_color_text</span><span>  </span></span></span>
-                            <span aria-label=" Highlight color" class="czi-tooltip-surface" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
-                                <span class=" iconspan czi-icon border_color" style={{ color: this.state.styles.texthighlight }}>border_color</span><span>  </span></span></span>
+                        <div style={{ height: '150px', overflow: "auto", marginBottom: '5px' }}>
+                            <button class="accordion" id="accordion1"><span class="iconspan czi-icon text_format">text_format</span> Font</button>
+                            <div class="panel">
+                                <div className="sectiondiv">
+                                    <select className="fonttype" onChange={this.onFontNameChange.bind(this)} value={this.state.styles.fontname}>
+                                        {FONT_TYPE_NAMES.map((value) => (
+                                            <option key={value} value={value}>
+                                                {value}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <select className="fontsize" onChange={this.onFontSizeChange.bind(this)} value={this.state.styles.fontsize}>
+                                        {FONT_PT_SIZES.map((value) => (
+                                            <option key={value} value={value}>
+                                                {value}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <hr></hr>
+                                <div class="czi-custom-buttons">
+                                    <span aria-label=" Bold" class="czi-tooltip-surface" data-tooltip=" Bold" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strong')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strong ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
+                                        <span class="iconspan czi-icon format_bold">format_bold</span></span></span>
+                                    <span aria-label=" Italic" class="czi-tooltip-surface" data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'em')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
+                                        <span class="iconspan czi-icon format_italic">format_italic</span><span>  </span></span></span>
+                                    <span aria-label=" Underline" class="czi-tooltip-surface" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
+                                        <span class="iconspan czi-icon format_underline">format_underline</span><span>  </span></span></span>
+                                    <span aria-label=" Strike through" class="czi-tooltip-surface" data-tooltip=" Strike through" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strike')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strike ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
+                                        <span class="iconspan czi-icon format_strikethrough">format_strikethrough</span><span>  </span></span></span>
+                                    <span aria-label=" Superscript" class="czi-tooltip-surface" data-tooltip=" Superscript" id="86bad6e0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'super')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.super ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
+                                        <span class="czi-icon superscript" style={{ width: '32px', height: '23px' }}> <span class="iconspan superscript-wrap"><span class="superscript-base">x</span><span class="superscript-top">y</span></span></span><span>  </span></span></span>
+                                    <span aria-label=" Text color" class="czi-tooltip-surface" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
+                                        <span class="iconspan czi-icon format_color_text" style={{ color: this.state.styles.color }}>format_color_text</span><span>  </span></span></span>
+                                    <span aria-label=" Highlight color" class="czi-tooltip-surface" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip"><span aria-disabled="false" aria-pressed="false" class="czi-custom-button use-icon" role="button">
+                                        <span class=" iconspan czi-icon border_color" style={{ color: this.state.styles.texthighlight }}>border_color</span><span>  </span></span></span>
 
-                        </div>
-                        <hr></hr>
-                        <div className="sectiondiv">
-                            <label for="test">Numbering </label>
-                            <span>
-                                <select className="numbering" onChange={this.onNumberingChange.bind(this)} value={this.state.styles.numbering}>
-                                    {NUMBERING_VALUES.map((value) => (
+                                </div>
+                                <hr></hr>
+                            </div>
+
+                            <button class="accordion"> <span class="iconspan czi-icon format_textdirection_l_to_r">format_textdirection_l_to_r</span> PARAGRAPH</button>
+                            <div class="panel1">
+                                <p className="formp">Alignment:</p>
+                                <div class="czi-custom-buttons">
+                                    <span aria-label=" Align Left" class="czi-tooltip-surface" data-tooltip=" Align Left" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.value == 'left' ? 'czi-custom-button use-icon active' : 'czi-custom-button alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'left')} role="button">
+                                        <span class="iconspan czi-icon format_align_left">format_align_left</span></span></span>
+                                    <span aria-label=" Align Center" class="czi-tooltip-surface alignbuttons" data-tooltip=" Align Center" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.value == 'center' ? 'czi-custom-button use-icon active' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'center')} role="button">
+                                        <span class="iconspan czi-icon format_align_center">format_align_center</span></span></span>
+                                    <span aria-label=" Align Right" class="czi-tooltip-surface alignbuttons" data-tooltip=" Align Right" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.value == 'right' ? 'czi-custom-button use-icon active' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'right')} role="button">
+                                        <span class="iconspan czi-icon format_align_right">format_align_right</span></span></span>
+                                    <span aria-label=" Justify" class="czi-tooltip-surface alignbuttons" data-tooltip=" Justify" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.value == 'justify' ? 'czi-custom-button use-icon active' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'justify')} role="button">
+                                        <span class="iconspan czi-icon format_align_justify">format_align_justify</span></span></span>
+                                </div>
+                                <p className="formp">Line Spacing:</p>
+                                <select className="linespacing" onChange={this.onLineSpaceChange.bind(this)} value={this.state.styles.lineheight}>
+                                    {LINE_SPACE.map((value) => (
                                         <option key={value} value={value}>
                                             {value}
                                         </option>
                                     ))}
                                 </select>
-                            </span>
-                            <button className="align-menu-button" onClick={this.showAlignmentDialog.bind(this, true)}>
-                                <span class="czi-icon format_align_left">format_align_left</span>
-                                <span class="czi-icon expand_more align-menu-dropdown-icon">expand_more</span>
-                            </button>
-                        </div>
-                        <div className="sectiondiv">
-                            <label for="test">Indenting </label>
-                            <span>
-                                <select className="indenting" onChange={this.onIndentChange.bind(this)} value={this.state.styles.indent}>
-                                    {INDENT_VALUES.map(({ label, value }) => (
-                                        <option key={value} value={value}>
-                                            {label}
-                                        </option>
-                                    ))}
-                                </select>
-                            </span>
-                            <button className="align-menu-button" onClick={this.showAlignmentDialog.bind(this, false)}>
-                                <span class="czi-icon format_line_spacing align-menu-button-icon">format_line_spacing</span>
+                                <p className="formp">Paragraph Spacing:</p>
 
-                            </button>
+                                <div className="spacingdiv">
+                                    <label>Before:</label>
+                                    <span>
+                                        <input className="spacinginput" key="before"
+                                            onChange={this.onStyleClick.bind(this, 'before')} type="text" value={this.state.styles.spacebefore} />
+                                    </span>
+                                    <label>pts</label>
+
+                                    <label style={{ marginLeft: '24px' }}>After:</label>
+                                    <span>
+                                        <input className="spacinginput" key="after"
+                                            onChange={this.onStyleClick.bind(this, 'after')} type="text" value={this.state.styles.spaceafter} />
+                                    </span>
+                                    <label>pts</label>
+                                </div>
+                                <hr></hr>
+                            </div>
+
+                            <button class="accordion"><span class="iconspan czi-icon account_tree">account_tree</span>HEIRARCHY</button>
+                            <div class="panel2 formp">
+                                <p className="formp">Level:</p>
+                                <div className="spacingdiv">
+
+                                    <span>
+                                        <select className="leveltype" onChange={this.onLevelChange.bind(this)} value={this.state.styles.level}>
+                                            {LEVEL_VALUES.map((value) => (
+                                                <option key={value} value={value}>
+                                                    {value}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </span>
+                                    <span>
+                                        <label>
+                                            <input type="checkbox" />
+                                    Numbering(1.1)
+                                    </label>
+                                    </span>
+                                    <p className="formp">Indenting:</p>
+                                    <div className="spacingdiv">
+                                        <div onChange={this.onChangeValue}>
+                                            <input type="radio" value="0" name="indenting" /> Based On Level
+                                    </div>
+                                        <div onChange={this.onChangeValue}>
+                                            <input type="radio" value="1" name="indenting" /> Specified
+                                            <span>
+                                                <select className="leveltype" onChange={this.onFontNameChange.bind(this)} value={this.state.styles.fontname}>
+                                                    {INDENT_VALUES.map(({ label, value }) => (
+                                                        <option key={value} value={value}>
+                                                            {label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                         <div className="textAreadiv" name="body">
                             <div className="sampletext">
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                         </div>
-                            <div className={this.state.styles.super ? 'hide-sampletext' : 'visible-sampletext'} id="sampletextdiv" style={this.buildStyle()}>
+                            <div id="sampletextdiv" style={this.buildStyle()} className={this.state.styles.super ? 'hide-sampletext' : 'visible-sampletext'}>
                                 {SAMPLE_TEXT}
                             </div>
-                            <sup className={this.state.styles.super ? 'visible-sampletext' : 'hide-sampletext'} id="mo-sup" style={this.buildStyle()}>
+                            <sup id="mo-sup" style={this.buildStyle()} className={this.state.styles.super ? 'visible-sampletext' : 'hide-sampletext'}>
                                 {SAMPLE_TEXT}
                             </sup>
                             <div className="sampletext">
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                         </div>
+
+
+                            {/* <div className="sectiondiv">
+                                <label for="test">Numbering </label>
+                                <span>
+                                    <select className="numbering" onChange={this.onNumberingChange.bind(this)} value={this.state.styles.numbering}>
+                                        {NUMBERING_VALUES.map((value) => (
+                                            <option key={value} value={value}>
+                                                {value}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </span>
+                                <button className="align-menu-button" onClick={this.showAlignmentDialog.bind(this, true)}>
+                                    <span class="czi-icon format_align_left">format_align_left</span>
+                                    <span class="czi-icon expand_more align-menu-dropdown-icon">expand_more</span>
+                                </button>
+                            </div>
+                            <div className="sectiondiv">
+                                <label for="test">Indenting </label>
+                                <span>
+                                    <select className="indenting" onChange={this.onIndentChange.bind(this)} value={this.state.styles.indent}>
+                                        {INDENT_VALUES.map(({ label, value }) => (
+                                            <option key={value} value={value}>
+                                                {label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </span>
+                                <button className="align-menu-button" onClick={this.showAlignmentDialog.bind(this, false)}>
+                                    <span class="czi-icon format_line_spacing align-menu-button-icon">format_line_spacing</span>
+
+                                </button>
+                            </div> */}
+
+                            {/* <div className="textAreadiv" name="body">
+                                <div className="sampletext">
+                                    Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
+                               </div>
+                                <div id="sampletextdiv" style={this.buildStyle()} className={this.state.styles.super ? 'hide-sampletext' : 'visible-sampletext'}>
+                                    {SAMPLE_TEXT}
+                                </div>
+                                <sup id="mo-sup" style={this.buildStyle()} className={this.state.styles.super ? 'visible-sampletext' : 'hide-sampletext'}>
+                                    {SAMPLE_TEXT}
+                                </sup>
+                                <div className="sampletext">
+                                    Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
+                                    Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
+                                </div>
+                            </div> */}
+
+
                         </div>
 
+                        <div className="btns">
+                            <button onClick={this._cancel}>Cancel</button>
+                            <button onClick={this._save.bind(this)}>Save</button>
+                        </div>
                     </div>
-                    <div className="btns">
-                        <button onClick={this._cancel}>Cancel</button>
-                        <button onClick={this._save.bind(this)}>Save</button>
-                    </div>
-                </div>
+                </div >
             </div >
         );
+
     }
 
 
