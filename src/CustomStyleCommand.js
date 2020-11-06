@@ -25,6 +25,8 @@ import TextAlignCommand from './TextAlignCommand';
 import FontTypeCommand from './FontTypeCommand';
 import FontSizeCommand from './FontSizeCommand';
 import TextLineSpacingCommand from './TextLineSpacingCommand';
+import { setTextAlign } from './TextAlignCommand';
+import ParagraphSpacingCommand from './ParagraphSpacingCommand';
 import {
     clearCustomStyleMarks
 } from './clearCustomStyleMarks';
@@ -45,6 +47,8 @@ export const UNDERLINE = 'underline';
 export const ALIGN = 'align';
 export const LHEIGHT = 'lineheight';
 export const NONE = 'None';
+export const SAFTER ='spaceafter';
+export const SBEFORE ='spacebefore';
 
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
@@ -56,7 +60,7 @@ export function getCustomStyleCommands(customStyle) {
             case STRONG:
                 // [FS] IRAD-1043 2020-10-23
                 // Issue fix : unselect a style when creating a new style
-                // and that unselected styles also applied in selected paragrapgh
+                // and that unselected styles also applied in selected paragraph
                 if (customStyle[property])
                     commands.push(new MarkToggleCommand('strong'));
                 break;
@@ -85,7 +89,7 @@ export function getCustomStyleCommands(customStyle) {
                 // Issue fix : unselect a style when creating a new style
                 // and that unselected styles also applied in selected paragrapgh
                 if (customStyle[property])
-                    _commands.push(new MarkToggleCommand('strike'));
+                   commands.push(new MarkToggleCommand('strike'));
                 break;
 
             case SUPER:
@@ -107,6 +111,16 @@ export function getCustomStyleCommands(customStyle) {
             case LHEIGHT:
                 commands.push(new TextLineSpacingCommand(customStyle[property]));
                 break;
+
+            // [FS] IRAD-1100 2020-11-05
+            // Add in leading and trailing spacing (before and after a paragraph)
+           case SAFTER:
+                commands.push(new ParagraphSpacingCommand(customStyle[property],true));
+                break;
+
+            case SBEFORE:
+                  commands.push(new ParagraphSpacingCommand(customStyle[property],false));
+                  break;
 
             default:
                 break;
@@ -203,7 +217,7 @@ class CustomStyleCommand extends UICommand {
         // [FS] IRAD-1053 2020-10-08
         // to remove the custom styles applied in the selected paragraph
         else if ('clearstyle' === this._customStyle) {
-            tr = clearCustomStyleMarks(state.tr.setSelection(selection), state.schema);
+            tr = clearCustomStyleMarks(state.tr.setSelection(selection), state.schema, state);
             if (dispatch && tr.docChanged) {
                 dispatch(tr);
                 return true;
@@ -294,7 +308,7 @@ class CustomStyleCommand extends UICommand {
 
 function retainOverrideStyle(style, tr, node, startPos, endPos) {
 	//node.content.content[0].marks[0].type.name
-	
+
 	for (const property in style) {
 
         switch (property) {
@@ -336,7 +350,7 @@ function retainOverrideStyle(style, tr, node, startPos, endPos) {
                 break;
         }
     }
-	
+
 	return tr;
 }
 
@@ -347,11 +361,14 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
     }
     const _commands = getCustomStyleCommands(style);
 
-	//if (loading) {		
+	//if (loading) {
 		tr = retainOverrideStyle(style, tr, node, startPos, endPos);
 	//} else {
 		// to remove all applied marks in the selection
-		tr = tr.removeMark(startPos, endPos, null);		
+        //tr = tr.removeMark(startPos, endPos, null);
+        // [FS] IRAD-1087 2020-11-02
+        // Issue fix: applied link is missing after applying a custom style.
+        tr= removeAllMarksExceptLink(startPos,endPos,tr,state.schema);
 	//}
 
     const newattrs = Object.assign({}, node.attrs);
@@ -360,6 +377,8 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
     // alignment to style with left alignment
     newattrs['align'] = null;
     newattrs['lineSpacing'] = null;
+    newattrs['paragraphSpacingAfter'] = null;
+    newattrs['paragraphSpacingBefore'] = null;
 
     _commands.forEach((element) => {
         // to set the node attribute for text-align
@@ -368,6 +387,11 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
             // to set the node attribute for line-height
         } else if (element instanceof TextLineSpacingCommand) {
             newattrs['lineSpacing'] = style.lineheight;
+        } else if (element instanceof ParagraphSpacingCommand) {
+            // [FS] IRAD-1100 2020-11-05
+            // Add in leading and trailing spacing (before and after a paragraph)
+            newattrs['paragraphSpacingAfter'] = style.spaceafter? style.spaceafter: null;
+            newattrs['paragraphSpacingBefore'] =style.spacebefore? style.spacebefore: null;
         }
         // to set the marks for the node
         else {
@@ -395,4 +419,29 @@ function _setNodeAttribute(state, tr, from, to, attribute) {
     });
     return tr;
 }
+
+// [FS] IRAD-1087 2020-11-02
+  // Issue fix: Missing the applied link after applying a style
+function removeAllMarksExceptLink(from,to,tr,schema){
+    const { doc } = tr;
+    const tasks = [];
+    doc.nodesBetween(from, to, (node, pos) => {
+      if (node.marks && node.marks.length) {
+        node.marks.some(mark => {
+            if ('link' !== mark.type.name) {
+              tasks.push({ node, pos, mark});
+          }
+        });
+        return true;
+      }
+      return true;
+    });
+    tasks.forEach(job => {
+      const { mark } = job;
+      tr = tr.removeMark(from, to, mark.type);
+    });
+    tr = setTextAlign(tr, schema, null);
+    return tr;
+}
+
 export default CustomStyleCommand;

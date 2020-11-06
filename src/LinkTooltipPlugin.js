@@ -138,7 +138,7 @@ class LinkTooltipView {
     tr = showSelectionPlaceholder(state, tr);
     view.dispatch(tr);
 
-    const href = result ? result.mark.attrs.href : null;
+    const href = result.mark.attrs.href ;
     this._editor = createPopUp(
       LinkURLEditor,
       {href},

@@ -4,6 +4,7 @@ import { Schema } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
 import * as MarkNames from './MarkNames';
 import { setTextAlign } from './TextAlignCommand';
+import { EditorState } from 'prosemirror-state';
 
 const {
   MARK_EM,
@@ -29,7 +30,7 @@ const FORMAT_MARK_NAMES = [
 
 // [FS] IRAD-1053 2020-10-08
 // to clear the custom styles in the selected paragrapgh
-export function clearCustomStyleMarks(tr: Transform, schema: Schema): Transform {
+export function clearCustomStyleMarks(tr: Transform, schema: Schema, state: EditorState): Transform {
   const { doc, selection } = tr;
   if (!selection || !doc) {
     return tr;
@@ -90,5 +91,13 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema): Transform 
   });
 
   tr = setTextAlign(tr, schema, null);
+
+  // [FS] IRAD-1053 2020-10-21
+  // On reload editor, shows the removed custom style name using Clear Style menu.
+  state.doc.nodesBetween(from, to, (node, startPos) => {
+    if (node.type.name === 'paragraph') {
+      tr = tr.setNodeMarkup(startPos, undefined, node.attrs);
+    }
+  });
   return tr;
 }

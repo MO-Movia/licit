@@ -14,7 +14,6 @@ import {
     EM,
     COLOR,
     FONTSIZE,
-    FONTNAME,
     STRIKE,
     SUPER,
     TEXTHL,

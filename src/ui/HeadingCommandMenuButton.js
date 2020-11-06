@@ -66,7 +66,16 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         // [FS] IRAD-1043 2020-10-27
         // Show blank as style name when select paragrapghs with multiple custom styles applied
         selectedStyleCount++;
-        customStyleName =  selectedStyleCount === 1 ? node.attrs.styleName : '';
+	// [FS] IRAD-1100 2020-10-30
+        // Issue fix: style name shows blank when select multiple paragraph with same custom style applied
+      
+        if(1 === selectedStyleCount || (1 < selectedStyleCount && node.attrs.styleName === customStyleName))
+        {
+          customStyleName=node.attrs.styleName;
+        }
+        else{
+          customStyleName = '';
+        }
       }
     });
 
