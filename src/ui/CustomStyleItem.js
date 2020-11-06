@@ -35,9 +35,9 @@ class CustomStyleItem extends React.PureComponent<any, any> {
         return (
             <div id="container1" tag={label}>
 
-                <div onClick={(e) => this._onUIEnter(command, e)}>{label}</div>
-                <div onClick={(e) => this._onUIEnter(command, e)} style={customStyle}> {text}</div>
-                <div class="arrow_right" onClick={onClick.bind(this, command)} style={hasText ? { display: 'block' } : { display: 'none' }}>
+                <div style={{ width: '100px' }} onClick={(e) => this._onUIEnter(command, e)}>{label}</div>
+                <div style={{ width: '100px' }} onClick={(e) => this._onUIEnter(command, e)} style={customStyle}> {text}</div>
+                <div style={{ width: '50px' }} class="arrow_right" onClick={onClick.bind(this, command)} style={hasText ? { display: 'block' } : { display: 'none' }}>
                     <span class="czi-icon keyboard_arrow_down">keyboard_arrow_down</span>
                 </div>
             </div>

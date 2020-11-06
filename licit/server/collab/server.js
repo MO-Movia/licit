@@ -6,14 +6,13 @@ import { Schema } from 'prosemirror-model';
 import Router from './route';
 import EditorSchema from '../../../src/EditorSchema';
 import { getInstance, instanceInfo, setEditorSchema, initEditorSchema } from './instance';
+// [FS] IRAD-1040 2020-09-02
+import * as Flatted from 'flatted';
 // [FS] IRAD-899 2020-03-13
 // This is for Capcomode document attribute. Shared Step, so that capcomode can be dealt collaboratively.
 import SetDocAttrStep from '../../../src/SetDocAttrStep';
-// [FS] IRAD-1040 2020-09-02
-import * as Flatted from 'flatted';
-
 const router = new Router();
-
+SetDocAttrStep.register();
 // [FS] IRAD-1040 2020-09-02
 let effectiveSchema = EditorSchema;
 let lastUpdatedSchema = null;
@@ -249,13 +248,13 @@ handle('POST', ['docs', null, 'schema'], (data, id, req) => {
   const updatedSchema = Flatted.stringify(data);
   // Do a string comparison to see if they are same or not.
   // if same, don't update
-  if(lastUpdatedSchema !== updatedSchema) {
+  if (lastUpdatedSchema !== updatedSchema) {
     lastUpdatedSchema = updatedSchema;
-	  const spec = data['spec'];
-	  updateSpec(spec, 'nodes');
-	  updateSpec(spec, 'marks');
-	  effectiveSchema = new Schema({ nodes: effectiveSchema.spec.nodes, marks: effectiveSchema.spec.marks });
-	  setEditorSchema(effectiveSchema);
+    const spec = data['spec'];
+    updateSpec(spec, 'nodes');
+    updateSpec(spec, 'marks');
+    effectiveSchema = new Schema({ nodes: effectiveSchema.spec.nodes, marks: effectiveSchema.spec.marks });
+    setEditorSchema(effectiveSchema);
   }
   return Output.json({ result: 'success' });
 }, true);
@@ -266,6 +265,6 @@ function updateSpec(spec, attrName) {
   const collection = spec[attrName]['content'];
   // update current array with the latest info
   for (let i = 0; i < collection.length; i += 2) {
-    effectiveSchema.spec[attrName] = effectiveSchema.spec[attrName].update(collection[i], collection[i+1]);
+    effectiveSchema.spec[attrName] = effectiveSchema.spec[attrName].update(collection[i], collection[i + 1]);
   }
 }

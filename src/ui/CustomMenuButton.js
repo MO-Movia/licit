@@ -41,24 +41,29 @@ class CustomMenuButton extends React.PureComponent<any, any> {
     const {
       className,
       label,
+      commandGroups,
+      staticCommand,
+      editorState,
+      editorView,
       icon,
+      disabled,
       title,
     } = this.props;
-    // const enabled =
-    //   !disabled &&
-    //   commandGroups.some((group, ii) => {
-    //     return Object.keys(group).some(label => {
-    //       const command = group[label];
-    //       let disabledVal = true;
-    //       try {
-    //         disabledVal =
-    //           !editorView || !command.isEnabled(editorState, editorView);
-    //       } catch (ex) {
-    //         disabledVal = false;
-    //       }
-    //       return !disabledVal;
-    //     });
-    //   });
+    const enabled =
+      !disabled &&
+      commandGroups.some((group, ii) => {
+        return Object.keys(group).some(label => {
+          const command = group[label];
+          let disabledVal = true;
+          try {
+            disabledVal =
+              !editorView || !command.isEnabled(editorState, editorView);
+          } catch (ex) {
+            disabledVal = false;
+          }
+          return !disabledVal;
+        });
+      });
 
     const { expanded } = this.state;
     const buttonClassName = cx(className, {

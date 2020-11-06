@@ -4,8 +4,6 @@ import cx from 'classnames';
 import * as React from 'react';
 
 import preventEventDefault from './preventEventDefault';
-import { getCustomStyle } from './findActiveHeading';
-import { getCustomStyleByName } from '../customStyle';
 
 export type PointerSurfaceProps = {
   active?: ?boolean,
@@ -49,17 +47,6 @@ class PointerSurface extends React.PureComponent<any, any> {
       pressed: pressed,
     });
 
-    // [FS] IRAD-1046 2020-09-24
-    // To show the example piece to the menu and set the styles to it.
-    let customStyle;
-    let text = '';
-    if (value && value._customStyleName) {
-      text = this.sampleText(value._customStyle);
-      const style = getCustomStyleByName(value._customStyleName);
-      if (style) {
-        customStyle = getCustomStyle(style);
-      }
-    }
 
     return (
       <span
@@ -79,7 +66,6 @@ class PointerSurface extends React.PureComponent<any, any> {
         title={title}
       >
         {children}
-        <span style={customStyle} > {text} </span>
       </span>
     );
   }
@@ -90,17 +76,8 @@ class PointerSurface extends React.PureComponent<any, any> {
       this._mul = false;
       document.removeEventListener('mouseup', this._onMouseUpCapture, true);
     }
-  }
-  // temp method to clear sample text for new and clear command menu item
-  sampleText(styleCommand): String {
 
-    let text = 'AaBbCcDd';
-    if ('newstyle' === styleCommand ||
-      'clearstyle' === styleCommand) {
-      text = '';
 
-    }
-    return text;
 
   }
 

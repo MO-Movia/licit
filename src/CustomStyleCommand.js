@@ -281,6 +281,7 @@ class CustomStyleCommand extends UICommand {
     createCustomObject() {
         return {
             stylename: '',
+            mode:0,//new
             styles: {},
         };
 

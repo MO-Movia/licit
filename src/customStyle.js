@@ -40,7 +40,7 @@ export function editStyle(name, style) {
     removeFromLocalStorage(name);
     addToLocalStorage(style);
 }
-export function removeStyle(name, style) {
+export function removeStyle(name) {
     removeFromLocalStorage(name);
 }
 function removeFromLocalStorage(name) {

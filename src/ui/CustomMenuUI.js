@@ -9,6 +9,12 @@ import CustomStyleItem from './CustomStyleItem';
 
 import createPopUp from './createPopUp';
 import CustomStyleSubMenu from './CustomStyleSubMenu';
+import CustomStyleDropdown from './CustomStyleDropdown';
+import CustomStyleEditor from './CustomStyleEditor';
+import {
+    atViewportCenter
+} from './PopUpPosition';
+import { saveStyle, removeStyle } from '../customStyle';
 
 // [FS] IRAD-1039 2020-09-24
 // UI to show the list buttons
@@ -17,6 +23,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
 
     _activeCommand: ?UICommand = null;
     _popUp = null;
+    _stylePopup = null;
+    _styleName = null;
     // _popUpId = uuid();
     props: {
         className?: ?string,
@@ -60,9 +68,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                     dispatch={dispatch}
                     editorState={editorState}
                     editorView={editorView}
-                    hasText={true}
                     label={label}
                     onClick={this._onUIEnter}
+                    hasText={true}
                 ></CustomStyleItem>);
             });
         });
@@ -75,9 +83,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                     dispatch={dispatch}
                     editorState={editorState}
                     editorView={editorView}
-                    hasText={false}
                     label={command._customStyleName}
                     onClick={this._onUIEnter}
+                    hasText={false}
                 ></CustomStyleItem>);
             });
         });
@@ -104,9 +112,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
         const anchor = event ? event.currentTarget : null;
 
         // close the popup toggling effect
-        if (this._popUp) {
-            this._popUp.close();
-            this._popUp = null;
+        if (this._stylePopup) {
+            this._stylePopup.close();
+            this._stylePopup = null;
             return;
         }
         this._popUp = createPopUp(
@@ -121,8 +129,56 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                 onClose: val => {
                     if (this._popUp) {
                         this._popUp = null;
-                        if (undefined !== val) {
+                        if (undefined !== val && val.command._customStyle) {
                             // do edit,remove,rename code here
+                            if ('remove' == val.type) {
+                                removeStyle(val.command._customStyle.stylename);
+                            }
+                            else {
+                                this.showStyleWindow(command, event);
+                            }
+                        }
+                    }
+                },
+            }
+        );
+    }
+    //shows the alignment and line spacing option
+    showStyleWindow(command: UICommand, event: SyntheticEvent<*>) {
+        // const anchor = event ? event.currentTarget : null;
+        // close the popup toggling effect
+        if (this._stylePopup) {
+            this._stylePopup.close();
+            this._stylePopup = null;
+            // return;
+        }
+        this._styleName = command._customStyleName;
+        this._stylePopup = createPopUp(
+            CustomStyleEditor,
+            {
+                stylename: command._customStyleName,
+                mode: 1,//edit
+                description: command._customStyle.description,
+                styles: command._customStyle.styles
+            },
+            {
+                position: atViewportCenter,
+                autoDismiss: false,
+                IsChildDialog: false,
+                onClose: val => {
+                    if (this._stylePopup) {
+                        this._stylePopup = null;
+                        //handle save style object part here
+                        if (undefined !== val) {
+                            const { dispatch } = this.props.editorView;
+                            let tr = this.props.editorState;
+                            const doc = state.doc;
+                            saveStyle(val);
+                            tr = tr.setSelection(TextSelection.create(doc, 0, 0));
+                            // Apply created styles to document
+                            tr = this.applyStyle(val.styles, val.stylename, state, tr);
+                            dispatch(tr);
+                            view.focus();
                         }
                     }
                 },

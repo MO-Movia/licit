@@ -233,6 +233,16 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     // handles font name change
     onFontNameChange(e) {
         this.setState({ styles: { ...this.state.styles, fontname: e.target.value } });
+    }
+    // handles font name change
+    onIndentRadioChanged(e) {
+        let val = e.target.checked;
+        if ('0' == e.target.value) {
+            this.setState({ styles: { ...this.state.styles, islevelbased: val } });
+        }
+        else {
+            this.setState({ styles: { ...this.state.styles, islevelspecified: val } });
+        }
 
     }
 
@@ -327,6 +337,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         this.setState({ styles: { ...this.state.styles, align: val } });
     }
 
+    handleNumbering(val, event) {
+        this.setState({ styles: { ...this.state.styles, hasnumbering: val.target.checked } });
+    }
     componentDidMount() {
         var acc = document.getElementsByClassName("accordion");
         var i;
@@ -354,7 +367,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         return (
             <div className="customedit-div" >
                 <div className="customedit-head">
-                    <strong>Create Style</strong>
+                    <strong>{this.state.mode == 0 ? 'Create Style' : 'Edit Style'}</strong>
                 </div>
                 <div className="customedit-body" >
                     <div className="sectiondiv">
@@ -470,19 +483,22 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     </span>
                                     <span>
                                         <label>
-                                            <input type="checkbox" />
+                                            <input type="checkbox" checked={this.state.styles.hasnumbering}
+                                                onChange={this.handleNumbering.bind(this)} />
                                     Numbering(1.1)
                                     </label>
                                     </span>
                                     <p className="formp">Indenting:</p>
                                     <div className="spacingdiv">
-                                        <div onChange={this.onChangeValue}>
-                                            <input type="radio" value="0" name="indenting" /> Based On Level
+                                        <div>
+                                            <input type="radio" value="0" name="indenting" checked={this.state.styles.islevelbased}
+                                                onChange={this.onIndentRadioChanged.bind(this)} /> Based On Level
                                     </div>
-                                        <div onChange={this.onChangeValue}>
-                                            <input type="radio" value="1" name="indenting" /> Specified
+                                        <div>
+                                            <input type="radio" value="1" name="indenting" checked={this.state.styles.islevelspecified}
+                                                onChange={this.onIndentRadioChanged.bind(this)} /> Specified
                                             <span>
-                                                <select className="leveltype" onChange={this.onFontNameChange.bind(this)} value={this.state.styles.fontname}>
+                                                <select className="leveltype" style={{ marginLeft: '10px' }} onChange={this.onIndentChange.bind(this)} value={this.state.styles.indent}>
                                                     {INDENT_VALUES.map(({ label, value }) => (
                                                         <option key={value} value={value}>
                                                             {label}
@@ -580,8 +596,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         this.props.close();
     };
     _save = (): void => {
-        if('' != this.state.stylename)
-        {
+        if ('' != this.state.stylename) {
             this.props.close(this.state);
         }
     };
