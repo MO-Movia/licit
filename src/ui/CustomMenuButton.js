@@ -42,7 +42,6 @@ class CustomMenuButton extends React.PureComponent<any, any> {
       className,
       label,
       commandGroups,
-      staticCommand,
       editorState,
       editorView,
       icon,

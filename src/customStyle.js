@@ -4,11 +4,11 @@
 
 export function saveStyle(style) {
     let bOk = false;
-    const itemsArray = localStorage.getItem('customStyleList') ? JSON.parse(localStorage.getItem('customStyleList')) : [];
+    const itemsArray = window.localStorage.getItem('customStyleList') ? JSON.parse(window.localStorage.getItem('customStyleList')) : [];
     if (!itemsArray.includes(style)) {
 
         itemsArray.push(style);
-        localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
+        window.localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
         bOk = true;
     } else {
         bOk = false;
@@ -18,13 +18,13 @@ export function saveStyle(style) {
 
 // get all saved styles
 export function getCustomStyles() {
-    return localStorage.getItem('customStyleList') ? JSON.parse(localStorage.getItem('customStyleList')) : [];
+    return window.localStorage.getItem('customStyleList') ? JSON.parse(window.localStorage.getItem('customStyleList')) : [];
 }
 
 // get a style by styleName
 export function getCustomStyleByName(name: String) {
 
-    const itemsArray = localStorage.getItem('customStyleList') ? JSON.parse(localStorage.getItem('customStyleList')) : [];
+    const itemsArray = window.localStorage.getItem('customStyleList') ? JSON.parse(window.localStorage.getItem('customStyleList')) : [];
     let style = null;
     if (itemsArray.length > 0) {
         itemsArray.forEach(obj => {
@@ -40,23 +40,23 @@ export function editStyle(name, style) {
     removeFromLocalStorage(name);
     addToLocalStorage(style);
 }
-export function removeStyle(name) {
+export function removeStyle(name, style) {
     removeFromLocalStorage(name);
 }
 function removeFromLocalStorage(name) {
-    const existingStyle = getCustomStylesByName(name);
-    const itemsArray = localStorage.getItem('customStyleList') ? JSON.parse(localStorage.getItem('customStyleList')) : [];
+    const existingStyle = getCustomStyleByName(name);
+    const itemsArray = window.localStorage.getItem('customStyleList') ? JSON.parse(window.localStorage.getItem('customStyleList')) : [];
     if (itemsArray.includes(existingStyle)) {
         for (let i = 0; i < itemsArray.length; i++) {
             if (itemsArray[i] === existingStyle) {
                 itemsArray.splice(i, 1);
             }
         }
-        localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
+        window.localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
     }
 }
 function addToLocalStorage(style) {
-    const itemsArray = localStorage.getItem('customStyleList') ? JSON.parse(localStorage.getItem('customStyleList')) : [];
+    const itemsArray = window.localStorage.getItem('customStyleList') ? JSON.parse(window.localStorage.getItem('customStyleList')) : [];
     itemsArray.push(style);
-    localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
+    window.localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
 }

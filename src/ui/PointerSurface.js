@@ -36,9 +36,8 @@ class PointerSurface extends React.PureComponent<any, any> {
       id,
       style,
       title,
-      children,
-      value
-    } = this.props;
+      children
+          } = this.props;
     const { pressed } = this.state;
 
     const buttonClassName = cx(className, {

@@ -55,49 +55,48 @@ export default class StylePlugin extends Plugin {
             },
         });
     }
-	
+
 	getEffectiveSchema(schema) {
 		return applyEffectiveSchema(schema);
 	}
 }
 
-function assingIDsForMissing(prevState, nextState) {
-	let tr = nextState.tr;
-	let modified = false;
-	const objIds = [];
+// function assingIDsForMissing(prevState, nextState) {
+// 	const tr = nextState.tr;
+// 	let modified = false;
+// 	const objIds = [];
 
-	// Adds a unique id to a node
-	nextState.doc.descendants((node, pos) => {
-		let required = false;
-		if (requiredAddAttr(node)) {
-			required = true;
-		} else {
-			const objId = node.attrs[ATTR_OBJID];
-			if(objIds.includes(objId)) {
-				// objectId already exists, recreate
-				required = true;
-			} else {
-				if(objId) {
-					objIds.push(objId);
-				}
-			}
-		}
-		if (required) {
-			const newId = guidGenerator();
-			objIds.push(newId);
+// 	// Adds a unique id to a node
+// 	nextState.doc.descendants((node, pos) => {
+// 		let required = false;
+// 		if (requiredAddAttr(node)) {
+// 			required = true;
+// 		} else {
+// 			const objId = node.attrs[ATTR_OBJID];
+// 			if(objIds.includes(objId)) {
+// 				// objectId already exists, recreate
+// 				required = true;
+// 			} else {
+// 				if(objId) {
+// 					objIds.push(objId);
+// 				}
+// 			}
+// 		}
+// 		if (required) {
+// 			const newId = guidGenerator();
+// 			objIds.push(newId);
 
-			const attrs = node.attrs;
-			tr.setNodeMarkup(pos, undefined, {
-				...attrs,
-				[ATTR_OBJID]: newId
-			});
-			modified = true;
-		}
-	});
+// 			const attrs = node.attrs;
+// 			tr.setNodeMarkup(pos, undefined, {
+// 				...attrs,
+// 				[ATTR_OBJID]: newId
+// 			});
+// 			modified = true;
+// 		}
+// 	});
 
-	return modified ? tr : null;
-}
-
+// 	return modified ? tr : null;
+// }
 function applyStyles(state) {
     let tr = state.tr;
     tr.doc.descendants(function(child, pos) {
@@ -106,7 +105,6 @@ function applyStyles(state) {
             tr = applyStyle(tr, state, child, pos, pos + contentLen);
         }
     });
-
     return tr;
 }
 
@@ -117,21 +115,18 @@ function applyStyle(tr, state, node, startPos, endPos) {
     }
     return tr;
 }
-
-function isMarkHasAttribute(mark, attrName) {
-	return (mark.attrs && mark.attrs[attrName]);
-}
-
-function isTargetMarkAllowed(mark) {
-	return ALLOWED_MARKS.includes(mark.type.name);
-}
-
-function requiredAddAttr(mark) {
-	return isTargetMarkAllowed(mark) && !isMarkHasAttribute(mark, ATTR_OBJID);
-}
+// function isMarkHasAttribute(mark, attrName) {
+// 	return (mark.attrs && mark.attrs[attrName]);
+// }
+// function isTargetMarkAllowed(mark) {
+// 	return ALLOWED_MARKS.includes(mark.type.name);
+// }
+// function requiredAddAttr(mark) {
+// 	return isTargetMarkAllowed(mark) && !isMarkHasAttribute(mark, ATTR_OBJID);
+// }
 
 function createMarkAttributes(mark, markName) {
-	const requiredAttrs = [...NEWATTRS];
+	const requiredAttrs = ['NEWATTRS'];
 
 	requiredAttrs.forEach(key => {
 		let newAttr = mark.attrs[key];
@@ -151,7 +146,7 @@ function createNewAttributes(schema) {
 	const marks = [];
 
 	ALLOWED_MARKS.forEach((name) => {
-		getRequiredNodes(marks, name, schema);
+		// getRequiredNodes(marks, name, schema);
 	});
 
 	for (let i = 0, name = ''; i < marks.length; i++) {
@@ -171,32 +166,31 @@ function createNewAttributes(schema) {
 	return schema;
 }
 
-function getRequiredMarks(marks, markName, schema) {
-	nodes.push(getContent(markName, schema));
-	nodes.push(schema.marks[markName]);
-}
+// function getRequiredMarks(marks, markName, schema) {
+// 	nodes.push(getContent(markName, schema));
+// 	nodes.push(schema.marks[markName]);
+// }
 
 function applyEffectiveSchema(schema) {
-	if (schema && schema[SPEC]) {
+	if (schema && schema['spec']) {
 		createNewAttributes(schema);
 	}
 
 	return schema;
 }
 
-function getContent(type, schema) {
-	let content = null;
-	const contentArr = schema[SPEC]['marks']['content'];
-	const len = contentArr.length;
-	// check even index to find the content type name
-	for (let i = 0; i < len; i += 2) {
-		if (type == contentArr[i]) {
-			// found, so get the actual content which is in the next index.
-			content = contentArr[i + 1];
-			// break the loop;
-			i = len;
-		}
-	}
-
-	return content;
-}
+// function getContent(type, schema) {
+// 	let content = null;
+// 	const contentArr = schema[SPEC]['marks']['content'];
+// 	const len = contentArr.length;
+// 	// check even index to find the content type name
+// 	for (let i = 0; i < len; i += 2) {
+// 		if (type == contentArr[i]) {
+// 			// found, so get the actual content which is in the next index.
+// 			content = contentArr[i + 1];
+// 			// break the loop;
+// 			i = len;
+// 		}
+// 	}
+// 	return content;
+// }

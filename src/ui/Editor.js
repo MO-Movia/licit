@@ -111,7 +111,7 @@ return true;
 
 // [FS] IRAD-1076 2020-10-20
 // show a pop up menu with options while pasting.
-function popupPasteMenu(view, event,slice:Slice){
+function popupPasteMenu(view, event,slice){
   let  _popUp = null;
   _popUp = createPopUp(
     PasteMenu,

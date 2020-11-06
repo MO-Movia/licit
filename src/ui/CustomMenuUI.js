@@ -9,12 +9,11 @@ import CustomStyleItem from './CustomStyleItem';
 
 import createPopUp from './createPopUp';
 import CustomStyleSubMenu from './CustomStyleSubMenu';
-import CustomStyleDropdown from './CustomStyleDropdown';
 import CustomStyleEditor from './CustomStyleEditor';
 import {
     atViewportCenter
 } from './PopUpPosition';
-import { saveStyle, removeStyle } from '../customStyle';
+import { saveStyle } from '../customStyle';
 
 // [FS] IRAD-1039 2020-09-24
 // UI to show the list buttons
@@ -68,9 +67,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                     dispatch={dispatch}
                     editorState={editorState}
                     editorView={editorView}
+                    hasText={true}
                     label={label}
                     onClick={this._onUIEnter}
-                    hasText={true}
                 ></CustomStyleItem>);
             });
         });
@@ -83,9 +82,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                     dispatch={dispatch}
                     editorState={editorState}
                     editorView={editorView}
+                    hasText={false}
                     label={command._customStyleName}
                     onClick={this._onUIEnter}
-                    hasText={false}
                 ></CustomStyleItem>);
             });
         });
@@ -131,12 +130,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                         this._popUp = null;
                         if (undefined !== val && val.command._customStyle) {
                             // do edit,remove,rename code here
-                            if ('remove' == val.type) {
-                                removeStyle(val.command._customStyle.stylename);
-                            }
-                            else {
-                                this.showStyleWindow(command, event);
-                            }
+                            this.showStyleWindow(command, event);
                         }
                     }
                 },
@@ -171,14 +165,14 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                         //handle save style object part here
                         if (undefined !== val) {
                             const { dispatch } = this.props.editorView;
-                            let tr = this.props.editorState;
-                            const doc = state.doc;
+                            const tr = this.props.editorState.tr;
+                            // const doc = this.props.editorState.doc;
                             saveStyle(val);
-                            tr = tr.setSelection(TextSelection.create(doc, 0, 0));
+                            // tr = tr.setSelection(TextSelection.create(doc, 0, 0));
                             // Apply created styles to document
-                            tr = this.applyStyle(val.styles, val.stylename, state, tr);
+                            // tr = this.applyStyle(val.styles, val.stylename, this.props.editorState, tr);
                             dispatch(tr);
-                            view.focus();
+                            this.props.editorView.focus();
                         }
                     }
                 },

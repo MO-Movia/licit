@@ -43,7 +43,6 @@ export default class ObjectIdPlugin extends Plugin {
 			props: {
 				handleDOMEvents: {
 					keydown(view, event) {
-						const charCode = event.key;
 					}
 				},
 				nodeViews: []

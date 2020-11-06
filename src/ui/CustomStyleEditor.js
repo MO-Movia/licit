@@ -3,13 +3,12 @@
 // UI for Custom Style edit
 //Need to change the button binding implementation
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import './custom-style-edit.css';
 import ColorEditor from './ColorEditor';
 import createPopUp from './createPopUp';
 import { FONT_PT_SIZES } from './FontSizeCommandMenuButton';
 import { FONT_TYPE_NAMES } from '../FontTypeMarkSpec';
-import CustomStyleDropdown from './CustomStyleDropdown';
+
 
 
 
@@ -79,7 +78,7 @@ const LEVEL_VALUES = [
 ];
 
 const SAMPLE_TEXT = `Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample
-Sample Text Sample Text Sample Text Sample Text Sample Text`
+Sample Text Sample Text Sample Text Sample Text Sample Text`;
 class CustomStyleEditor extends React.PureComponent<any, any> {
 
     _unmounted = false;
@@ -92,20 +91,6 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         };
     };
 
-    // [FS] IRAD-1005 2020-09-24
-    // Upgrade outdated packages.
-    // To take care of the property type declaration.
-    static propsTypes = {
-        initialValue: PropTypes.object,
-        close: function (props: any, propName: string) {
-            const fn = props[propName];
-            if (!fn.prototype ||
-                (typeof fn.prototype.constructor !== 'function' &&
-                    fn.prototype.constructor.length !== 1)) {
-                return new Error(propName + 'must be a function with 1 arg of type ImageLike');
-            }
-        }
-    }
 
     componentWillUnmount(): void {
         this._unmounted = true;
@@ -236,7 +221,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
     // handles font name change
     onIndentRadioChanged(e) {
-        let val = e.target.checked;
+        const val = e.target.checked;
         if ('0' == e.target.value) {
             this.setState({ styles: { ...this.state.styles, islevelbased: val } });
         }
@@ -297,39 +282,39 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         );
     }
     //shows the alignment and line spacing option
-    showAlignmentDialog(isAlignment, event) {
-        const anchor = event ? event.currentTarget : null;
-        // close the popup toggling effect
-        if (this._popUp) {
-            this._popUp.close();
-            this._popUp = null;
-            return;
-        }
-        this._popUp = createPopUp(
-            CustomStyleDropdown,
-            {
-                isAlignment: isAlignment,
-                value: isAlignment ? this.state.styles.align : this.state.styles.lineheight
-            },
-            {
-                anchor,
-                IsChildDialog: true,
-                onClose: val => {
-                    if (this._popUp) {
-                        this._popUp = null;
-                        if (undefined !== val) {
-                            if (isAlignment) {
-                                this.setState({ styles: { ...this.state.styles, align: val } });
-                            }
-                            else {
-                                this.setState({ styles: { ...this.state.styles, lineheight: val } });
-                            }
-                        }
-                    }
-                },
-            }
-        );
-    }
+    // showAlignmentDialog(isAlignment, event) {
+    //     const anchor = event ? event.currentTarget : null;
+    //     // close the popup toggling effect
+    //     if (this._popUp) {
+    //         this._popUp.close();
+    //         this._popUp = null;
+    //         return;
+    //     }
+    //     this._popUp = createPopUp(
+    //         CustomStyleDropdown,
+    //         {
+    //             isAlignment: isAlignment,
+    //             value: isAlignment ? this.state.styles.align : this.state.styles.lineheight
+    //         },
+    //         {
+    //             anchor,
+    //             IsChildDialog: true,
+    //             onClose: val => {
+    //                 if (this._popUp) {
+    //                     this._popUp = null;
+    //                     if (undefined !== val) {
+    //                         if (isAlignment) {
+    //                             this.setState({ styles: { ...this.state.styles, align: val } });
+    //                         }
+    //                         else {
+    //                             this.setState({ styles: { ...this.state.styles, lineheight: val } });
+    //                         }
+    //                     }
+    //                 }
+    //             },
+    //         }
+    //     );
+    // }
 
     //handles the option button click, close the popup with selected values
     onAlignButtonClick(val, event) {
@@ -341,25 +326,25 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         this.setState({ styles: { ...this.state.styles, hasnumbering: val.target.checked } });
     }
     componentDidMount() {
-        var acc = document.getElementsByClassName("accordion");
-        var i;
+        const acc = document.getElementsByClassName('accordion');
+        let i;
 
         for (i = 0; i < acc.length; i++) {
-            acc[i].addEventListener("click", function () {
-                this.classList.toggle("accactive");
-                var panel = this.nextElementSibling;
+            acc[i].addEventListener('click', function () {
+                this.classList.toggle('accactive');
+                const panel = this.nextElementSibling;
                 if (panel.style.maxHeight) {
                     panel.style.maxHeight = null;
                 } else {
-                    panel.style.maxHeight = panel.scrollHeight + "px";
+                    panel.style.maxHeight = panel.scrollHeight + 'px';
                 }
             });
         }
-        var mp = document.getElementsByClassName("panel")[0];
-        mp.style.maxHeight = mp.scrollHeight + "px";
+        const mp = document.getElementsByClassName('panel')[0];
+        mp.style.maxHeight = mp.scrollHeight + 'px';
 
-        var ac = document.getElementById("accordion1");
-        ac.classList.toggle("accactive");
+        const ac = document.getElementById('accordion1');
+        ac.classList.toggle('accactive');
     }
 
     render(): React.Element<any> {
@@ -386,7 +371,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
                     <div className="sectiondiv editorsection">
 
-                        <div style={{ height: '150px', overflow: "auto", marginBottom: '5px' }}>
+                        <div style={{ height: '150px', overflow: 'auto', marginBottom: '5px' }}>
                             <button class="accordion" id="accordion1"><span class="iconspan czi-icon text_format">text_format</span> Font</button>
                             <div class="panel">
                                 <div className="sectiondiv">
@@ -483,22 +468,22 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     </span>
                                     <span>
                                         <label>
-                                            <input type="checkbox" checked={this.state.styles.hasnumbering}
-                                                onChange={this.handleNumbering.bind(this)} />
+                                            <input checked={this.state.styles.hasnumbering} onChange={this.handleNumbering.bind(this)}
+                                                type="checkbox" />
                                     Numbering(1.1)
                                     </label>
                                     </span>
                                     <p className="formp">Indenting:</p>
                                     <div className="spacingdiv">
                                         <div>
-                                            <input type="radio" value="0" name="indenting" checked={this.state.styles.islevelbased}
-                                                onChange={this.onIndentRadioChanged.bind(this)} /> Based On Level
+                                            <input checked={this.state.styles.islevelbased} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
+                                                value="0" /> Based On Level
                                     </div>
                                         <div>
-                                            <input type="radio" value="1" name="indenting" checked={this.state.styles.islevelspecified}
-                                                onChange={this.onIndentRadioChanged.bind(this)} /> Specified
+                                            <input checked={this.state.styles.islevelspecified} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
+                                                value="1" /> Specified
                                             <span>
-                                                <select className="leveltype" style={{ marginLeft: '10px' }} onChange={this.onIndentChange.bind(this)} value={this.state.styles.indent}>
+                                                <select className="leveltype" onChange={this.onIndentChange.bind(this)} style={{ marginLeft: '10px' }} value={this.state.styles.indent}>
                                                     {INDENT_VALUES.map(({ label, value }) => (
                                                         <option key={value} value={value}>
                                                             {label}
@@ -516,10 +501,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                             <div className="sampletext">
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                         </div>
-                            <div id="sampletextdiv" style={this.buildStyle()} className={this.state.styles.super ? 'hide-sampletext' : 'visible-sampletext'}>
+                            <div className={this.state.styles.super ? 'hide-sampletext' : 'visible-sampletext'} id="sampletextdiv" style={this.buildStyle()}>
                                 {SAMPLE_TEXT}
                             </div>
-                            <sup id="mo-sup" style={this.buildStyle()} className={this.state.styles.super ? 'visible-sampletext' : 'hide-sampletext'}>
+                            <sup className={this.state.styles.super ? 'visible-sampletext' : 'hide-sampletext'} id="mo-sup" style={this.buildStyle()}>
                                 {SAMPLE_TEXT}
                             </sup>
                             <div className="sampletext">
