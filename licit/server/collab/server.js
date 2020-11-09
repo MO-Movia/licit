@@ -12,7 +12,7 @@ import * as Flatted from 'flatted';
 // This is for Capcomode document attribute. Shared Step, so that capcomode can be dealt collaboratively.
 import SetDocAttrStep from '../../../src/SetDocAttrStep';
 const router = new Router();
-SetDocAttrStep.register();
+
 // [FS] IRAD-1040 2020-09-02
 let effectiveSchema = EditorSchema;
 let lastUpdatedSchema = null;

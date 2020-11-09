@@ -68,17 +68,8 @@ class SetDocAttrStep extends Step {
   static fromJSON(schema: any, json: SetDocAttrStepJSONValue) {
     return new SetDocAttrStep(json.key, json.value, json.stepType);
   }
-  static register() {
-    try {
-      // [FS] IRAD-899 2020-03-13
-      // Register this step so that document attrbute changes can be dealt collaboratively.
-      Step.jsonID(STEPNAME_SDA, SetDocAttrStep);
-    } catch (err) {
-      if (err.message !== `Duplicate use of step JSON ID ${STEPNAME_SDA}`) throw err;
-    }
-    return true;
-  }
+
 }
 
-
+Step.jsonID("SetDocAttr", SetDocAttrStep);
 export default SetDocAttrStep;
