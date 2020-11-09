@@ -71,5 +71,5 @@ class SetDocAttrStep extends Step {
 
 }
 
-Step.jsonID("SetDocAttr", SetDocAttrStep);
+Step.jsonID('SetDocAttr', SetDocAttrStep);
 export default SetDocAttrStep;

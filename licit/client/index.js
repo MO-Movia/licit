@@ -4,7 +4,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 
 import Licit from '../../src/client/Licit';
-import  ObjectIdPlugin  from '../../src/objectIdPlugin';
+import ObjectIdPlugin from '@mo/licit-objectid';
 
 
 function main(): void {
