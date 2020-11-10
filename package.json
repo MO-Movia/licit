@@ -78,6 +78,7 @@
   "dependencies": {
     "@mo/doc-attrs-step": "file:mo-doc-attrs-step-0.0.1-0.tgz",
     "@mo/licit-objectid": "file:mo-licit-objectid-0.0.1-0.tgz",
+    "@modusoperandi/doc-attrs-step": "file:modusoperandi-doc-attrs-step-0.0.1-0.tgz",
     "browserkeymap": "2.0.2",
     "classnames": "2.2.6",
     "color": "3.1.2",

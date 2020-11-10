@@ -5,7 +5,7 @@ import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 
-import { SetDocAttrStep } from '@mo/doc-attrs-step';
+import { SetDocAttrStep } from '@modusoperandi/doc-attrs-step';
 import DocLayoutEditor from './ui/DocLayoutEditor';
 import UICommand from './ui/UICommand';
 import createPopUp from './ui/createPopUp';
