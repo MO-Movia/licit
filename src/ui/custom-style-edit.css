@@ -2,7 +2,7 @@
     /* padding: 10px; */
     color: white;
     width: 350px;
-    height: 500px;
+    height: 470px;
     border: 1px solid #4a4949;
     font-family: Arial;
     background: #e6e6e6;
@@ -15,6 +15,7 @@
 .spacingdiv {
     border: 1px solid gray;
     padding: 5px;
+    margin-left:1px;
 }
 .spacingdiv label {
     color: #464343;
@@ -24,12 +25,18 @@
 
 .formp {
     color: #464343;
-    margin: 4px 0;
-    font-size: 14px;
+    margin-top:2px;
+    padding-top:1px;
+    padding-right:9px;
+    padding-left:0px;
+    font-size:14px;
+    margin-bottom: 2px;
+    padding-bottom: 2px;;
 }
 .linespacing{
     width: 140px;
     height: 22px;
+    margin-left: 2px;
 }
 .spacinginput {
     /* margin: 0 0 0 15px !important; */
@@ -37,6 +44,10 @@
     font-size: 13px;
     line-height: unset;
     width: 50px;
+    margin-right:px;
+    padding-right:3px;
+    margin-left:4px;
+    padding-left:2px;
 }
 
 .customedit-head {
@@ -47,11 +58,15 @@
     font-family: Arial;
     font-size: 25px;
     font-family: sans-serif;
+    margin-left:2px;
+    text-align:center;
 }
 
 .customedit-body {
-    padding: 10px;
+    padding-top: 1px;
     color: #464343;
+    padding-bottom: 0px;
+    margin-top: 3px;
 }
 
 label {
@@ -61,20 +76,26 @@ label {
 .stylenameinput {
     /* margin: 0 0 0 15px !important; */
     font-family: inherit;
-    font-size: 13px;
+    font-size: 20px;
     line-height: unset;
     width: 97%;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
     color: black;
+    margin-left:0px;
+    padding-left:0px; 
+    padding-right:0px;
+    margin-right:0px;
 }
 
 .sectiondiv {
     /* margin: 5px 0; */
-    padding: 5px
+    padding-left: 2px;
+    margin-left:4px;
 }
 
 .iconspan {
-    margin: 0 10px;
+    margin-top:0px;
+    margin-right:10px;
 }
 
 .editorsection {
@@ -83,12 +104,19 @@ label {
     box-sizing: border-box;
     overflow: hidden;
     /* padding: 2px 7px 2px 0; */
-    position: relative;
+    margin-top:4px;
+    padding-left:5px;
+    margin-left:6px;
+    padding-right: 5px;
+    margin-right: 7px;
+    margin-bottom: 0px;
+    padding-bottom: 3px;
+    padding-top: 3px;
 }
 
 .textAreadiv {
     width: 95%;
-    height: 129px;
+    height: 117px;
     -webkit-rtl-ordering: logical;
     flex-direction: column;
     resize: auto;
@@ -99,10 +127,16 @@ label {
     font: 400 11px Arial;
     border-width: 1px;
     border-style: solid;
-    border-color: #a59b9b;
+    border-color:grey;
     border-image: initial;
     padding: 8px;
-    color: black;
+    color: gray;
+    margin-left: 0px;
+    margin-right: 20px;
+    padding-right: 6px;
+    margin-top:7px;
+    padding-bottom:6px;
+    
     /* font-size: 11px; */
 }
 
@@ -114,22 +148,38 @@ label {
     width: 62px;
     height: 22px;
     margin-left: 5px;
+    margin-top: 7px;
+    padding-top: 2px;
+    margin-bottom:3px;
+    padding-bottom:3px;
 }
 
 .fonttype {
     width: 210px;
     height: 22px;
+    margin-top: 7px;
+    padding-top: 2px;
+    margin-bottom:3px;
+    padding-bottom:3px;
+    margin-left: 5px;
 }
 
 .leveltype {
-    width: 150px;
+    width: 130px;
     height: 22px;
+    margin-left:0px;
+    padding-left:2px;
+
 }
 
 .numbering {
-    width: 183px;
+    width: 500px;
     height: 22px;
     font-size: 13px;
+    margin-right:5Px;
+    padding-right:5px;
+    margin-bottom:0px;
+    padding-bottom:0px;
 }
 
 .indenting {
@@ -137,10 +187,24 @@ label {
     height: 22px;
     margin-left: 10px;
     font-size: 13px;
+    padding-left: 0px;
+    padding-bottom: 2px;    
 }
 
 .btns {
-    text-align: right;
+    text-align:right;
+    padding-right:0px;
+    margin-right:0px;
+    margin-left:28px;
+    padding-left:4px;
+    margin-top:2px;
+    margin-bottom:2px;
+}
+
+.b2  {
+    padding-left:6px;
+    margin-left:8px;
+    margin-top:2px;
 }
 
 .align-menu-button {
@@ -149,15 +213,15 @@ label {
     background: transparent;
     border: none;
     white-space: nowrap;
-    margin-left: 13px;
+    margin-left:-3px;
 }
 
 .align-menu-button-icon {
-    margin-left: -6px;
+    margin-left:-3px;
 }
 
 .align-menu-dropdown-icon {
-    margin-left: -4px;
+    margin-left:0;
 }
 
 .dropdown-div {
@@ -168,10 +232,14 @@ label {
 
 .dropdown-buttons {
     margin: 5px 8px;
+    padding-top: 5px;
 }
 
 .visible-sampletext {
     display: block;
+    margin-top: 1px;
+    padding:0;
+    color: black;
 }
 
 .hide-sampletext {
@@ -182,14 +250,19 @@ label {
     background-color: #eee;
     color: #444;
     cursor: pointer;
-    padding: 5px;
+    padding-bottom:5px;
+    margin-bottom:4px;
     width: 100%;
-    border: none;
+    border: solid;
     text-align: left;
-    outline: none;
+
     font-size: 15px;
     transition: 0.4s;
     border: 1px solid lightgray;
+    padding-left:6px;
+    margin-left:2px;
+    margin-top: 3px;
+    padding-top: 3px;
 }
 
 .accactive,
@@ -203,6 +276,8 @@ label {
     font-weight: bold;
     float: right;
     margin-left: 5px;
+    margin-right: 5px;
+    padding-right: 5px;
 }
 
 .accactive:after {
@@ -213,17 +288,47 @@ label {
 .panel1,
 .panel2 {
     padding: 0 7px;
+    width:auto;
     background-color: white;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
 }
-
+.chknumbering {
+    margin-top: 2px;
+    padding-top: 2px;
+}
 .alignbuttons {
     width: 70px;
     background-color: #f0f0f0;
     border-color: #555;
     outline: none;
     text-align: center;
-    padding: 0
+    padding:2px;
+    margin:0;
+}
+ 
+.czi-custom-buttons{
+    padding-left:4px;
+    margin-left:0;
+    margin-right: 2px;
+    padding-right: 2px;
+}
+
+.iconspan czi-icon format align center {
+    padding-left:2px;
+    margin-left:2px;
+}
+
+.format align right {
+    padding-left:2px;
+    margin-left:2px;
+}
+
+.iconspan czi-icon account tree{
+    margin-top:10px;
+}
+
+.specifiedindent{
+    margin-left: 10px;
 }

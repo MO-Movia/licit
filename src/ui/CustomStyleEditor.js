@@ -371,7 +371,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
                     <div className="sectiondiv editorsection">
 
-                        <div style={{ height: '150px', overflow: 'auto', marginBottom: '5px' }}>
+                        <div style={{ height: '124px', overflow: 'auto', overflowX: 'hidden', paddingTop: '5px', marginTop: '5px' }}>
                             <button class="accordion" id="accordion1"><span class="iconspan czi-icon text_format">text_format</span> Font</button>
                             <div class="panel">
                                 <div className="sectiondiv">
@@ -418,11 +418,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     <span aria-label=" Align Left" class="czi-tooltip-surface" data-tooltip=" Align Left" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.value == 'left' ? 'czi-custom-button use-icon active' : 'czi-custom-button alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'left')} role="button">
                                         <span class="iconspan czi-icon format_align_left">format_align_left</span></span></span>
                                     <span aria-label=" Align Center" class="czi-tooltip-surface alignbuttons" data-tooltip=" Align Center" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.value == 'center' ? 'czi-custom-button use-icon active' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'center')} role="button">
-                                        <span class="iconspan czi-icon format_align_center">format_align_center</span></span></span>
+                                        <span class="iconspan czi-icon format align center">format_align_center</span></span></span>
                                     <span aria-label=" Align Right" class="czi-tooltip-surface alignbuttons" data-tooltip=" Align Right" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.value == 'right' ? 'czi-custom-button use-icon active' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'right')} role="button">
-                                        <span class="iconspan czi-icon format_align_right">format_align_right</span></span></span>
+                                        <span class="iconspan czi-icon format align right">format_align_right</span></span></span>
                                     <span aria-label=" Justify" class="czi-tooltip-surface alignbuttons" data-tooltip=" Justify" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.value == 'justify' ? 'czi-custom-button use-icon active' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'justify')} role="button">
-                                        <span class="iconspan czi-icon format_align_justify">format_align_justify</span></span></span>
+                                        <span class="iconspan czi-icon format align justify">format_align_justify</span></span></span>
                                 </div>
                                 <p className="formp">Line Spacing:</p>
                                 <select className="linespacing" onChange={this.onLineSpaceChange.bind(this)} value={this.state.styles.lineheight}>
@@ -435,24 +435,24 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                 <p className="formp">Paragraph Spacing:</p>
 
                                 <div className="spacingdiv">
-                                    <label>Before:</label>
+                                <label>Before: </label>
                                     <span>
                                         <input className="spacinginput" key="before"
                                             onChange={this.onStyleClick.bind(this, 'before')} type="text" value={this.state.styles.spacebefore} />
                                     </span>
-                                    <label>pts</label>
+                                    <label> pts</label>
 
-                                    <label style={{ marginLeft: '24px' }}>After:</label>
+                                    <label style={{ marginLeft: '23px' }}>After: </label>
                                     <span>
                                         <input className="spacinginput" key="after"
                                             onChange={this.onStyleClick.bind(this, 'after')} type="text" value={this.state.styles.spaceafter} />
                                     </span>
-                                    <label>pts</label>
+                                    <label> pts</label>
                                 </div>
                                 <hr></hr>
                             </div>
 
-                            <button class="accordion"><span class="iconspan czi-icon account_tree">account_tree</span>HEIRARCHY</button>
+                            <button class="accordion"><span class="iconspan czi-icon account tree">account_tree</span>HEIRARCHY</button>
                             <div class="panel2 formp">
                                 <p className="formp">Level:</p>
                                 <div className="spacingdiv">
@@ -468,7 +468,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     </span>
                                     <span>
                                         <label>
-                                            <input checked={this.state.styles.hasnumbering} onChange={this.handleNumbering.bind(this)}
+                                            <input checked={this.state.styles.hasnumbering} className="chknumbering" onChange={this.handleNumbering.bind(this)}
                                                 type="checkbox" />
                                     Numbering(1.1)
                                     </label>
@@ -483,7 +483,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                             <input checked={this.state.styles.islevelspecified} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
                                                 value="1" /> Specified
                                             <span>
-                                                <select className="leveltype" onChange={this.onIndentChange.bind(this)} style={{ marginLeft: '10px' }} value={this.state.styles.indent}>
+                                                <select className="leveltype specifiedindent" onChange={this.onIndentChange.bind(this)}  value={this.state.styles.indent}>
                                                     {INDENT_VALUES.map(({ label, value }) => (
                                                         <option key={value} value={value}>
                                                             {label}
@@ -510,7 +510,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                             <div className="sampletext">
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
-                        </div>
+                                </div>
 
 
                             {/* <div className="sectiondiv">
@@ -567,7 +567,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
                         <div className="btns">
                             <button onClick={this._cancel}>Cancel</button>
-                            <button onClick={this._save.bind(this)}>Save</button>
+                            <button className="b2" onClick={this._save.bind(this)}>Save</button>
                         </div>
                     </div>
                 </div >
