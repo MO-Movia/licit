@@ -76,8 +76,6 @@
     "write-file-webpack-plugin": "4.5.1"
   },
   "dependencies": {
-    "@mo/doc-attrs-step": "file:mo-doc-attrs-step-0.0.1-0.tgz",
-    "@mo/licit-objectid": "file:mo-licit-objectid-0.0.1-0.tgz",
     "@modusoperandi/doc-attrs-step": "file:modusoperandi-doc-attrs-step-0.0.1-0.tgz",
     "browserkeymap": "2.0.2",
     "classnames": "2.2.6",
