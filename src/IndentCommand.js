@@ -1,8 +1,8 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState, TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
 import UICommand from './ui/UICommand';
 import updateIndentLevel from './updateIndentLevel';
@@ -24,8 +24,8 @@ class IndentCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const {selection, schema} = state;
-    let {tr} = state;
+    const { selection, schema } = state;
+    let { tr } = state;
     tr = tr.setSelection(selection);
     tr = updateIndentLevel(tr, schema, this._delta);
     if (tr.docChanged) {
@@ -34,6 +34,23 @@ class IndentCommand extends UICommand {
     } else {
       return false;
     }
+  };
+
+  // [FS] IRAD-1087 2020-11-11
+  // New method to execute new styling implementation for indent
+  executeCustom = (
+    state: EditorState,
+    tr: Transform,
+    from: Number,
+    to: Number
+  ): boolean => {
+    const { schema } = state;
+    tr =
+      tr = updateIndentLevel(tr.setSelection(TextSelection.create(tr.doc, from, to)),
+        schema,
+        this._delta
+      );
+    return tr;
   };
 }
 

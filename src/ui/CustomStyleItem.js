@@ -37,8 +37,8 @@ class CustomStyleItem extends React.PureComponent<any, any> {
 
                 <div onClick={(e) => this._onUIEnter(command, e)} style={{ width: '100px' }}>{label}</div>
                 <div onClick={(e) => this._onUIEnter(command, e)} style={{ width: '100px' }} style={customStyle}> {text}</div>
-                <div class="arrow_right" onClick={onClick.bind(this, command)} style={{ width: '50px' }} style={hasText ? { display: 'block' } : { display: 'none' }}>
-                    <span class="czi-icon keyboard_arrow_down">keyboard_arrow_down</span>
+                <div className="arrow_right" onClick={onClick.bind(this, command)} style={{ width: '50px' }} style={hasText ? { display: 'block' } : { display: 'none' }}>
+                    <span className="czi-icon keyboard_arrow_down">keyboard_arrow_down</span>
                 </div>
             </div>
         );
@@ -52,9 +52,8 @@ class CustomStyleItem extends React.PureComponent<any, any> {
 
     _execute = (command, e) => {
         const { dispatch, editorState, editorView, onCommand } = this.props;
-        if (command.execute(editorState, dispatch, editorView, e)) {
-            onCommand && onCommand();
-        }
+        command.execute(editorState, dispatch, editorView, e);
+        onCommand && onCommand();
     };
     // temp method to clear sample text for new and clear command menu item
     sampleText(): String {

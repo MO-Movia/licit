@@ -41,17 +41,16 @@ export function editStyle(name, style) {
     addToLocalStorage(style);
 }
 export function removeStyle(name, style) {
-    removeFromLocalStorage(name);
+    removeFromLocalStorage(name, style);
 }
-function removeFromLocalStorage(name) {
-    const existingStyle = getCustomStyleByName(name);
+function removeFromLocalStorage(name, style) {
     const itemsArray = window.localStorage.getItem('customStyleList') ? JSON.parse(window.localStorage.getItem('customStyleList')) : [];
-    if (itemsArray.includes(existingStyle)) {
-        for (let i = 0; i < itemsArray.length; i++) {
-            if (itemsArray[i] === existingStyle) {
-                itemsArray.splice(i, 1);
-            }
+    // if (itemsArray.includes(style)) {
+    for (let i = 0; i < itemsArray.length; i++) {
+        if (itemsArray[i].stylename === name) {
+            itemsArray.splice(i, 1);
         }
+        // }
         window.localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
     }
 }

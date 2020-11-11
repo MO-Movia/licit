@@ -9,9 +9,7 @@ import {
 import {
     EditorView
 } from 'prosemirror-view';
-import {
-    Node
-} from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 import UICommand from './ui/UICommand';
 import {
     atViewportCenter
@@ -25,10 +23,10 @@ import TextAlignCommand from './TextAlignCommand';
 import FontTypeCommand from './FontTypeCommand';
 import FontSizeCommand from './FontSizeCommand';
 import TextLineSpacingCommand from './TextLineSpacingCommand';
-import {
-    setTextAlign
-} from './TextAlignCommand';
+import { setTextAlign } from './TextAlignCommand';
 import ParagraphSpacingCommand from './ParagraphSpacingCommand';
+import IndentCommand from './IndentCommand';
+import ListToggleCommand from './ListToggleCommand';
 import {
     clearCustomStyleMarks
 } from './clearCustomStyleMarks';
@@ -63,6 +61,8 @@ export const NONE = 'None';
 export const SAFTER = 'spaceafter';
 export const SBEFORE = 'spacebefore';
 export const ATTR_OVERRIDDEN = 'overridden';
+export const INDENT = 'indent';
+export const NUMBERING = 'hasnumbering';
 
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
@@ -126,14 +126,20 @@ export function getCustomStyleCommands(customStyle) {
                 commands.push(new TextLineSpacingCommand(customStyle[property]));
                 break;
 
-                // [FS] IRAD-1100 2020-11-05
-                // Add in leading and trailing spacing (before and after a paragraph)
+            // [FS] IRAD-1100 2020-11-05
+            // Add in leading and trailing spacing (before and after a paragraph)
             case SAFTER:
                 commands.push(new ParagraphSpacingCommand(customStyle[property], true));
                 break;
 
             case SBEFORE:
                 commands.push(new ParagraphSpacingCommand(customStyle[property], false));
+                break;
+            case INDENT:
+                commands.push(new IndentCommand(customStyle[property]));
+                break;
+            case NUMBERING:
+                commands.push(new ListToggleCommand(true, 'x.x.x'));
                 break;
 
             default:
@@ -213,8 +219,8 @@ class CustomStyleCommand extends UICommand {
 
     execute = (
         state: EditorState,
-        dispatch: ? (tr: Transform) => void,
-        view : ? EditorView
+        dispatch: ?(tr: Transform) => void,
+        view: ?EditorView
     ): boolean => {
         let {
             tr
@@ -239,7 +245,7 @@ class CustomStyleCommand extends UICommand {
             return false;
         }
 
-        tr = this.applyStyle(this._customStyle.styles, this._customStyle.stylename, state, tr);
+        tr = applyStyle(this._customStyle.styles, this._customStyle.stylename, state, tr);
 
         if (tr.docChanged || tr.storedMarksSet) {
             dispatch && dispatch(tr);
@@ -269,7 +275,7 @@ class CustomStyleCommand extends UICommand {
                         this.saveStyleObject(val);
                         tr = tr.setSelection(TextSelection.create(doc, 0, 0));
                         // Apply created styles to document
-                        tr = this.applyStyle(val.styles, val.stylename, state, tr);
+                        tr = applyStyle(val.styles, val.stylename, state, tr);
                         dispatch(tr);
                         view.focus();
                     }
@@ -280,40 +286,19 @@ class CustomStyleCommand extends UICommand {
 
 
 
-    //to get the selected node
-    _getNode(state: EditorState, from: Number, to: Number): Node {
-        let selectedNode = null;
-        state.doc.nodesBetween(from, to, (node, startPos) => {
-            if (isAllowedNode(node)) {
-                selectedNode = node;
-            }
-        });
-        return selectedNode;
-    }
 
     // creates a sample style object
     createCustomObject() {
         return {
             stylename: '',
-            mode: 0, //new
+            mode: 0,//new
             styles: {},
         };
 
     }
 
-    // [FS] IRAD-1087 2020-10-14
-    // Apply selected styles to document
-    applyStyle(style, styleName: String, state: EditorState, tr: Transform) {
-        const {
-            selection
-        } = state;
 
-        const startPos = selection.$from.before(1);
-        const endPos = selection.$to.after(1);
-        const node = this._getNode(state, startPos, endPos);
 
-        return applyStyleEx(style, styleName, state, tr, node, startPos, endPos);
-    }
 
     // locally save style object
     saveStyleObject(style) {
@@ -368,9 +353,9 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos) {
 
 export function updateOverrideFlag(styleName, tr, node, startPos, endPos) {
     const style = getCustomStyleByName(styleName);
-    node.descendants(function(child: Node, pos: number, parent: Node) {
+    node.descendants(function (child: Node, pos: number, parent: Node) {
         if (child instanceof Node) {
-            child.marks.forEach(function(mark, index) {
+            child.marks.forEach(function (mark, index) {
                 tr = compareMarkWithStyle(mark, style, tr, startPos, endPos);
             });
         }
@@ -412,6 +397,9 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
             newattrs['paragraphSpacingAfter'] = style.spaceafter ? style.spaceafter : null;
             newattrs['paragraphSpacingBefore'] = style.spacebefore ? style.spacebefore : null;
         }
+        else if (element instanceof IndentCommand) {
+            newattrs['indent'] = style.indent;
+        }
         // to set the marks for the node
         else {
             tr = element.executeCustom(state, tr, startPos, endPos);
@@ -447,21 +435,13 @@ function _setNodeAttribute(state, tr, from, to, attribute) {
 // [FS] IRAD-1087 2020-11-02
 // Issue fix: Missing the applied link after applying a style
 function removeAllMarksExceptLink(from, to, tr, schema) {
-    const {
-        doc
-    } = tr;
+    const { doc } = tr;
     const tasks = [];
     doc.nodesBetween(from, to, (node, pos) => {
         if (node.marks && node.marks.length) {
             node.marks.some(mark => {
-                if ('link' !== mark.type.name &&
-                    // retain Override Style
-                    !mark.attrs[ATTR_OVERRIDDEN]) {
-                    tasks.push({
-                        node,
-                        pos,
-                        mark
-                    });
+                if ('link' !== mark.type.name) {
+                    tasks.push({ node, pos, mark });
                 }
             });
             return true;
@@ -469,13 +449,32 @@ function removeAllMarksExceptLink(from, to, tr, schema) {
         return true;
     });
     tasks.forEach(job => {
-        const {
-            mark
-        } = job;
+        const { mark } = job;
         tr = tr.removeMark(from, to, mark.type);
     });
     tr = setTextAlign(tr, schema, null);
     return tr;
 }
 
+// [FS] IRAD-1087 2020-10-14
+// Apply selected styles to document
+export function applyStyle(style, styleName, state, tr) {
+    const {
+        selection
+    } = state;
+    const startPos = selection.$from.before(1);
+    const endPos = selection.$to.after(1);
+    const node = getNode(state, startPos, endPos);
+    return applyStyleEx(style, styleName, state, tr, node, startPos, endPos);
+}
+//to get the selected node
+export function getNode(state, from, to) {
+    let selectedNode = null;
+    state.doc.nodesBetween(from, to, (node, startPos) => {
+        if (node.type.name === 'paragraph') {
+            selectedNode = node;
+        }
+    });
+    return selectedNode;
+}
 export default CustomStyleCommand;

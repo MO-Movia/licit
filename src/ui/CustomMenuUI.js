@@ -10,10 +10,11 @@ import CustomStyleItem from './CustomStyleItem';
 import createPopUp from './createPopUp';
 import CustomStyleSubMenu from './CustomStyleSubMenu';
 import CustomStyleEditor from './CustomStyleEditor';
+import { applyStyle } from '../CustomStyleCommand';
 import {
     atViewportCenter
 } from './PopUpPosition';
-import { saveStyle } from '../customStyle';
+import { saveStyle, removeStyle } from '../customStyle';
 
 // [FS] IRAD-1039 2020-09-24
 // UI to show the list buttons
@@ -54,7 +55,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     };
 
     render() {
-        const { dispatch, editorState, editorView, commandGroups, staticCommand } = this.props;
+        const { dispatch, editorState, editorView, commandGroups, staticCommand, onCommand } = this.props;
         const children = [];
         const children1 = [];
 
@@ -68,8 +69,10 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                     editorState={editorState}
                     editorView={editorView}
                     hasText={true}
+                    key={label}
                     label={label}
                     onClick={this._onUIEnter}
+                    onCommand={onCommand}
                 ></CustomStyleItem>);
             });
         });
@@ -83,14 +86,16 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                     editorState={editorState}
                     editorView={editorView}
                     hasText={false}
+                    key={label}
                     label={command._customStyleName}
                     onClick={this._onUIEnter}
+                    onCommand={onCommand}
                 ></CustomStyleItem>);
             });
         });
         return (
             <div>
-                <div className="dropbtn" id={this._id}>
+                <div className="dropbtn" id={this._id} >
                     {children}
                     <hr></hr>
                     {children1}
@@ -130,7 +135,12 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                         this._popUp = null;
                         if (undefined !== val && val.command._customStyle) {
                             // do edit,remove,rename code here
-                            this.showStyleWindow(command, event);
+                            if ('remove' === val.type) {
+                                removeStyle(val.command._customStyleName, val.command._customStyle);
+                            }
+                            else {
+                                this.showStyleWindow(command, event);
+                            }
                         }
                     }
                 },
@@ -161,18 +171,19 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                 IsChildDialog: false,
                 onClose: val => {
                     if (this._stylePopup) {
-                        this._stylePopup = null;
                         //handle save style object part here
                         if (undefined !== val) {
                             const { dispatch } = this.props.editorView;
-                            const tr = this.props.editorState.tr;
+                            let tr = this.props.editorState.tr;
                             // const doc = this.props.editorState.doc;
                             saveStyle(val);
                             // tr = tr.setSelection(TextSelection.create(doc, 0, 0));
                             // Apply created styles to document
-                            // tr = this.applyStyle(val.styles, val.stylename, this.props.editorState, tr);
+                            tr = applyStyle(val.styles, val.stylename, this.props.editorState, tr);
                             dispatch(tr);
                             this.props.editorView.focus();
+                            this._stylePopup.close();
+                            this._stylePopup = null;
                         }
                     }
                 },
