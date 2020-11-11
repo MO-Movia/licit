@@ -1,0 +1,5 @@
+bin
+node_modules
+.vscode/
+dist
+*.tgz
