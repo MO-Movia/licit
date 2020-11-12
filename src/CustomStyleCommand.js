@@ -400,6 +400,9 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
         else if (element instanceof IndentCommand) {
             newattrs['indent'] = style.indent;
         }
+        else if (element instanceof ListToggleCommand) {
+            newattrs['indent'] = 0;
+        }
         // to set the marks for the node
         else {
             tr = element.executeCustom(state, tr, startPos, endPos);
