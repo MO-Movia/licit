@@ -59,7 +59,7 @@ export default class StylePlugin extends Plugin {
                 } else {
                     // TODO: Incomplete and so commenting out
                     // when user updates
-                    //tr = updateStyleOverrideFlag(nextState, tr);
+                    tr = updateStyleOverrideFlag(nextState, tr);
                 }
 
                 return tr;
@@ -100,6 +100,7 @@ function handleMarkOverridenFlag(prevState, nextState) {
 }
 
 function updateStyleOverrideFlag(state, tr) {
+    let retObj = { modified: false };	
     if (!tr) {
         tr = state.tr;
     }
@@ -107,11 +108,11 @@ function updateStyleOverrideFlag(state, tr) {
     tr.doc.descendants(function(child, pos) {
         const contentLen = child.content.size;
         if (haveEligibleChildren(child, contentLen)) {
-            tr = updateOverrideFlag(child.attrs.styleName, tr, child, pos, pos + contentLen);
+            tr = updateOverrideFlag(child.attrs.styleName, tr, child, pos, pos + contentLen, retObj);
         }
     });
 
-    return tr;
+    return retObj.modified ? tr : null;
 }
 
 function haveEligibleChildren(node, contentLen) {

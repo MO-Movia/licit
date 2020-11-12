@@ -297,17 +297,16 @@ class CustomStyleCommand extends UICommand {
 
     }
 
-
-
-
     // locally save style object
     saveStyleObject(style) {
         saveStyle(style);
     }
 }
 
-function compareMarkWithStyle(mark, style, tr, startPos, endPos) {
+function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
     let same = false;
+    let overridden = false;
+	
     switch (mark.type.name) {
         case MARK_STRONG:
             same = style[STRONG];
@@ -316,7 +315,7 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos) {
             same = style[EM];
             break;
         case MARK_TEXT_COLOR:
-            same = mark.attrs['name'] == style[COLOR];
+            same = mark.attrs['color'] == style[COLOR];
             break;
         case MARK_FONT_SIZE:
             same = mark.attrs['pt'] == style[FONTSIZE];
@@ -334,11 +333,16 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos) {
         default:
             break;
     }
+	
+    overridden = !same;
 
-    mark.attrs[ATTR_OVERRIDDEN] = !same;
+    if (mark.attrs[ATTR_OVERRIDDEN] != overridden) {
+        mark.attrs[ATTR_OVERRIDDEN] = overridden;
 
-    tr = tr.removeMark(startPos, endPos, mark);
-    tr = tr.addMark(startPos, endPos, mark);
+        tr = tr.removeMark(startPos, endPos, mark);
+        tr = tr.addMark(startPos, endPos, mark);
+        retObj.modified = true;
+    }
     /*
     case FONTNAME:
     case STRIKE:
@@ -351,12 +355,12 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos) {
     return tr;
 }
 
-export function updateOverrideFlag(styleName, tr, node, startPos, endPos) {
+export function updateOverrideFlag(styleName, tr, node, startPos, endPos, retObj) {
     const style = getCustomStyleByName(styleName);
     node.descendants(function (child: Node, pos: number, parent: Node) {
         if (child instanceof Node) {
             child.marks.forEach(function (mark, index) {
-                tr = compareMarkWithStyle(mark, style, tr, startPos, endPos);
+                tr = compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj);
             });
         }
     });
@@ -373,7 +377,7 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
 
     // [FS] IRAD-1087 2020-11-02
     // Issue fix: applied link is missing after applying a custom style.
-    tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema);
+    tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema, loading ? exceptOverridden : exceptLink);
 
     const newattrs = Object.assign({}, node.attrs);
     // [FS] IRAD-1074 2020-10-22
@@ -435,16 +439,28 @@ function _setNodeAttribute(state, tr, from, to, attribute) {
     return tr;
 }
 
+function exceptLink(mark) {
+	return ('link' !== mark.type.name);
+}
+
+function exceptOverridden(mark) {
+	return !mark.attrs[ATTR_OVERRIDDEN];
+}
+
 // [FS] IRAD-1087 2020-11-02
 // Issue fix: Missing the applied link after applying a style
-function removeAllMarksExceptLink(from, to, tr, schema) {
+function removeAllMarksExceptLink(from, to, tr, schema, callback) {
     const { doc } = tr;
     const tasks = [];
     doc.nodesBetween(from, to, (node, pos) => {
         if (node.marks && node.marks.length) {
             node.marks.some(mark => {
-                if ('link' !== mark.type.name) {
-                    tasks.push({ node, pos, mark });
+                if (callback(mark)) {
+                    tasks.push({
+                        node,
+                        pos,
+                        mark
+                    });
                 }
             });
             return true;
@@ -470,6 +486,7 @@ export function applyStyle(style, styleName, state, tr) {
     const node = getNode(state, startPos, endPos);
     return applyStyleEx(style, styleName, state, tr, node, startPos, endPos);
 }
+
 //to get the selected node
 export function getNode(state, from, to) {
     let selectedNode = null;
