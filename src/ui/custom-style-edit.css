@@ -328,3 +328,27 @@ label {
 .specifiedindent{
     margin-left: 10px;
 }
+
+.alignbuttons {
+    width: 70px;
+    background-color: #f0f0f0;
+    border-color: #555;
+    outline: none;
+    text-align: center;
+    padding: 0
+}
+
+.alignbuttons:focus,
+.alignbuttons:hover {
+    background-color: #f0f0f0;
+    border-color: #338eec!important;
+    outline: none;
+}
+.activealignbuttons {
+    width: 70px;
+    background-color: #f0f0f0;
+    border-color: #338eec!important;
+    outline: none;
+    text-align: center;
+    padding: 0
+}

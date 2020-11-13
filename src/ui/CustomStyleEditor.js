@@ -244,8 +244,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
     // handles Level drop down change
     onLevelChange(e) {
-
-        this.setState({ styles: { ...this.state.styles, level: e.target.value } });
+        const val = 'None' === e.target.value ? null : e.target.value
+        this.setState({ styles: { ...this.state.styles, level: val } });
     }
 
     // handles indentt dropdown change
@@ -381,13 +381,13 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                             <div className="panel1">
                                 <p className="formp">Alignment:</p>
                                 <div className="czi-custom-buttons">
-                                    <span aria-label=" Align Left" className="czi-tooltip-surface" data-tooltip=" Align Left" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'left' ? 'czi-custom-button use-icon active' : 'czi-custom-button alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'left')} role="button">
+                                    <span aria-label=" Align Left" className="czi-tooltip-surface" data-tooltip=" Align Left" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'left' ? 'czi-custom-button use-icon activealignbuttons' : 'czi-custom-button alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'left')} role="button">
                                         <span className="iconspan czi-icon format_align_left">format_align_left</span></span></span>
-                                    <span aria-label=" Align Center" className="czi-tooltip-surface alignbuttons" data-tooltip=" Align Center" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'center' ? 'czi-custom-button use-icon active' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'center')} role="button">
+                                    <span aria-label=" Align Center" className="czi-tooltip-surface alignbuttons" data-tooltip=" Align Center" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'center' ? 'czi-custom-button use-icon activealignbuttons' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'center')} role="button">
                                         <span className="iconspan czi-icon format_align_center">format_align_center</span></span></span>
-                                    <span aria-label=" Align Right" className="czi-tooltip-surface alignbuttons" data-tooltip=" Align Right" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'right' ? 'czi-custom-button use-icon active' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'right')} role="button">
+                                    <span aria-label=" Align Right" className="czi-tooltip-surface alignbuttons" data-tooltip=" Align Right" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'right' ? 'czi-custom-button use-icon activealignbuttons' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'right')} role="button">
                                         <span className="iconspan czi-icon format_align_right">format_align_right</span></span></span>
-                                    <span aria-label=" Justify" className="czi-tooltip-surface alignbuttons" data-tooltip=" Justify" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'justify' ? 'czi-custom-button use-icon active' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'justify')} role="button">
+                                    <span aria-label=" Justify" className="czi-tooltip-surface alignbuttons" data-tooltip=" Justify" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'justify' ? 'czi-custom-button use-icon activealignbuttons' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'justify')} role="button">
                                         <span className="iconspan czi-icon format_align_justify">format_align_justify</span></span></span>
                                 </div>
                                 <p className="formp">Line Spacing:</p>
@@ -435,7 +435,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     <span>
                                         <label>
                                             <input checked={this.state.styles.hasnumbering} className="chknumbering" onChange={this.handleNumbering.bind(this)}
-                                                type="checkbox" />
+                                                type="checkbox" disabled={this.state.styles.level ? false : true} />
                                     Numbering(1.1)
                                     </label>
                                     </span>

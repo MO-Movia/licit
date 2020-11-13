@@ -408,9 +408,9 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
             newattrs['indent'] = 0;
         }
         // to set the marks for the node
-        else {
+       
             tr = element.executeCustom(state, tr, startPos, endPos);
-        }
+        
     });
 
     // to set custom styleName attribute for node
