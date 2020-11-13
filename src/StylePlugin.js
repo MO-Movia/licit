@@ -38,6 +38,7 @@ export default class StylePlugin extends Plugin {
             state: {
                 init(config, state) {
                     this.loaded = false;
+                    this.firstTime = true;
                 },
                 apply(tr, value, oldState, newState) {}
             },
@@ -56,10 +57,13 @@ export default class StylePlugin extends Plugin {
                     this.loaded = true;
                     // do this only once when the document is loaded.
                     tr = applyStyles(nextState, tr);
-                } else {
-                    // TODO: Incomplete and so commenting out
-                    // when user updates
-                    tr = updateStyleOverrideFlag(nextState, tr);
+                } else if(isDocChanged(transactions)) {
+                    if(!this.firstTime) {
+                        // TODO: Incomplete and so commenting out
+                        // when user updates
+                        tr = updateStyleOverrideFlag(nextState, tr);
+                    }
+                    this.firstTime = false;
                 }
 
                 return tr;
@@ -70,6 +74,10 @@ export default class StylePlugin extends Plugin {
     getEffectiveSchema(schema) {
         return applyEffectiveSchema(schema);
     }
+}
+
+function isDocChanged(transactions) {
+	return (transactions.some((transaction) => transaction.docChanged));
 }
 
 function handleMarkOverridenFlag(prevState, nextState) {
@@ -108,7 +116,9 @@ function updateStyleOverrideFlag(state, tr) {
     tr.doc.descendants(function(child, pos) {
         const contentLen = child.content.size;
         if (haveEligibleChildren(child, contentLen)) {
-            tr = updateOverrideFlag(child.attrs.styleName, tr, child, pos, pos + contentLen, retObj);
+            const startPos = tr.curSelection.$anchor.pos;//pos
+            const endPos = tr.curSelection.$head.pos;//pos + contentLen
+            tr = updateOverrideFlag(child.attrs.styleName, tr, child, startPos, endPos, retObj);
         }
     });
 
@@ -127,7 +137,7 @@ function applyStyles(state, tr) {
     tr.doc.descendants(function(child, pos) {
         const contentLen = child.content.size;
         if (haveEligibleChildren(child, contentLen)) {
-            tr = applyLatestStyle(child.attrs.styleName, state, tr, child, pos, pos + contentLen);
+            tr = applyLatestStyle(child.attrs.styleName, state, tr, child, pos, pos + contentLen + 1);
         }
     });
 

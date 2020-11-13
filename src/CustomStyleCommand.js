@@ -319,14 +319,17 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
             same = mark.attrs['pt'] == style[FONTSIZE];
             break;
         case MARK_FONT_TYPE:
+            same = mark.attrs['name'] == style[FONTNAME];
             break;
         case MARK_STRIKE:
+            same = style[STRIKE];
             break;
         case MARK_SUPER:
             break;
         case MARK_TEXT_HIGHLIGHT:
             break;
         case MARK_UNDERLINE:
+            same = style[UNDERLINE];
             break;
         default:
             break;
@@ -334,7 +337,9 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
 
     overridden = !same;
 
-    if (mark.attrs[ATTR_OVERRIDDEN] != overridden) {
+    if (undefined != mark.attrs[ATTR_OVERRIDDEN] &&
+        mark.attrs[ATTR_OVERRIDDEN] != overridden &&
+        tr.curSelection) {
         mark.attrs[ATTR_OVERRIDDEN] = overridden;
 
         tr = tr.removeMark(startPos, endPos, mark);
@@ -342,11 +347,8 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
         retObj.modified = true;
     }
     /*
-    case FONTNAME:
-    case STRIKE:
     case SUPER:
     case TEXTHL:
-    case UNDERLINE:
     case ALIGN:
     case LHEIGHT:*/
 
@@ -355,15 +357,37 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
 
 export function updateOverrideFlag(styleName, tr, node, startPos, endPos, retObj) {
     const style = getCustomStyleByName(styleName);
-    node.descendants(function (child: Node, pos: number, parent: Node) {
-        if (child instanceof Node) {
-            child.marks.forEach(function (mark, index) {
-                tr = compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj);
-            });
-        }
-    });
+
+    if(style) {
+        node.descendants(function (child: Node, pos: number, parent: Node) {
+            if (child instanceof Node) {
+                child.marks.forEach(function (mark, index) {
+                    tr = compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj);
+                });
+            }
+        });
+    }
 
     return tr;
+}
+
+function onLoadRemoveAllMarksExceptOverridden(node, schema, from, to, tr) {
+	const tasks = [];
+	node.descendants(function (child: Node, pos: number, parent: Node) {
+		if (child instanceof Node) {
+			child.marks.forEach(function (mark, index) {
+				if(!mark.attrs[ATTR_OVERRIDDEN]) {
+					tasks.push({
+						child,
+						pos,
+						mark
+					});
+				}
+			});
+		}
+	});
+
+	return handleRemoveMarks(tr, tasks, from, to, schema);
 }
 
 function applyStyleEx(style, styleName: String, state: EditorState, tr: Transform, node, startPos, endPos) {
@@ -373,9 +397,13 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
     }
     const _commands = getCustomStyleCommands(style);
 
-    // [FS] IRAD-1087 2020-11-02
-    // Issue fix: applied link is missing after applying a custom style.
-    tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema, loading ? exceptOverridden : exceptLink);
+	if(loading) {
+		tr = onLoadRemoveAllMarksExceptOverridden(node, state.schema, startPos, endPos, tr);
+	} else {
+		// [FS] IRAD-1087 2020-11-02
+		// Issue fix: applied link is missing after applying a custom style.
+		tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema);
+	}
 
     const newattrs = Object.assign({}, node.attrs);
     // [FS] IRAD-1074 2020-10-22
@@ -439,23 +467,15 @@ function _setNodeAttribute(state, tr, from, to, attribute) {
     return tr;
 }
 
-function exceptLink(mark) {
-	return ('link' !== mark.type.name);
-}
-
-function exceptOverridden(mark) {
-	return !mark.attrs[ATTR_OVERRIDDEN];
-}
-
 // [FS] IRAD-1087 2020-11-02
 // Issue fix: Missing the applied link after applying a style
-function removeAllMarksExceptLink(from, to, tr, schema, callback) {
+function removeAllMarksExceptLink(from, to, tr, schema) {
     const { doc } = tr;
     const tasks = [];
     doc.nodesBetween(from, to, (node, pos) => {
         if (node.marks && node.marks.length) {
             node.marks.some(mark => {
-                if (callback(mark)) {
+                if ('link' !== mark.type.name) {
                     tasks.push({
                         node,
                         pos,
@@ -467,7 +487,11 @@ function removeAllMarksExceptLink(from, to, tr, schema, callback) {
         }
         return true;
     });
-    tasks.forEach(job => {
+    return handleRemoveMarks(tr, tasks, from, to, schema);
+}
+
+function handleRemoveMarks(tr, tasks, from, to, schema) {
+	tasks.forEach(job => {
         const { mark } = job;
         tr = tr.removeMark(from, to, mark.type);
     });
