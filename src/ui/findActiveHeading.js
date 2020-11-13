@@ -6,7 +6,8 @@ export const HEADING_NAME_DEFAULT = 'None';
 // To create a style object from the customstyles to show the styles in the example piece.
 export function getCustomStyle(customStyle) {
   const style = {
-    float: 'right'
+    float: 'right',
+    marginLeft:'52px'
   };
 
   for (const property in customStyle) {

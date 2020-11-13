@@ -100,7 +100,7 @@ function handleMarkOverridenFlag(prevState, nextState) {
 }
 
 function updateStyleOverrideFlag(state, tr) {
-    let retObj = { modified: false };	
+    const retObj = { modified: false };
     if (!tr) {
         tr = state.tr;
     }

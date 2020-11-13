@@ -56,3 +56,27 @@ export default function toCSSLineSpacing(source: any): string {
   // e.g. line-height: 15px;
   return strValue;
 }
+
+// [FS] IRAD-1104 2020-11-13
+// Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
+  export function getLineSpacingValue(lineSpacing) : string {
+      let  _lineSpaceValue='';
+      switch (lineSpacing) {
+          case 'Single':
+              _lineSpaceValue =  SINGLE_LINE_SPACING;
+              break;
+          case '1.15':
+              _lineSpaceValue = LINE_SPACING_115;
+              break;
+          case '1.5':
+              _lineSpaceValue = LINE_SPACING_150;
+              break;
+          case 'Double':
+              _lineSpaceValue = DOUBLE_LINE_SPACING;
+              break;
+          default:
+            _lineSpaceValue =  SINGLE_LINE_SPACING;
+              break;
+      }
+      return _lineSpaceValue;
+  }

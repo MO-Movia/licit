@@ -1,9 +1,7 @@
 @import './czi-vars.css';
 
 html {
-  counter-reset:
-    czi-counter-0 czi-counter-1 czi-counter-2 czi-counter-3
-    czi-counter-4 czi-counter-5 czi-counter-6 czi-counter-7;
+  counter-reset: czi-counter-0 czi-counter-1 czi-counter-2 czi-counter-3 czi-counter-4 czi-counter-5 czi-counter-6 czi-counter-7;
 }
 
 .ProseMirror ol,
@@ -106,31 +104,31 @@ html {
 Ordered list x.x.x formatting  fix */
 
 .ProseMirror ol[type='x.x.x'][data-indent='6'] > li > ::before {
-  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) '.' counter(czi-counter-3, decimal) '.' counter(czi-counter-4, decimal) '.' counter(czi-counter-5, decimal) '.' counter(czi-counter-6, decimal) " ";
+  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) '.' counter(czi-counter-3, decimal) '.' counter(czi-counter-4, decimal) '.' counter(czi-counter-5, decimal) '.' counter(czi-counter-6, decimal) ' ';
   margin-left: -20px;
 }
 
 .ProseMirror ol[type='x.x.x'][data-indent='5'] > li > ::before {
-  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) '.' counter(czi-counter-3, decimal) '.' counter(czi-counter-4, decimal) '.' counter(czi-counter-5, decimal)  " ";
+  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) '.' counter(czi-counter-3, decimal) '.' counter(czi-counter-4, decimal) '.' counter(czi-counter-5, decimal)  ' ';
   margin-left: -20px;
 }
 .ProseMirror ol[type='x.x.x'][data-indent='4'] > li > ::before {
-  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) '.' counter(czi-counter-3, decimal) '.' counter(czi-counter-4, decimal) " ";
+  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) '.' counter(czi-counter-3, decimal) '.' counter(czi-counter-4, decimal) ' ';
   margin-left: -20px;
 }
 
 .ProseMirror ol[type='x.x.x'][data-indent='3'] > li > ::before {
-  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) '.' counter(czi-counter-3, decimal)  " ";
+  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) '.' counter(czi-counter-3, decimal)  ' ';
   margin-left: -20px;
 }
 
 .ProseMirror ol[type='x.x.x'][data-indent='2'] > li > p::before {
-  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) " ";
+  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) ' ';
   margin-left: -20px;
 }
 
 .ProseMirror ol[type='x.x.x'][data-indent='1'] > li > p::before {
-  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) " ";
+  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) ' ';
   margin-left: -20px;
   /* padding-left: 0; */
   }
@@ -227,7 +225,7 @@ Ordered list 1) formatting  fix */
     margin-left: -24pt;
     width: 24pt;
   }
-  
+
 .ProseMirror ol[type='upper_alpha_bracket'][data-indent='0'] > li > p::before {
     color: var(--czi-list-style-color);
     content: counter(czi-counter-0, upper-alpha) ') ';
@@ -257,7 +255,7 @@ Ordered list 1) formatting  fix */
     width: 24pt;
     padding-left: 20px;
   }
-    
+
   .ProseMirror ol[type='lower_alpha_bracket_closed'][data-indent='0'] > li > p::before {
     color: var(--czi-list-style-color);
     content: '(' counter(czi-counter-0, lower-alpha) ') ';

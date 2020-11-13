@@ -8,9 +8,7 @@ import ColorEditor from './ColorEditor';
 import createPopUp from './createPopUp';
 import { FONT_PT_SIZES } from './FontSizeCommandMenuButton';
 import { FONT_TYPE_NAMES } from '../FontTypeMarkSpec';
-
-
-
+import {getLineSpacingValue} from './toCSSLineSpacing';
 
 // Values to show in indent drop-down
 const INDENT_VALUES = [
@@ -202,7 +200,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             style.textAlign = this.state.styles.align;
         }
         if (this.state.styles.lineheight) {
-            style.lineHeight = this.state.styles.lineheight;
+        // [FS] IRAD-1104 2020-11-13
+        // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
+            style.lineHeight = getLineSpacingValue(this.state.styles.lineheight);
         }
         if (this.state.styles.indent) {
             style.marginLeft = `${this.state.styles.indent * 2}px`;
@@ -244,7 +244,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
     // handles Level drop down change
     onLevelChange(e) {
-        const val = 'None' === e.target.value ? null : e.target.value
+        const val = 'None' === e.target.value ? null : e.target.value;
         this.setState({ styles: { ...this.state.styles, level: val } });
     }
 
@@ -418,7 +418,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                 <hr></hr>
                             </div>
 
-                            <button className="accordion"><span className="iconspan czi-icon account_tree">account_tree</span>HEIRARCHY</button>
+                            <button className="accordion"><span className="iconspan czi-icon account_tree">account_tree</span>HIERARCHY</button>
                             <div className="panel2 formp">
                                 <p className="formp">Level:</p>
                                 <div className="spacingdiv">
@@ -434,8 +434,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     </span>
                                     <span>
                                         <label>
-                                            <input checked={this.state.styles.hasnumbering} className="chknumbering" onChange={this.handleNumbering.bind(this)}
-                                                type="checkbox" disabled={this.state.styles.level ? false : true} />
+                                            <input checked={this.state.styles.hasnumbering} className="chknumbering" disabled={this.state.styles.level ? false : true}
+                                                onChange={this.handleNumbering.bind(this)} type="checkbox" />
                                     Numbering(1.1)
                                     </label>
                                     </span>

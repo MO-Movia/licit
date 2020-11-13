@@ -45,6 +45,7 @@ import {
     MARK_TEXT_HIGHLIGHT,
     MARK_UNDERLINE
 } from './MarkNames';
+import {getLineSpacingValue} from './ui/toCSSLineSpacing';
 
 export const STRONG = 'strong';
 export const EM = 'em';
@@ -284,9 +285,6 @@ class CustomStyleCommand extends UICommand {
         });
     }
 
-
-
-
     // creates a sample style object
     createCustomObject() {
         return {
@@ -306,7 +304,7 @@ class CustomStyleCommand extends UICommand {
 function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
     let same = false;
     let overridden = false;
-	
+
     switch (mark.type.name) {
         case MARK_STRONG:
             same = style[STRONG];
@@ -333,7 +331,7 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
         default:
             break;
     }
-	
+
     overridden = !same;
 
     if (mark.attrs[ATTR_OVERRIDDEN] != overridden) {
@@ -394,7 +392,9 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
             newattrs['align'] = style.align;
             // to set the node attribute for line-height
         } else if (element instanceof TextLineSpacingCommand) {
-            newattrs['lineSpacing'] = style.lineheight;
+        // [FS] IRAD-1104 2020-11-13
+        // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
+            newattrs['lineSpacing'] = getLineSpacingValue(style.lineheight);
         } else if (element instanceof ParagraphSpacingCommand) {
             // [FS] IRAD-1100 2020-11-05
             // Add in leading and trailing spacing (before and after a paragraph)
