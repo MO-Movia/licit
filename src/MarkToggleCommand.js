@@ -98,15 +98,10 @@ function toggleCustomStyle(markType, attrs, state, tr) {
   if ((empty && !$cursor) || !markApplies(state.doc, ranges, markType)) {
     return tr;
   }
-  if ($cursor) {
-    // [FS] IRAD-1043 2020-10-27
-    // No need to remove the applied custom style, if user select the same style multiple times.
-    tr.addMark(startPos, endPos, markType.create(attrs));
-  } else {
 
-    tr.addMark(startPos, endPos, markType.create(attrs));
-  }
-
+  // [FS] IRAD-1043 2020-10-27
+  // No need to remove the applied custom style, if user select the same style multiple times.
+  tr.addMark(startPos, endPos, markType.create(attrs));
   return tr;
 }
 //overrided method from prosemirror Transform

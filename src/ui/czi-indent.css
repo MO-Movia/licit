@@ -110,8 +110,6 @@ ul[data-indent='7'] {
 .ProseMirror ol[type='x.x.x'][data-indent='5']
 .ProseMirror ol[type='x.x.x'][data-indent='6']
 .ProseMirror ol[type='x.x.x'][data-indent='7']
-.ProseMirror ol[type='x.x.x'][data-indent='8']
-{
+.ProseMirror ol[type='x.x.x'][data-indent='8'] {
   margin-left: 1pt;
 }
-

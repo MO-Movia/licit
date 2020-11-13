@@ -13,9 +13,8 @@
 
  /* [FS] IRAD-1048 2020-10-07
  To handle child dialog window  */
-.child-modal
- {
-  background-color:unset !important;
+.child-modal {
+  background-color: unset !important;
   z-index: 10006!important;
 }
 

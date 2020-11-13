@@ -1,72 +1,74 @@
 .customedit-div {
     /* padding: 10px; */
-    color: white;
-    width: 350px;
-    height: 470px;
-    border: 1px solid #4a4949;
-    font-family: Arial;
-    background: #e6e6e6;
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.26); */
+    background: #e6e6e6;
+    border: 1px solid #4a4949;
     box-sizing: border-box;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    height: 470px;
     overflow: hidden;
     position: relative;
+    width: 350px;
 }
 
 .spacingdiv {
     border: 1px solid gray;
+    margin-left: 1px;
     padding: 5px;
-    margin-left:1px;
 }
 .spacingdiv label {
     color: #464343;
-    margin: 4px 0;
     font-size: 14px;
+    margin: 4px 0;
 }
 
 .formp {
     color: #464343;
-    margin-top:2px;
-    padding-top:1px;
-    padding-right:9px;
-    padding-left:0px;
-    font-size:14px;
+    font-size: 14px;
+    margin-top: 2px;
     margin-bottom: 2px;
-    padding-bottom: 2px;;
+    padding-top: 1px;
+    padding-right: 9px;
+    padding-left: 0;
+    padding-bottom: 2px;
 }
+
 .linespacing{
-    width: 140px;
     height: 22px;
     margin-left: 2px;
+    width: 140px;
 }
+
 .spacinginput {
     /* margin: 0 0 0 15px !important; */
     font-family: inherit;
     font-size: 13px;
     line-height: unset;
+    margin-left: 4px;
+    /* margin-right:px; */
+    padding-right: 3px;
+    padding-left: 2px;
     width: 50px;
-    margin-right:px;
-    padding-right:3px;
-    margin-left:4px;
-    padding-left:2px;
 }
 
 .customedit-head {
     border-bottom: 1px solid #d0bfbf;
-    height: 26px;
-    padding: 5px;
     color: #47adec;
-    font-family: Arial;
+    font-family: 'Arial', sans-serif;
     font-size: 25px;
     font-family: sans-serif;
-    margin-left:2px;
-    text-align:center;
+    height: 26px;
+    margin-left: 2px;
+    padding: 5px;
+    text-align: center;
 }
 
 .customedit-body {
-    padding-top: 1px;
     color: #464343;
-    padding-bottom: 0px;
     margin-top: 3px;
+    padding-top: 1px;
+    padding-bottom: 0;
 }
 
 label {
@@ -75,27 +77,28 @@ label {
 
 .stylenameinput {
     /* margin: 0 0 0 15px !important; */
-    font-family: inherit;
-    font-size: 20px;
-    line-height: unset;
-    width: 97%;
-    margin-bottom: 3px;
     color: black;
-    margin-left:0px;
-    padding-left:0px; 
-    padding-right:0px;
-    margin-right:0px;
+    font-family: inherit;
+    /* font-size: 20px; */
+    height: 20px;
+    line-height: unset;
+    margin-bottom: 3px;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    width: 97%;
 }
 
 .sectiondiv {
     /* margin: 5px 0; */
+    margin-left: 4px;
     padding-left: 2px;
-    margin-left:4px;
 }
 
 .iconspan {
-    margin-top:0px;
-    margin-right:10px;
+    margin-right: 10px;
+    margin-top: 0;
 }
 
 .editorsection {
@@ -103,41 +106,40 @@ label {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.26);
     box-sizing: border-box;
     overflow: hidden;
-    /* padding: 2px 7px 2px 0; */
-    margin-top:4px;
-    padding-left:5px;
-    margin-left:6px;
-    padding-right: 5px;
+    margin-bottom: 0;
+    margin-left: 6px;
     margin-right: 7px;
-    margin-bottom: 0px;
+    /* padding: 2px 7px 2px 0; */
+    margin-top: 4px;
     padding-bottom: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
     padding-top: 3px;
 }
 
-.textAreadiv {
-    width: 95%;
-    height: 117px;
-    -webkit-rtl-ordering: logical;
-    flex-direction: column;
-    resize: auto;
-    cursor: text;
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-    margin: 0em;
-    font: 400 11px Arial;
-    border-width: 1px;
-    border-style: solid;
-    border-color:grey;
+.textareadiv {
+    border-color: grey;
     border-image: initial;
-    padding: 8px;
+    border-style: solid;
+    border-width: 1px;
     color: gray;
-    margin-left: 0px;
+    cursor: text;
+    flex-direction: column;
+    font: 400 11px Arial;
+    height: 117px;
+    margin: 0em;
+    margin-left: 0;
     margin-right: 20px;
+    margin-top: 7px;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    padding: 8px;
+    padding-bottom: 6px;
     padding-right: 6px;
-    margin-top:7px;
-    padding-bottom:6px;
-    
-    /* font-size: 11px; */
+    /* resize: auto; */
+    -webkit-rtl-ordering: logical;
+    white-space: pre-wrap;
+    width: 95%;
 }
 
 .sampletext {
@@ -145,83 +147,82 @@ label {
 }
 
 .fontsize {
-    width: 62px;
     height: 22px;
     margin-left: 5px;
     margin-top: 7px;
+    margin-bottom: 3px;
     padding-top: 2px;
-    margin-bottom:3px;
-    padding-bottom:3px;
+    padding-bottom: 3px;
+    width: 62px;
 }
 
 .fonttype {
-    width: 210px;
     height: 22px;
+    margin-bottom: 3px;
+    margin-left: 5px;
     margin-top: 7px;
     padding-top: 2px;
-    margin-bottom:3px;
-    padding-bottom:3px;
-    margin-left: 5px;
+    padding-bottom: 3px;
+    width: 210px;
 }
 
 .leveltype {
-    width: 130px;
     height: 22px;
-    margin-left:0px;
-    padding-left:2px;
-
+    margin-left: 0;
+    padding-left: 2px;
+    width: 130px;
 }
 
 .numbering {
-    width: 500px;
-    height: 22px;
     font-size: 13px;
-    margin-right:5Px;
-    padding-right:5px;
-    margin-bottom:0px;
-    padding-bottom:0px;
+    height: 22px;
+    margin-bottom: 0;
+    margin-right: 5px;
+    padding-right: 5px;
+    padding-bottom: 0;
+    width: 500px;
 }
 
 .indenting {
-    width: 186px;
+    font-size: 13px;
     height: 22px;
     margin-left: 10px;
-    font-size: 13px;
-    padding-left: 0px;
-    padding-bottom: 2px;    
+    padding-left: 0;
+    padding-bottom: 2px;
+    width: 186px;
 }
 
 .btns {
-    text-align:right;
-    padding-right:0px;
-    margin-right:0px;
-    margin-left:28px;
-    padding-left:4px;
-    margin-top:2px;
-    margin-bottom:2px;
+    margin-bottom: 2px;
+    margin-right: 0;
+    margin-left: 28px;
+    margin-top: 2px;
+    padding-right: 0;
+    padding-left: 4px;
+    text-align: right;
 }
 
-.b2  {
-    padding-left:6px;
-    margin-left:8px;
-    margin-top:2px;
+.btnsave  {
+    margin-left: 8px;
+    margin-top: 2px;
+    padding-left: 6px;
 }
 
 .align-menu-button {
-    width: 38px;
-    margin: 0;
     background: transparent;
     border: none;
+    margin: 0;
+    margin-left: -3px;
+    width: 38px;
     white-space: nowrap;
-    margin-left:-3px;
 }
 
 .align-menu-button-icon {
-    margin-left:-3px;
+    margin-left: -3px;
 }
 
 .align-menu-dropdown-icon {
-    margin-left:0;
+    margin-left: 0;
 }
 
 .dropdown-div {
@@ -236,10 +237,10 @@ label {
 }
 
 .visible-sampletext {
+    color: black;
     display: block;
     margin-top: 1px;
-    padding:0;
-    color: black;
+    padding: 0;
 }
 
 .hide-sampletext {
@@ -248,21 +249,20 @@ label {
 
 .accordion {
     background-color: #eee;
+    border: solid;
+    border: 1px solid lightgray;
     color: #444;
     cursor: pointer;
-    padding-bottom:5px;
-    margin-bottom:4px;
-    width: 100%;
-    border: solid;
-    text-align: left;
-
     font-size: 15px;
-    transition: 0.4s;
-    border: 1px solid lightgray;
-    padding-left:6px;
-    margin-left:2px;
+    padding-bottom: 5px;
+    margin-bottom: 4px;
+    padding-left: 6px;
+    margin-left: 2px;
     margin-top: 3px;
     padding-top: 3px;
+    text-align: left;
+    transition: 0.4s;
+    width: 100%;
 }
 
 .accactive,
@@ -276,22 +276,23 @@ label {
     font-weight: bold;
     float: right;
     margin-left: 5px;
-    margin-right: 5px;
+    /* margin-right: 5px; */
     padding-right: 5px;
+    padding-top: 3px;
 }
 
 .accactive:after {
-    content: "\2212";
+    content: '\2212';
 }
 
 .panel,
 .panel1,
 .panel2 {
-    padding: 0 7px;
-    width:auto;
     background-color: white;
     max-height: 0;
     overflow: hidden;
+    padding: 0 7px;
+    width: auto;
     transition: max-height 0.2s ease-out;
 }
 .chknumbering {
@@ -299,35 +300,30 @@ label {
     padding-top: 2px;
 }
 .alignbuttons {
-    width: 70px;
     background-color: #f0f0f0;
     border-color: #555;
+    margin: 0;
     outline: none;
+    padding: 2px;
     text-align: center;
-    padding:2px;
-    margin:0;
+    width: 70px;
 }
- 
+
 .czi-custom-buttons{
-    padding-left:4px;
-    margin-left:0;
+    padding-left: 4px;
+    margin-left: 0;
     margin-right: 2px;
     padding-right: 2px;
 }
 
-.iconspan czi-icon format align center {
-    padding-left:2px;
-    margin-left:2px;
+/* .format align right {
+    margin-left: 2px;
+    padding-left: 2px;
 }
 
-.format align right {
-    padding-left:2px;
-    margin-left:2px;
-}
-
-.iconspan czi-icon account tree{
-    margin-top:10px;
-}
+.iconspan czi-icon account tree {
+    margin-top: 10px;
+} */
 
 .specifiedindent{
     margin-left: 10px;

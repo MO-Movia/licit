@@ -73,7 +73,7 @@ export default class StylePlugin extends Plugin {
 }
 
 function handleMarkOverridenFlag(prevState, nextState) {
-    const tr = nextState.tr;
+    let tr = nextState.tr;
     let modified = false;
 
     // Adds overriden flag to all nodes' marks.

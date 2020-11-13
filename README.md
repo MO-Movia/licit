@@ -54,17 +54,6 @@ git clone https://github.com/MO-Movia/licit.git
 Make(0.8.1)
 Python(3.8.2) 
 ``` 
-### Build doc-attrs-step module
-
-```
-# From the directory `*helpers/doc-attrs-step*`
-npm install
-npm pack
-```  
-Now you will find a *modusoperandi-doc-attrs-step-0.0.1-0.tgz* file in the *helpers/doc-attrs-step* directory. 
-
-Add this *.tgz* file to your licit root folder and follow the below commands:
-
 
 ### Install dependencies
 

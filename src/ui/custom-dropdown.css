@@ -1,38 +1,36 @@
 
 .dropbtn {
-    cursor: pointer;
     background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    padding: 5px;
     border: 1px solid #cec7c7;
-    font-family: Arial;
-    font-size: 14px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     color: #5a615e;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+    min-width: 160px;
+    padding: 5px;
 }
 
 .dropdown {
-    position: relative;
     display: inline-block;
+    position: relative;
 }
 
 .dropdown-content {
     background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    height: 150px;
-    font-family: Arial;
-    font-size: 14px;
-    color: #5a615e;
     border: 1px solid #cec7c7;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    color: #5a615e;
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+    height: 150px;
+    min-width: 160px;
 }
 
-
-
 .dropdown-content a {
+    display: block;
     padding: 10px 14px;
     text-decoration: none;
-    display: block;
 }
 
 .dropdown-content a:hover {
@@ -48,14 +46,12 @@
     transition-delay: 2s;
 }
 
-
-
 #container1 {
-    display: flex;
-    width: 265px;
-    justify-content: space-between;
     background-color: #f9f9f9;
+    display: flex;
+    justify-content: space-between;
     line-height: 2;
+    width: 265px;
 }
 
 #container1>div {

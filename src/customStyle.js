@@ -10,8 +10,6 @@ export function saveStyle(style) {
         itemsArray.push(style);
         window.localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
         bOk = true;
-    } else {
-        bOk = false;
     }
     return bOk;
 }
