@@ -5,6 +5,7 @@ import { Transform } from 'prosemirror-transform';
 import { HEADING, PARAGRAPH } from './NodeNames';
 import * as MarkNames from './MarkNames';
 import { setTextAlign } from './TextAlignCommand';
+import { setTextLineSpacing } from './TextLineSpacingCommand';
 
 const {
   MARK_EM,
@@ -31,6 +32,16 @@ const FORMAT_MARK_NAMES = [
   // Fix: To clear custom style format.
   MARK_CUSTOMSTYLES,
 ];
+
+// [FS] IRAD-1053 2020-11-13
+// Clear format not removes the line spacing
+function removeTextAlignAndLineSpacing(tr: Transform, schema: Schema): Transform {
+  // to clear the text align format.
+  tr = setTextAlign(tr, schema, null);
+  // to clear the applied line spacing format.
+  tr= setTextLineSpacing(tr,schema,null);
+  return tr;
+}
 
 export function clearMarks(tr: Transform, schema: Schema): Transform {
   const { doc, selection } = tr;
@@ -63,9 +74,9 @@ export function clearMarks(tr: Transform, schema: Schema): Transform {
     return true;
   });
   if (!tasks.length) {
-    // It should clear text alignment.
-  tr = setTextAlign(tr, schema, null);
-    return tr;
+  // It should clear text alignment and line spacing.
+  tr = removeTextAlignAndLineSpacing(tr,schema);
+  return tr;
   }
 
   tasks.forEach(job => {
@@ -75,8 +86,8 @@ export function clearMarks(tr: Transform, schema: Schema): Transform {
     tr = tr.removeMark(from, to, mark.type);
   });
 
-  // It should also clear text alignment.
-  tr = setTextAlign(tr, schema, null);
+  // It should clear text alignment and line spacing.
+  tr = removeTextAlignAndLineSpacing(tr,schema);
   return tr;
 }
 

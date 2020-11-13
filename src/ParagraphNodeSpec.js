@@ -96,7 +96,7 @@ function toDOM(node: Node): Array<any> {
       `line-height: ${cssLineSpacing};` +
       // This creates the local css variable `--czi-content-line-height`
       // that its children may apply.
-      `--czi-content-line-height: ${cssLineSpacing}`;
+      `--czi-content-line-height: ${cssLineSpacing};`;
   }
   // [FS] IRAD-1100 2020-11-04
   // Add in leading and trailing spacing (before and after a paragraph)

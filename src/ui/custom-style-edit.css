@@ -126,17 +126,17 @@ label {
     cursor: text;
     flex-direction: column;
     font: 400 11px Arial;
-    height: 117px;
     margin: 0em;
     margin-left: 0;
     margin-right: 20px;
     margin-top: 7px;
-    overflow: hidden;
+    max-height: 122px;
+    min-height: 117px;
+    overflow: auto;
     overflow-wrap: break-word;
     padding: 8px;
     padding-bottom: 6px;
     padding-right: 6px;
-    /* resize: auto; */
     -webkit-rtl-ordering: logical;
     white-space: pre-wrap;
     width: 95%;

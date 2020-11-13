@@ -5,6 +5,8 @@ import { Transform } from 'prosemirror-transform';
 import * as MarkNames from './MarkNames';
 import { setTextAlign } from './TextAlignCommand';
 import { EditorState } from 'prosemirror-state';
+import { setTextLineSpacing } from './TextLineSpacingCommand';
+import { setParagraphSpacing } from './ParagraphSpacingCommand';
 
 const {
   MARK_EM,
@@ -27,6 +29,19 @@ const FORMAT_MARK_NAMES = [
   MARK_TEXT_HIGHLIGHT,
   MARK_UNDERLINE,
 ];
+
+// [FS] IRAD-1053 2020-11-13
+// Issue fix: Line spacing and paragrapgh spacing not removed when select Remove style.
+function removeTextAlignAndLineSpacing(tr: Transform, schema: Schema): Transform {
+  tr = setTextAlign(tr, schema, null);
+  // to remove the applied line spacing
+  tr= setTextLineSpacing(tr,schema,null);
+  // to remove the paragrapgh spacing after format
+  tr= setParagraphSpacing(tr,schema,'0',true);
+  // to remove the paragrapgh spacing before format
+  tr= setParagraphSpacing(tr,schema,'0',false);
+  return tr;
+}
 
 // [FS] IRAD-1053 2020-10-08
 // to clear the custom styles in the selected paragrapgh
@@ -79,7 +94,8 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema, state: Edit
       const { node } = eachnode;
       node.attrs.styleName = 'None';
     });
-    tr = setTextAlign(tr, schema, null);
+    // to remove both text align format and line spacing
+    tr = removeTextAlignAndLineSpacing(tr, schema);
     return tr;
   }
 
@@ -90,7 +106,8 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema, state: Edit
     node.attrs.styleName = 'None';
   });
 
-  tr = setTextAlign(tr, schema, null);
+  // to remove both text align format and line spacing
+  tr = removeTextAlignAndLineSpacing(tr, schema);
 
   // [FS] IRAD-1053 2020-10-21
   // On reload editor, shows the removed custom style name using Clear Style menu.
