@@ -22,6 +22,7 @@ const OrderedListNodeSpec: NodeSpec = {
     name: {default: null},
     start: { default: 1 },
     type: { default: 'decimal' },
+    styleName: { default: 'None' },
   },
   group: 'block',
   content: LIST_ITEM + '+',

@@ -58,7 +58,7 @@
     font-family: 'Arial', sans-serif;
     font-size: 25px;
     font-family: sans-serif;
-    height: 26px;
+    height: 41px;
     margin-left: 2px;
     padding: 5px;
     text-align: center;
@@ -76,11 +76,9 @@ label {
 }
 
 .stylenameinput {
-    /* margin: 0 0 0 15px !important; */
     color: black;
     font-family: inherit;
-    /* font-size: 20px; */
-    height: 20px;
+    height: 26px;
     line-height: unset;
     margin-bottom: 3px;
     margin-left: 0;
@@ -126,6 +124,7 @@ label {
     cursor: text;
     flex-direction: column;
     font: 400 11px Arial;
+    height: 117px;
     margin: 0em;
     margin-left: 0;
     margin-right: 20px;
@@ -352,3 +351,8 @@ label {
     text-align: center;
     padding: 0
 }
+.panel.hr {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+   
+  }
