@@ -443,7 +443,7 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
 
     // to set custom styleName attribute for node
     newattrs['styleName'] = styleName;
-    tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
+    tr = _setNodeAttribute(node, tr, startPos, endPos, newattrs);
     return tr;
 }
 
@@ -458,10 +458,10 @@ function isAllowedNode(node) {
 
 // [FS] IRAD-1088 2020-10-05
 // set custom style for node
-function _setNodeAttribute(state, tr, from, to, attribute) {
-    state.doc.nodesBetween(from, to, (node, startPos) => {
-        if (isAllowedNode(node)) {
-            tr = tr.setNodeMarkup(startPos, undefined, attribute);
+function _setNodeAttribute(node, tr, from, to, attribute) {
+	node.descendants(function (child: Node, pos: number, parent: Node) {
+        if (isAllowedNode(child)) {
+            tr = tr.setNodeMarkup(pos, undefined, attribute);
         }
     });
     return tr;
