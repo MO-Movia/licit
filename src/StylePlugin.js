@@ -51,7 +51,7 @@ export default class StylePlugin extends Plugin {
             appendTransaction: (transactions, prevState, nextState) => {
                 let tr = null;
 
-                tr = handleMarkOverridenFlag(prevState, nextState);
+                //tr = handleMarkOverridenFlag(prevState, nextState);
 
                 if (!this.loaded) {
                     this.loaded = true;
@@ -88,7 +88,7 @@ function handleMarkOverridenFlag(prevState, nextState) {
     nextState.doc.descendants((node, parentPos) => {
         node.descendants(function(child: Node, pos: number, parent: Node) {
             const contentLen = child.content.size;
-            if (child instanceof Node && (parent.type.name === 'paragraph') && 1 < contentLen) {
+            //if ((parent.type.name === 'paragraph') && 0 < contentLen) {
                 child.marks.forEach(function(mark, index) {
                     if (requiredAddAttr(mark)) {
                         mark.attrs[ATTR_OVERRIDDEN] = false;
@@ -100,7 +100,7 @@ function handleMarkOverridenFlag(prevState, nextState) {
                         tr = tr.addMark(pos, pos + contentLen, mark);
                     }
                 });
-            }
+            //}
         });
     });
 
@@ -126,7 +126,7 @@ function updateStyleOverrideFlag(state, tr) {
 }
 
 function haveEligibleChildren(node, contentLen) {
-    return (node instanceof Node) && (1 < contentLen) && (node.type.name === 'paragraph') && (NONE !== node.attrs.styleName);
+    return (node instanceof Node) && (0 < contentLen) && (node.type.name === 'paragraph') && (NONE !== node.attrs.styleName);
 }
 
 function applyStyles(state, tr) {

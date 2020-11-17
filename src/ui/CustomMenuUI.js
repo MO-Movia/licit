@@ -138,7 +138,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                             if ('remove' === val.type) {
                                 removeStyle(val.command._customStyleName, val.command._customStyle);
                             } else if ('rename' === val.type) {
-                               window.alert('Rename Style...');
+                                window.alert('Rename Style...');
                             }
                             else {
                                 this.showStyleWindow(command, event);

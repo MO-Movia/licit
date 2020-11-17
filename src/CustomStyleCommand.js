@@ -307,10 +307,10 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
 
     switch (mark.type.name) {
         case MARK_STRONG:
-            same = style[STRONG];
+            same = (undefined != style[STRONG]);
             break;
         case MARK_EM:
-            same = style[EM];
+            same = (undefined != style[EM]);
             break;
         case MARK_TEXT_COLOR:
             same = mark.attrs['color'] == style[COLOR];
@@ -322,14 +322,14 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
             same = mark.attrs['name'] == style[FONTNAME];
             break;
         case MARK_STRIKE:
-            same = style[STRIKE];
+            same = (undefined != style[STRIKE]);
             break;
         case MARK_SUPER:
             break;
         case MARK_TEXT_HIGHLIGHT:
             break;
         case MARK_UNDERLINE:
-            same = style[UNDERLINE];
+            same = (undefined != style[UNDERLINE]);
             break;
         default:
             break;
