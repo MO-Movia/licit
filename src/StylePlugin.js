@@ -51,15 +51,12 @@ export default class StylePlugin extends Plugin {
             appendTransaction: (transactions, prevState, nextState) => {
                 let tr = null;
 
-                //tr = handleMarkOverridenFlag(prevState, nextState);
-
                 if (!this.loaded) {
                     this.loaded = true;
                     // do this only once when the document is loaded.
                     tr = applyStyles(nextState, tr);
                 } else if(isDocChanged(transactions)) {
                     if(!this.firstTime) {
-                        // TODO: Incomplete and so commenting out
                         // when user updates
                         tr = updateStyleOverrideFlag(nextState, tr);
                     }
@@ -78,33 +75,6 @@ export default class StylePlugin extends Plugin {
 
 function isDocChanged(transactions) {
 	return (transactions.some((transaction) => transaction.docChanged));
-}
-
-function handleMarkOverridenFlag(prevState, nextState) {
-    let tr = nextState.tr;
-    let modified = false;
-
-    // Adds overriden flag to all nodes' marks.
-    nextState.doc.descendants((node, parentPos) => {
-        node.descendants(function(child: Node, pos: number, parent: Node) {
-            const contentLen = child.content.size;
-            //if ((parent.type.name === 'paragraph') && 0 < contentLen) {
-                child.marks.forEach(function(mark, index) {
-                    if (requiredAddAttr(mark)) {
-                        mark.attrs[ATTR_OVERRIDDEN] = false;
-                        modified = true;
-                    }
-
-                    if (modified) {
-                        tr = tr.removeMark(pos, pos + contentLen, mark);
-                        tr = tr.addMark(pos, pos + contentLen, mark);
-                    }
-                });
-            //}
-        });
-    });
-
-    return modified ? tr : null;
 }
 
 function updateStyleOverrideFlag(state, tr) {
@@ -142,18 +112,6 @@ function applyStyles(state, tr) {
     });
 
     return tr;
-}
-
-function isMarkHasAttribute(mark, attrName) {
-    return (mark.attrs && (undefined != mark.attrs[attrName]));
-}
-
-function isTargetMarkAllowed(mark) {
-    return ALLOWED_MARKS.includes(mark.type.name);
-}
-
-function requiredAddAttr(mark) {
-    return isTargetMarkAllowed(mark) && !isMarkHasAttribute(mark, ATTR_OVERRIDDEN);
 }
 
 function createMarkAttributes(mark, markName, existingAttr) {

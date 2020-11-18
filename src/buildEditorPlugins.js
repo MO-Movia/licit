@@ -15,7 +15,6 @@ import SelectionPlaceholderPlugin from './SelectionPlaceholderPlugin';
 import TablePlugins from './TablePlugins';
 import buildInputRules from './buildInputRules';
 import createEditorKeyMap from './createEditorKeyMap';
-import StylePlugin from './StylePlugin';
 
 // Creates the default plugin for the editor.
 export default function buildEditorPlugins(schema: Schema): Array<Plugin> {
@@ -27,7 +26,6 @@ export default function buildEditorPlugins(schema: Schema): Array<Plugin> {
     new ImageUploadPlaceholderPlugin(),
     new LinkTooltipPlugin(),
     new SelectionPlaceholderPlugin(),
-    new StylePlugin(),
     setPluginKey(buildInputRules(schema), 'InputRules'),
     setPluginKey(dropCursor(), 'DropCursor'),
     setPluginKey(gapCursor(), 'GapCursor'),
