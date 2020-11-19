@@ -67,11 +67,14 @@ export default function toggleList(
             }
         });
 
+        // validate endPos. Both start & end pos can't be -ve.
+        endPos = (-1 == endPos) ? to : endPos;
+
         // Actual starting position similar when manually selecting
-        startPos = (to - endPos);
+        startPos = (0 < (to - endPos)) ? (to - endPos) : 0;
 
         from = startPos;
-        to = endPos;
+        to = ( 0 < endPos) ? endPos : 0;
 
         newselection = TextSelection.create(doc, from, to);
         tr = tr.setSelection(newselection);
