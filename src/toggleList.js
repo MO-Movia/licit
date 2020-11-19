@@ -54,7 +54,7 @@ export default function toggleList(
     } = selection;
     let newselection = selection;
 
-    if (0 === from) {
+    if (0 === from && 0 != to) {
         // In here when Ctrl+A is pressed.
         let startPos = -1;
         let endPos = -1;

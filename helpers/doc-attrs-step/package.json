@@ -6,7 +6,8 @@
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MO-Movia/licit.git"
+    "url": "git+https://github.com/MO-Movia/licit.git",
+    "directory": "helpers/doc-attrs-step"
   },
   "scripts": {
     "build:clean": "rm -rf dist/ && rm -f modusoperandi-doc-attrs-step-*.*.*.tgz",
