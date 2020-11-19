@@ -1,6 +1,6 @@
 {
-  "name": "@modusoperandi/doc-attrs-step",
-  "version": "0.0.1-0",
+  "name": "@modusoperandi/licit-doc-attrs-step",
+  "version": "0.0.1",
   "subversion": "1",
   "description": "Module that extend Step, overriding the apply, invert, map, getMap and fromJSON methods, and registering your class with a unique JSON-serialization identifier using Step.jsonID.",
   "main": "dist/index.js",
@@ -10,7 +10,7 @@
     "directory": "helpers/doc-attrs-step"
   },
   "scripts": {
-    "build:clean": "rm -rf dist/ && rm -f modusoperandi-doc-attrs-step-*.*.*.tgz",
+    "build:clean": "rm -rf dist/ && rm -f modusoperandi-licit-doc-attrs-step-*.*.*.tgz",
     "build:babel": "babel src --out-dir dist",
     "build:dist": "npm run build:clean && npm run build:babel",
     "prepare": "npm run build:dist"
