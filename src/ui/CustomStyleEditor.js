@@ -8,7 +8,7 @@ import ColorEditor from './ColorEditor';
 import createPopUp from './createPopUp';
 import { FONT_PT_SIZES } from './FontSizeCommandMenuButton';
 import { FONT_TYPE_NAMES } from '../FontTypeMarkSpec';
-import {getLineSpacingValue} from './toCSSLineSpacing';
+import { getLineSpacingValue } from './toCSSLineSpacing';
 
 // Values to show in indent drop-down
 const INDENT_VALUES = [
@@ -200,8 +200,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             style.textAlign = this.state.styles.align;
         }
         if (this.state.styles.lineheight) {
-        // [FS] IRAD-1104 2020-11-13
-        // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
+            // [FS] IRAD-1104 2020-11-13
+            // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
             style.lineHeight = getLineSpacingValue(this.state.styles.lineheight);
         }
         if (this.state.styles.indent) {
@@ -320,7 +320,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 <div className="customedit-head">
                     <strong>{this.state.mode == 0 ? 'Create Style' : 'Edit Style'}</strong>
                 </div>
-                <div className="customedit-body" >
+                <div className="customedit-body container" >
                     <div className="sectiondiv">
 
                         <p className="formp">Style Name:</p>
@@ -333,136 +333,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                             <input className="stylenameinput" key="description"
                                 onChange={this.onStyleClick.bind(this, 'description')} type="text" value={this.state.description} />
                         </span>
-                    </div>
 
-                    <div className="sectiondiv editorsection">
-
-                       <div style={{ height: '124px', overflow: 'auto', overflowX: 'hidden', paddingTop: '5px', marginTop: '5px' }}>
-                            <button className="accordion" id="accordion1"><span className="iconspan czi-icon text_format">text_format</span> Font</button>
-                            <div className="panel">
-                                <div className="sectiondiv">
-                                    <select className="fonttype" onChange={this.onFontNameChange.bind(this)} value={this.state.styles.fontname}>
-                                        {FONT_TYPE_NAMES.map((value) => (
-                                            <option key={value} value={value}>
-                                                {value}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <select className="fontsize" onChange={this.onFontSizeChange.bind(this)} value={this.state.styles.fontsize}>
-                                        {FONT_PT_SIZES.map((value) => (
-                                            <option key={value} value={value}>
-                                                {value}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <hr></hr>
-                                <div className="czi-custom-buttons">
-                                    <span aria-label=" Bold" className="czi-tooltip-surface" data-tooltip=" Bold" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strong')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strong ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-                                        <span className="iconspan czi-icon format_bold">format_bold</span></span></span>
-                                    <span aria-label=" Italic" className="czi-tooltip-surface" data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'em')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-                                        <span className="iconspan czi-icon format_italic">format_italic</span><span>  </span></span></span>
-                                    <span aria-label=" Underline" className="czi-tooltip-surface" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-                                        <span className="iconspan czi-icon format_underline">format_underline</span><span>  </span></span></span>
-                                    <span aria-label=" Strike through" className="czi-tooltip-surface" data-tooltip=" Strike through" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strike')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strike ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-                                        <span className="iconspan czi-icon format_strikethrough">format_strikethrough</span><span>  </span></span></span>
-                                    <span aria-label=" Superscript" className="czi-tooltip-surface" data-tooltip=" Superscript" id="86bad6e0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'super')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.super ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-                                        <span className="czi-icon superscript" style={{ width: '32px', height: '23px' }}> <span className="iconspan superscript-wrap"><span className="superscript-base">x</span><span className="superscript-top">y</span></span></span><span>  </span></span></span>
-                                    <span aria-label=" Text color" className="czi-tooltip-surface" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon" role="button">
-                                        <span className="iconspan czi-icon format_color_text" style={{ color: this.state.styles.color }}>format_color_text</span><span>  </span></span></span>
-                                    <span aria-label=" Highlight color" className="czi-tooltip-surface" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon" role="button">
-                                        <span className=" iconspan czi-icon border_color" style={{ color: this.state.styles.texthighlight }}>border_color</span><span>  </span></span></span>
-
-                                </div>
-                                <hr></hr>
-                            </div>
-
-                            <button className="accordion"> <span className="iconspan czi-icon format_textdirection_l_to_r">format_textdirection_l_to_r</span> PARAGRAPH</button>
-                            <div className="panel1">
-                                <p className="formp">Alignment:</p>
-                                <div className="czi-custom-buttons">
-                                    <span aria-label=" Align Left" className="czi-tooltip-surface" data-tooltip=" Align Left" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'left' ? 'czi-custom-button use-icon activealignbuttons' : 'czi-custom-button alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'left')} role="button">
-                                        <span className="iconspan czi-icon format_align_left">format_align_left</span></span></span>
-                                    <span aria-label=" Align Center" className="czi-tooltip-surface alignbuttons" data-tooltip=" Align Center" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'center' ? 'czi-custom-button use-icon activealignbuttons' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'center')} role="button">
-                                        <span className="iconspan czi-icon format_align_center">format_align_center</span></span></span>
-                                    <span aria-label=" Align Right" className="czi-tooltip-surface alignbuttons" data-tooltip=" Align Right" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'right' ? 'czi-custom-button use-icon activealignbuttons' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'right')} role="button">
-                                        <span className="iconspan czi-icon format_align_right">format_align_right</span></span></span>
-                                    <span aria-label=" Justify" className="czi-tooltip-surface alignbuttons" data-tooltip=" Justify" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'justify' ? 'czi-custom-button use-icon activealignbuttons' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'justify')} role="button">
-                                        <span className="iconspan czi-icon format_align_justify">format_align_justify</span></span></span>
-                                </div>
-                                <p className="formp">Line Spacing:</p>
-                                <select className="linespacing" onChange={this.onLineSpaceChange.bind(this)} value={this.state.styles.lineheight}>
-                                    {LINE_SPACE.map((value) => (
-                                        <option key={value} value={value}>
-                                            {value}
-                                        </option>
-                                    ))}
-                                </select>
-                                <p className="formp">Paragraph Spacing:</p>
-
-                                <div className="spacingdiv">
-                                <label>Before: </label>
-                                    <span>
-                                        <input className="spacinginput" key="before"
-                                            onChange={this.onStyleClick.bind(this, 'before')} type="text" value={this.state.styles.spacebefore} />
-                                    </span>
-                                    <label> pts</label>
-
-                                    <label style={{ marginLeft: '23px' }}>After: </label>
-                                    <span>
-                                        <input className="spacinginput" key="after"
-                                            onChange={this.onStyleClick.bind(this, 'after')} type="text" value={this.state.styles.spaceafter} />
-                                    </span>
-                                    <label>pts</label>
-                                </div>
-                                <hr></hr>
-                            </div>
-
-                            <button className="accordion"><span className="iconspan czi-icon account_tree">account_tree</span>HIERARCHY</button>
-                            <div className="panel2 formp">
-                                <p className="formp">Level:</p>
-                                <div className="spacingdiv">
-
-                                    <span>
-                                        <select className="leveltype" onChange={this.onLevelChange.bind(this)} value={this.state.styles.level}>
-                                            {LEVEL_VALUES.map((value) => (
-                                                <option key={value} value={value}>
-                                                    {value}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </span>
-                                    <span>
-                                        <label>
-                                            <input checked={this.state.styles.hasnumbering} className="chknumbering" disabled={this.state.styles.level ? false : true}
-                                                onChange={this.handleNumbering.bind(this)} type="checkbox" />
-                                    Numbering(1.1)
-                                    </label>
-                                    </span>
-                                    <p className="formp">Indenting:</p>
-                                    <div className="spacingdiv">
-                                        <div>
-                                            <input checked={this.state.styles.islevelbased} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
-                                                value="0" /> Based On Level
-                                    </div>
-                                        <div>
-                                            <input checked={this.state.styles.islevelspecified} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
-                                                value="1" /> Specified
-                                            <span>
-                                                <select className="leveltype specifiedindent" onChange={this.onIndentChange.bind(this)}  value={this.state.styles.indent}>
-                                                    {INDENT_VALUES.map(({ label, value }) => (
-                                                        <option key={value} value={value}>
-                                                            {label}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+                        <p className="formp">Preview:</p>
                         <div className="textareadiv" name="body">
                             <div className="sampletext">
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
@@ -530,13 +402,144 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
 
                         </div>
+                    </div>
 
-                        <div className="btns">
-                            <button onClick={this._cancel}>Cancel</button>
-                            <button className="btnsave" onClick={this._save.bind(this)}>Save</button>
+                    <div className="sectiondiv editorsection">
+                        <p className="formp">Style Attributes:</p>
+                        <div style={{ height: '329px', overflow: 'hidden auto', overflowX: 'hidden', border: '1px solid' }}>
+                            <button className="accordion" id="accordion1"><span className="iconspan czi-icon text_format">text_format</span> Font</button>
+                            <div className="panel">
+                                <div className="sectiondiv">
+                                    <select className="fonttype" onChange={this.onFontNameChange.bind(this)} value={this.state.styles.fontname}>
+                                        {FONT_TYPE_NAMES.map((value) => (
+                                            <option key={value} value={value}>
+                                                {value}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <select className="fontsize" onChange={this.onFontSizeChange.bind(this)} value={this.state.styles.fontsize}>
+                                        {FONT_PT_SIZES.map((value) => (
+                                            <option key={value} value={value}>
+                                                {value}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="czi-custom-buttons">
+                                    <span aria-label=" Bold" className="czi-tooltip-surface" data-tooltip=" Bold" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strong')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strong ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
+                                        <span className="iconspan czi-icon format_bold">format_bold</span></span></span>
+                                    <span aria-label=" Italic" className="czi-tooltip-surface" data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'em')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
+                                        <span className="iconspan czi-icon format_italic">format_italic</span><span>  </span></span></span>
+                                    <span aria-label=" Underline" className="czi-tooltip-surface" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
+                                        <span className="iconspan czi-icon  format_underline">format_underline</span><span>  </span></span></span>
+                                    {/* <span aria-label=" Strike through" className="czi-tooltip-surface" data-tooltip=" Strike through" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strike')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strike ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
+                                        <span className="iconspan czi-icon format_strikethrough">format_strikethrough</span><span>  </span></span></span>
+                                    <span aria-label=" Superscript" className="czi-tooltip-surface" data-tooltip=" Superscript" id="86bad6e0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'super')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.super ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
+                                        <span className="czi-icon superscript" style={{ width: '32px', height: '23px' }}> <span className="iconspan superscript-wrap"><span className="superscript-base">x</span><span className="superscript-top">y</span></span></span><span>  </span></span></span> */}
+                                    <span aria-label=" Text color" className="czi-tooltip-surface" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
+                                        <span className="iconspan czi-icon format_color_text" style={{ color: this.state.styles.color }}>format_color_text</span><span>  </span></span></span>
+                                    <span aria-label=" Highlight color" className="czi-tooltip-surface" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
+                                        <span className=" iconspan czi-icon border_color" style={{ color: this.state.styles.texthighlight }}>border_color</span><span>  </span></span></span>
+
+                                </div>
+                                <hr></hr>
+                            </div>
+
+                            <button className="accordion"> <span className="iconspan czi-icon format_textdirection_l_to_r">format_textdirection_l_to_r</span> PARAGRAPH</button>
+                            <div className="panel1">
+                                <p className="formp">Alignment:</p>
+                                <div className="czi-custom-buttons">
+                                    <span aria-label=" Align Left" className="czi-tooltip-surface" data-tooltip=" Align Left" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'left' ? 'czi-custom-button use-icon activealignbuttons' : 'czi-custom-button alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'left')} role="button">
+                                        <span className="iconspan czi-icon format_align_left">format_align_left</span></span></span>
+                                    <span aria-label=" Align Center" className="czi-tooltip-surface alignbuttons" data-tooltip=" Align Center" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'center' ? 'czi-custom-button use-icon activealignbuttons' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'center')} role="button">
+                                        <span className="iconspan czi-icon format_align_center">format_align_center</span></span></span>
+                                    <span aria-label=" Align Right" className="czi-tooltip-surface alignbuttons" data-tooltip=" Align Right" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'right' ? 'czi-custom-button use-icon activealignbuttons' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'right')} role="button">
+                                        <span className="iconspan czi-icon format_align_right">format_align_right</span></span></span>
+                                    <span aria-label=" Justify" className="czi-tooltip-surface alignbuttons" data-tooltip=" Justify" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.align == 'justify' ? 'czi-custom-button use-icon activealignbuttons' : 'czi-custom-button  alignbuttons'} onClick={this.onAlignButtonClick.bind(this, 'justify')} role="button">
+                                        <span className="iconspan czi-icon format_align_justify">format_align_justify</span></span></span>
+                                </div>
+                                <p className="formp">Line Spacing:</p>
+                                <select className="linespacing" onChange={this.onLineSpaceChange.bind(this)} value={this.state.styles.lineheight}>
+                                    {LINE_SPACE.map((value) => (
+                                        <option key={value} value={value}>
+                                            {value}
+                                        </option>
+                                    ))}
+                                </select>
+                                <p className="formp">Paragraph Spacing:</p>
+
+                                <div className="spacingdiv">
+                                    <label>Before: </label>
+                                    <span>
+                                        <input className="spacinginput" key="before"
+                                            onChange={this.onStyleClick.bind(this, 'before')} type="text" value={this.state.styles.spacebefore} />
+                                    </span>
+                                    <label> pts</label>
+
+                                    <label style={{ marginLeft: '23px' }}>After: </label>
+                                    <span>
+                                        <input className="spacinginput" key="after"
+                                            onChange={this.onStyleClick.bind(this, 'after')} type="text" value={this.state.styles.spaceafter} />
+                                    </span>
+                                    <label>pts</label>
+                                </div>
+                                <hr></hr>
+                            </div>
+
+                            <button className="accordion"><span className="iconspan czi-icon account_tree">account_tree</span>HIERARCHY</button>
+                            <div className="panel2 formp">
+                                <p className="formp">Level:</p>
+                                <div className="spacingdiv">
+
+                                    <span>
+                                        <select className="leveltype" onChange={this.onLevelChange.bind(this)} value={this.state.styles.level}>
+                                            {LEVEL_VALUES.map((value) => (
+                                                <option key={value} value={value}>
+                                                    {value}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </span>
+                                    <span>
+                                        <label>
+                                            <input checked={this.state.styles.hasnumbering} className="chknumbering" disabled={this.state.styles.level ? false : true}
+                                                onChange={this.handleNumbering.bind(this)} type="checkbox" />
+                                    Numbering(1.1)
+                                    </label>
+                                    </span>
+                                    <p className="formp">Indenting:</p>
+                                    <div className="spacingdiv">
+                                        <div>
+                                            <input checked={this.state.styles.islevelbased} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
+                                                value="0" /> Based On Level
+                                    </div>
+                                        <div>
+                                            <input checked={this.state.styles.islevelspecified} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
+                                                value="1" /> Specified
+                                            <span>
+                                                <select className="leveltype specifiedindent" onChange={this.onIndentChange.bind(this)} value={this.state.styles.indent}>
+                                                    {INDENT_VALUES.map(({ label, value }) => (
+                                                        <option key={value} value={value}>
+                                                            {label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+
+
+
                     </div>
                 </div >
+                <div className="btns">
+                    <button onClick={this._cancel}>Cancel</button>
+                    <button className="btnsave" onClick={this._save.bind(this)}>Save</button>
+                </div>
             </div >
         );
 
