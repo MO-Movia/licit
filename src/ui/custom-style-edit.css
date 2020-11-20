@@ -6,7 +6,7 @@
     box-sizing: border-box;
     color: white;
     font-family: 'Arial', sans-serif;
-    height: 470px;
+    height: 495px;
     overflow: hidden;
     position: relative;
     width: 350px;
@@ -28,10 +28,10 @@
     font-size: 14px;
     margin-top: 2px;
     margin-bottom: 2px;
-    padding-top: 1px;
-    padding-right: 9px;
-    padding-left: 0;
     padding-bottom: 2px;
+    padding-left: 0;
+    padding-right: 9px;
+    padding-top: 1px;
 }
 
 .linespacing{
@@ -47,8 +47,8 @@
     line-height: unset;
     margin-left: 4px;
     /* margin-right:px; */
-    padding-right: 3px;
     padding-left: 2px;
+    padding-right: 3px;
     width: 50px;
 }
 
@@ -57,7 +57,7 @@
     color: #47adec;
     font-family: 'Arial', sans-serif;
     font-size: 25px;
-    font-family: sans-serif;
+    /* font-family: sans-serif; */
     height: 41px;
     margin-left: 2px;
     padding: 5px;
@@ -67,8 +67,8 @@
 .customedit-body {
     color: #464343;
     margin-top: 3px;
-    padding-top: 1px;
     padding-bottom: 0;
+    padding-top: 1px;
 }
 
 label {
@@ -78,7 +78,7 @@ label {
 .stylenameinput {
     color: black;
     font-family: inherit;
-    height: 26px;
+    height: 19px;
     line-height: unset;
     margin-bottom: 3px;
     margin-left: 0;
@@ -103,12 +103,12 @@ label {
     background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.26);
     box-sizing: border-box;
-    overflow: hidden;
     margin-bottom: 0;
     margin-left: 6px;
     margin-right: 7px;
     /* padding: 2px 7px 2px 0; */
     margin-top: 4px;
+    overflow: hidden;
     padding-bottom: 3px;
     padding-left: 5px;
     padding-right: 5px;
@@ -124,7 +124,7 @@ label {
     cursor: text;
     flex-direction: column;
     font: 400 11px Arial;
-    height: 117px;
+    /* height: 117px; */
     margin: 0em;
     margin-left: 0;
     margin-right: 20px;
@@ -147,11 +147,11 @@ label {
 
 .fontsize {
     height: 22px;
+    margin-bottom: 3px;
     margin-left: 5px;
     margin-top: 7px;
-    margin-bottom: 3px;
-    padding-top: 2px;
     padding-bottom: 3px;
+    padding-top: 2px;
     width: 62px;
 }
 
@@ -160,8 +160,8 @@ label {
     margin-bottom: 3px;
     margin-left: 5px;
     margin-top: 7px;
-    padding-top: 2px;
     padding-bottom: 3px;
+    padding-top: 2px;
     width: 210px;
 }
 
@@ -177,8 +177,8 @@ label {
     height: 22px;
     margin-bottom: 0;
     margin-right: 5px;
-    padding-right: 5px;
     padding-bottom: 0;
+    padding-right: 5px;
     width: 500px;
 }
 
@@ -186,18 +186,18 @@ label {
     font-size: 13px;
     height: 22px;
     margin-left: 10px;
-    padding-left: 0;
     padding-bottom: 2px;
+    padding-left: 0;
     width: 186px;
 }
 
 .btns {
     margin-bottom: 2px;
-    margin-right: 0;
     margin-left: 28px;
+    margin-right: 0;
     margin-top: 2px;
-    padding-right: 0;
     padding-left: 4px;
+    padding-right: 0;
     text-align: right;
 }
 
@@ -225,8 +225,8 @@ label {
 }
 
 .dropdown-div {
-    border: 1px solid black;
     background: #fff;
+    border: 1px solid black;
     box-shadow: 0 1px 3px rgb(90 45 45 / 26%);
 }
 
@@ -253,11 +253,11 @@ label {
     color: #444;
     cursor: pointer;
     font-size: 15px;
-    padding-bottom: 5px;
     margin-bottom: 4px;
-    padding-left: 6px;
     margin-left: 2px;
     margin-top: 3px;
+    padding-bottom: 5px;
+    padding-left: 6px;
     padding-top: 3px;
     text-align: left;
     transition: 0.4s;
@@ -272,8 +272,8 @@ label {
 .accordion:after {
     content: '\002B';
     color: #777;
-    font-weight: bold;
     float: right;
+    font-weight: bold;
     margin-left: 5px;
     /* margin-right: 5px; */
     padding-right: 5px;
@@ -291,9 +291,10 @@ label {
     max-height: 0;
     overflow: hidden;
     padding: 0 7px;
-    width: auto;
     transition: max-height 0.2s ease-out;
+    width: auto;
 }
+
 .chknumbering {
     margin-top: 2px;
     padding-top: 2px;
@@ -308,10 +309,10 @@ label {
     width: 70px;
 }
 
-.czi-custom-buttons{
-    padding-left: 4px;
+.czi-custom-buttons {
     margin-left: 0;
     margin-right: 2px;
+    padding-left: 4px;
     padding-right: 2px;
 }
 
@@ -329,12 +330,12 @@ label {
 }
 
 .alignbuttons {
-    width: 70px;
     background-color: #f0f0f0;
     border-color: #555;
     outline: none;
+    padding: 0;
     text-align: center;
-    padding: 0
+    width: 70px;
 }
 
 .alignbuttons:focus,
@@ -343,16 +344,17 @@ label {
     border-color: #338eec!important;
     outline: none;
 }
+
 .activealignbuttons {
-    width: 70px;
     background-color: #f0f0f0;
     border-color: #338eec!important;
     outline: none;
+    padding: 0;
     text-align: center;
-    padding: 0
+    width: 70px;
 }
+
 .panel.hr {
-    margin-top: 0px !important;
     margin-bottom: 0px !important;
-   
+    margin-top: 0px !important;
   }
