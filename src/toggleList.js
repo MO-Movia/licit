@@ -188,7 +188,7 @@ function wrapItemsWithListInternal(
     tr: Transform,
     schema: Schema,
     listNodeType: NodeType,
-    items: Array<{ node: Node, pos: number }>
+    items: Array<{ node: Node, pos: number }>,
     listStyleType: string
 ): Transform {
   const initialTr = tr;
@@ -256,7 +256,7 @@ function wrapItemsWithListInternal(
   });
 
     const listNodeAttrs = { indent: 0, start: 1, type: listStyleType};
-        
+
     const $fromPos = tr.doc.resolve(fromPos);
     const $toPos = tr.doc.resolve(toPos);
 
