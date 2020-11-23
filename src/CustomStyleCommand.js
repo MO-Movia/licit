@@ -459,11 +459,12 @@ function isAllowedNode(node) {
 // [FS] IRAD-1088 2020-10-05
 // set custom style for node
 function _setNodeAttribute(node, tr, from, to, attribute) {
-	node.descendants(function (child: Node, pos: number, parent: Node) {
-        if (isAllowedNode(child)) {
+    // Verify the parent node type.
+    if (isAllowedNode(node)) {
+        node.descendants(function (child: Node, pos: number, parent: Node) {        
             tr = tr.setNodeMarkup(pos, undefined, attribute);
-        }
-    });
+        });
+    }
     return tr;
 }
 
