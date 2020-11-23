@@ -2,18 +2,17 @@
 
 import { Step } from 'prosemirror-transform';
 import { Schema } from 'prosemirror-model';
-
 import Router from './route';
 import EditorSchema from '../../../src/EditorSchema';
 import { getInstance, instanceInfo, setEditorSchema, initEditorSchema } from './instance';
-// [FS] IRAD-1040 2020-09-02
-import * as Flatted from 'flatted';
 // [FS] IRAD-899 2020-03-13
 // This is for Capcomode document attribute. Shared Step, so that capcomode can be dealt collaboratively.
 import { SetDocAttrStep } from '@modusoperandi/doc-attrs-step';
+// [FS] IRAD-1040 2020-09-02
+import * as Flatted from 'flatted';
+
 SetDocAttrStep.register();
 const router = new Router();
-
 // [FS] IRAD-1040 2020-09-02
 let effectiveSchema = EditorSchema;
 let lastUpdatedSchema = null;
@@ -226,6 +225,7 @@ handle('GET', ['docs', null, 'events'], (id, req, resp) => {
   });
   inst.waiting.push(wait);
   resp.on('close', () => wait.abort());
+  return null;
 });
 
 function reqIP(request) {
