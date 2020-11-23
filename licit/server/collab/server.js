@@ -7,7 +7,7 @@ import EditorSchema from '../../../src/EditorSchema';
 import { getInstance, instanceInfo, setEditorSchema, initEditorSchema } from './instance';
 // [FS] IRAD-899 2020-03-13
 // This is for Capcomode document attribute. Shared Step, so that capcomode can be dealt collaboratively.
-import { SetDocAttrStep } from '@modusoperandi/doc-attrs-step';
+import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
 // [FS] IRAD-1040 2020-09-02
 import * as Flatted from 'flatted';
 
