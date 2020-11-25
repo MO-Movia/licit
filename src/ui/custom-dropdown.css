@@ -11,6 +11,12 @@
     padding: 5px;
 }
 
+.stylenames {
+    max-height: 205px;
+    min-height: 30px;
+    overflow: auto;
+}
+
 .dropdown {
     display: inline-block;
     position: relative;
@@ -23,8 +29,8 @@
     color: #5a615e;
     font-family: 'Arial', sans-serif;
     font-size: 14px;
-    height: 150px;
-    min-width: 160px;
+    height: 105px;
+    min-width: 125px;
 }
 
 .dropdown-content a {

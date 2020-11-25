@@ -69,6 +69,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     commandGroups.forEach((group, ii) => {
       Object.keys(group).forEach((label) => {
         const command = group[label];
+        const hasText= 'None'!==label;
         children.push(
           <CustomStyleItem
             command={command}
@@ -76,7 +77,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             dispatch={dispatch}
             editorState={editorState}
             editorView={editorView}
-            hasText={true}
+            hasText={hasText}
             key={label}
             label={label}
             onClick={this._onUIEnter}
@@ -107,7 +108,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     return (
       <div>
         <div className="dropbtn" id={this._id}>
-          {children}
+          <div className="stylenames">{children}</div>
+          
           <hr></hr>
           {children1}
         </div>

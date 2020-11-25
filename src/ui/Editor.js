@@ -122,12 +122,16 @@ function popupPasteMenu(view, event,slice){
       onClose: val => {
         if (_popUp) {
           _popUp = null;
-          if(val==='keepTextOnly'){
+          // [FS] IRAD-1076 2020-11-23
+          // to avoid paste when click outside the popup.
+          if(undefined !=val){
+             if(val==='keepTextOnly'){
             pasteAsPlainText(slice);
         }
          handleEditorPaste(view, event);
          const tr = view.state.tr.replaceSelection(slice);
          view.dispatch(tr);
+          }
         }
       },
     }

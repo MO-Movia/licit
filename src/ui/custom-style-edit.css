@@ -26,12 +26,12 @@
 .formp {
     color: #464343;
     font-size: 12px;
-    margin-top: 2px;
     margin-bottom: 2px;
-    padding-top: 1px;
-    padding-right: 9px;
-    padding-left: 0;
+    margin-top: 2px;
     padding-bottom: 2px;
+    padding-left: 0;
+    padding-right: 9px;
+    padding-top: 1px;
 }
 
 .linespacing{
@@ -51,8 +51,8 @@
     border-bottom: 1px solid #d0bfbf;
     color: #47adec;
     font-family: 'Arial', sans-serif;
-    font-size: 25px;
     font-family: sans-serif;
+    font-size: 25px;
     height: 41px;
     margin-left: 2px;
     padding: 5px;
@@ -62,8 +62,8 @@
 .customedit-body {
     color: #464343;
     margin-top: 3px;
-    padding-top: 1px;
     padding-bottom: 0;
+    padding-top: 1px;
 }
 
 label {
@@ -101,6 +101,7 @@ label {
 }
 
 .textareadiv {
+    background: white;
     border-color: grey;
     border-image: initial;
     border-style: solid;
@@ -110,7 +111,8 @@ label {
     flex-direction: column;
     font: 400 11px Arial;
     height: 117px;
-    margin: 0em;
+    height: 214px;
+    margin: 0;
     margin-left: 0;
     margin-right: 20px;
     margin-top: 7px;
@@ -122,8 +124,6 @@ label {
     -webkit-rtl-ordering: logical;
     white-space: pre-wrap;
     width: 95%;
-    height: 214px;
-    background: white;
 }
 
 .sampletext {
@@ -132,11 +132,11 @@ label {
 
 .fontsize {
     height: 22px;
+    margin-bottom: 3px;
     margin-left: 5px;
     margin-top: 7px;
-    margin-bottom: 3px;
-    padding-top: 2px;
     padding-bottom: 3px;
+    padding-top: 2px;
     width: 50px;
 }
 
@@ -144,8 +144,8 @@ label {
     height: 22px;
     margin-bottom: 3px;
     margin-top: 7px;
-    padding-top: 2px;
     padding-bottom: 3px;
+    padding-top: 2px;
     width: 120px;
 }
 
@@ -161,8 +161,8 @@ label {
     height: 22px;
     margin-bottom: 0;
     margin-right: 5px;
-    padding-right: 5px;
     padding-bottom: 0;
+    padding-right: 5px;
     width: 500px;
 }
 
@@ -170,18 +170,18 @@ label {
     font-size: 13px;
     height: 22px;
     margin-left: 10px;
-    padding-left: 0;
     padding-bottom: 2px;
+    padding-left: 0;
     width: 186px;
 }
 
 .btns {
     margin-bottom: 2px;
-    margin-right: 0;
     margin-left: 28px;
+    margin-right: 0;
     margin-top: 2px;
-    padding-right: 0;
     padding-left: 4px;
+    padding-right: 0;
     text-align: right;
 }
 
@@ -196,8 +196,8 @@ label {
     border: none;
     margin: 0;
     margin-left: -3px;
-    width: 38px;
     white-space: nowrap;
+    width: 38px;
 }
 
 .align-menu-button-icon {
@@ -209,8 +209,8 @@ label {
 }
 
 .dropdown-div {
-    border: 1px solid black;
     background: #fff;
+    border: 1px solid black;
     box-shadow: 0 1px 3px rgb(90 45 45 / 26%);
 }
 
@@ -231,7 +231,7 @@ label {
 }
 
 .accordion {
-
+    background-color: #ccc;
     border: 1px solid lightgray;
     color: #444;
     cursor: pointer;
@@ -239,14 +239,13 @@ label {
     text-align: left;
     transition: 0.4s;
     width: 100%;
-    background-color: #ccc;
 }
 
 .accordion:after {
-    content: '\002B';
     color: #777;
-    font-weight: bold;
+    content: '\002B';
     float: right;
+    font-weight: bold;
     margin-left: 5px;
     padding-right: 5px;
     padding-top: 3px;
@@ -263,44 +262,40 @@ label {
     max-height: 0;
     overflow: hidden;
     padding: 0 7px;
-    width: auto;
     transition: max-height 0.2s ease-out;
+    width: auto;
 }
 .chknumbering {
     margin-top: 2px;
     padding-top: 2px;
 }
 
-.czi-custom-buttons{
-    padding-left: 4px;
+.czi-custom-buttons {
     margin-left: 0;
     margin-right: 2px;
+    padding-left: 4px;
     padding-right: 2px;
 }
 
 .container {
+    background: transparent;
     display: grid;
+    grid-gap: 10px;
     grid-template-columns: auto auto;
     padding: 5px;
-    grid-gap: 10px;
-    background: transparent
   }
-
-.iconspan czi-icon account tree {
-    margin-top: 10px;
-} */
 
 .specifiedindent{
     margin-left: 10px;
 }
 
 .alignbuttons {
-    width: 50px;
     background-color: #f0f0f0;
     border-color: #555;
     outline: none;
+    padding: 0;
     text-align: center;
-    padding: 0
+    width: 50px;
 }
 
 .alignbuttons:focus,
@@ -310,17 +305,16 @@ label {
     outline: none;
 }
 .activealignbuttons {
-    width: 70px;
     background-color: #f0f0f0;
     border-color: #338eec!important;
     outline: none;
+    padding: 0;
     text-align: center;
-    padding: 0
+    width: 70px;
 }
 .panel.hr {
-    margin-top: 0px !important;
-    margin-bottom: 0px !important;
-   
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
   }
 
   .markbuttons{
