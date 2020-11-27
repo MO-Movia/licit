@@ -4,11 +4,14 @@
 
 export function saveStyle(style) {
     let bOk = false;
-    const itemsArray = window.localStorage.getItem('customStyleList') ? JSON.parse(window.localStorage.getItem('customStyleList')) : [];
-    if (!itemsArray.includes(style)) {
-
-        itemsArray.push(style);
-        window.localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
+    // Custom style should save as key-value pair in local storage
+    const item= window.localStorage.getItem(style.stylename);
+    if(null===item) {
+        window.localStorage.setItem(style.stylename, JSON.stringify(style.styles));
+        bOk = true;
+    }
+    else{
+        window.localStorage[style.stylename] = JSON.stringify(style.styles);
         bOk = true;
     }
     return bOk;
@@ -16,21 +19,23 @@ export function saveStyle(style) {
 
 // get all saved styles
 export function getCustomStyles() {
-    return window.localStorage.getItem('customStyleList') ? JSON.parse(window.localStorage.getItem('customStyleList')) : [];
+   const keys = Object.keys(localStorage);
+    return keys;
 }
+
+export function removeCustomStyle(key){
+    window.localStorage.removeItem(key);
+}
+
+// Custom style should save as key-value pair in local storage
+export function getCustomStylesByKey(key) {
+     return JSON.parse(window.localStorage.getItem(key));
+ }
 
 // get a style by styleName
 export function getCustomStyleByName(name: String) {
-
-    const itemsArray = window.localStorage.getItem('customStyleList') ? JSON.parse(window.localStorage.getItem('customStyleList')) : [];
-    let style = null;
-    if (itemsArray.length > 0) {
-        itemsArray.forEach(obj => {
-            if (name === obj.stylename) {
-                style = obj.styles;
-            }
-        });
-    }
+    const itemsArray = window.localStorage.getItem(name) ? JSON.parse(window.localStorage.getItem(name)) : [];
+    const style = itemsArray;
     return style;
 }
 

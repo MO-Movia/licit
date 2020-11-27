@@ -246,7 +246,7 @@ class CustomStyleCommand extends UICommand {
             return false;
         }
 
-        tr = applyStyle(this._customStyle.styles, this._customStyle.stylename, state, tr);
+        tr = applyStyle(this._customStyle, this._customStyleName, state, tr);
 
         if (tr.docChanged || tr.storedMarksSet) {
             dispatch && dispatch(tr);

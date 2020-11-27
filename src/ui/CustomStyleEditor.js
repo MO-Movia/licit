@@ -425,24 +425,24 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                         ))}
                                     </select>
                                 </div>
-                                <div className="czi-custom-buttons">
+                                <div className="font-buttons">
                                     <span aria-label=" Bold" className="czi-tooltip-surface" data-tooltip=" Bold" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strong')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strong ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
                                         <span className="iconspan czi-icon format_bold">format_bold</span></span></span>
-                                    <span aria-label=" Italic" className="czi-tooltip-surface" data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'em')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
+                                    <span aria-label=" Italic" className="czi-tooltip-surface fontstyle" data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'em')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
                                         <span className="iconspan czi-icon format_italic">format_italic</span><span>  </span></span></span>
-                                    <span aria-label=" Underline" className="czi-tooltip-surface" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
+                                    <span aria-label=" Underline" className="czi-tooltip-surface fontstyle" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
                                         <span className="iconspan czi-icon  format_underline">format_underline</span><span>  </span></span></span>
                                     {/* <span aria-label=" Strike through" className="czi-tooltip-surface" data-tooltip=" Strike through" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strike')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strike ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
                                         <span className="iconspan czi-icon format_strikethrough">format_strikethrough</span><span>  </span></span></span>
                                     <span aria-label=" Superscript" className="czi-tooltip-surface" data-tooltip=" Superscript" id="86bad6e0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'super')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.super ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
                                         <span className="czi-icon superscript" style={{ width: '32px', height: '23px' }}> <span className="iconspan superscript-wrap"><span className="superscript-base">x</span><span className="superscript-top">y</span></span></span><span>  </span></span></span> */}
-                                    <span aria-label=" Text color" className="czi-tooltip-surface" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
+                                    <span aria-label=" Text color" className="czi-tooltip-surface fontstyle" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
                                         <span className="iconspan czi-icon format_color_text" style={{ color: this.state.styles.color }}>format_color_text</span><span>  </span></span></span>
-                                    <span aria-label=" Highlight color" className="czi-tooltip-surface" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
+                                    <span aria-label=" Highlight color" className="czi-tooltip-surface fontstyle" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
                                         <span className=" iconspan czi-icon border_color" style={{ color: this.state.styles.texthighlight }}>border_color</span><span>  </span></span></span>
 
                                 </div>
-                                <hr></hr>
+                               
                             </div>
 
                             <button className="accordion"> <span className="iconspan czi-icon format_textdirection_l_to_r">format_textdirection_l_to_r</span> PARAGRAPH</button>
@@ -474,23 +474,22 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                         <input className="spacinginput" key="before"
                                             onChange={this.onStyleClick.bind(this, 'before')} type="text" value={this.state.styles.spacebefore} />
                                     </span>
-                                    <label> pts</label>
+                                    <label style={{ marginLeft: '0' }}> pts</label>
 
                                     <label style={{ marginLeft: '23px' }}>After: </label>
                                     <span>
                                         <input className="spacinginput" key="after"
                                             onChange={this.onStyleClick.bind(this, 'after')} type="text" value={this.state.styles.spaceafter} />
                                     </span>
-                                    <label>pts</label>
+                                    <label style={{ marginLeft: '3px' }}>pts</label>
                                 </div>
-                                <hr></hr>
+                                
                             </div>
 
                             <button className="accordion"><span className="iconspan czi-icon account_tree">account_tree</span>HIERARCHY</button>
                             <div className="panel2 formp">
                                 <p className="formp">Level:</p>
-                                <div className="spacingdiv">
-
+                                <div className="hierarchydiv">
                                     <span>
                                         <select className="leveltype" onChange={this.onLevelChange.bind(this)} value={this.state.styles.level}>
                                             {LEVEL_VALUES.map((value) => (
@@ -507,15 +506,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     Numbering(1.1)
                                     </label>
                                     </span>
-                                    <p className="formp">Indenting:</p>
-                                    <div className="spacingdiv">
-                                        <div>
-                                            <input checked={this.state.styles.islevelbased} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
-                                                value="0" /> Based On Level
                                     </div>
-                                        <div>
+                                    <p className="formp">Indenting:</p>
+                                    <div className="hierarchydiv">
+                                        <div className="indentdiv">
+                                            <input checked={this.state.styles.islevelbased} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
+                                                value="0" /> 
+                                              <label style={{ marginLeft: '4px', marginTop: '3px' ,marginBottom: '0' }}>Based On Level</label>  
+                                    </div>
+                                        <div className="indentdiv">
                                             <input checked={this.state.styles.islevelspecified} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
-                                                value="1" /> Specified
+                                                value="1" /> 
+                                                <label style={{ marginLeft: '4px', marginTop: '3px' ,marginBottom: '0' }}>Specified</label>  
                                             <span>
                                                 <select className="leveltype specifiedindent" onChange={this.onIndentChange.bind(this)} value={this.state.styles.indent}>
                                                     {INDENT_VALUES.map(({ label, value }) => (
@@ -526,7 +528,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                                 </select>
                                             </span>
                                         </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>

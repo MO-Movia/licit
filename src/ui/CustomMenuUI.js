@@ -13,7 +13,7 @@ import CustomStyleSubMenu from './CustomStyleSubMenu';
 import CustomStyleEditor from './CustomStyleEditor';
 import {applyStyle} from '../CustomStyleCommand';
 import {atViewportCenter} from './PopUpPosition';
-import {saveStyle, removeStyle} from '../customStyle';
+import {saveStyle, removeStyle, removeCustomStyle} from '../customStyle';
 import {setTextAlign} from '../TextAlignCommand';
 import {setTextLineSpacing} from '../TextLineSpacingCommand';
 import {setParagraphSpacing} from '../ParagraphSpacingCommand';
@@ -262,7 +262,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
         stylename: command._customStyleName,
         mode: 1, //edit
         description: command._customStyle.description,
-        styles: command._customStyle.styles,
+        styles: command._customStyle,
       },
       {
         position: atViewportCenter,
@@ -275,6 +275,11 @@ class CustomMenuUI extends React.PureComponent<any, any> {
               const {dispatch} = this.props.editorView;
               let tr = this.props.editorState.tr;
               // const doc = this.props.editorState.doc;
+	      // [FS] IRAD-1112 2020-11-27
+	      // Issue fix : A duplicate style name is showing when modify a style name
+              if(this._styleName != val.stylename) {
+                removeCustomStyle(this._styleName);
+              }
               saveStyle(val);
               // tr = tr.setSelection(TextSelection.create(doc, 0, 0));
               // Apply created styles to document

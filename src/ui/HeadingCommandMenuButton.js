@@ -8,7 +8,7 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { HEADING_NAME_DEFAULT } from './findActiveHeading';
 import { Transform } from 'prosemirror-transform';
-import { getCustomStyles } from '../customStyle';
+import { getCustomStyles, getCustomStylesByKey } from '../customStyle';
 
 // [FS] IRAD-1042 2020-09-09
 // To include custom styles in the toolbar
@@ -37,7 +37,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
       [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
     };
     HEADING_NAMES.forEach(obj => {
-      HEADING_COMMANDS[obj.stylename] = new CustomStyleCommand(obj, obj.stylename);
+      HEADING_COMMANDS[obj] = new CustomStyleCommand(getCustomStylesByKey(obj), obj);
 
     });
 
@@ -73,7 +73,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         // Issue fix: style name shows blank when select multiple paragraph with same custom style applied
         if (1 === selectedStyleCount || (1 < selectedStyleCount && node.attrs.styleName === customStyleName)) {
           customStyleName = node.attrs.styleName;
-        }         
+        }
       }
     });
 
