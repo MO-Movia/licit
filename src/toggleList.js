@@ -15,74 +15,103 @@ import transformAndPreserveTextSelection from './transformAndPreserveTextSelecti
 import type { SelectionMemo } from './transformAndPreserveTextSelection';
 
 export default function toggleList(
-  tr: Transform,
-  schema: Schema,
-  listNodeType: NodeType
+    tr: Transform,
+    schema: Schema,
+    listNodeType: NodeType,
+    listStyleType: string
 ): Transform {
   const { selection, doc } = tr;
   if (!selection || !doc) {
     return tr;
   }
 
-  // [FS][04-AUG-2020][IRAD-955]
-  // Fix Unable to apply list using Ctrl+A selection
-  let {from} = selection;
-  const {to} = selection;
-  let newselection = null;
+    // [FS][04-AUG-2020][IRAD-955]
+    // Fix Unable to apply list using Ctrl+A selection
+    let {
+        from
+    } = selection;
+    let {
+        to
+    } = selection;
+    let newselection = selection;
 
-  if (from === 0) {
-    from = 1;
-    newselection = TextSelection.create(doc, from, to);
-    tr = tr.setSelection(newselection);
-  }
+    if (0 === from && 0 != to) {
+        // In here when Ctrl+A is pressed.
+        let startPos = -1;
+        let endPos = -1;
 
-  const fromSelection = TextSelection.create(doc, from, from);
-  const paragraph = schema.nodes[PARAGRAPH];
-  const heading = schema.nodes[HEADING];
-  const result = findParentNodeOfType(listNodeType)(fromSelection);
-  const p = findParentNodeOfType(paragraph)(fromSelection);
-  const h = findParentNodeOfType(heading)(fromSelection);
+        tr.doc.descendants((node, pos) => {
+            if (-1 === startPos) {
+                startPos = pos;
+            } else {
+                endPos = pos + 1;
+            }
+        });
 
-  if (result) {
-    tr = unwrapNodesFromList(tr, schema, result.pos);
-  } else if (paragraph && p) {
-    tr = wrapNodesWithList(tr, schema, listNodeType, newselection);
-  } else if (heading && h) {
-    tr = wrapNodesWithList(tr, schema, listNodeType, newselection);
-  }
-  return tr;
+        // validate endPos. Both start & end pos can't be -ve.
+        endPos = (-1 == endPos) ? to : endPos;
+
+        // Actual starting position similar when manually selecting
+        startPos = (0 < (to - endPos)) ? (to - endPos) : 0;
+
+        from = startPos;
+        to = ( 0 < endPos) ? endPos : 0;
+
+        newselection = TextSelection.create(doc, from, to);
+        tr = tr.setSelection(newselection);
+    }
+
+    const fromSelection = TextSelection.create(doc, from, from);
+    const paragraph = schema.nodes[PARAGRAPH];
+    const heading = schema.nodes[HEADING];
+    const result = findParentNodeOfType(listNodeType)(fromSelection);
+    const p = findParentNodeOfType(paragraph)(fromSelection);
+    const h = findParentNodeOfType(heading)(fromSelection);
+
+    if (result) {
+        tr = unwrapNodesFromList(tr, schema, result.pos);
+    } else if (paragraph && p) {
+        tr = wrapNodesWithList(tr, schema, listNodeType, listStyleType, newselection);
+    } else if (heading && h) {
+        tr = wrapNodesWithList(tr, schema, listNodeType, listStyleType, newselection);
+    }
+    return tr;
 }
 
 export function unwrapNodesFromList(
-  tr: Transform,
-  schema: Schema,
-  listNodePos: number,
-  unwrapParagraphNode?: ?(Node) => Node
+    tr: Transform,
+    schema: Schema,
+    listNodePos: number,
+    unwrapParagraphNode ? : ? (Node) => Node
 ): Transform {
-  return transformAndPreserveTextSelection(tr, schema, memo => {
-    return consolidateListNodes(
-      unwrapNodesFromListInternal(memo, listNodePos, unwrapParagraphNode)
-    );
-  });
+    return transformAndPreserveTextSelection(tr, schema, memo => {
+        return consolidateListNodes(
+            unwrapNodesFromListInternal(memo, listNodePos, unwrapParagraphNode)
+        );
+    });
 }
 
 function wrapNodesWithList(
-  tr: Transform,
-  schema: Schema,
-  listNodeType: NodeType, newselection = null
+    tr: Transform,
+    schema: Schema,
+    listNodeType: NodeType,
+    listStyleType: string,
+    newselection = null
 ): Transform {
 
-  return transformAndPreserveTextSelection(tr, schema, memo => {
-    // [FS][04-AUG-2020][IRAD-955]
-    // Fix Unable to apply list using Ctrl+A selection
-    return consolidateListNodes(wrapNodesWithListInternal(memo, listNodeType, newselection));
-  });
+    return transformAndPreserveTextSelection(tr, schema, memo => {
+        // [FS][04-AUG-2020][IRAD-955]
+        // Fix Unable to apply list using Ctrl+A selection
+        return consolidateListNodes(wrapNodesWithListInternal(memo, listNodeType, listStyleType, newselection));
+    });
 
 }
 
 function wrapNodesWithListInternal(
-  memo: SelectionMemo,
-  listNodeType: NodeType, newselection = null
+    memo: SelectionMemo,
+    listNodeType: NodeType,
+    listStyleType: String,
+    newselection = null
 ): Transform {
   const { schema } = memo;
   let { tr } = memo;
@@ -146,20 +175,21 @@ function wrapNodesWithListInternal(
     return pa >= pb ? 1 : -1;
   });
 
-  lists.reverse();
+    lists.reverse();
 
-  lists.forEach(items => {
-    tr = wrapItemsWithListInternal(tr, schema, listNodeType, items);
-  });
+    lists.forEach(items => {
+        tr = wrapItemsWithListInternal(tr, schema, listNodeType, items, listStyleType);
+    });
 
-  return tr;
+    return tr;
 }
 
 function wrapItemsWithListInternal(
-  tr: Transform,
-  schema: Schema,
-  listNodeType: NodeType,
-  items: Array<{ node: Node, pos: number }>
+    tr: Transform,
+    schema: Schema,
+    listNodeType: NodeType,
+    items: Array<{ node: Node, pos: number }>,
+    listStyleType: string
 ): Transform {
   const initialTr = tr;
   const paragraph = schema.nodes[PARAGRAPH];
@@ -225,9 +255,10 @@ function wrapItemsWithListInternal(
     listItemNodes.push(listItemNode);
   });
 
-  const listNodeAttrs = { indent: 0, start: 1 };
-  const $fromPos = tr.doc.resolve(fromPos);
-  const $toPos = tr.doc.resolve(toPos);
+    const listNodeAttrs = { indent: 0, start: 1, type: listStyleType};
+
+    const $fromPos = tr.doc.resolve(fromPos);
+    const $toPos = tr.doc.resolve(toPos);
 
   const hasSameListNodeBefore =
     $fromPos.nodeBefore &&

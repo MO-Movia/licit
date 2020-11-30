@@ -6,6 +6,7 @@ import * as React from 'react';
 import * as EditorCommands from '../EditorCommands';
 import FontSizeCommandMenuButton from './FontSizeCommandMenuButton';
 import FontTypeCommandMenuButton from './FontTypeCommandMenuButton';
+import ListTypeCommandButton from './ListTypeCommandButton';
 import HeadingCommandMenuButton from './HeadingCommandMenuButton';
 import Icon from './Icon';
 
@@ -46,7 +47,6 @@ const {
   INDENT_MORE,
   LINK_SET_URL,
   MATH_EDIT,
-  OL,
   STRIKE,
   STRONG,
   SUPER,
@@ -62,8 +62,6 @@ const {
   TABLE_DELETE_TABLE,
   TABLE_INSERT_TABLE,
   TABLE_MERGE_CELLS,
-  // TABLE_MOVE_TO_NEXT_CELL,
-  // TABLE_MOVE_TO_PREV_CELL,
   TABLE_SPLIT_ROW,
   TABLE_TOGGLE_HEADER_CELL,
   TABLE_TOGGLE_HEADER_COLUMN,
@@ -146,8 +144,11 @@ export const COMMAND_GROUPS = [
     '[format_line_spacing] Line spacing': TEXT_LINE_SPACINGS,
   },
   {
-    '[format_list_numbered] Ordered list': OL,
+    // [FS] IRAD-1039 2020-09-23
+    // Added new command button that brings a popup
+    '[format_list_numbered] Ordered list': ListTypeCommandButton,
     '[format_list_bulleted] Bulleted list': UL,
+
   },
   // [FS] IRAD-1042 2020-09-09
   // Changes the menu for include the custom styles.

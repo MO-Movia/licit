@@ -1,38 +1,21 @@
 // @flow
 
-import CommandMenuButton from './CommandMenuButton';
+import CustomMenuButton from './CustomMenuButton';
 import HeadingCommand from '../HeadingCommand';
 import CustomStyleCommand from '../CustomStyleCommand';
 import * as React from 'react';
-import {findActiveHeading} from './findActiveHeading';
-import findActiveCustomStyle from './findActiveCustomStyle';
-import {EditorState} from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
-import {HEADING_NAMES} from '../HeadingNodeSpec';
-import {HEADING_NAME_DEFAULT} from './findActiveHeading';
-import {Transform} from 'prosemirror-transform';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import { HEADING_NAME_DEFAULT } from './findActiveHeading';
+import { Transform } from 'prosemirror-transform';
+import { getCustomStyles, getCustomStylesByKey } from '../customStyle';
 
 // [FS] IRAD-1042 2020-09-09
 // To include custom styles in the toolbar
 
-const HEADING_COMMANDS: Object = {
+let HEADING_COMMANDS: Object = {
   [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
 };
-
-
-HEADING_NAMES.forEach(obj => {
-  if(obj.level){
-    HEADING_COMMANDS[obj.name] = new HeadingCommand(obj.level);
-  }
-  else
-  {
-    HEADING_COMMANDS[obj.name] = new CustomStyleCommand(obj.customstyles,obj.name);
-  }
-
-});
-
-
-const COMMAND_GROUPS = [HEADING_COMMANDS];
 
 class HeadingCommandMenuButton extends React.PureComponent<any, any> {
   props: {
@@ -41,41 +24,71 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     editorView: ?EditorView,
   };
 
-  findHeadingName(level: number) {
-    let headingName = '';
-    for (let i=0; i < HEADING_NAMES.length; i++){
-       if (HEADING_NAMES[i].level == level){
-        headingName = HEADING_NAMES[i].name;
-      return headingName;
-     }
-    }
-    return headingName;
+  //[FS] IRAD-1085 2020-10-09
+  //method to build commands for list buttons
+  getCommandGroups() {
+
+    //get custom styles from local storage
+    // let HEADING_COMMANDS = this.clearCommands();
+    const HEADING_NAMES = getCustomStyles();
+    HEADING_COMMANDS = null;
+    HEADING_COMMANDS = {
+      [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
+    };
+    HEADING_NAMES.forEach(obj => {
+      HEADING_COMMANDS[obj] = new CustomStyleCommand(getCustomStylesByKey(obj), obj);
+
+    });
+
+
+
+    return [HEADING_COMMANDS];
   }
-
+  staticCommands() {
+    const MENU_COMMANDS: Object = {
+      ['newstyle']: new CustomStyleCommand('newstyle', 'New Style..')
+    };
+    MENU_COMMANDS['clearstyle'] = new CustomStyleCommand('clearstyle', 'Clear Style');
+    return [MENU_COMMANDS];
+  }
+  isAllowedNode(node) {
+    return (node.type.name === 'paragraph' || node.type.name === 'ordered_list');
+  }
   render(): React.Element<any> {
-    const {dispatch, editorState, editorView} = this.props;
-    let customStyleName;
-    const headingLevel= findActiveHeading(editorState);
-    if(0<headingLevel)
-    {
-      customStyleName =this.findHeadingName(headingLevel);
-    }
-    else{
-      customStyleName = findActiveCustomStyle(editorState);
-    }
 
+    const { dispatch, editorState, editorView } = this.props;
+    const { selection, doc } = editorState;
+    const { from, to } = selection;
+    let customStyleName;
+    let selectedStyleCount = 0;
+    // [FS] IRAD-1088 2020-10-05
+    // get the custom style name from node attribute
+    doc.nodesBetween(from, to, (node, pos) => {
+      if (node.attrs.styleName && this.isAllowedNode(node)) {
+        // [FS] IRAD-1043 2020-10-27
+        // Show blank as style name when select paragrapghs with multiple custom styles applied
+        selectedStyleCount++;
+        // [FS] IRAD-1100 2020-10-30
+        // Issue fix: style name shows blank when select multiple paragraph with same custom style applied
+        if (1 === selectedStyleCount || (1 < selectedStyleCount && node.attrs.styleName === customStyleName)) {
+          customStyleName = node.attrs.styleName;
+        }
+      }
+    });
 
     return (
-      <CommandMenuButton
+      <CustomMenuButton
         className="width-100"
-         // [FS] IRAD-1008 2020-07-16
-         // Disable font type menu on editor disable state
-        commandGroups={COMMAND_GROUPS}
-        disabled={editorView && editorView.disabled? true:false}
+        // [FS] IRAD-1008 2020-07-16
+        // Disable font type menu on editor disable state
+        commandGroups={this.getCommandGroups()}
+        disabled={editorView && editorView.disabled ? true : false}
         dispatch={dispatch}
         editorState={editorState}
         editorView={editorView}
         label={customStyleName}
+        parent={this}
+        staticCommand={this.staticCommands()}
       />
     );
   }

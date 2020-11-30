@@ -37,7 +37,7 @@ function purgeConsecutiveBlankParagraphNodes(
     return tr;
   }
   const {doc, selection} = tr;
-  if (!selection instanceof CellSelection) {
+  if (!(selection instanceof CellSelection)) {
     return tr;
   }
   const {from, to} = selection;

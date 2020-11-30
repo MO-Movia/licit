@@ -10,6 +10,7 @@
 
 
 
+
 <h1 align="center">Licit Editor</h1>
 
 <div align="center">
@@ -55,13 +56,22 @@ Python(3.8.2)
 ``` 
 
 ### Install dependencies
+
+### Build licit-doc-attrs-step module
+```
+# From the directory `*helpers/licit-doc-attrs-step*`
+npm install
+npm pack
+```  
+Now you will find a *modusoperandi-licit-doc-attrs-step-0.0.1-0.tgz* file in the *helpers/licit-doc-attrs-step* directory. 
+
+Add this *.tgz* file to your licit root folder and follow the below commands:
 ```
 cd licit 
 npm install
 ``` 
 
-In order to upload image work correctly, "images" folder is expected outside the root folder 'licit'.
-  
+In order to upload image work correctly, "images" folder is expected outside the root folder 'licit'.  
 
 ### Start the collaboration server
 ```

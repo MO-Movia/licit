@@ -28,7 +28,7 @@ export default function findActiveFontType(state: EditorState): string {
     return (sm && sm.attrs.name) || FONT_TYPE_NAME_DEFAULT;
   }
 
-  const mark = markType ? findActiveMark(doc, from, to, markType) : null;
+  const mark = findActiveMark(doc, from, to, markType);
   const fontName = mark && mark.attrs.name;
   if (!fontName) {
     return FONT_TYPE_NAME_DEFAULT;

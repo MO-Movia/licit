@@ -36,8 +36,8 @@ class PointerSurface extends React.PureComponent<any, any> {
       id,
       style,
       title,
-      children,
-    } = this.props;
+      children
+          } = this.props;
     const { pressed } = this.state;
 
     const buttonClassName = cx(className, {
@@ -45,6 +45,7 @@ class PointerSurface extends React.PureComponent<any, any> {
       disabled: disabled,
       pressed: pressed,
     });
+
 
     return (
       <span
@@ -74,6 +75,9 @@ class PointerSurface extends React.PureComponent<any, any> {
       this._mul = false;
       document.removeEventListener('mouseup', this._onMouseUpCapture, true);
     }
+
+
+
   }
 
   _onMouseEnter = (e: SyntheticEvent<*>): void => {

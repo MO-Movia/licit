@@ -19,13 +19,7 @@ class HeadingCommand extends UICommand {
   }
 
   isActive = (state: EditorState): boolean => {
-    const result = this._findHeading(state);
-    return !!(
-      result &&
-      result.node &&
-      result.node.attrs &&
-      result.node.attrs.level === this._level
-    );
+    return true;
   };
 
   execute = (

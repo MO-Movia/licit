@@ -1,16 +1,16 @@
 // @flow
 
-import {Schema} from 'prosemirror-model';
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { Schema } from 'prosemirror-model';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
-import SetDocAttrStep from './SetDocAttrStep';
+import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
 import DocLayoutEditor from './ui/DocLayoutEditor';
 import UICommand from './ui/UICommand';
 import createPopUp from './ui/createPopUp';
 
-import type {DocLayoutEditorValue} from './ui/DocLayoutEditor';
+import type { DocLayoutEditorValue } from './ui/DocLayoutEditor';
 
 function setDocLayout(
   tr: Transform,
@@ -18,7 +18,7 @@ function setDocLayout(
   width: ?number,
   layout: ?string
 ): Transform {
-  const {doc} = tr;
+  const { doc } = tr;
   if (!doc) {
     return tr;
   }
@@ -49,7 +49,7 @@ class DocLayoutCommand extends UICommand {
       return Promise.resolve(undefined);
     }
 
-    const {doc} = state;
+    const { doc } = state;
 
     return new Promise(resolve => {
       const props = {
@@ -74,13 +74,13 @@ class DocLayoutCommand extends UICommand {
     inputs: ?DocLayoutEditorValue
   ): boolean => {
     if (dispatch) {
-      const {selection, schema} = state;
-      let {tr} = state;
+      const { selection, schema } = state;
+      let { tr } = state;
       // tr = view ? hideCursorPlaceholder(view.state) : tr;
       tr = tr.setSelection(selection);
 
       if (inputs) {
-        const {width, layout} = inputs;
+        const { width, layout } = inputs;
         tr = setDocLayout(tr, schema, width, layout);
       }
       dispatch(tr);

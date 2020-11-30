@@ -28,7 +28,7 @@
 .czi-icon.h2,
 .czi-icon.h3,
 .czi-icon.hn {
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica', 'Arial', sans-serif;
   font-size: 13px;
   text-transform: capitalize;
 }
@@ -54,7 +54,7 @@
 .czi-icon.superscript,
 .czi-icon.subscript {
   display: inline-block;
-  font-family: Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
   font-size: 12px;
   height: 16px;
   text-align: center;

@@ -1,13 +1,13 @@
 // @flow
 
-import {Schema} from 'prosemirror-model';
-import {EditorState} from 'prosemirror-state';
-import {AllSelection, TextSelection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { Schema } from 'prosemirror-model';
+import { EditorState } from 'prosemirror-state';
+import { AllSelection, TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
-import {MARK_FONT_TYPE} from './MarkNames';
+import { MARK_FONT_TYPE } from './MarkNames';
 import applyMark from './applyMark';
 import UICommand from './ui/UICommand';
 
@@ -16,13 +16,13 @@ function setFontType(tr: Transform, schema: Schema, name: string): Transform {
   if (!markType) {
     return tr;
   }
-  const {selection} = tr;
+  const { selection } = tr;
   if (
     !(selection instanceof TextSelection || selection instanceof AllSelection)
   ) {
     return tr;
   }
-  const attrs = name ? {name} : null;
+  const attrs = name ? { name } : null;
   tr = applyMark(tr, schema, markType, attrs);
   return tr;
 }
@@ -35,7 +35,7 @@ class FontTypeCommand extends UICommand {
   constructor(name: string) {
     super();
     this._name = name;
-    this._label = name ? <span style={{fontFamily: name}}>{name}</span> : null;
+    this._label = name ? <span style={{ fontFamily: name }}>{name}</span> : null;
   }
 
   renderLabel = (state: EditorState): any => {
@@ -43,7 +43,7 @@ class FontTypeCommand extends UICommand {
   };
 
   isEnabled = (state: EditorState): boolean => {
-    const {schema, selection, tr} = state;
+    const { schema, selection, tr } = state;
     if (
       !(selection instanceof TextSelection || selection instanceof AllSelection)
     ) {
@@ -54,7 +54,7 @@ class FontTypeCommand extends UICommand {
       return false;
     }
 
-    const {from, to} = selection;
+    const { from, to } = selection;
     if (to === from + 1) {
       const node = tr.doc.nodeAt(from);
       if (node.isAtom && !node.isText && node.isLeaf) {
@@ -71,7 +71,7 @@ class FontTypeCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const {schema, selection} = state;
+    const { schema, selection } = state;
     const tr = setFontType(
       state.tr.setSelection(selection),
       schema,
@@ -85,6 +85,25 @@ class FontTypeCommand extends UICommand {
       return true;
     }
     return false;
+  };
+
+  // [FS] IRAD-1087 2020-10-01
+  // Method to execute custom styling implementation of font type
+  executeCustom = (
+    state: EditorState,
+    tr: Transform,
+    from: Number,
+    to: Number
+  ): Transform => {
+
+    const { schema } = state;
+    tr = setFontType(
+      tr.setSelection(TextSelection.create(tr.doc, from, to)),
+      schema,
+      this._name
+    );
+
+    return tr;
   };
 }
 

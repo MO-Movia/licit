@@ -41,6 +41,7 @@
 /* [FS] IRAD-1061 2020-09-19 */
 /* Now loaded locally, so that it work in closed network as well. */
 @import './ui/fonts.css';
+@import './ui/custom-style-edit.css';
 @import './ui/icon-font.css';
 @import '~node-mathquill/build/mathquill.css';
 @import '~katex/dist/katex.min.css';

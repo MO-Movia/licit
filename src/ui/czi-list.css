@@ -1,9 +1,7 @@
 @import './czi-vars.css';
 
 html {
-  counter-reset:
-    czi-counter-0 czi-counter-1 czi-counter-2 czi-counter-3
-    czi-counter-4 czi-counter-5 czi-counter-6 czi-counter-7;
+  counter-reset: czi-counter-0 czi-counter-1 czi-counter-2 czi-counter-3 czi-counter-4 czi-counter-5 czi-counter-6 czi-counter-7;
 }
 
 .ProseMirror ol,
@@ -101,6 +99,177 @@ html {
 .ProseMirror ol[type='decimal'][data-indent='1'] > li > p::before {
   content: counter(czi-counter-1, decimal) '. ';
 }
+
+  /* [FS] IRAD-1039 2020-08-27
+Ordered list x.x.x formatting  fix */
+
+.ProseMirror ol[type='x.x.x'][data-indent='6'] > li > ::before {
+  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) '.' counter(czi-counter-3, decimal) '.' counter(czi-counter-4, decimal) '.' counter(czi-counter-5, decimal) '.' counter(czi-counter-6, decimal) ' ';
+  margin-left: -20px;
+}
+
+.ProseMirror ol[type='x.x.x'][data-indent='5'] > li > ::before {
+  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) '.' counter(czi-counter-3, decimal) '.' counter(czi-counter-4, decimal) '.' counter(czi-counter-5, decimal)  ' ';
+  margin-left: -20px;
+}
+.ProseMirror ol[type='x.x.x'][data-indent='4'] > li > ::before {
+  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) '.' counter(czi-counter-3, decimal) '.' counter(czi-counter-4, decimal) ' ';
+  margin-left: -20px;
+}
+
+.ProseMirror ol[type='x.x.x'][data-indent='3'] > li > ::before {
+  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) '.' counter(czi-counter-3, decimal)  ' ';
+  margin-left: -20px;
+}
+
+.ProseMirror ol[type='x.x.x'][data-indent='2'] > li > p::before {
+  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) '.' counter(czi-counter-2, decimal) ' ';
+  margin-left: -20px;
+}
+
+.ProseMirror ol[type='x.x.x'][data-indent='1'] > li > p::before {
+  content: counter(czi-counter-0, decimal) '.' counter(czi-counter-1, decimal) ' ';
+  margin-left: -20px;
+  /* padding-left: 0; */
+  }
+
+  .ProseMirror ol[type='x.x.x'][data-indent='0'] > li > p::before {
+    color: var(--czi-list-style-color);
+    content: counter(czi-counter-0, decimal) '. ';
+    display: inline-block;
+    font-size: 1em;
+    line-height: 1em;
+    position: relative;
+    text-align: right;
+    top: 0;
+    left: -5px;
+    margin-left: -24pt;
+    width: 24pt;
+    /* padding-left: 20px; */
+  }
+
+    /* [FS] IRAD-1039 2020-08-27
+Ordered list 1) formatting  fix */
+.ProseMirror ol[type='lower_alpha_bracket_closed'][data-indent='6'] > li > p::before,
+.ProseMirror ol[type='lower_alpha_bracket'][data-indent='6'] > li > p::before,
+.ProseMirror ol[type='upper_alpha_bracket'][data-indent='6'] > li > p::before,
+.ProseMirror ol[type='num_bracket_closed'][data-indent='6'] > li > p::before,
+.ProseMirror ol[type='num_bracket'][data-indent='6'] > li > ::before {
+  content: counter(czi-counter-6, decimal) '.';
+  margin-left: 100px;
+}
+.ProseMirror ol[type='lower_alpha_bracket_closed'][data-indent='5'] > li > p::before,
+.ProseMirror ol[type='lower_alpha_bracket'][data-indent='5'] > li > p::before,
+.ProseMirror ol[type='upper_alpha_bracket'][data-indent='5'] > li > p::before,
+.ProseMirror ol[type='num_bracket_closed'][data-indent='5'] > li > p::before,
+.ProseMirror ol[type='num_bracket'][data-indent='5'] > li > ::before {
+  content: counter(czi-counter-5, decimal) '.';
+  margin-left: 80px;
+}
+.ProseMirror ol[type='lower_alpha_bracket_closed'][data-indent='4'] > li > p::before,
+.ProseMirror ol[type='lower_alpha_bracket'][data-indent='4'] > li > p::before,
+.ProseMirror ol[type='upper_alpha_bracket'][data-indent='4'] > li > p::before,
+.ProseMirror ol[type='num_bracket_closed'][data-indent='4'] > li > p::before,
+.ProseMirror ol[type='num_bracket'][data-indent='4'] > li > ::before {
+  content: counter(czi-counter-4, decimal) '.';
+  margin-left: 60px;
+}
+.ProseMirror ol[type='lower_alpha_bracket_closed'][data-indent='3'] > li > p::before,
+.ProseMirror ol[type='lower_alpha_bracket'][data-indent='3'] > li > p::before,
+.ProseMirror ol[type='upper_alpha_bracket'][data-indent='3'] > li > p::before,
+.ProseMirror ol[type='num_bracket_closed'][data-indent='3'] > li > p::before,
+.ProseMirror ol[type='num_bracket'][data-indent='3'] > li > ::before {
+  content: counter(czi-counter-3, decimal) '.';
+  margin-left: 40px;
+}
+.ProseMirror ol[type='lower_alpha_bracket_closed'][data-indent='2'] > li > p::before,
+.ProseMirror ol[type='lower_alpha_bracket'][data-indent='2'] > li > p::before,
+.ProseMirror ol[type='upper_alpha_bracket'][data-indent='2'] > li > p::before,
+.ProseMirror ol[type='num_bracket_closed'][data-indent='2'] > li > p::before,
+.ProseMirror ol[type='num_bracket'][data-indent='2'] > li > p::before {
+  content: counter(czi-counter-2, decimal) '.' ;
+  margin-left: 20px;
+}
+.ProseMirror ol[type='lower_alpha_bracket_closed'][data-indent='1'] > li > p::before,
+.ProseMirror ol[type='lower_alpha_bracket'][data-indent='1'] > li > p::before,
+.ProseMirror ol[type='upper_alpha_bracket'][data-indent='1'] > li > p::before,
+.ProseMirror ol[type='num_bracket_closed'][data-indent='1'] > li > p::before,
+.ProseMirror ol[type='num_bracket'][data-indent='1'] > li > p::before {
+  content: counter(czi-counter-1, decimal) '.' ;
+  }
+
+.ProseMirror ol[type='num_bracket'][data-indent='0'] > li > p::before {
+    color: var(--czi-list-style-color);
+    content: counter(czi-counter-0, decimal) ') ';
+    display: inline-block;
+    font-size: 1em;
+    line-height: 1em;
+    position: relative;
+    text-align: right;
+    top: 0;
+    left: -5px;
+    margin-left: -24pt;
+    width: 24pt;
+  }
+
+.ProseMirror ol[type='num_bracket_closed'][data-indent='0'] > li > p::before {
+    color: var(--czi-list-style-color);
+    content: '(' counter(czi-counter-0, decimal) ') ';
+    display: inline-block;
+    font-size: 1em;
+    line-height: 1em;
+    position: relative;
+    text-align: right;
+    top: 0;
+    left: -5px;
+    margin-left: -24pt;
+    width: 24pt;
+  }
+
+.ProseMirror ol[type='upper_alpha_bracket'][data-indent='0'] > li > p::before {
+    color: var(--czi-list-style-color);
+    content: counter(czi-counter-0, upper-alpha) ') ';
+    display: inline-block;
+    font-size: 1em;
+    line-height: 1em;
+    position: relative;
+    text-align: right;
+    top: 0;
+    left: -5px;
+    margin-left: -24pt;
+    width: 24pt;
+    /* padding-left: 20px; */
+  }
+
+  .ProseMirror ol[type='lower_alpha_bracket'][data-indent='0'] > li > p::before {
+    color: var(--czi-list-style-color);
+    content: counter(czi-counter-0, lower-alpha) ') ';
+    display: inline-block;
+    font-size: 1em;
+    line-height: 1em;
+    position: relative;
+    text-align: right;
+    top: 0;
+    left: -5px;
+    margin-left: -24pt;
+    width: 24pt;
+    padding-left: 20px;
+  }
+
+  .ProseMirror ol[type='lower_alpha_bracket_closed'][data-indent='0'] > li > p::before {
+    color: var(--czi-list-style-color);
+    content: '(' counter(czi-counter-0, lower-alpha) ') ';
+    display: inline-block;
+    font-size: 1em;
+    line-height: 1em;
+    position: relative;
+    text-align: right;
+    top: 0;
+    left: -5px;
+    margin-left: -24pt;
+    width: 24pt;
+    padding-left: 20px;
+  }
 
 .ProseMirror ol[type='decimal'][data-indent='0'] > li > p::before {
   color: var(--czi-list-style-color);

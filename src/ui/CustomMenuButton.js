@@ -1,23 +1,25 @@
 // @flow
+// [FS] IRAD-1039 2020-09-23
+// Command button to handle different type of list types
+// Need to add Icons instead of label
 
 import cx from 'classnames';
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
-
-import CommandMenu from './CommandMenu';
 import CustomButton from './CustomButton';
 import UICommand from './UICommand';
 import createPopUp from './createPopUp';
 import uuid from './uuid';
+import CustomMenuUI from './CustomMenuUI';
+import './custom-dropdown.css';
 
-import './czi-custom-menu-button.css';
-
-class CommandMenuButton extends React.PureComponent<any, any> {
+class CustomMenuButton extends React.PureComponent<any, any> {
   props: {
     className?: ?string,
-    commandGroups: Array<{[string]: UICommand}>,
+    commandGroups: Array<{ [string]: UICommand }>,
+    staticCommand: Array<{ [string]: UICommand }>,
     disabled?: ?boolean,
     dispatch: (tr: Transform) => void,
     editorState: EditorState,
@@ -25,11 +27,11 @@ class CommandMenuButton extends React.PureComponent<any, any> {
     icon?: string | React.Element<any> | null,
     label?: string | React.Element<any> | null,
     title?: ?string,
-    parent?: ?React.Element<any> // the parent command button
   };
 
   _menu = null;
   _id = uuid();
+  // _popupId = uuid();
 
   state = {
     expanded: false,
@@ -39,30 +41,26 @@ class CommandMenuButton extends React.PureComponent<any, any> {
     const {
       className,
       label,
-      commandGroups,
-      editorState,
-      editorView,
       icon,
-      disabled,
       title,
     } = this.props;
-    const enabled =
-      !disabled &&
-      commandGroups.some((group, ii) => {
-        return Object.keys(group).some(label => {
-          const command = group[label];
-          let disabledVal = true;
-          try {
-            disabledVal =
-              !editorView || !command.isEnabled(editorState,editorView, label);
-          } catch (ex) {
-            disabledVal = false;
-          }
-          return !disabledVal;
-        });
-      });
+    // const enabled =
+    //   !disabled &&
+    //   commandGroups.some((group, ii) => {
+    //     return Object.keys(group).some(label => {
+    //       const command = group[label];
+    //       let disabledVal = true;
+    //       try {
+    //         disabledVal =
+    //           !editorView || !command.isEnabled(editorState, editorView);
+    //       } catch (ex) {
+    //         disabledVal = false;
+    //       }
+    //       return !disabledVal;
+    //     });
+    //   });
 
-    const {expanded} = this.state;
+    const { expanded } = this.state;
     const buttonClassName = cx(className, {
       'czi-custom-menu-button': true,
       expanded,
@@ -71,7 +69,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
     return (
       <CustomButton
         className={buttonClassName}
-        disabled={!enabled}
+        disabled={false}
         icon={icon}
         id={this._id}
         label={label}
@@ -104,11 +102,16 @@ class CommandMenuButton extends React.PureComponent<any, any> {
     const menuProps = {
       ...this.props,
       onCommand: this._onCommand,
+      // popupId: this._popupId
     };
     if (menu) {
       menu.update(menuProps);
     } else {
-      this._menu = createPopUp(CommandMenu, menuProps, {
+      // const anchor =document.getElementById('mo-submenu');
+
+      this._menu = createPopUp(CustomMenuUI, menuProps, {
+        autoDismiss: true,
+        // Id: this._popupId,
         anchor: document.getElementById(this._id),
         onClose: this._onClose,
       });
@@ -116,16 +119,16 @@ class CommandMenuButton extends React.PureComponent<any, any> {
   };
 
   _onCommand = (): void => {
-    this.setState({expanded: false});
+    this.setState({ expanded: false });
     this._hideMenu();
   };
 
   _onClose = (): void => {
     if (this._menu) {
-      this.setState({expanded: false});
+      this.setState({ expanded: false });
       this._menu = null;
     }
   };
 }
 
-export default CommandMenuButton;
+export default CustomMenuButton;

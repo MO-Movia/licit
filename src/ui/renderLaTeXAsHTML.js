@@ -10,7 +10,6 @@ import 'katex/dist/katex.min.css';
 const latexEl: any = document.createElement('div');
 const cached: Object = {};
 
-
 const CSS_FONT = 'KaTeX_Main';
 
 (async function() {

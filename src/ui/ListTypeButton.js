@@ -1,20 +1,21 @@
 // @flow
+// [FS] IRAD-1039 2020-09-23
+// Command button to handle different type of list types
+// Need to add Icons instead of label
 
 import cx from 'classnames';
 import {EditorState} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
-
-import CommandMenu from './CommandMenu';
 import CustomButton from './CustomButton';
 import UICommand from './UICommand';
 import createPopUp from './createPopUp';
 import uuid from './uuid';
-
+import ListTypeMenu from './ListTypeMenu';
 import './czi-custom-menu-button.css';
 
-class CommandMenuButton extends React.PureComponent<any, any> {
+class ListTypeButton extends React.PureComponent<any, any> {
   props: {
     className?: ?string,
     commandGroups: Array<{[string]: UICommand}>,
@@ -25,7 +26,6 @@ class CommandMenuButton extends React.PureComponent<any, any> {
     icon?: string | React.Element<any> | null,
     label?: string | React.Element<any> | null,
     title?: ?string,
-    parent?: ?React.Element<any> // the parent command button
   };
 
   _menu = null;
@@ -54,7 +54,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
           let disabledVal = true;
           try {
             disabledVal =
-              !editorView || !command.isEnabled(editorState,editorView, label);
+              !editorView || !command.isEnabled(editorState, editorView);
           } catch (ex) {
             disabledVal = false;
           }
@@ -108,7 +108,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
     if (menu) {
       menu.update(menuProps);
     } else {
-      this._menu = createPopUp(CommandMenu, menuProps, {
+      this._menu = createPopUp(ListTypeMenu, menuProps, {
         anchor: document.getElementById(this._id),
         onClose: this._onClose,
       });
@@ -128,4 +128,4 @@ class CommandMenuButton extends React.PureComponent<any, any> {
   };
 }
 
-export default CommandMenuButton;
+export default ListTypeButton;
