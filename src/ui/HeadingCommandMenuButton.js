@@ -17,7 +17,6 @@ let HEADING_COMMANDS: Object = {
   [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
 };
 
-
 class HeadingCommandMenuButton extends React.PureComponent<any, any> {
   props: {
     dispatch: (tr: Transform) => void,

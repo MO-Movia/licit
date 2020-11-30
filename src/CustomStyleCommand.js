@@ -461,7 +461,7 @@ function isAllowedNode(node) {
 function _setNodeAttribute(node, tr, from, to, attribute) {
     // Verify the parent node type.
     if (isAllowedNode(node)) {
-        node.descendants(function (child: Node, pos: number, parent: Node) {        
+        node.descendants(function (child: Node, pos: number, parent: Node) {
             tr = tr.setNodeMarkup(pos, undefined, attribute);
         });
     }
