@@ -2,16 +2,15 @@
 // [FS] IRAD-1085 2020-10-09
 // Handle custom style in local storage
 
+const localStorageKey='moStyles';
+
 export function saveStyle(style) {
     let bOk = false;
-    // Custom style should save as key-value pair in local storage
-    const item= window.localStorage.getItem(style.stylename);
-    if(null===item) {
-        window.localStorage.setItem(style.stylename, JSON.stringify(style.styles));
-        bOk = true;
-    }
-    else{
-        window.localStorage[style.stylename] = JSON.stringify(style.styles);
+    const itemsArray = window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
+    if (!itemsArray.includes(style)) {
+        removeStyleFromLocalStorage(style.stylename,itemsArray);
+        itemsArray.push(style);
+        window.localStorage.setItem(localStorageKey, JSON.stringify(itemsArray));
         bOk = true;
     }
     return bOk;
@@ -19,23 +18,20 @@ export function saveStyle(style) {
 
 // get all saved styles
 export function getCustomStyles() {
-   const keys = Object.keys(localStorage);
-    return keys;
+    return window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
 }
-
-export function removeCustomStyle(key){
-    window.localStorage.removeItem(key);
-}
-
-// Custom style should save as key-value pair in local storage
-export function getCustomStylesByKey(key) {
-     return JSON.parse(window.localStorage.getItem(key));
- }
 
 // get a style by styleName
 export function getCustomStyleByName(name: String) {
-    const itemsArray = window.localStorage.getItem(name) ? JSON.parse(window.localStorage.getItem(name)) : [];
-    const style = itemsArray;
+    const itemsArray = window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
+    let style = null;
+    if (itemsArray.length > 0) {
+        itemsArray.forEach(obj => {
+            if (name === obj.stylename) {
+                style = obj.styles;
+            }
+        });
+    }
     return style;
 }
 
@@ -46,19 +42,32 @@ export function editStyle(name, style) {
 export function removeStyle(name, style) {
     removeFromLocalStorage(name, style);
 }
-function removeFromLocalStorage(name, style) {
-    const itemsArray = window.localStorage.getItem('customStyleList') ? JSON.parse(window.localStorage.getItem('customStyleList')) : [];
-    // if (itemsArray.includes(style)) {
+export function removeFromLocalStorage(name, style) {
+    const itemsArray = window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
+    const styles = itemsArray;
     for (let i = 0; i < itemsArray.length; i++) {
+        if (itemsArray[i].stylename === name) {
+            styles.splice(i, 1);
+        }
+        // }
+        window.localStorage.setItem(localStorageKey, JSON.stringify(styles));
+    }
+}
+
+export function removeStyleFromLocalStorage(name, styleList) {
+    const itemsArray = styleList;
+    for (let i = 0; i < styleList.length; i++) {
         if (itemsArray[i].stylename === name) {
             itemsArray.splice(i, 1);
         }
         // }
-        window.localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
+
     }
+    window.localStorage.setItem(localStorageKey, JSON.stringify(itemsArray));
 }
+
 function addToLocalStorage(style) {
-    const itemsArray = window.localStorage.getItem('customStyleList') ? JSON.parse(window.localStorage.getItem('customStyleList')) : [];
+    const itemsArray = window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
     itemsArray.push(style);
-    window.localStorage.setItem('customStyleList', JSON.stringify(itemsArray));
+    window.localStorage.setItem(localStorageKey, JSON.stringify(itemsArray));
 }

@@ -246,7 +246,7 @@ class CustomStyleCommand extends UICommand {
             return false;
         }
 
-        tr = applyStyle(this._customStyle, this._customStyleName, state, tr);
+        tr = applyStyle(this._customStyle.styles, this._customStyle.stylename, state, tr);
 
         if (tr.docChanged || tr.storedMarksSet) {
             dispatch && dispatch(tr);
@@ -289,7 +289,6 @@ class CustomStyleCommand extends UICommand {
     createCustomObject() {
         return {
             stylename: '',
-            mode: 0,//new
             styles: {},
         };
 
@@ -462,7 +461,7 @@ function _setNodeAttribute(node, tr, from, to, attribute) {
     // Verify the parent node type.
     if (isAllowedNode(node)) {
         node.descendants(function (child: Node, pos: number, parent: Node) {
-            tr = tr.setNodeMarkup(pos, undefined, attribute);
+            tr = tr.setNodeMarkup(from, undefined, attribute);
         });
     }
     return tr;

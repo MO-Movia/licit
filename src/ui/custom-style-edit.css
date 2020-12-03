@@ -16,14 +16,16 @@
     border: 1px solid gray;
     margin-left: -3px;
     padding: 5px;
-    width: 196px;
+    width: auto;
 }
 
 .spacingdiv label {
     color: #464343;
     font-size: 12px;
-    margin: 4px 0;
+    margin-bottom: 4px;
     margin-left: -4px;
+    margin-right: 0;
+    margin-top: 4px;
 }
 
 .formp {
@@ -265,17 +267,18 @@ label {
 .panel1,
 .panel2 {
     background-color: transparent;
-    max-height: 0;
     margin-bottom: 10px;
+    max-height: 0;
     overflow: hidden;
     padding: 0 7px;
     transition: max-height 0.2s ease-out;
     width: auto;
 }
+
 .chknumbering {
+    margin-left: 12px;
     margin-top: 2px;
     padding-top: 2px;
-    margin-left: 12px;
 }
 
 .czi-custom-buttons {
@@ -301,8 +304,8 @@ label {
   }
 
 .specifiedindent {
-    margin-top: -1px;
     margin-left: 10px;
+    margin-top: -1px;
 }
 
 .alignbuttons {
@@ -317,20 +320,20 @@ label {
 .alignbuttons:focus,
 .alignbuttons:hover {
     background-color: #f0f0f0;
-    border-color: #338eec!important;
+    border-color: #338eec;
     outline: none;
 }
 .activealignbuttons {
     background-color: #f0f0f0;
-    border-color: #338eec!important;
+    border-color: #338eec;
     outline: none;
     padding: 0;
     text-align: center;
     width: 70px;
 }
 .panel.hr {
-    margin-bottom: 0 !important;
-    margin-top: 0 !important;
+    margin-bottom: 0;
+    margin-top: 0;
   }
 
   .markbuttons{
@@ -344,17 +347,18 @@ label {
     border: 1px solid gray;
     margin-left: -1px;
     padding: 5px;
-    width: 197px;
+    width: auto;
   }
 
   .hierarchydiv label {
     color: #464343;
     font-size: 12px;
-    margin: 4px 0;
+    margin-bottom: 4px;
     margin-left: -4px;
+    margin-right: 0;
+    margin-top: 4px;
 }
 
 .indentdiv{
     display: inline-flex;
 }
-  

@@ -8,7 +8,7 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { HEADING_NAME_DEFAULT } from './findActiveHeading';
 import { Transform } from 'prosemirror-transform';
-import { getCustomStyles, getCustomStylesByKey } from '../customStyle';
+import { getCustomStyles } from '../customStyle';
 
 // [FS] IRAD-1042 2020-09-09
 // To include custom styles in the toolbar
@@ -27,7 +27,6 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
   //[FS] IRAD-1085 2020-10-09
   //method to build commands for list buttons
   getCommandGroups() {
-
     //get custom styles from local storage
     // let HEADING_COMMANDS = this.clearCommands();
     const HEADING_NAMES = getCustomStyles();
@@ -36,12 +35,9 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
       [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
     };
     HEADING_NAMES.forEach(obj => {
-      HEADING_COMMANDS[obj] = new CustomStyleCommand(getCustomStylesByKey(obj), obj);
+      HEADING_COMMANDS[obj.stylename] = new CustomStyleCommand(obj, obj.stylename);
 
     });
-
-
-
     return [HEADING_COMMANDS];
   }
   staticCommands() {
