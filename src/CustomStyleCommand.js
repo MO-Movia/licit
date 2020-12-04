@@ -1,4 +1,4 @@
-
+// @flow
 import {
     EditorState,
     TextSelection
@@ -9,7 +9,7 @@ import {
 import {
     EditorView
 } from 'prosemirror-view';
-import { Node } from 'prosemirror-model';
+import { Node, Schema } from 'prosemirror-model';
 import UICommand from './ui/UICommand';
 import {
     atViewportCenter
@@ -69,7 +69,7 @@ export const LEVEL = 'level';
 
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
-export function getCustomStyleCommands(customStyle) {
+export function getCustomStyleCommands(customStyle: any) {
     const commands = [];
     for (const property in customStyle) {
 
@@ -302,7 +302,7 @@ class CustomStyleCommand extends UICommand {
     }
 
     // locally save style object
-    saveStyleObject(style) {
+    saveStyleObject(style: any) {
         saveStyle(style);
     }
 }
@@ -361,7 +361,8 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
     return tr;
 }
 
-export function updateOverrideFlag(styleName, tr, node, startPos, endPos, retObj) {
+export function updateOverrideFlag(styleName: String, tr: Transform, node: Node,
+    startPos: Number, endPos: Number, retObj: any) {
     const style = getCustomStyleByName(styleName);
 
     if (style) {
@@ -377,7 +378,8 @@ export function updateOverrideFlag(styleName, tr, node, startPos, endPos, retObj
     return tr;
 }
 
-function onLoadRemoveAllMarksExceptOverridden(node, schema, from, to, tr) {
+function onLoadRemoveAllMarksExceptOverridden(node: Node, schema: Schema,
+    from: Number, to: Number, tr: Transform) {
     const tasks = [];
     node.descendants(function (child: Node, pos: number, parent: Node) {
         if (child instanceof Node) {
@@ -456,7 +458,8 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
 }
 
 // Need to change this function code duplicates with applyStyle()
-export function applyLatestStyle(styleName: String, state: EditorState, tr: Transform, node, startPos, endPos) {
+export function applyLatestStyle(styleName: String, state: EditorState, tr: Transform,
+    node: Node, startPos: Number, endPos: Number) {
     return applyStyleEx(null, styleName, state, tr, node, startPos, endPos);
 }
 
@@ -466,7 +469,8 @@ function isAllowedNode(node) {
 
 // [FS] IRAD-1088 2020-10-05
 // set custom style for node
-function _setNodeAttribute(state, tr, from, to, attribute) {
+function _setNodeAttribute(state: EditorState, tr: Transform, from: Number,
+    to: Number, attribute: any) {
     // if (isAllowedNode(node)) {
     //     node.descendants(function (child: Node, pos: number, parent: Node) {
     //         tr = tr.setNodeMarkup(pos, undefined, attribute);
@@ -485,7 +489,7 @@ function _setNodeAttribute(state, tr, from, to, attribute) {
 
 // [FS] IRAD-1087 2020-11-02
 // Issue fix: Missing the applied link after applying a style
-function removeAllMarksExceptLink(from, to, tr, schema) {
+function removeAllMarksExceptLink(from: Number, to: Number, tr: Transform, schema: Schema) {
     const { doc } = tr;
     const tasks = [];
     doc.nodesBetween(from, to, (node, pos) => {
@@ -506,7 +510,8 @@ function removeAllMarksExceptLink(from, to, tr, schema) {
     return handleRemoveMarks(tr, tasks, from, to, schema);
 }
 
-function handleRemoveMarks(tr, tasks, from, to, schema) {
+function handleRemoveMarks(tr: Transform, tasks: any, from: Number,
+    to: Number, schema: Schema) {
     tasks.forEach(job => {
         const { mark } = job;
         tr = tr.removeMark(from, to, mark.type);
@@ -517,7 +522,7 @@ function handleRemoveMarks(tr, tasks, from, to, schema) {
 
 // [FS] IRAD-1087 2020-10-14
 // Apply selected styles to document
-export function applyStyle(style, styleName, state, tr) {
+export function applyStyle(style: any, styleName: String, state: EditorState, tr: Transform) {
     const {
         selection
     } = state;
@@ -528,7 +533,7 @@ export function applyStyle(style, styleName, state, tr) {
 }
 
 //to get the selected node
-export function getNode(state, from, to) {
+export function getNode(state: EditorState, from: Number, to: Number) {
     let selectedNode = null;
     state.doc.nodesBetween(from, to, (node, startPos) => {
         if (node.type.name === 'paragraph') {

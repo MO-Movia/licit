@@ -131,7 +131,7 @@ class Licit extends React.Component<any, any> {
     }
   }
 
-  isNodeHasAttribute (node, attrName)  {
+  isNodeHasAttribute (node:Node, attrName:String)  {
     return node.attrs && node.attrs[attrName];
   }
 
@@ -147,8 +147,8 @@ class Licit extends React.Component<any, any> {
     tr = tr.setSelection(selection).replaceSelectionWith(document, false);
     // [FS] IRAD-1092 2020-12-03
     // set the value for object metadata  and objectId
-    tr = isNodeHasAttribute(document,ATTR_OBJMETADATA)?tr.step(new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)) : tr;
-    tr = isNodeHasAttribute(document,ATTR_OBJID)?tr.step(new SetDocAttrStep(ATTR_OBJID, document.attrs.objectId)) : tr;
+    tr = this.isNodeHasAttribute(document,ATTR_OBJMETADATA)?tr.step(new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)) : tr;
+    tr = this.isNodeHasAttribute(document,ATTR_OBJID)?tr.step(new SetDocAttrStep(ATTR_OBJID, document.attrs.objectId)) : tr;
   
     this._skipSCU = true;
     this._editorView.dispatch(tr);
