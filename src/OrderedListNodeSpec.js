@@ -1,12 +1,12 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 
-import {ATTRIBUTE_LIST_STYLE_TYPE} from './ListItemNodeSpec';
-import {LIST_ITEM} from './NodeNames';
-import {ATTRIBUTE_INDENT, MIN_INDENT_LEVEL} from './ParagraphNodeSpec';
+import { ATTRIBUTE_LIST_STYLE_TYPE } from './ListItemNodeSpec';
+import { LIST_ITEM } from './NodeNames';
+import { ATTRIBUTE_INDENT, MIN_INDENT_LEVEL } from './ParagraphNodeSpec';
 
-import type {NodeSpec} from './Types';
+import type { NodeSpec } from './Types';
 
 export const ATTRIBUTE_COUNTER_RESET = 'data-counter-reset';
 export const ATTRIBUTE_FOLLOWING = 'data-following';
@@ -14,12 +14,12 @@ const AUTO_LIST_STYLE_TYPES = ['decimal', 'lower-alpha', 'lower-roman'];
 
 const OrderedListNodeSpec: NodeSpec = {
   attrs: {
-    id: {default: null},
-    counterReset: {default: null},
-    indent: {default: MIN_INDENT_LEVEL},
-    following: {default: null},
-    listStyleType: {default: null},
-    name: {default: null},
+    id: { default: null },
+    counterReset: { default: null },
+    indent: { default: MIN_INDENT_LEVEL },
+    following: { default: null },
+    listStyleType: { default: null },
+    name: { default: null },
     start: { default: 1 },
     type: { default: 'decimal' },
     styleName: { default: 'None' },
@@ -67,7 +67,7 @@ const OrderedListNodeSpec: NodeSpec = {
       counterReset,
       following,
       name,
-type,
+      type,
     } = node.attrs;
     const attrs: Object = {
       [ATTRIBUTE_INDENT]: indent,
@@ -100,17 +100,31 @@ type,
     }
 
     const cssCounterName = `czi-counter-${indent}`;
+    if ('x.x.x' === type) {
+      if ('None' !== node.attrs.styleName) {
+        attrs.style = buildStyleClass(indent, node.attrs.start);
+      }
+      else {
+        attrs.style =
+          `--czi-counter-name: ${cssCounterName};` +
+          `--czi-counter-reset: ${following ? 'none' : start - 1};` +
+          `--czi-list-style-type: ${htmlListStyleType}`;
+      }
+    } else {
 
-    attrs.style =
-      `--czi-counter-name: ${cssCounterName};` +
-      `--czi-counter-reset: ${following ? 'none' : start - 1};` +
-      `--czi-list-style-type: ${htmlListStyleType}`;
-
-    //attrs.type = htmlListStyleType;
+    }
     attrs.type = type;
 
     return ['ol', attrs, 0];
   },
 };
 
+function buildStyleClass(indent, start) {
+  let cssCounterName = `czi-counter-${indent}`;
+  let cssCounterReset = `czi-counter-${indent} ${start - 1} `;
+  for (let index = 0; index < indent; index++) {
+    cssCounterReset += `czi-counter-${index} 1 `
+  }
+  return `--czi-counter-name: ${cssCounterName}; counter-reset: ${cssCounterReset};`
+}
 export default OrderedListNodeSpec;

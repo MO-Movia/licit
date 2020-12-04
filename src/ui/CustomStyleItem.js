@@ -1,4 +1,3 @@
-// @flow
 
 import './czi-custom-button.css';
 import * as React from 'react';

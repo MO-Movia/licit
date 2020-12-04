@@ -1,4 +1,4 @@
-// @flow
+
 // [FS] IRAD-1085 2020-10-09
 // Handle custom style in local storage
 

@@ -1,4 +1,4 @@
-// @flow
+
 import {
     EditorState,
     TextSelection
@@ -45,7 +45,7 @@ import {
     MARK_TEXT_HIGHLIGHT,
     MARK_UNDERLINE
 } from './MarkNames';
-import {getLineSpacingValue} from './ui/toCSSLineSpacing';
+import { getLineSpacingValue } from './ui/toCSSLineSpacing';
 
 export const STRONG = 'strong';
 export const EM = 'em';
@@ -64,6 +64,8 @@ export const SBEFORE = 'spacebefore';
 export const ATTR_OVERRIDDEN = 'overridden';
 export const INDENT = 'indent';
 export const NUMBERING = 'hasnumbering';
+export const LEVELBASEDINDENT = 'islevelbased';
+export const LEVEL = 'level';
 
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
@@ -142,7 +144,11 @@ export function getCustomStyleCommands(customStyle) {
             case NUMBERING:
                 commands.push(new ListToggleCommand(true, 'x.x.x'));
                 break;
-
+            case LEVELBASEDINDENT:
+                if (customStyle[LEVEL] && Number(customStyle[LEVEL]) > 0) {
+                    commands.push(new IndentCommand(customStyle[LEVEL]));
+                }
+                break;
             default:
                 break;
         }
@@ -289,6 +295,7 @@ class CustomStyleCommand extends UICommand {
     createCustomObject() {
         return {
             stylename: '',
+            mode: 0,//new
             styles: {},
         };
 
@@ -357,7 +364,7 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
 export function updateOverrideFlag(styleName, tr, node, startPos, endPos, retObj) {
     const style = getCustomStyleByName(styleName);
 
-    if(style) {
+    if (style) {
         node.descendants(function (child: Node, pos: number, parent: Node) {
             if (child instanceof Node) {
                 child.marks.forEach(function (mark, index) {
@@ -371,22 +378,22 @@ export function updateOverrideFlag(styleName, tr, node, startPos, endPos, retObj
 }
 
 function onLoadRemoveAllMarksExceptOverridden(node, schema, from, to, tr) {
-	const tasks = [];
-	node.descendants(function (child: Node, pos: number, parent: Node) {
-		if (child instanceof Node) {
-			child.marks.forEach(function (mark, index) {
-				if(!mark.attrs[ATTR_OVERRIDDEN]) {
-					tasks.push({
-						child,
-						pos,
-						mark
-					});
-				}
-			});
-		}
-	});
+    const tasks = [];
+    node.descendants(function (child: Node, pos: number, parent: Node) {
+        if (child instanceof Node) {
+            child.marks.forEach(function (mark, index) {
+                if (!mark.attrs[ATTR_OVERRIDDEN]) {
+                    tasks.push({
+                        child,
+                        pos,
+                        mark
+                    });
+                }
+            });
+        }
+    });
 
-	return handleRemoveMarks(tr, tasks, from, to, schema);
+    return handleRemoveMarks(tr, tasks, from, to, schema);
 }
 
 function applyStyleEx(style, styleName: String, state: EditorState, tr: Transform, node, startPos, endPos) {
@@ -396,13 +403,13 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
     }
     const _commands = getCustomStyleCommands(style);
 
-	if(loading) {
-		tr = onLoadRemoveAllMarksExceptOverridden(node, state.schema, startPos, endPos, tr);
-	} else {
-		// [FS] IRAD-1087 2020-11-02
-		// Issue fix: applied link is missing after applying a custom style.
-		tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema);
-	}
+    if (loading) {
+        tr = onLoadRemoveAllMarksExceptOverridden(node, state.schema, startPos, endPos, tr);
+    } else {
+        // [FS] IRAD-1087 2020-11-02
+        // Issue fix: applied link is missing after applying a custom style.
+        tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema);
+    }
 
     const newattrs = Object.assign({}, node.attrs);
     // [FS] IRAD-1074 2020-10-22
@@ -419,8 +426,8 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
             newattrs['align'] = style.align;
             // to set the node attribute for line-height
         } else if (element instanceof TextLineSpacingCommand) {
-        // [FS] IRAD-1104 2020-11-13
-        // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
+            // [FS] IRAD-1104 2020-11-13
+            // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
             newattrs['lineSpacing'] = getLineSpacingValue(style.lineheight);
         } else if (element instanceof ParagraphSpacingCommand) {
             // [FS] IRAD-1100 2020-11-05
@@ -432,7 +439,8 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
             newattrs['indent'] = style.indent;
         }
         else if (element instanceof ListToggleCommand) {
-            newattrs['indent'] = 0;
+            newattrs['indent'] = Number(style.level);
+            newattrs['type'] = 'x.x.x';
         }
         // to set the marks for the node
         if (element.executeCustom) {
@@ -442,7 +450,8 @@ function applyStyleEx(style, styleName: String, state: EditorState, tr: Transfor
 
     // to set custom styleName attribute for node
     newattrs['styleName'] = styleName;
-    tr = _setNodeAttribute(node, tr, startPos, endPos, newattrs);
+    // tr = _setNodeAttribute(node, tr, startPos, endPos, newattrs);
+    tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
     return tr;
 }
 
@@ -457,13 +466,20 @@ function isAllowedNode(node) {
 
 // [FS] IRAD-1088 2020-10-05
 // set custom style for node
-function _setNodeAttribute(node, tr, from, to, attribute) {
-    // Verify the parent node type.
-    if (isAllowedNode(node)) {
-        node.descendants(function (child: Node, pos: number, parent: Node) {
-            tr = tr.setNodeMarkup(from, undefined, attribute);
-        });
-    }
+function _setNodeAttribute(state, tr, from, to, attribute) {
+    // if (isAllowedNode(node)) {
+    //     node.descendants(function (child: Node, pos: number, parent: Node) {
+    //         tr = tr.setNodeMarkup(pos, undefined, attribute);
+
+    //     });
+    // }
+    // return tr;
+
+    state.doc.nodesBetween(from, to, (node, startPos) => {
+        if (isAllowedNode(node)) {
+            tr = tr.setNodeMarkup(startPos, undefined, attribute);
+        }
+    });
     return tr;
 }
 
@@ -491,7 +507,7 @@ function removeAllMarksExceptLink(from, to, tr, schema) {
 }
 
 function handleRemoveMarks(tr, tasks, from, to, schema) {
-	tasks.forEach(job => {
+    tasks.forEach(job => {
         const { mark } = job;
         tr = tr.removeMark(from, to, mark.type);
     });
