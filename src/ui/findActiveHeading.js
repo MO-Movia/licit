@@ -7,7 +7,6 @@ export const HEADING_NAME_DEFAULT = 'None';
 export function getCustomStyle(customStyle) {
   const style = {
     float: 'right',
-    // marginLeft:'52px'
   };
 
   for (const property in customStyle) {

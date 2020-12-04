@@ -260,7 +260,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
       CustomStyleEditor,
       {
         stylename: command._customStyleName,
-        // mode: 1, //edit
+         mode: 1, //edit
         description: command._customStyle.description,
         styles: command._customStyle.styles,
       },

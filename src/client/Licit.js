@@ -17,8 +17,10 @@ import type { EditorRuntime } from '../Types';
 import createPopUp from '../ui/createPopUp';
 import { atViewportCenter } from '../ui/PopUpPosition';
 import AlertInfo from '../ui/AlertInfo';
+import {SetDocAttrStep} from '@modusoperandi/licit-doc-attrs-step';
 import './licit.css';
-
+const ATTR_OBJID = 'objectId';
+const ATTR_OBJMETADATA = 'objectMetaData';
 /**
  * LICIT properties:
  *  docID {number} [0] Collaborative Doument ID
@@ -129,6 +131,10 @@ class Licit extends React.Component<any, any> {
     }
   }
 
+  isNodeHasAttribute (node:Node, attrName:String)  {
+    return node.attrs && node.attrs[attrName];
+  }
+
   setContent = (content: any = {}): void => {
     const { doc, schema } = this._connector.getState();
     let { tr } = this._connector.getState();
@@ -137,7 +143,13 @@ class Licit extends React.Component<any, any> {
       : schema.nodeFromJSON(EMPTY_DOC_JSON);
 
     const selection = TextSelection.create(doc, 0, doc.content.size);
+
     tr = tr.setSelection(selection).replaceSelectionWith(document, false);
+    // [FS] IRAD-1092 2020-12-03
+    // set the value for object metadata  and objectId
+    tr = this.isNodeHasAttribute(document,ATTR_OBJMETADATA)?tr.step(new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)) : tr;
+    tr = this.isNodeHasAttribute(document,ATTR_OBJID)?tr.step(new SetDocAttrStep(ATTR_OBJID, document.attrs.objectId)) : tr;
+  
     this._skipSCU = true;
     this._editorView.dispatch(tr);
   }

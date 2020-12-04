@@ -53,8 +53,8 @@ class ListTypeButton extends React.PureComponent<any, any> {
           const command = group[label];
           let disabledVal = true;
           try {
-            disabledVal =
-              !editorView || !command.isEnabled(editorState, editorView);
+            disabledVal = false;
+            //   !editorView || !command.isEnabled(editorState, editorView);
           } catch (ex) {
             disabledVal = false;
           }

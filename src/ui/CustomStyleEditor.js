@@ -223,13 +223,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     onIndentRadioChanged(e) {
         const val = e.target.checked;
         if ('0' == e.target.value) {
-            this.setState({ styles: { ...this.state.styles, islevelbased: val } });
+            this.setState({ styles: { ...this.state.styles, islevelbased: true } });
         }
         else {
-            this.setState({ styles: { ...this.state.styles, islevelspecified: val } });
+            this.setState({ styles: { ...this.state.styles, islevelbased: false } });
         }
 
     }
+
 
     // handles font size change
     onFontSizeChange(e) {
@@ -318,9 +319,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         return (
             <div className="customedit-div" >
                 <div className="customedit-head">
-                    <strong>{this.state.mode == 0 ? 'Create Style' : 'Edit Style'}</strong>
+                    <span>{this.state.mode == 0 ? 'Create Style' : 'Edit Style'}</span>
                 </div>
-                <div className="customedit-body container" >
+                <div className="customedit-body" >
                     <div className="sectiondiv">
 
                         <p className="formp">Style Name:</p>
@@ -432,17 +433,13 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                         <span className="iconspan czi-icon format_italic">format_italic</span><span>  </span></span></span>
                                     <span aria-label=" Underline" className="czi-tooltip-surface fontstyle" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
                                         <span className="iconspan czi-icon  format_underline">format_underline</span><span>  </span></span></span>
-                                    {/* <span aria-label=" Strike through" className="czi-tooltip-surface" data-tooltip=" Strike through" id="86baafd0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strike')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strike ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-                                        <span className="iconspan czi-icon format_strikethrough">format_strikethrough</span><span>  </span></span></span>
-                                    <span aria-label=" Superscript" className="czi-tooltip-surface" data-tooltip=" Superscript" id="86bad6e0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'super')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.super ? 'czi-custom-button use-icon active' : 'czi-custom-button use-icon'} role="button">
-                                        <span className="czi-icon superscript" style={{ width: '32px', height: '23px' }}> <span className="iconspan superscript-wrap"><span className="superscript-base">x</span><span className="superscript-top">y</span></span></span><span>  </span></span></span> */}
                                     <span aria-label=" Text color" className="czi-tooltip-surface fontstyle" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
-                                        <span className="iconspan czi-icon format_color_text" style={{ color: this.state.styles.color }}>format_color_text</span><span>  </span></span></span>
+                                        <span className="iconspan czi-icon format_color_text" style={{ color: this.state.styles.color !== 'rgba(0,0,0,0)' ? this.state.styles.color : '#666' }}>format_color_text</span><span>  </span></span></span>
                                     <span aria-label=" Highlight color" className="czi-tooltip-surface fontstyle" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
-                                        <span className=" iconspan czi-icon border_color" style={{ color: this.state.styles.texthighlight }}>border_color</span><span>  </span></span></span>
+                                        <span className=" iconspan czi-icon border_color" style={{ color: this.state.styles.texthighlight !== 'rgba(0,0,0,0)' ? this.state.styles.texthighlight : '#666' }}>border_color</span><span>  </span></span></span>
 
                                 </div>
-                               
+
                             </div>
 
                             <button className="accordion"> <span className="iconspan czi-icon format_textdirection_l_to_r">format_textdirection_l_to_r</span> PARAGRAPH</button>
@@ -483,7 +480,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     </span>
                                     <label style={{ marginLeft: '3px' }}>pts</label>
                                 </div>
-                                
+
                             </div>
 
                             <button className="accordion"><span className="iconspan czi-icon account_tree">account_tree</span>HIERARCHY</button>
@@ -506,29 +503,29 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     Numbering(1.1)
                                     </label>
                                     </span>
+                                </div>
+                                <p className="formp">Indenting:</p>
+                                <div className="hierarchydiv">
+                                    <div className="indentdiv">
+                                        <input checked={this.state.styles.islevelbased} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
+                                            value="0" />
+                                        <label style={{ marginLeft: '4px', marginTop: '3px', marginBottom: '0' }}>Based On Level</label>
                                     </div>
-                                    <p className="formp">Indenting:</p>
-                                    <div className="hierarchydiv">
-                                        <div className="indentdiv">
-                                            <input checked={this.state.styles.islevelbased} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
-                                                value="0" /> 
-                                              <label style={{ marginLeft: '4px', marginTop: '3px' ,marginBottom: '0' }}>Based On Level</label>  
+                                    <div className="indentdiv">
+                                        <input checked={!this.state.styles.islevelbased} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
+                                            value="1" />
+                                        <label style={{ marginLeft: '4px', marginTop: '3px', marginBottom: '0' }}>Specified</label>
+                                        <span>
+                                            <select className="leveltype specifiedindent" onChange={this.onIndentChange.bind(this)} value={this.state.styles.indent}>
+                                                {INDENT_VALUES.map(({ label, value }) => (
+                                                    <option key={value} value={value}>
+                                                        {label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </span>
                                     </div>
-                                        <div className="indentdiv">
-                                            <input checked={this.state.styles.islevelspecified} name="indenting" onChange={this.onIndentRadioChanged.bind(this)} type="radio"
-                                                value="1" /> 
-                                                <label style={{ marginLeft: '4px', marginTop: '3px' ,marginBottom: '0' }}>Specified</label>  
-                                            <span>
-                                                <select className="leveltype specifiedindent" onChange={this.onIndentChange.bind(this)} value={this.state.styles.indent}>
-                                                    {INDENT_VALUES.map(({ label, value }) => (
-                                                        <option key={value} value={value}>
-                                                            {label}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </span>
-                                        </div>
-                                    
+
                                 </div>
                             </div>
                         </div>

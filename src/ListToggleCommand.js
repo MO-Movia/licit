@@ -1,6 +1,6 @@
 // @flow
 
-import { EditorState } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
@@ -61,13 +61,16 @@ class ListToggleCommand extends UICommand {
   //only x.x.x is handled here need to handle indent
   executeCustom = (
     state: EditorState,
-    tr: Transform
+    tr: Transform,
+    from: Number,
+    to: Number
   ): boolean => {
     const { schema } = state;
     const nodeType = schema.nodes[this._ordered ? ORDERED_LIST : BULLET_LIST];
     if (!nodeType) {
       return tr;
     }
+    // tr = tr.setSelection(TextSelection.create(tr.doc, from, to));
     tr = toggleList(tr, schema, nodeType, this._orderedListType);
     return tr;
   };
