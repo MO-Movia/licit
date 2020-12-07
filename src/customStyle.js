@@ -22,7 +22,7 @@ export function getCustomStyles() {
 }
 
 // get a style by styleName
-export function getCustomStyleByName(name: String) {
+export function getCustomStyleByName(name: string) {
     const itemsArray = window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
     let style = null;
     if (itemsArray.length > 0) {

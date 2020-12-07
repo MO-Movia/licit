@@ -82,7 +82,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     _unmounted = false;
     _popUp = null;
 
-    constructor(props) {
+    constructor(props: any) {
         super(props);
         this.state = {
             ...props
@@ -95,7 +95,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
 
     // To set the selected style values
-    onStyleClick(style: string, event) {
+    onStyleClick(style: string, event:any) {
 
         switch (style) {
             case 'strong':
@@ -216,12 +216,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
 
     // handles font name change
-    onFontNameChange(e) {
+    onFontNameChange(e:any) {
         this.setState({ styles: { ...this.state.styles, fontname: e.target.value } });
     }
     // handles font name change
-    onIndentRadioChanged(e) {
-        const val = e.target.checked;
+    onIndentRadioChanged(e:any) {
         if ('0' == e.target.value) {
             this.setState({ styles: { ...this.state.styles, islevelbased: true } });
         }
@@ -233,30 +232,30 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
 
     // handles font size change
-    onFontSizeChange(e) {
+    onFontSizeChange(e:any) {
         this.setState({ styles: { ...this.state.styles, fontsize: e.target.value } });
 
     }
 
     // handles line space  change
-    onLineSpaceChange(e) {
+    onLineSpaceChange(e: any) {
         this.setState({ styles: { ...this.state.styles, lineheight: e.target.value } });
 
     }
     // handles Level drop down change
-    onLevelChange(e) {
+    onLevelChange(e: any) {
         const val = 'None' === e.target.value ? null : e.target.value;
         this.setState({ styles: { ...this.state.styles, level: val } });
     }
 
-    // handles indentt dropdown change
-    onIndentChange(e) {
+    // handles indent dropdown change
+    onIndentChange(e: any) {
 
         this.setState({ styles: { ...this.state.styles, indent: e.target.value } });
     }
 
     // shows color dialog based on input text-color/text-heighlight
-    showColorDialog(isTextColor, event) {
+    showColorDialog(isTextColor: Boolean, event: SyntheticEvent<*>) {
         const anchor = event ? event.currentTarget : null;
         const hex = null;
         this._popUp = createPopUp(
@@ -284,12 +283,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
 
     //handles the option button click, close the popup with selected values
-    onAlignButtonClick(val, event) {
+    onAlignButtonClick(val: String) {
         // this.props.close(val);
         this.setState({ styles: { ...this.state.styles, align: val } });
     }
 
-    handleNumbering(val, event) {
+    handleNumbering(val: any) {
         this.setState({ styles: { ...this.state.styles, hasnumbering: val.target.checked } });
     }
     componentDidMount() {
@@ -350,58 +349,6 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                                 </div>
-
-
-                            {/* <div className="sectiondiv">
-                                <label for="test">Numbering </label>
-                                <span>
-                                    <select className="numbering" onChange={this.onNumberingChange.bind(this)} value={this.state.styles.numbering}>
-                                        {NUMBERING_VALUES.map((value) => (
-                                            <option key={value} value={value}>
-                                                {value}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </span>
-                                <button className="align-menu-button" onClick={this.showAlignmentDialog.bind(this, true)}>
-                                    <span className="czi-icon format_align_left">format_align_left</span>
-                                    <span className="czi-icon expand_more align-menu-dropdown-icon">expand_more</span>
-                                </button>
-                            </div>
-                            <div className="sectiondiv">
-                                <label for="test">Indenting </label>
-                                <span>
-                                    <select className="indenting" onChange={this.onIndentChange.bind(this)} value={this.state.styles.indent}>
-                                        {INDENT_VALUES.map(({ label, value }) => (
-                                            <option key={value} value={value}>
-                                                {label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </span>
-                                <button className="align-menu-button" onClick={this.showAlignmentDialog.bind(this, false)}>
-                                    <span className="czi-icon format_line_spacing align-menu-button-icon">format_line_spacing</span>
-
-                                </button>
-                            </div> */}
-
-                            {/* <div className="textAreadiv" name="body">
-                                <div className="sampletext">
-                                    Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
-                               </div>
-                                <div id="sampletextdiv" style={this.buildStyle()} className={this.state.styles.super ? 'hide-sampletext' : 'visible-sampletext'}>
-                                    {SAMPLE_TEXT}
-                                </div>
-                                <sup id="mo-sup" style={this.buildStyle()} className={this.state.styles.super ? 'visible-sampletext' : 'hide-sampletext'}>
-                                    {SAMPLE_TEXT}
-                                </sup>
-                                <div className="sampletext">
-                                    Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
-                                    Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
-                                </div>
-                            </div> */}
-
-
                         </div>
                     </div>
 

@@ -36,12 +36,12 @@ class ListTypeButton extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
+    // editorState,
+    // editorView,
     const {
       className,
       label,
       commandGroups,
-      editorState,
-      editorView,
       icon,
       disabled,
       title,
@@ -50,7 +50,7 @@ class ListTypeButton extends React.PureComponent<any, any> {
       !disabled &&
       commandGroups.some((group, ii) => {
         return Object.keys(group).some(label => {
-          const command = group[label];
+          // const command = group[label];
           let disabledVal = true;
           try {
             disabledVal = false;

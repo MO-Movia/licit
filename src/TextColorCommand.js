@@ -15,7 +15,7 @@ import { Transform } from 'prosemirror-transform';
 class TextColorCommand extends UICommand {
 
   _popUp = null;
-  _color: string;
+  _color = '';
 
   constructor(color: ?string) {
     super();
@@ -105,7 +105,7 @@ class TextColorCommand extends UICommand {
     const attrs = { color: this._color };
     // [FS] IRAD-1043 2020-10-27
     // Issue fix on removing the  custom style if user click on the same style menu multiple times
-    tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, from, to)), schema, markType, attrs,true);
+    tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, from, to)), schema, markType, attrs, true);
     return tr;
   };
 }

@@ -111,7 +111,10 @@ const OrderedListNodeSpec: NodeSpec = {
           `--czi-list-style-type: ${htmlListStyleType}`;
       }
     } else {
-
+      attrs.style =
+        `--czi-counter-name: ${cssCounterName};` +
+        `--czi-counter-reset: ${following ? 'none' : start - 1};` +
+        `--czi-list-style-type: ${htmlListStyleType}`;
     }
     attrs.type = type;
 
@@ -120,11 +123,11 @@ const OrderedListNodeSpec: NodeSpec = {
 };
 
 function buildStyleClass(indent, start) {
-  let cssCounterName = `czi-counter-${indent}`;
+  const cssCounterName = `czi-counter-${indent}`;
   let cssCounterReset = `czi-counter-${indent} ${start - 1} `;
   for (let index = 0; index < indent; index++) {
-    cssCounterReset += `czi-counter-${index} 1 `
+    cssCounterReset += `czi-counter-${index} 1 `;
   }
-  return `--czi-counter-name: ${cssCounterName}; counter-reset: ${cssCounterReset};`
+  return `--czi-counter-name: ${cssCounterName}; counter-reset: ${cssCounterReset};`;
 }
 export default OrderedListNodeSpec;

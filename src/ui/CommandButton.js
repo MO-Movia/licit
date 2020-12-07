@@ -1,8 +1,8 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import CustomButton from './CustomButton';
@@ -27,11 +27,10 @@ class CommandButton extends React.PureComponent<any, any> {
       className,
       command,
       editorState,
-      editorView,
       icon,
       title,
     } = this.props;
-    let disabled = this.props.disabled;
+    const disabled = this.props.disabled;
     if (!!disabled === false) {
       // disabled = !editorView || !command.isEnabled(editorState, editorView);
     }
@@ -57,7 +56,7 @@ class CommandButton extends React.PureComponent<any, any> {
   };
 
   _execute = (value: any, event: SyntheticEvent<HTMLButtonElement>): void => {
-    const {command, editorState, dispatch, editorView} = this.props;
+    const { command, editorState, dispatch, editorView } = this.props;
     command.execute(editorState, dispatch, editorView, event);
   };
 }

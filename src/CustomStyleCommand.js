@@ -206,7 +206,7 @@ class CustomStyleCommand extends UICommand {
 
     // [FS] IRAD-1053 2020-10-22
     // returns the applied style of a paragraph
-    isCustomStyleApplied(editorState) {
+    isCustomStyleApplied(editorState: EditorState) {
         const {
             selection,
             doc
@@ -398,7 +398,8 @@ function onLoadRemoveAllMarksExceptOverridden(node: Node, schema: Schema,
     return handleRemoveMarks(tr, tasks, from, to, schema);
 }
 
-function applyStyleEx(style, styleName: String, state: EditorState, tr: Transform, node, startPos, endPos) {
+function applyStyleEx(style: any, styleName: String, state: EditorState, tr: Transform,
+    node: Node, startPos: Number, endPos: Number) {
     const loading = !style;
     if (loading) {
         style = getCustomStyleByName(styleName);

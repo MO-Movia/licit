@@ -20,6 +20,7 @@ export type PopUpParams = {
   modal?: ?boolean,
   onClose?: ?(val: any) => void,
   position?: ?PositionHandler,
+  IsChildDialog?:boolean,
 };
 
 export type PopUpProps = {

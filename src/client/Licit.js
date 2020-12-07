@@ -2,6 +2,7 @@
 
 import applyDevTools from 'prosemirror-dev-tools';
 import { EditorState, TextSelection } from 'prosemirror-state';
+import { Node } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
@@ -149,7 +150,7 @@ class Licit extends React.Component<any, any> {
     // set the value for object metadata  and objectId
     tr = this.isNodeHasAttribute(document,ATTR_OBJMETADATA)?tr.step(new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)) : tr;
     tr = this.isNodeHasAttribute(document,ATTR_OBJID)?tr.step(new SetDocAttrStep(ATTR_OBJID, document.attrs.objectId)) : tr;
-  
+
     this._skipSCU = true;
     this._editorView.dispatch(tr);
   }
