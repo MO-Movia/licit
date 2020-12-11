@@ -361,7 +361,7 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
     return tr;
 }
 
-export function updateOverrideFlag(styleName: String, tr: Transform, node: Node,
+export function updateOverrideFlag(styleName: string, tr: Transform, node: Node,
     startPos: Number, endPos: Number, retObj: any) {
     const style = getCustomStyleByName(styleName);
 
@@ -398,7 +398,7 @@ function onLoadRemoveAllMarksExceptOverridden(node: Node, schema: Schema,
     return handleRemoveMarks(tr, tasks, from, to, schema);
 }
 
-function applyStyleEx(style: any, styleName: String, state: EditorState, tr: Transform,
+function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Transform,
     node: Node, startPos: Number, endPos: Number) {
     const loading = !style;
     if (loading) {

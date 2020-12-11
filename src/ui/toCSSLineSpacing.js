@@ -59,7 +59,7 @@ export default function toCSSLineSpacing(source: any): string {
 
 // [FS] IRAD-1104 2020-11-13
 // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
-  export function getLineSpacingValue(lineSpacing) : string {
+  export function getLineSpacingValue(lineSpacing: string) : string {
       let  _lineSpaceValue='';
       switch (lineSpacing) {
           case 'Single':

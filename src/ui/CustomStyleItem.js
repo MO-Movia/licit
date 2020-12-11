@@ -16,9 +16,10 @@ class CustomStyleItem extends React.PureComponent<any, any> {
         dispatch: (tr: Transform) => void,
         editorState: EditorState,
         editorView: ?EditorView,
-        label?: string,
+        label: string,
         onClick?: ?(val: any, e: SyntheticEvent<>) => void,
-        hasText?: ?Boolean
+        hasText?: ?Boolean,
+        onCommand: ?Function,
     };
 
     render(): React.Element<any> {
@@ -56,7 +57,7 @@ class CustomStyleItem extends React.PureComponent<any, any> {
         onCommand && onCommand();
     };
     // temp method to clear sample text for new and clear command menu item
-    sampleText(): String {
+    sampleText(): string {
 
         let text = 'AaBbCcDd';
         if (!this.props.hasText) {

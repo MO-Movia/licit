@@ -8,6 +8,7 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { HEADING_NAME_DEFAULT } from './findActiveHeading';
 import { Transform } from 'prosemirror-transform';
+import { Node } from 'prosemirror-model';
 import { getCustomStyles } from '../customStyle';
 
 // [FS] IRAD-1042 2020-09-09
@@ -49,7 +50,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     MENU_COMMANDS['clearstyle'] = new CustomStyleCommand('clearstyle', 'Clear Style');
     return [MENU_COMMANDS];
   }
-  isAllowedNode(node) {
+  isAllowedNode(node: Node) {
     return (node.type.name === 'paragraph' || node.type.name === 'ordered_list');
   }
   render(): React.Element<any> {

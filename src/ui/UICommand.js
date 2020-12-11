@@ -49,7 +49,7 @@ class UICommand {
     return false;
   };
 
-  isEnabled = (state: EditorState, view: ?EditorView): boolean => {
+  isEnabled = (state: EditorState, view: ?EditorView, menuTitle: string): boolean => {
     return this.dryRun(state, view);
   };
 

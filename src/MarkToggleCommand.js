@@ -59,7 +59,7 @@ class MarkToggleCommand extends UICommand {
   // Method to execute strike, em, strong, underline,superscrpt for custom styling implementation.
   executeCustom = (
     state: EditorState,
-    tr
+    tr: Transform,
   ) => {
     const { schema, selection } = state;
     const markType = schema.marks[this._markName];

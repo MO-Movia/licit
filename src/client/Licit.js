@@ -132,7 +132,7 @@ class Licit extends React.Component<any, any> {
     }
   }
 
-  isNodeHasAttribute (node:Node, attrName:String)  {
+  isNodeHasAttribute (node: Node, attrName: string)  {
     return node.attrs && node.attrs[attrName];
   }
 

@@ -49,7 +49,7 @@ function getAttrs(dom: HTMLElement): Object {
     marginLeft,
     paddingTop,
     paddingBottom,
-    paragraphSpacingAfter,
+    marginBottom,
   } = dom.style;
 
   let align = dom.getAttribute('align') || textAlign || '';
@@ -64,7 +64,7 @@ function getAttrs(dom: HTMLElement): Object {
   indent = indent || MIN_INDENT_LEVEL;
 
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
-  const spacingAfterParagraph = paragraphSpacingAfter? paragraphSpacingAfter:null;
+  const spacingAfterParagraph = marginBottom? marginBottom:null;
 
   const id = dom.getAttribute('id') || '';
  const styleName = dom.getAttribute('styleName') || null;

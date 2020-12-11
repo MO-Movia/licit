@@ -222,23 +222,25 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             }
         }
         else{
-            const level = document.getElementById('levelValue').value;
-            style.marginLeft =`${level * 2}px`;
+            const levelValue = document && document.getElementById('levelValue');
+            if(levelValue && levelValue.value) {
+                style.marginLeft =`${levelValue.value * 2}px`;
+            }
         }
-       
+
         if (this.state.styles.level && this.state.styles.hasnumbering) {
             if (document.getElementById('sampletextdiv')) {
                 document.getElementById('sampletextdiv').innerText = `${this.getNumberingLevel(this.state.styles.level)}${SAMPLE_TEXT}`;
             }
         }
         return style;
-    } 
+    }
     // [FS] IRAD-1111 2020-12-10
     // get the numbering corresponding to the level
-    getNumberingLevel(level) {
+    getNumberingLevel(level: string) {
         let levelStyle='';
         for (let i = 0; i < level; i++) {
-            levelStyle= levelStyle+ "1.";
+            levelStyle= levelStyle+ '1.';
         }
         return levelStyle+' ';
     }
