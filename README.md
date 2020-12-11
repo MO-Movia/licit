@@ -57,15 +57,7 @@ Python(3.8.2)
 
 ### Install dependencies
 
-### Build licit-doc-attrs-step module
-```
-# From the directory `*helpers/licit-doc-attrs-step*`
-npm install
-npm pack
-```  
-Now you will find a *modusoperandi-licit-doc-attrs-step-0.0.1-0.tgz* file in the *helpers/licit-doc-attrs-step* directory. 
-
-Add this *.tgz* file to your licit root folder and follow the below commands:
+ Build [licit-doc-attrs-step](https://github.com/MO-Movia/licit-doc-attrs-step) and copy _modusoperandi-licit-doc-attrs-step-0.0.1.tgz_ to the root folder.
 ```
 cd licit 
 npm install
