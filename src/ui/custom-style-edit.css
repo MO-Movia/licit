@@ -3,7 +3,7 @@
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.26); */
     background: #e6e6e6;
     border: 1px solid #4a4949;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
     color: white;
     font-family: 'Arial', sans-serif;
     height: 438px;
@@ -54,6 +54,7 @@
 }
 
 .customedit-head {
+    box-sizing: unset !important;
     color: #47adec;
     font-family: 'Arial', sans-serif;
     font-family: sans-serif;
@@ -66,24 +67,26 @@
 }
 
 .customedit-body {
-    color: #464343;
-    margin-top: 3px;
-    padding-bottom: 0;
-    padding-top: 1px;
     background: transparent;
+    color: #464343;
     display: grid;
     grid-gap: 10px;
     grid-template-columns: auto auto;
+    line-height: 1.2 !important;
+    margin-top: 3px;
+    padding-bottom: 0;
+    padding-top: 1px;
     padding: 5px;
 }
 
 label {
     color: black;
-}
+} 
 
 .stylenameinput {
+    box-sizing: unset !important;
     color: black;
-    font-family: inherit;
+    font-family: inherit !important;
     height: 18px;
     line-height: unset;
     margin-bottom: 3px;
@@ -91,7 +94,7 @@ label {
     margin-right: 0;
     padding-left: 0;
     padding-right: 0;
-    width: 97%;
+    width: 97%;    
 }
 
 .sectiondiv {
@@ -116,12 +119,12 @@ label {
     border-color: grey;
     border-image: initial;
     border-style: solid;
+    box-sizing: unset !important;
     border-width: 1px;
     color: gray;
     cursor: text;
     flex-direction: column;
     font: 400 11px Arial;
-    height: 117px;
     height: 214px;
     margin: 0;
     margin-left: 0;
@@ -339,8 +342,13 @@ label {
   }
 
   .fontstyle {
-    margin-left: 8px;
+    font-size: 13px;
   }
+  
+.buttonstyle {
+    border-radius: revert;
+    font-size: 13px;
+}
   .hierarchydiv {
     border: 1px solid gray;
     margin-left: -1px;

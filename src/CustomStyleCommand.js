@@ -243,7 +243,7 @@ class CustomStyleCommand extends UICommand {
         }
         // [FS] IRAD-1053 2020-10-08
         // to remove the custom styles applied in the selected paragraph
-        else if ('clearstyle' === this._customStyle) {
+        else if ('clearstyle' === this._customStyle || 'None' === this._customStyle) {
             tr = clearCustomStyleMarks(state.tr.setSelection(selection), state.schema, state);
             if (dispatch && tr.docChanged) {
                 dispatch(tr);

@@ -204,15 +204,43 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
             style.lineHeight = getLineSpacingValue(this.state.styles.lineheight);
         }
-        if (this.state.styles.indent) {
-            style.marginLeft = `${this.state.styles.indent * 2}px`;
+        // [FS] IRAD-1111 2020-12-10
+        // Issue fix : Paragrapgh space before is not applied in the sample text.
+        if (this.state.styles.spacebefore) {
+            style.marginTop = `${this.state.styles.spacebefore}px`;
         }
-        if (this.state.styles.level) {
+        // [FS] IRAD-1111 2020-12-10
+        // Issue fix : Paragrapgh space after is not applied in the sample text.
+        if (this.state.styles.spaceafter) {
+            style.marginBottom = `${this.state.styles.spaceafter}px`;
+        }
+        // [FS] IRAD-1111 2020-12-10
+        // Issue fix : Indent is not applied in the sample text.
+        if(!this.state.styles.islevelbased){
+            if (this.state.styles.indent) {
+                style.marginLeft = `${this.state.styles.indent * 2}px`;
+            }
+        }
+        else{
+            const level = document.getElementById('levelValue').value;
+            style.marginLeft =`${level * 2}px`;
+        }
+       
+        if (this.state.styles.level && this.state.styles.hasnumbering) {
             if (document.getElementById('sampletextdiv')) {
-                document.getElementById('sampletextdiv').innerText = `${this.state.styles.level}${SAMPLE_TEXT}`;
+                document.getElementById('sampletextdiv').innerText = `${this.getNumberingLevel(this.state.styles.level)}${SAMPLE_TEXT}`;
             }
         }
         return style;
+    } 
+    // [FS] IRAD-1111 2020-12-10
+    // get the numbering corresponding to the level
+    getNumberingLevel(level) {
+        let levelStyle='';
+        for (let i = 0; i < level; i++) {
+            levelStyle= levelStyle+ "1.";
+        }
+        return levelStyle+' ';
     }
 
     // handles font name change
@@ -325,12 +353,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
                         <p className="formp">Style Name:</p>
                         <span>
-                            <input className="stylenameinput" key="name"
+                            <input className="stylenameinput fontstyle" key="name"
                                 onChange={this.onStyleClick.bind(this, 'name')} type="text" value={this.state.stylename} />
                         </span>
                         <p className="formp">Description:</p>
                         <span>
-                            <input className="stylenameinput" key="description"
+                            <input className="stylenameinput fontstyle" key="description"
                                 onChange={this.onStyleClick.bind(this, 'description')} type="text" value={this.state.description} />
                         </span>
 
@@ -358,14 +386,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                             <button className="accordion" id="accordion1"><span className="iconspan czi-icon text_format">text_format</span> Font</button>
                             <div className="panel">
                                 <div className="sectiondiv">
-                                    <select className="fonttype" onChange={this.onFontNameChange.bind(this)} value={this.state.styles.fontname}>
+                                    <select className="fonttype fontstyle" onChange={this.onFontNameChange.bind(this)} value={this.state.styles.fontname}>
                                         {FONT_TYPE_NAMES.map((value) => (
                                             <option key={value} value={value}>
                                                 {value}
                                             </option>
                                         ))}
                                     </select>
-                                    <select className="fontsize" onChange={this.onFontSizeChange.bind(this)} value={this.state.styles.fontsize}>
+                                    <select className="fontsize fontstyle" onChange={this.onFontSizeChange.bind(this)} value={this.state.styles.fontsize}>
                                         {FONT_PT_SIZES.map((value) => (
                                             <option key={value} value={value}>
                                                 {value}
@@ -403,7 +431,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                         <span className="iconspan czi-icon format_align_justify">format_align_justify</span></span></span>
                                 </div>
                                 <p className="formp">Line Spacing:</p>
-                                <select className="linespacing" onChange={this.onLineSpaceChange.bind(this)} value={this.state.styles.lineheight}>
+                                <select className="linespacing fontstyle" onChange={this.onLineSpaceChange.bind(this)} value={this.state.styles.lineheight}>
                                     {LINE_SPACE.map((value) => (
                                         <option key={value} value={value}>
                                             {value}
@@ -415,14 +443,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                 <div className="spacingdiv">
                                     <label>Before: </label>
                                     <span>
-                                        <input className="spacinginput" key="before"
+                                        <input className="spacinginput fontstyle" key="before"
                                             onChange={this.onStyleClick.bind(this, 'before')} type="text" value={this.state.styles.spacebefore} />
                                     </span>
                                     <label style={{ marginLeft: '0' }}> pts</label>
 
                                     <label style={{ marginLeft: '23px' }}>After: </label>
                                     <span>
-                                        <input className="spacinginput" key="after"
+                                        <input className="spacinginput fontstyle" key="after"
                                             onChange={this.onStyleClick.bind(this, 'after')} type="text" value={this.state.styles.spaceafter} />
                                     </span>
                                     <label style={{ marginLeft: '3px' }}>pts</label>
@@ -435,7 +463,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                 <p className="formp">Level:</p>
                                 <div className="hierarchydiv">
                                     <span>
-                                        <select className="leveltype" onChange={this.onLevelChange.bind(this)} value={this.state.styles.level}>
+                                        <select className="leveltype fontstyle" id="levelValue" onChange={this.onLevelChange.bind(this)} value={this.state.styles.level}>
                                             {LEVEL_VALUES.map((value) => (
                                                 <option key={value} value={value}>
                                                     {value}
@@ -463,7 +491,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                             value="1" />
                                         <label style={{ marginLeft: '4px', marginTop: '3px', marginBottom: '0' }}>Specified</label>
                                         <span>
-                                            <select className="leveltype specifiedindent" onChange={this.onIndentChange.bind(this)} value={this.state.styles.indent}>
+                                            <select className="leveltype specifiedindent fontstyle" onChange={this.onIndentChange.bind(this)} style={{ width: '99px !important' }} value={this.state.styles.indent}>
                                                 {INDENT_VALUES.map(({ label, value }) => (
                                                     <option key={value} value={value}>
                                                         {label}
@@ -483,8 +511,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     </div>
                 </div >
                 <div className="btns">
-                    <button onClick={this._cancel}>Cancel</button>
-                    <button className="btnsave" onClick={this._save.bind(this)}>Save</button>
+                    <button className="buttonstyle" onClick={this._cancel}>Cancel</button>
+                    <button className="btnsave buttonstyle" onClick={this._save.bind(this)}>Save</button>
                 </div>
             </div >
         );

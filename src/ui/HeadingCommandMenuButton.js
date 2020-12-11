@@ -32,7 +32,9 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     const HEADING_NAMES = getCustomStyles();
     HEADING_COMMANDS = null;
     HEADING_COMMANDS = {
-      [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
+      // [FS] IRAD-1074 2020-12-09
+      // When apply 'None' from style menu, not clearing the applied custom style.
+      [HEADING_NAME_DEFAULT]: new CustomStyleCommand('None', 'None'),
     };
     HEADING_NAMES.forEach(obj => {
       HEADING_COMMANDS[obj.stylename] = new CustomStyleCommand(obj, obj.stylename);
