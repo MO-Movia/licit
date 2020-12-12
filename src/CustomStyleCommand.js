@@ -445,6 +445,17 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
 
     if (style[NUMBERING]) {
         newattrs['styleLevel'] = Number(style.level);
+        newattrs['customStyle'] = {
+            strong: style[STRONG],
+            em: style[EM],
+            color: style[COLOR],
+            fontSize: style[FONTSIZE],
+            fontName: style[FONTNAME],
+            strike: style[STRIKE],
+            underline: style[UNDERLINE]
+        };
+    } else {
+        newattrs['styleLevel'] = null;
     }
     // to set custom styleName attribute for node
     newattrs['styleName'] = styleName;

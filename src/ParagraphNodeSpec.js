@@ -34,7 +34,8 @@ const ParagraphNodeSpec: NodeSpec = {
     // TODO: Add UI to let user edit / clear padding.
     paddingTop: { default: null },
     styleName: { default: 'None' },
-    styleLevel:  { default:null }, 
+    styleLevel:  { default: null },
+    customStyle:  { default: null },
     paragraphSpacingAfter: { default:null },
     paragraphSpacingBefore: { default:null },
   },
@@ -71,6 +72,7 @@ function getAttrs(dom: HTMLElement): Object {
   const id = dom.getAttribute('id') || '';
   const styleName = dom.getAttribute('styleName') || null;
   const styleLevel = parseInt(dom.getAttribute(ATTRIBUTE_STYLE_LEVEL), 10);
+  // TODO: customStyle
 
   return { align, indent, lineSpacing, paddingTop, paddingBottom, id, styleName, spacingAfterParagraph, styleLevel };
 }
@@ -85,6 +87,7 @@ function toDOM(node: Node): Array<any> {
     id,
     styleName,
     styleLevel,
+    customStyle,
     paragraphSpacingAfter,
     paragraphSpacingBefore
   } = node.attrs;
@@ -120,6 +123,35 @@ function toDOM(node: Node): Array<any> {
     style += `padding-bottom: ${paddingBottom};`;
   }
 
+  if (styleLevel) {
+    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
+    if (customStyle.strong) {
+      style += 'font-weight: bold;';
+    }
+    if (customStyle.em) {
+      style += 'font-style: italic;';
+    }
+    if (customStyle.color) {
+      style += `color: ${customStyle.color};`;
+    }
+    if (customStyle.fontSize) {
+      style += `font-size: ${customStyle.fontSize}px;`;
+    }
+    if (customStyle.fontName) {
+      style += `font-family: ${customStyle.fontName};`;
+    }
+    let textDecoration = '';
+    if (customStyle.strike) {
+      textDecoration += ' line-through';
+    }
+    if (customStyle.underline) {
+      textDecoration += ' underline';
+    }
+    if (customStyle.strike || customStyle.underline) {
+    style += `text-decoration: ${textDecoration};`;
+    }
+  }
+
   style && (attrs.style = style);
 
   if (indent) {
@@ -128,10 +160,6 @@ function toDOM(node: Node): Array<any> {
 
   if (id) {
     attrs.id = id;
-  }
-
-  if (styleLevel) {
-    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
   }
 
   attrs.styleName = styleName;
