@@ -275,7 +275,6 @@ class CustomStyleCommand extends UICommand {
                     this._popUp = null;
                     //handle save style object part here
                     if (undefined !== val) {
-                        console.log(val);
                         this.saveStyleObject(val);
                         tr = tr.setSelection(TextSelection.create(doc, 0, 0));
                         // Apply created styles to document
@@ -447,8 +446,6 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
     if (style[NUMBERING]) {
         newattrs['styleLevel'] = Number(style.level);
     }
-    console.log('style[NUMBERING]:', style[NUMBERING]);
-    console.log('style.level:', Number(style.level));
     // to set custom styleName attribute for node
     newattrs['styleName'] = styleName;
     // tr = _setNodeAttribute(node, tr, startPos, endPos, newattrs);

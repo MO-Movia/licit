@@ -32,90 +32,92 @@ html {
   counter-reset: czi-cust-style-counter-5 czi-cust-style-counter-6 czi-cust-style-counter-7 czi-cust-style-counter-8
     czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
+
 .ProseMirror p[data-style-level="5"] {
   counter-increment: czi-cust-style-counter-5;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-6 czi-cust-style-counter-7 czi-cust-style-counter-8 czi-cust-style-counter-9
     czi-cust-style-counter-10;
 }
+
 .ProseMirror p[data-style-level="6"] {
   counter-increment: czi-cust-style-counter-6;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-7 czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
+
 .ProseMirror p[data-style-level="7"] {
   counter-increment: czi-cust-style-counter-7;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
+
 .ProseMirror p[data-style-level="8"] {
   counter-increment: czi-cust-style-counter-8;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
+
 .ProseMirror p[data-style-level="9"] {
   counter-increment: czi-cust-style-counter-9;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-10;
 }
+
 .ProseMirror p[data-style-level="10"] {
   counter-increment: czi-cust-style-counter-10;
 }
 
 .ProseMirror p[data-style-level="1"]::before {
   content: counter(czi-cust-style-counter-1, decimal) ". ";
-  color: red;
 }
 
 .ProseMirror p[data-style-level="2"]::before {
   content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) " ";
-  color: blue;
 }
 
 .ProseMirror p[data-style-level="3"]::before {
   content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
     counter(czi-cust-style-counter-3, decimal) " ";
-  color: blue;
 }
 
 .ProseMirror p[data-style-level="4"]::before {
   content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
     counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) " ";
-  color: blue;
 }
+
 .ProseMirror p[data-style-level="5"]::before {
   content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
     counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) "."
     counter(czi-cust-style-counter-5, decimal) " ";
-  color: blue;
 }
+
 .ProseMirror p[data-style-level="6"]::before {
   content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
     counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) "."
     counter(czi-cust-style-counter-5, decimal) "." counter(czi-cust-style-counter-6, decimal) " ";
-  color: blue;
 }
+
 .ProseMirror p[data-style-level="7"]::before {
   content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
     counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) "."
     counter(czi-cust-style-counter-5, decimal) "." counter(czi-cust-style-counter-6, decimal) "."
     counter(czi-cust-style-counter-7, decimal) " ";
-  color: blue;
 }
+
 .ProseMirror p[data-style-level="8"]::before {
   content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
     counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) "."
     counter(czi-cust-style-counter-5, decimal) "." counter(czi-cust-style-counter-6, decimal) "."
     counter(czi-cust-style-counter-7, decimal) "." counter(czi-cust-style-counter-8, decimal) " ";
-  color: blue;
 }
+
 .ProseMirror p[data-style-level="9"]::before {
   content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
     counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) "."
     counter(czi-cust-style-counter-5, decimal) "." counter(czi-cust-style-counter-6, decimal) "."
     counter(czi-cust-style-counter-7, decimal) "." counter(czi-cust-style-counter-8, decimal) "."
     counter(czi-cust-style-counter-9, decimal) " ";
-  color: blue;
 }
 
 .ProseMirror p[data-style-level="10"]::before {
@@ -124,5 +126,4 @@ html {
     counter(czi-cust-style-counter-5, decimal) "." counter(czi-cust-style-counter-6, decimal) "."
     counter(czi-cust-style-counter-7, decimal) "." counter(czi-cust-style-counter-8, decimal) "."
     counter(czi-cust-style-counter-9, decimal) "." counter(czi-cust-style-counter-10, decimal) " ";
-  color: blue;
 }
