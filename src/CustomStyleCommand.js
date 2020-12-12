@@ -26,7 +26,6 @@ import TextLineSpacingCommand from './TextLineSpacingCommand';
 import { setTextAlign } from './TextAlignCommand';
 import ParagraphSpacingCommand from './ParagraphSpacingCommand';
 import IndentCommand from './IndentCommand';
-import ListToggleCommand from './ListToggleCommand';
 import {
     clearCustomStyleMarks
 } from './clearCustomStyleMarks';
@@ -141,9 +140,7 @@ export function getCustomStyleCommands(customStyle: any) {
             case INDENT:
                 commands.push(new IndentCommand(customStyle[property]));
                 break;
-            case NUMBERING:
-                commands.push(new ListToggleCommand(true, 'x.x.x'));
-                break;
+          
             case LEVELBASEDINDENT:
                 if (customStyle[LEVEL] && Number(customStyle[LEVEL]) > 0) {
                     commands.push(new IndentCommand(customStyle[LEVEL]));
@@ -441,16 +438,17 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
         else if (element instanceof IndentCommand) {
             newattrs['indent'] = style.indent;
         }
-        else if (element instanceof ListToggleCommand) {
-            newattrs['indent'] = Number(style.level);
-            newattrs['type'] = 'x.x.x';
-        }
         // to set the marks for the node
         if (element.executeCustom) {
             tr = element.executeCustom(state, tr, startPos, endPos);
         }
     });
 
+    if (style[NUMBERING]) {
+        newattrs['styleLevel'] = Number(style.level);
+    }
+    console.log('style[NUMBERING]:', style[NUMBERING]);
+    console.log('style.level:', Number(style.level));
     // to set custom styleName attribute for node
     newattrs['styleName'] = styleName;
     // tr = _setNodeAttribute(node, tr, startPos, endPos, newattrs);

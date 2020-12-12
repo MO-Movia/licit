@@ -12,6 +12,7 @@ export const INDENT_MARGIN_PT_SIZE = 36;
 export const MIN_INDENT_LEVEL = 0;
 export const MAX_INDENT_LEVEL = 7;
 export const ATTRIBUTE_INDENT = 'data-indent';
+export const ATTRIBUTE_STYLE_LEVEL = 'data-style-level';
 const cssVal = new Set<string>(['', '0%', '0pt', '0px']);
 
 export const EMPTY_CSS_VALUE = cssVal;
@@ -33,6 +34,7 @@ const ParagraphNodeSpec: NodeSpec = {
     // TODO: Add UI to let user edit / clear padding.
     paddingTop: { default: null },
     styleName: { default: 'None' },
+    styleLevel:  { default:null }, 
     paragraphSpacingAfter: { default:null },
     paragraphSpacingBefore: { default:null },
   },
@@ -67,8 +69,10 @@ function getAttrs(dom: HTMLElement): Object {
   const spacingAfterParagraph = marginBottom? marginBottom:null;
 
   const id = dom.getAttribute('id') || '';
- const styleName = dom.getAttribute('styleName') || null;
-  return { align, indent, lineSpacing, paddingTop, paddingBottom, id, styleName, spacingAfterParagraph };
+  const styleName = dom.getAttribute('styleName') || null;
+  const styleLevel = parseInt(dom.getAttribute(ATTRIBUTE_STYLE_LEVEL), 10);
+
+  return { align, indent, lineSpacing, paddingTop, paddingBottom, id, styleName, spacingAfterParagraph, styleLevel };
 }
 
 function toDOM(node: Node): Array<any> {
@@ -80,6 +84,7 @@ function toDOM(node: Node): Array<any> {
     paddingBottom,
     id,
     styleName,
+    styleLevel,
     paragraphSpacingAfter,
     paragraphSpacingBefore
   } = node.attrs;
@@ -125,7 +130,11 @@ function toDOM(node: Node): Array<any> {
     attrs.id = id;
   }
 
- attrs.styleName = styleName;
+  if (styleLevel) {
+    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
+  }
+
+  attrs.styleName = styleName;
   return ['p', attrs, 0];
 }
 
