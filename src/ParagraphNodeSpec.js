@@ -125,30 +125,33 @@ function toDOM(node: Node): Array<any> {
 
   if (styleLevel) {
     attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
-    if (customStyle.strong) {
-      style += 'font-weight: bold;';
-    }
-    if (customStyle.em) {
-      style += 'font-style: italic;';
-    }
-    if (customStyle.color) {
-      style += `color: ${customStyle.color};`;
-    }
-    if (customStyle.fontSize) {
-      style += `font-size: ${customStyle.fontSize}px;`;
-    }
-    if (customStyle.fontName) {
-      style += `font-family: ${customStyle.fontName};`;
-    }
-    let textDecoration = '';
-    if (customStyle.strike) {
-      textDecoration += ' line-through';
-    }
-    if (customStyle.underline) {
-      textDecoration += ' underline';
-    }
-    if (customStyle.strike || customStyle.underline) {
-    style += `text-decoration: ${textDecoration};`;
+
+    if (customStyle) {
+      if (customStyle.strong) {
+        style += 'font-weight: bold;';
+      }
+      if (customStyle.em) {
+        style += 'font-style: italic;';
+      }
+      if (customStyle.color) {
+        style += `color: ${customStyle.color};`;
+      }
+      if (customStyle.fontSize) {
+        style += `font-size: ${customStyle.fontSize}px;`;
+      }
+      if (customStyle.fontName) {
+        style += `font-family: ${customStyle.fontName};`;
+      }
+      let textDecoration = '';
+      if (customStyle.strike) {
+        textDecoration += ' line-through';
+      }
+      if (customStyle.underline) {
+        textDecoration += ' underline';
+      }
+      if (customStyle.strike || customStyle.underline) {
+      style += `text-decoration: ${textDecoration};`;
+      }
     }
   }
 
