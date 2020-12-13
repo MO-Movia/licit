@@ -443,7 +443,7 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
         }
     });
 
-    if (style[NUMBERING]) {
+    if (style && style[NUMBERING]) {
         newattrs['styleLevel'] = Number(style.level);
         newattrs['customStyle'] = {
             strong: style[STRONG],
@@ -463,6 +463,7 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
     tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
     return tr;
 }
+
 
 // Need to change this function code duplicates with applyStyle()
 export function applyLatestStyle(styleName: String, state: EditorState, tr: Transform,
