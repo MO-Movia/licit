@@ -299,7 +299,7 @@ class CustomStyleCommand extends UICommand {
 
     // locally save style object
     saveStyleObject(style: any) {
-        saveStyle(style);
+        saveStyle(style,style.styleName);
     }
 }
 

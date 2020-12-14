@@ -274,7 +274,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             if (undefined !== val) {
               const { dispatch } = this.props.editorView;
               let tr = this.props.editorState.tr;
-              saveStyle(val);
+              // [FS] IRAD-1112 2020-12-14
+              // Issue fix: Duplicate style created while modified the style name.
+              saveStyle(val, this._styleName);
               tr = this.updateDocument(this.props.editorState, this.props.editorState.tr, val.stylename);
               dispatch(tr);
               this.props.editorView.focus();

@@ -4,11 +4,11 @@
 
 const localStorageKey = 'moStyles';
 
-export function saveStyle(style: any) {
+export function saveStyle(style: any, styleName: string) {
     let bOk = false;
     const itemsArray = window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
     if (!itemsArray.includes(style)) {
-        removeStyleFromLocalStorage(style.stylename, itemsArray);
+        removeStyleFromLocalStorage(styleName, itemsArray);
         itemsArray.push(style);
         window.localStorage.setItem(localStorageKey, JSON.stringify(itemsArray));
         bOk = true;
