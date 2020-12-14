@@ -140,7 +140,7 @@ export function getCustomStyleCommands(customStyle: any) {
             case INDENT:
                 commands.push(new IndentCommand(customStyle[property]));
                 break;
-          
+
             case LEVELBASEDINDENT:
                 if (customStyle[LEVEL] && Number(customStyle[LEVEL]) > 0) {
                     commands.push(new IndentCommand(customStyle[LEVEL]));
@@ -299,7 +299,7 @@ class CustomStyleCommand extends UICommand {
 
     // locally save style object
     saveStyleObject(style: any) {
-        saveStyle(style,style.styleName);
+        saveStyle(style, style.styleName);
     }
 }
 
@@ -464,6 +464,17 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
     return tr;
 }
 
+export function executeCommands(state, tr, styleName, startPos, endPos) {
+
+    const style = getCustomStyleByName(styleName);
+    const _commands = getCustomStyleCommands(style);
+    _commands.forEach((element) => {
+        if (element.executeCustom) {
+            tr = element.executeCustom(state, tr, startPos, endPos);
+        }
+    });
+    return tr;
+}
 
 // Need to change this function code duplicates with applyStyle()
 export function applyLatestStyle(styleName: String, state: EditorState, tr: Transform,

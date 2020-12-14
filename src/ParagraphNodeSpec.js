@@ -142,16 +142,16 @@ function toDOM(node: Node): Array<any> {
       if (customStyle.fontName) {
         style += `font-family: ${customStyle.fontName};`;
       }
-      let textDecoration = '';
-      if (customStyle.strike) {
-        textDecoration += ' line-through';
-      }
-      if (customStyle.underline) {
-        textDecoration += ' underline';
-      }
-      if (customStyle.strike || customStyle.underline) {
-      style += `text-decoration: ${textDecoration};`;
-      }
+      // let textDecoration = '';
+      // if (customStyle.strike) {
+      //   textDecoration += ' line-through';
+      // }
+      // if (customStyle.underline) {
+      //   textDecoration += ' underline';
+      // }
+      // if (customStyle.strike || customStyle.underline) {
+      // style += `text-decoration: ${textDecoration};`;
+      // }
     }
   }
 

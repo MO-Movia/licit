@@ -9,6 +9,7 @@ import {
 } from 'prosemirror-model';
 import {
     applyLatestStyle,
+    executeCommands,
     updateOverrideFlag,
     ATTR_OVERRIDDEN,
     NONE
@@ -28,6 +29,17 @@ import {
 const ALLOWED_MARKS = [MARK_STRONG, MARK_EM, MARK_TEXT_COLOR, MARK_FONT_SIZE, MARK_FONT_TYPE, MARK_STRIKE, MARK_SUPER, MARK_TEXT_HIGHLIGHT, MARK_UNDERLINE];
 const SPEC = 'spec';
 const NEWATTRS = [ATTR_OVERRIDDEN];
+const ENTERKEYCODE = 13;
+const PARA_POSITION_DIFF = 2;
+const ATTR_STYLE_NAME = 'styleName';
+
+
+const isNodeHasAttribute = (node, attrName) => {
+    return (node.attrs && 'None' !== node.attrs[attrName]);
+};
+const requiredAddAttr = (node) => {
+    return 'paragraph' === node.type.name && isNodeHasAttribute(node, ATTR_STYLE_NAME);
+};
 
 export default class StylePlugin extends Plugin {
 
@@ -40,11 +52,14 @@ export default class StylePlugin extends Plugin {
                     this.loaded = false;
                     this.firstTime = true;
                 },
-                apply(tr, value, oldState, newState) {}
+                apply(tr, value, oldState, newState) { }
             },
             props: {
                 handleDOMEvents: {
-                    keydown(view, event) {}
+                    keydown(view, event) {
+                        // _keydown(view, event);
+                        this.view = view;
+                    }
                 },
                 nodeViews: []
             },
@@ -55,12 +70,16 @@ export default class StylePlugin extends Plugin {
                     this.loaded = true;
                     // do this only once when the document is loaded.
                     tr = applyStyles(nextState, tr);
-                } else if(isDocChanged(transactions)) {
-                    if(!this.firstTime) {
+                } else if (isDocChanged(transactions)) {
+                    if (!this.firstTime) {
                         // when user updates
                         tr = updateStyleOverrideFlag(nextState, tr);
                     }
                     this.firstTime = false;
+                    // custom style for next line
+                    if (this.view && 13 === this.view.lastKeyCode) {
+                        tr = applyStyleForNextParagraph(prevState, nextState, tr, this.view);
+                    }
                 }
 
                 return tr;
@@ -72,9 +91,47 @@ export default class StylePlugin extends Plugin {
         return applyEffectiveSchema(schema);
     }
 }
+// Continious Numbering for custom style
+function applyStyleForNextParagraph(prevState, nextState, tr, view) {
+    let modified = false;
+    if (!tr) {
+        tr = nextState.tr;
+    }
+    nextState.doc.descendants((node, pos) => {
+        let required = false;
+        if (requiredAddAttr(node)) {
+            if (isNewParagraph(prevState, nextState, pos, view)) {
+                required = true;
+            }
+        }
+        if (required) {
+            const newattrs = Object.assign({}, node.attrs);
+            const nextNodePos = pos + node.nodeSize;
+            const nextNode = nextState.doc.nodeAt(nextNodePos);
+            if (nextNode && nextNode.type.name === 'paragraph' && node.content.size > 0 &&
+                nextNode.content.size === 0) {
+                tr = executeCommands(nextState, tr, node.attrs[ATTR_STYLE_NAME], nextNodePos, nextNodePos + 1);
+                tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
+            }
+            modified = true;
+        }
+    });
 
+    return modified ? tr : null;
+}
+
+function isNewParagraph(prevState, nextState, pos, view) {
+    let bOk = false;
+    if (ENTERKEYCODE === view.lastKeyCode
+        && PARA_POSITION_DIFF === (nextState.selection.from - prevState.selection.from)
+        // && pos === (prevState.selection.from - 1)
+    ) {
+        bOk = true;
+    }
+    return bOk;
+}
 function isDocChanged(transactions) {
-	return (transactions.some((transaction) => transaction.docChanged));
+    return (transactions.some((transaction) => transaction.docChanged));
 }
 
 function updateStyleOverrideFlag(state, tr) {
@@ -83,7 +140,7 @@ function updateStyleOverrideFlag(state, tr) {
         tr = state.tr;
     }
 
-    tr.doc.descendants(function(child, pos) {
+    tr.doc.descendants(function (child, pos) {
         const contentLen = child.content.size;
         if (haveEligibleChildren(child, contentLen)) {
             const startPos = tr.curSelection.$anchor.pos;//pos
@@ -104,7 +161,7 @@ function applyStyles(state, tr) {
         tr = state.tr;
     }
 
-    tr.doc.descendants(function(child, pos) {
+    tr.doc.descendants(function (child, pos) {
         const contentLen = child.content.size;
         if (haveEligibleChildren(child, contentLen)) {
             tr = applyLatestStyle(child.attrs.styleName, state, tr, child, pos, pos + contentLen + 1);
@@ -145,7 +202,7 @@ function getAnExistingAttribute(schema) {
 
     try {
         existingAttr = schema['marks']['link']['attrs']['href'];
-    } catch (err) {}
+    } catch (err) { }
 
     return existingAttr;
 }
