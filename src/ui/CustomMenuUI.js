@@ -80,7 +80,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             hasText={hasText}
             key={label}
             label={label}
-            onClick={this._onUIEnter}
+            onMouseDown={this._onUIEnter}
             onCommand={onCommand}
           ></CustomStyleItem>
         );
@@ -99,7 +99,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             hasText={false}
             key={label}
             label={command._customStyleName}
-            onClick={this._onUIEnter}
+            onMouseDown={this._onUIEnter}
             onCommand={onCommand}
           ></CustomStyleItem>
         );

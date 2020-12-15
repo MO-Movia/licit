@@ -252,6 +252,7 @@ class CustomStyleCommand extends UICommand {
         tr = applyStyle(this._customStyle.styles, this._customStyle.stylename, state, tr);
 
         if (tr.docChanged || tr.storedMarksSet) {
+            // view.focus();
             dispatch && dispatch(tr);
             return true;
         }
@@ -394,6 +395,69 @@ function onLoadRemoveAllMarksExceptOverridden(node: Node, schema: Schema,
     return handleRemoveMarks(tr, tasks, from, to, schema);
 }
 
+export function getMarkByStyleName(styleName: string, schema: Schema) {
+
+    const style = getCustomStyleByName(styleName);
+    const marks = [];
+    let markType = null;
+    let attrs = null;
+    for (const property in style) {
+
+        switch (property) {
+            case STRONG:
+
+                if (style[property]) {
+                    markType = schema.marks[MARK_STRONG];
+                    marks.push(markType.create(attrs));
+                }
+                break;
+
+            case EM:
+
+                markType = schema.marks[MARK_EM];
+
+                if (style[property]) marks.push(markType.create(attrs));
+                break;
+
+            case COLOR:
+                markType = schema.marks[MARK_TEXT_COLOR];
+                 attrs = style[property] ? { color: style[property] } : null;
+                marks.push(markType.create(attrs));
+                break;
+
+            case FONTSIZE:
+                markType = schema.marks[MARK_FONT_SIZE];
+                 attrs = style[property] ? { pt: style[property] } : null;
+                marks.push(markType.create(attrs));
+
+                break;
+
+            case FONTNAME:
+                markType = schema.marks[MARK_FONT_TYPE];
+                 attrs = style[property] ? { name: style[property] } : null;
+                marks.push(markType.create(attrs));
+                break;
+
+
+            case TEXTHL:
+                markType = schema.marks[MARK_TEXT_HIGHLIGHT];
+                 attrs = style[property] ? { highlightColor: style[property] } : null;
+                marks.push(markType.create(attrs));
+                break;
+
+            case UNDERLINE:
+                markType = schema.marks[MARK_UNDERLINE];
+        
+                marks.push(markType.create(attrs));
+                break;
+
+
+            default:
+                break;
+        }
+    }
+    return marks;
+}
 function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Transform,
     node: Node, startPos: Number, endPos: Number) {
     const loading = !style;

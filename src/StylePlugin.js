@@ -11,6 +11,7 @@ import {
     applyLatestStyle,
     executeCommands,
     updateOverrideFlag,
+    getMarkByStyleName,
     ATTR_OVERRIDDEN,
     NONE
 } from './CustomStyleCommand';
@@ -111,18 +112,32 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
             if (nextNode && nextNode.type.name === 'paragraph' && node.content.size > 0 &&
                 nextNode.content.size === 0) {
 
-                // node.descendants((child, pos) => {
-                //     if (child.type.name === 'text') {
-                //         child.marks.forEach(mark => {
-                //             tr = tr.addStoredMark(mark);
-                //         });
-                //     }
-                // });
-                 tr = executeCommands(nextState, tr, node.attrs[ATTR_STYLE_NAME], nextState.selection.$from.before(1), nextState.selection.$to.after(1));
+
+                tr = executeCommands(nextState, tr, node.attrs[ATTR_STYLE_NAME], nextState.selection.$from.before(1), nextState.selection.$to.after(1));
 
                 tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
+                const marks = getMarkByStyleName(node.attrs[ATTR_STYLE_NAME], nextState.schema);
+                node.descendants((child, pos) => {
+                    if (child.type.name === 'text') {
+                        marks.forEach(mark => {
+                            tr = tr.addStoredMark(mark);
+                        });
+                    }
+                });
+                modified = true;
             }
-            modified = true;
+            else {
+                if(nextNode.content.size === 0){
+                const marks = getMarkByStyleName(node.attrs[ATTR_STYLE_NAME], nextState.schema);
+
+                marks.forEach(mark => {
+                    tr = tr.removeStoredMark(mark);
+                });
+                modified = true;
+            }
+
+            }
+            
         }
     });
 

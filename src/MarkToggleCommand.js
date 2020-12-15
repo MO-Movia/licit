@@ -1,6 +1,6 @@
 // @flow
 
-// import { toggleMark } from 'prosemirror-commands';
+import { toggleMark } from 'prosemirror-commands';
 import { Schema } from 'prosemirror-model';
 import applyMark from './applyMark';
 import { EditorState, TextSelection } from 'prosemirror-state';
@@ -54,11 +54,11 @@ class MarkToggleCommand extends UICommand {
 
     // TODO: Replace `toggleMark` with transform that does not change scroll
     // position.
-    // return toggleMark(markType)(state, dispatch, view);
-    tr = setMark(tr, schema, markType);
-    if (tr.docChanged || tr.storedMarksSet) {
-      dispatch && dispatch(tr);
-    }
+    return toggleMark(markType)(state, dispatch, view);
+    // tr = setMark(tr, schema, markType);
+    // if (tr.docChanged || tr.storedMarksSet) {
+    //   dispatch && dispatch(tr);
+    // }
     return true;
 
   };
@@ -155,14 +155,14 @@ function markApplies(doc, ranges, type) {
 }
 
 
-function setMark(tr: Transform, schema: Schema, markType): Transform {
-  // const markType = schema.marks[MARK_FONT_SIZE];
-  if (!markType) {
-    return tr;
-  }
-  const attrs = null;
-  tr = applyMark(tr, schema, markType, attrs);
-  return tr;
-}
+// function setMark(tr: Transform, schema: Schema, markType): Transform {
+//   // const markType = schema.marks[MARK_FONT_SIZE];
+//   if (!markType) {
+//     return tr;
+//   }
+//   const attrs = null;
+//   tr = applyMark(tr, schema, markType, attrs);
+//   return tr;
+// }
 
 export default MarkToggleCommand;
