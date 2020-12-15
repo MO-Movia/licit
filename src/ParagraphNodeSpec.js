@@ -137,7 +137,7 @@ function toDOM(node: Node): Array<any> {
         style += `color: ${customStyle.color};`;
       }
       if (customStyle.fontSize) {
-        style += `font-size: ${customStyle.fontSize}px;`;
+        style += `font-size: ${customStyle.fontSize}pt;`;
       }
       if (customStyle.fontName) {
         style += `font-family: ${customStyle.fontName};`;

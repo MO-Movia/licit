@@ -1,6 +1,8 @@
 // @flow
 
-import { toggleMark } from 'prosemirror-commands';
+// import { toggleMark } from 'prosemirror-commands';
+import { Schema } from 'prosemirror-model';
+import applyMark from './applyMark';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
@@ -30,7 +32,8 @@ class MarkToggleCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const { schema, selection, tr } = state;
+    const { schema, selection } = state;
+    let { tr } = state;
     const markType = schema.marks[this._markName];
     if (!markType) {
       return false;
@@ -51,9 +54,16 @@ class MarkToggleCommand extends UICommand {
 
     // TODO: Replace `toggleMark` with transform that does not change scroll
     // position.
-    return toggleMark(markType)(state, dispatch, view);
+    // return toggleMark(markType)(state, dispatch, view);
+    tr = setMark(tr, schema, markType);
+    if (tr.docChanged || tr.storedMarksSet) {
+      dispatch && dispatch(tr);
+    }
+    return true;
 
   };
+
+
 
   // [FS] IRAD-1087 2020-09-30
   // Method to execute strike, em, strong, underline,superscrpt for custom styling implementation.
@@ -95,11 +105,10 @@ function toggleCustomStyle(markType, attrs, state, tr) {
   const ranges = ref.ranges;
   const startPos = ref.$from.before(1);
   const endPos = ref.$to.after(1);
-
   if ((empty && !$cursor) || !markApplies(state.doc, ranges, markType)) {
     return tr;
   }
-  if ($cursor) {
+  if ($cursor && $cursor.parentOffset === 0) {
     if (markType.isInSet(state.storedMarks || $cursor.marks())) {
       tr = state.tr.removeStoredMark(markType);
     } else {
@@ -145,5 +154,15 @@ function markApplies(doc, ranges, type) {
   return returned;
 }
 
+
+function setMark(tr: Transform, schema: Schema, markType): Transform {
+  // const markType = schema.marks[MARK_FONT_SIZE];
+  if (!markType) {
+    return tr;
+  }
+  const attrs = null;
+  tr = applyMark(tr, schema, markType, attrs);
+  return tr;
+}
 
 export default MarkToggleCommand;

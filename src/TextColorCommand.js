@@ -73,8 +73,14 @@ class TextColorCommand extends UICommand {
       let { tr } = state;
       const markType = schema.marks[MARK_TEXT_COLOR];
       const attrs = color ? { color } : null;
+      // tr = applyMark(
+      //   state.tr.setSelection(state.selection),
+      //   schema,
+      //   markType,
+      //   attrs
+      // );
       tr = applyMark(
-        state.tr.setSelection(state.selection),
+        state.tr,
         schema,
         markType,
         attrs

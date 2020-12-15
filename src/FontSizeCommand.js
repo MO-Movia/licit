@@ -37,8 +37,11 @@ class FontSizeCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const { schema, selection } = state;
-    const tr = setFontSize(state.tr.setSelection(selection), schema, this._pt);
+    const { schema } = state;
+    // commnted selection because selection removes the storedMarks;
+    // {selection}
+    // const tr = setFontSize(state.tr.setSelection(selection), schema, this._pt);
+    const tr = setFontSize(state.tr, schema, this._pt);
     if (tr.docChanged || tr.storedMarksSet) {
       // If selection is empty, the color is added to `storedMarks`, which
       // works like `toggleMark`

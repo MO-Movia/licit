@@ -39,7 +39,8 @@ export default function applyMark(
 
   if ($cursor) {
     tr = tr.removeStoredMark(markType);
-    return attrs ? tr.addStoredMark(markType.create(attrs)) : tr;
+    // return attrs ? tr.addStoredMark(markType.create(attrs)) : tr;
+    return tr.addStoredMark(markType.create(attrs));
   }
 
   let has = false;
@@ -54,9 +55,9 @@ export default function applyMark(
     // if (has && !isCustomStyleApplied) {
     //   tr = tr.removeMark($from.pos, $to.pos, markType);
     // }
-    if (attrs) {
+    // if (attrs) {
       tr = tr.addMark($from.pos, $to.pos, markType.create(attrs));
-    }
+    // }
   }
 
   return tr;

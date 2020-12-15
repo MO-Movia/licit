@@ -460,6 +460,9 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
     // to set custom styleName attribute for node
     newattrs['styleName'] = styleName;
     // tr = _setNodeAttribute(node, tr, startPos, endPos, newattrs);
+
+    const selection = TextSelection.create(tr.doc, endPos, endPos - 1);
+    tr = tr.setSelection(selection);
     tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
     return tr;
 }

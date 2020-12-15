@@ -110,7 +110,16 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
             const nextNode = nextState.doc.nodeAt(nextNodePos);
             if (nextNode && nextNode.type.name === 'paragraph' && node.content.size > 0 &&
                 nextNode.content.size === 0) {
-                tr = executeCommands(nextState, tr, node.attrs[ATTR_STYLE_NAME], nextNodePos, nextNodePos + 1);
+
+                // node.descendants((child, pos) => {
+                //     if (child.type.name === 'text') {
+                //         child.marks.forEach(mark => {
+                //             tr = tr.addStoredMark(mark);
+                //         });
+                //     }
+                // });
+                 tr = executeCommands(nextState, tr, node.attrs[ATTR_STYLE_NAME], nextState.selection.$from.before(1), nextState.selection.$to.after(1));
+
                 tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
             }
             modified = true;

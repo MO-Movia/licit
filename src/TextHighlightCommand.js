@@ -72,7 +72,8 @@ class TextHighlightCommand extends UICommand {
       let { tr } = state;
       const markType = schema.marks[MARK_TEXT_HIGHLIGHT];
       const attrs = color ? { highlightColor: color } : null;
-      tr = applyMark(tr.setSelection(state.selection), schema, markType, attrs);
+      // tr = applyMark(tr.setSelection(state.selection), schema, markType, attrs);
+      tr = applyMark(tr, schema, markType, attrs);
       if (tr.docChanged || tr.storedMarksSet) {
         // If selection is empty, the color is added to `storedMarks`, which
         // works like `toggleMark`
