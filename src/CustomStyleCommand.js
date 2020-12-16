@@ -117,6 +117,9 @@ export function getCustomStyleCommands(customStyle: any) {
                 break;
 
             case UNDERLINE:
+                // [FS] IRAD-1043 2020-12-15
+                // Issue fix: user unselect Underline from a existing custom style, it didn't reflect in editor
+                if (customStyle[property])
                 commands.push(new MarkToggleCommand('underline'));
                 break;
 

@@ -15,7 +15,7 @@
  To handle child dialog window  */
 .child-modal {
   background-color: unset !important;
-  z-index: 10006!important;
+  z-index: 100006!important;
 }
 
 .czi-pop-up-element {

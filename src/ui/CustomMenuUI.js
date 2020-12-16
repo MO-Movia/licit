@@ -138,7 +138,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
       },
       {
         anchor,
-        autoDismiss: false,
+        autoDismiss: true,
         IsChildDialog: true,
         onClose: (val) => {
           if (this._popUp) {
@@ -266,7 +266,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
       },
       {
         position: atViewportCenter,
-        autoDismiss: false,
+        autoDismiss: true,
         IsChildDialog: false,
         onClose: (val) => {
           if (this._stylePopup) {
