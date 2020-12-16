@@ -109,9 +109,12 @@ class TextColorCommand extends UICommand {
     const { schema } = state;
     const markType = schema.marks[MARK_TEXT_COLOR];
     const attrs = { color: this._color };
+    const storedmarks = tr.storedMarks;
     // [FS] IRAD-1043 2020-10-27
     // Issue fix on removing the  custom style if user click on the same style menu multiple times
     tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, from, to)), schema, markType, attrs, true);
+    tr.storedMarks = storedmarks;
+    //  tr = applyMark(tr, schema, markType, attrs, true);
     return tr;
   };
 }

@@ -80,8 +80,10 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             hasText={hasText}
             key={label}
             label={label}
-            onMouseDown={this._onUIEnter}
+            onClick={this._onUIEnter}
+            onMouseEnter={this._onUIEnter}
             onCommand={onCommand}
+            value={command}
           ></CustomStyleItem>
         );
       });
@@ -99,8 +101,10 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             hasText={false}
             key={label}
             label={command._customStyleName}
-            onMouseDown={this._onUIEnter}
+            onClick={this._onUIEnter}
+            onMouseEnter={this._onUIEnter}
             onCommand={onCommand}
+            value={command}
           ></CustomStyleItem>
         );
       });
@@ -117,10 +121,28 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     );
   }
 
+
   _onUIEnter = (command: UICommand, event: SyntheticEvent<*>) => {
-    this.showSubMenu(command, event);
+
+    if (command.shouldRespondToUIEvent(event)) {
+      // check the mouse clicked on down arror to show sub menu
+      if (event.currentTarget.className === 'czi-custom-menu-item edit-icon') {
+        this.showSubMenu(command, event);
+      }
+      else {
+        this._execute(command, event);
+      }
+    }
   };
 
+  _execute = (command: UICommand, e: SyntheticEvent<*>) => {
+    if (undefined !== command) {
+      const { dispatch, editorState, editorView, onCommand } = this.props;
+      command.execute(editorState, dispatch, editorView, e);
+      onCommand && onCommand();
+    }
+  };
+  
   //shows the alignment and line spacing option
   showSubMenu(command: UICommand, event: SyntheticEvent<*>) {
     const anchor = event ? event.currentTarget : null;
@@ -301,23 +323,15 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     return tr;
   }
 
-
-
-  _execute = (command, e) => {
-    const { dispatch, editorState, editorView, onCommand } = this.props;
-    if (command.execute(editorState, dispatch, editorView, e)) {
-      onCommand && onCommand();
-    }
-  };
 }
 
 function haveEligibleChildren(node, contentLen, styleName) {
   let bOk = false;
 
-  if (node.type.name === 'paragraph' && 0 < contentLen && styleName === node.attrs.styleName) {   
-      bOk= true;
-  }  else {
-    bOk= false;
+  if (node.type.name === 'paragraph' && 0 < contentLen && styleName === node.attrs.styleName) {
+    bOk = true;
+  } else {
+    bOk = false;
   }
   return bOk;
 }

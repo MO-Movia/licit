@@ -284,7 +284,7 @@ class CustomStyleCommand extends UICommand {
                         // Apply created styles to document
                         tr = applyStyle(val.styles, val.stylename, state, tr);
                         dispatch(tr);
-                        view.focus();
+                        // view.focus();
                     }
                 }
             },
@@ -485,6 +485,7 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
     newattrs['lineSpacing'] = null;
     newattrs['paragraphSpacingAfter'] = null;
     newattrs['paragraphSpacingBefore'] = null;
+    newattrs['styleName'] = styleName;
 
     _commands.forEach((element) => {
         // to set the node attribute for text-align
@@ -528,9 +529,11 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
     newattrs['styleName'] = styleName;
     // tr = _setNodeAttribute(node, tr, startPos, endPos, newattrs);
 
-    const selection = TextSelection.create(tr.doc, endPos, endPos - 1);
-    tr = tr.setSelection(selection);
+    // const selection = TextSelection.create(tr.doc, endPos, endPos - 1);
+    // tr = tr.setSelection(selection);
+    const storedmarks =  getMarkByStyleName(styleName, state.schema);;
     tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
+    tr.storedMarks = storedmarks;
     return tr;
 }
 
