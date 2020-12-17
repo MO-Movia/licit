@@ -24,6 +24,10 @@ export function getCustomStyle(customStyle:any) {
         style['color'] = customStyle[property];
         break;
 
+      case 'texthighlight'  :
+        style['backgroundColor'] = customStyle[property];
+        break;
+
       case 'fontsize':
         style['fontSize'] = customStyle[property];
         break;

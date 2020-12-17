@@ -35,11 +35,11 @@ const FORMAT_MARK_NAMES = [
 function removeTextAlignAndLineSpacing(tr: Transform, schema: Schema): Transform {
   tr = setTextAlign(tr, schema, null);
   // to remove the applied line spacing
-  tr= setTextLineSpacing(tr,schema,null);
+  tr = setTextLineSpacing(tr, schema, null);
   // to remove the paragrapgh spacing after format
-  tr= setParagraphSpacing(tr,schema,'0',true);
+  tr = setParagraphSpacing(tr, schema, '0', true);
   // to remove the paragrapgh spacing before format
-  tr= setParagraphSpacing(tr,schema,'0',false);
+  tr = setParagraphSpacing(tr, schema, '0', false);
   return tr;
 }
 
@@ -81,18 +81,28 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema, state: Edit
       }
       // [FS] IRAD-1053 2020-10-21
       // Clear Style not removes the text align styles
-      else{
-        textAlignNode.push({ node, pos});
+      else {
+        textAlignNode.push({ node, pos });
       }
     }
     return true;
   });
+
+  if (tasks.length === 0 && textAlignNode.length === 0) {
+    doc.nodesBetween(from, to, (node, pos) => {
+      if (node.type.name === 'paragraph') {
+        clearCustomStyleAttribute(node);
+        tr = tr.setNodeMarkup(pos, undefined, node.attrs);
+      }
+    });
+  }
   if (!tasks.length) {
-  // [FS] IRAD-1053 2020-10-21
-  // Clear Style not removes the text align styles
+    // [FS] IRAD-1053 2020-10-21
+    // Clear Style not removes the text align styles
     textAlignNode.forEach(eachnode => {
       const { node } = eachnode;
-      node.attrs.styleName = 'None';
+      // node.attrs.styleName = 'None';
+      clearCustomStyleAttribute(node);
     });
     // to remove both text align format and line spacing
     tr = removeTextAlignAndLineSpacing(tr, schema);
@@ -103,7 +113,7 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema, state: Edit
     const { node, mark, pos } = job;
     tr = tr.removeMark(pos, pos + node.nodeSize, mark.type);
     // reset the custom style name to NONE after remove the styles
-    node.attrs.styleName = 'None';
+    clearCustomStyleAttribute(node);
   });
 
   // to remove both text align format and line spacing
@@ -117,4 +127,18 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema, state: Edit
     }
   });
   return tr;
+}
+
+function clearCustomStyleAttribute(node) {
+  if (node.attrs) {
+    if (node.attrs.styleName) {
+      node.attrs.styleName = 'None';
+    }
+    if (node.attrs.customStyle) {
+      node.attrs.customStyle = null;
+    }
+    if (node.attrs.styleLevel) {
+      node.attrs.styleLevel = null;
+    }
+  }
 }

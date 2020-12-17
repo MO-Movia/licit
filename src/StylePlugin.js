@@ -109,8 +109,8 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
             const newattrs = Object.assign({}, node.attrs);
             const nextNodePos = pos + node.nodeSize;
             const nextNode = nextState.doc.nodeAt(nextNodePos);
-            if (nextNode && nextNode.type.name === 'paragraph' && node.content.size > 0 &&
-                nextNode.content.size === 0) {
+            if (nextNode && nextNode.type.name === 'paragraph')
+                {
 
 
                 tr = executeCommands(nextState, tr, node.attrs[ATTR_STYLE_NAME], nextState.selection.$from.before(1), nextState.selection.$to.after(1));
@@ -124,20 +124,25 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
                         });
                     }
                 });
+                if (node.content.size === 0) {
+                    marks.forEach(mark => {
+                        tr = tr.addStoredMark(mark);
+                    });
+                }
                 modified = true;
             }
             else {
-                if(nextNode.content.size === 0){
-                const marks = getMarkByStyleName(node.attrs[ATTR_STYLE_NAME], nextState.schema);
+                // if(nextNode.content.size === 0){
+                // const marks = getMarkByStyleName(node.attrs[ATTR_STYLE_NAME], nextState.schema);
 
-                marks.forEach(mark => {
-                    tr = tr.removeStoredMark(mark);
-                });
-                modified = true;
+                // marks.forEach(mark => {
+                //     tr = tr.removeStoredMark(mark);
+                // });
+                // modified = true;
+            // }
+
             }
 
-            }
-            
         }
     });
 
