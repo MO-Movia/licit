@@ -81,8 +81,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             key={label}
             label={label}
             onClick={this._onUIEnter}
-            onMouseEnter={this._onUIEnter}
             onCommand={onCommand}
+            onMouseEnter={this._onUIEnter}
             value={command}
           ></CustomStyleItem>
         );
@@ -102,8 +102,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             key={label}
             label={command._customStyleName}
             onClick={this._onUIEnter}
-            onMouseEnter={this._onUIEnter}
             onCommand={onCommand}
+            onMouseEnter={this._onUIEnter}
             value={command}
           ></CustomStyleItem>
         );
@@ -142,7 +142,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
       onCommand && onCommand();
     }
   };
-  
+
   //shows the alignment and line spacing option
   showSubMenu(command: UICommand, event: SyntheticEvent<*>) {
     const anchor = event ? event.currentTarget : null;

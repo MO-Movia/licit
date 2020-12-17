@@ -9,7 +9,7 @@ import {
 } from 'prosemirror-model';
 import {
     applyLatestStyle,
-    executeCommands,
+    // executeCommands,
     updateOverrideFlag,
     getMarkByStyleName,
     ATTR_OVERRIDDEN,
@@ -37,7 +37,7 @@ const ATTR_STYLE_NAME = 'styleName';
 
 const isNodeHasAttribute = (node, attrName) => {
     // return (node.attrs && 'None' !== node.attrs[attrName]);
-    return (node.attrs);
+    return (node.attrs && node.attrs[attrName]);
 };
 const requiredAddAttr = (node) => {
     return 'paragraph' === node.type.name && isNodeHasAttribute(node, ATTR_STYLE_NAME);
@@ -99,55 +99,51 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
     if (!tr) {
         tr = nextState.tr;
     }
-    nextState.doc.descendants((node, pos) => {
-        let required = false;
-        if (requiredAddAttr(node)) {
-            if (isNewParagraph(prevState, nextState, pos, view)) {
+    if (isNewParagraph(prevState, nextState, view)) {
+
+        nextState.doc.descendants((node, pos) => {
+            let required = false;
+            if (requiredAddAttr(node)) {
+                // if (isNewParagraph(prevState, nextState, pos, view)) {
+                //     required = true;
+                // }
                 required = true;
             }
-        }
-        if (required) {
-            const newattrs = Object.assign({}, node.attrs);
-            const nextNodePos = pos + node.nodeSize;
-            const nextNode = nextState.doc.nodeAt(nextNodePos);
-            if (nextNode && nextNode.type.name === 'paragraph' && nextNode.attrs.styleName ==='None')
-                {
-                tr = executeCommands(nextState, tr, node.attrs[ATTR_STYLE_NAME], nextState.selection.$from.before(1), nextState.selection.$to.after(1));
-                tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
-                const marks = getMarkByStyleName(node.attrs[ATTR_STYLE_NAME], nextState.schema);
-                node.descendants((child, pos) => {
-                    if (child.type.name === 'text') {
+            if (required) {
+                const newattrs = Object.assign({}, node.attrs);
+                const nextNodePos = pos + node.nodeSize;
+                const nextNode = nextState.doc.nodeAt(nextNodePos);
+                let IsActiveNode = false;
+                if (nextNodePos > prevState.selection.from && nextNodePos < nextState.selection.from) {
+                    IsActiveNode = true;
+                }
+                if (nextNode && IsActiveNode && nextNode.type.name === 'paragraph' && nextNode.attrs.styleName === 'None') {
+                    // tr = executeCommands(nextState, tr, node.attrs[ATTR_STYLE_NAME], nextState.selection.$from.before(1), nextState.selection.$to.after(1));
+                    tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
+                    const marks = getMarkByStyleName(node.attrs[ATTR_STYLE_NAME], nextState.schema);
+                    node.descendants((child, pos) => {
+                        if (child.type.name === 'text') {
+                            marks.forEach(mark => {
+                                tr = tr.addStoredMark(mark);
+                            });
+                        }
+                    });
+                    if (node.content.size === 0) {
                         marks.forEach(mark => {
                             tr = tr.addStoredMark(mark);
                         });
                     }
-                });
-                if (node.content.size === 0) {
-                    marks.forEach(mark => {
-                        tr = tr.addStoredMark(mark);
-                    });
+                    modified = true;
                 }
-                modified = true;
-            }
-            else {
-                // if(nextNode.content.size === 0){
-                // const marks = getMarkByStyleName(node.attrs[ATTR_STYLE_NAME], nextState.schema);
-
-                // marks.forEach(mark => {
-                //     tr = tr.removeStoredMark(mark);
-                // });
-                // modified = true;
-            // }
 
             }
-
-        }
-    });
+        });
+    }
 
     return modified ? tr : null;
 }
 
-function isNewParagraph(prevState, nextState, pos, view) {
+function isNewParagraph(prevState, nextState, view) {
     let bOk = false;
     if (ENTERKEYCODE === view.lastKeyCode
         && PARA_POSITION_DIFF === (nextState.selection.from - prevState.selection.from)
