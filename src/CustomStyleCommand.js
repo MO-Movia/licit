@@ -450,7 +450,7 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
 
             case UNDERLINE:
                 markType = schema.marks[MARK_UNDERLINE];
-        
+
                 marks.push(markType.create(attrs));
                 break;
 

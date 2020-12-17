@@ -288,7 +288,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
       },
       {
         position: atViewportCenter,
-        autoDismiss: true,
+        autoDismiss: false,
         IsChildDialog: false,
         onClose: (val) => {
           if (this._stylePopup) {

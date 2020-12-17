@@ -29,8 +29,9 @@
     color: #5a615e;
     font-family: 'Arial', sans-serif;
     font-size: 14px;
-    height: 105px;
-    min-width: 125px;
+    height: 95px;
+    min-width: 136px;
+    line-height: 0.75;
 }
 
 .dropdown-content a {

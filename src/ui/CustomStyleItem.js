@@ -29,12 +29,12 @@ class CustomStyleItem extends React.PureComponent<any, any> {
 
     render(): React.Element<any> {
 
-        const { icon, command, label, onMouseDown, hasText, ...pointerProps } = this.props;
+        const { icon, label, hasText, ...pointerProps } = this.props;
         let text = '';
         let customStyle;
         text = this.sampleText();
         const style = getCustomStyleByName(label);
-        let className = 'czi-custom-menu-item';
+        const className = 'czi-custom-menu-item';
         if (style) {
             customStyle = getCustomStyle(style);
         }
@@ -66,7 +66,7 @@ class CustomStyleItem extends React.PureComponent<any, any> {
             </div>
         );
     }
-    
+
     // temp method to clear sample text for new and clear command menu item
     sampleText(): string {
 
