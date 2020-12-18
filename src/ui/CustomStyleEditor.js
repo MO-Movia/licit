@@ -87,9 +87,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         this.state = {
             ...props
         };
-        // set default values for text alignment and boldNumbering checkbox.
+    // set default values for text alignment and boldNumbering checkbox.
+    if(!this.state.styles.align){
         this.state.styles.align = 'left';
-        this.state.styles.boldNumbering = true;
+    }        
+        this.state.styles.boldNumbering=true;
     };
 
     componentWillUnmount(): void {
