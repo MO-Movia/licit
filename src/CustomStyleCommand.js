@@ -120,7 +120,7 @@ export function getCustomStyleCommands(customStyle: any) {
                 // [FS] IRAD-1043 2020-12-15
                 // Issue fix: user unselect Underline from a existing custom style, it didn't reflect in editor
                 if (customStyle[property])
-                commands.push(new MarkToggleCommand('underline'));
+                    commands.push(new MarkToggleCommand('underline'));
                 break;
 
             case ALIGN:
@@ -424,27 +424,27 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
 
             case COLOR:
                 markType = schema.marks[MARK_TEXT_COLOR];
-                 attrs = style[property] ? { color: style[property] } : null;
+                attrs = style[property] ? { color: style[property] } : null;
                 marks.push(markType.create(attrs));
                 break;
 
             case FONTSIZE:
                 markType = schema.marks[MARK_FONT_SIZE];
-                 attrs = style[property] ? { pt: style[property] } : null;
+                attrs = style[property] ? { pt: style[property] } : null;
                 marks.push(markType.create(attrs));
 
                 break;
 
             case FONTNAME:
                 markType = schema.marks[MARK_FONT_TYPE];
-                 attrs = style[property] ? { name: style[property] } : null;
+                attrs = style[property] ? { name: style[property] } : null;
                 marks.push(markType.create(attrs));
                 break;
 
 
             case TEXTHL:
                 markType = schema.marks[MARK_TEXT_HIGHLIGHT];
-                 attrs = style[property] ? { highlightColor: style[property] } : null;
+                attrs = style[property] ? { highlightColor: style[property] } : null;
                 marks.push(markType.create(attrs));
                 break;
 
@@ -513,8 +513,12 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
 
     if (style && style[NUMBERING]) {
         newattrs['styleLevel'] = Number(style.level);
+        let isBold = false;
+        if (style[STRONG] || style['boldNumbering']) {
+            isBold = true;
+        }
         newattrs['customStyle'] = {
-            strong: style[STRONG],
+            strong: isBold,
             em: style[EM],
             color: style[COLOR],
             fontSize: style[FONTSIZE],
@@ -531,7 +535,7 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
 
     // const selection = TextSelection.create(tr.doc, endPos, endPos - 1);
     // tr = tr.setSelection(selection);
-    const storedmarks =  getMarkByStyleName(styleName, state.schema);;
+    const storedmarks = getMarkByStyleName(styleName, state.schema);;
     tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
     tr.storedMarks = storedmarks;
     return tr;

@@ -377,6 +377,10 @@ label {
 .indentdiv{
     display: inline-flex;
 }
+.markbutton-container{
+    margin-left: 5px !important;
+    margin-right: 5px !important;
+}
 .editor-markbuttons{
     margin-right: 0 !important;
     width:25px;

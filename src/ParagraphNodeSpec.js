@@ -127,7 +127,7 @@ function toDOM(node: Node): Array<any> {
     attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
 
     if (customStyle) {
-      if (customStyle.strong) {
+      if (customStyle.strong || customStyle.boldNumbering) {
         style += 'font-weight: bold;';
       }
       if (customStyle.em) {
