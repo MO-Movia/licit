@@ -32,12 +32,7 @@ import handleEditorDrop from './handleEditorDrop';
 import handleEditorKeyDown from './handleEditorKeyDown';
 import handleEditorPaste from './handleEditorPaste';
 import uuid from './uuid';
-import createPopUp from './createPopUp';
-import PasteMenu from './PasteMenu';
-import {pasteAsPlainText} from './handleEditorPaste';
-
 import './czi-editor.css';
-
 import type { EditorRuntime } from '../Types';
 
 export type EditorProps = {

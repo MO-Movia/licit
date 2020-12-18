@@ -257,6 +257,7 @@ label {
     text-align: left;
     transition: 0.4s;
     width: 100%;
+    outline: none !important;
 }
 
 .accordion:after {
@@ -375,4 +376,9 @@ label {
 
 .indentdiv{
     display: inline-flex;
+}
+.editor-markbuttons{
+    margin-right: 0 !important;
+    width:25px;
+    text-align:center !important
 }

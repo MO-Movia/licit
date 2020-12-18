@@ -140,5 +140,7 @@ function clearCustomStyleAttribute(node) {
     if (node.attrs.styleLevel) {
       node.attrs.styleLevel = null;
     }
+    //ToDo: Need to handle indent override
+    node.attrs.indent = null;
   }
 }

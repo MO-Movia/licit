@@ -21,9 +21,9 @@ export function getCustomStyles() {
     const styleNames=  window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
     // to sort stylenames alphabetically.
     styleNames.sort(function (a, b) {
-        var styleA = a.stylename.toUpperCase();
-        var styleB = b.stylename.toUpperCase();
-      
+        const styleA = a.stylename.toUpperCase();
+        const styleB = b.stylename.toUpperCase();
+
         return styleA.localeCompare(styleB);
       });
     return styleNames;

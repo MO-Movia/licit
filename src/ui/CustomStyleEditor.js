@@ -87,9 +87,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         this.state = {
             ...props
         };
-	// set default values for text alignment and boldNumbering checkbox.
+        // set default values for text alignment and boldNumbering checkbox.
         this.state.styles.align = 'left';
-        this.state.styles.boldNumbering=true;
+        this.state.styles.boldNumbering = true;
     };
 
     componentWillUnmount(): void {
@@ -97,7 +97,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
 
     // To set the selected style values
-    onStyleClick(style: string, event:any) {
+    onStyleClick(style: string, event: any) {
 
         switch (style) {
             case 'strong':
@@ -218,15 +218,15 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         }
         // [FS] IRAD-1111 2020-12-10
         // Issue fix : Indent is not applied in the sample text.
-        if(!this.state.styles.islevelbased){
+        if (!this.state.styles.islevelbased) {
             if (this.state.styles.indent) {
                 style.marginLeft = `${this.state.styles.indent * 2}px`;
             }
         }
-        else{
+        else {
             const levelValue = document && document.getElementById('levelValue');
-            if(levelValue && levelValue.value) {
-                style.marginLeft =`${levelValue.value * 2}px`;
+            if (levelValue && levelValue.value) {
+                style.marginLeft = `${levelValue.value * 2}px`;
             }
         }
 
@@ -240,19 +240,19 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     // [FS] IRAD-1111 2020-12-10
     // get the numbering corresponding to the level
     getNumberingLevel(level: string) {
-        let levelStyle='';
+        let levelStyle = '';
         for (let i = 0; i < level; i++) {
-            levelStyle= levelStyle+ '1.';
+            levelStyle = levelStyle + '1.';
         }
-        return levelStyle+' ';
+        return levelStyle + ' ';
     }
 
     // handles font name change
-    onFontNameChange(e:any) {
+    onFontNameChange(e: any) {
         this.setState({ styles: { ...this.state.styles, fontname: e.target.value } });
     }
     // handles font name change
-    onIndentRadioChanged(e:any) {
+    onIndentRadioChanged(e: any) {
         if ('0' == e.target.value) {
             this.setState({ styles: { ...this.state.styles, islevelbased: true } });
         }
@@ -264,7 +264,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
 
     // handles font size change
-    onFontSizeChange(e:any) {
+    onFontSizeChange(e: any) {
         this.setState({ styles: { ...this.state.styles, fontsize: e.target.value } });
 
     }
@@ -323,9 +323,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     handleNumbering(val: any) {
         this.setState({ styles: { ...this.state.styles, hasnumbering: val.target.checked } });
     }
-    
+
     // handles the boldNumbering checkbox actions
-    handleBoldNumbering(val: any){
+    handleBoldNumbering(val: any) {
         this.setState({ styles: { ...this.state.styles, boldNumbering: val.target.checked } });
     }
 
@@ -353,7 +353,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
         // const ac = document.getElementById('accordion1');
         // ac.classList.toggle('accactive');
-        
+
     }
 
     render(): React.Element<any> {
@@ -400,10 +400,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         <div style={{ height: '329px', overflow: 'hidden auto', overflowX: 'hidden', border: '1px solid' }}>
                             <button className="accordion accactive" id="accordion1">
                                 <div className="indentdiv">
-                                <span className="iconspan czi-icon text_format" style={{ marginTop: '1px' }}>text_format</span>
-                                <label style={{ marginLeft: '-10px', marginTop: '2px', color: '#444' }}>Font</label>
-                                </div> 
-                                </button>
+                                    <span className="iconspan czi-icon text_format" style={{ marginTop: '1px' }}>text_format</span>
+                                    <label style={{ marginLeft: '-10px', marginTop: '2px', color: '#444' }}>Font</label>
+                                </div>
+                            </button>
                             <div className="panel">
                                 <div className="sectiondiv">
                                     <select className="fonttype fontstyle" onChange={this.onFontNameChange.bind(this)} value={this.state.styles.fontname}>
@@ -422,29 +422,29 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     </select>
                                 </div>
                                 <div className="font-buttons">
-                                    <span aria-label=" Bold" className="czi-tooltip-surface" data-tooltip=" Bold" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strong')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strong ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
-                                        <span className="iconspan czi-icon format_bold">format_bold</span></span></span>
-                                    <span aria-label=" Italic" className="czi-tooltip-surface fontstyle" data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'em')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
-                                        <span className="iconspan czi-icon format_italic">format_italic</span><span>  </span></span></span>
-                                    <span aria-label=" Underline" className="czi-tooltip-surface fontstyle" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
-                                        <span className="iconspan czi-icon  format_underline">format_underline</span><span>  </span></span></span>
-                                    <span aria-label=" Text color" className="czi-tooltip-surface fontstyle" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
-                                        <span className="iconspan czi-icon format_color_text" style={{ color: this.state.styles.color !== 'rgba(0,0,0,0)' ? this.state.styles.color : '#666' }}>format_color_text</span><span>  </span></span></span>
-                                    <span aria-label=" Highlight color" className="czi-tooltip-surface fontstyle" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
-                                        <span className=" iconspan czi-icon border_color" style={{ color: this.state.styles.texthighlight !== 'rgba(0,0,0,0)' ? this.state.styles.texthighlight : '#666' }}>border_color</span><span>  </span></span></span>
+                                    <span aria-label=" Bold" className="czi-tooltip-surface" data-tooltip=" Bold" id="86ba3aa0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'strong')} role="tooltip" style={{ marginLeft: '5px', marginRight: '5px' }}><span aria-disabled="false" aria-pressed="false" className={this.state.styles.strong ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
+                                        <span className="iconspan czi-icon format_bold editor-markbuttons">format_bold</span></span></span>
+                                    <span aria-label=" Italic" className="czi-tooltip-surface fontstyle" data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'em')} role="tooltip" style={{ marginLeft: '5px', marginRight: '5px' }}><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
+                                        <span className="iconspan czi-icon format_italic editor-markbuttons">format_italic</span><span>  </span></span></span>
+                                    <span aria-label=" Underline" className="czi-tooltip-surface fontstyle" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip" style={{ marginLeft: '5px', marginRight: '5px' }}><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
+                                        <span  className="iconspan czi-icon  format_underline editor-markbuttons">format_underline</span><span>  </span></span></span>
+                                    <span aria-label=" Text color" className="czi-tooltip-surface fontstyle" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip" style={{ marginLeft: '5px', marginRight: '5px' }}><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
+                                        <span className="iconspan czi-icon format_color_text editor-markbuttons" style={{ color: this.state.styles.color !== 'rgba(0,0,0,0)' ? this.state.styles.color : '#666' }}>format_color_text</span><span>  </span></span></span>
+                                    <span aria-label=" Highlight color" className="czi-tooltip-surface fontstyle" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip" style={{ marginLeft: '5px', marginRight: '5px' }}><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
+                                        <span  className=" iconspan czi-icon border_color editor-markbuttons" style={{ color: this.state.styles.texthighlight !== 'rgba(0,0,0,0)' ? this.state.styles.texthighlight : '#666' }}>border_color</span><span>  </span></span></span>
 
                                 </div>
 
                             </div>
 
-                            <button className="accordion accactive"> 
-                             
-                            <div className="indentdiv">
-                            <span className="iconspan czi-icon format_textdirection_l_to_r" style={{ marginTop: '1px' }}>format_textdirection_l_to_r</span>
-                                <label style={{ marginLeft: '-10px', marginTop: '2px', color: '#444' }}>Paragraph</label>
-                            </div> 
+                            <button className="accordion accactive">
 
-                            
+                                <div className="indentdiv">
+                                    <span className="iconspan czi-icon format_textdirection_l_to_r" style={{ marginTop: '1px' }}>format_textdirection_l_to_r</span>
+                                    <label style={{ marginLeft: '-10px', marginTop: '2px', color: '#444' }}>Paragraph</label>
+                                </div>
+
+
                             </button>
                             <div className="panel1">
                                 <p className="formp">Alignment:</p>
@@ -487,12 +487,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                             </div>
 
                             <button className="accordion accactive">
-                                
-                             <div className="indentdiv">
-                             <span className="iconspan czi-icon account_tree">account_tree</span>
-                                <label style={{ marginLeft: '-7px', marginTop: '2px', color: '#444' }}>Hierarchy</label>
-                             </div> 
-                            
+
+                                <div className="indentdiv">
+                                    <span className="iconspan czi-icon account_tree">account_tree</span>
+                                    <label style={{ marginLeft: '-7px', marginTop: '2px', color: '#444' }}>Hierarchy</label>
+                                </div>
+
                             </button>
                             <div className="panel2 formp">
                                 <p className="formp">Level:</p>
@@ -512,13 +512,13 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                                 onChange={this.handleNumbering.bind(this)} type="checkbox" />
                                     Numbering(1.1)
                                     </label>
-                                    <label >
-                                            <input checked={this.state.styles.boldNumbering} className="chkboldnumbering"  
+                                        <label >
+                                            <input checked={this.state.styles.boldNumbering} className="chkboldnumbering"
                                                 onChange={this.handleBoldNumbering.bind(this)} type="checkbox" />
                                     Bold numbering
                                     </label>
-                                    </span>    
-                                    
+                                    </span>
+
                                 </div>
                                 <p className="formp">Indenting:</p>
                                 <div className="hierarchydiv">
