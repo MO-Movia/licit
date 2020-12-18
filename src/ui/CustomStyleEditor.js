@@ -87,8 +87,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         this.state = {
             ...props
         };
+	// set default values for text alignment and boldNumbering checkbox.
+        this.state.styles.align = 'left';
+        this.state.styles.boldNumbering=true;
     };
-
 
     componentWillUnmount(): void {
         this._unmounted = true;
@@ -321,6 +323,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     handleNumbering(val: any) {
         this.setState({ styles: { ...this.state.styles, hasnumbering: val.target.checked } });
     }
+    
+    // handles the boldNumbering checkbox actions
+    handleBoldNumbering(val: any){
+        this.setState({ styles: { ...this.state.styles, boldNumbering: val.target.checked } });
+    }
+
     componentDidMount() {
         const acc = document.getElementsByClassName('accordion');
         let i;
@@ -338,9 +346,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         }
         const mp = document.getElementsByClassName('panel')[0];
         mp.style.maxHeight = mp.scrollHeight + 'px';
+        const mp1 = document.getElementsByClassName('panel1')[0];
+        mp1.style.maxHeight = mp1.scrollHeight + 'px';
+        const mp2 = document.getElementsByClassName('panel2')[0];
+        mp2.style.maxHeight = mp2.scrollHeight + 'px';
 
-        const ac = document.getElementById('accordion1');
-        ac.classList.toggle('accactive');
+        // const ac = document.getElementById('accordion1');
+        // ac.classList.toggle('accactive');
+        
     }
 
     render(): React.Element<any> {
@@ -385,7 +398,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     <div className="sectiondiv editorsection">
                         <p className="formp">Style Attributes:</p>
                         <div style={{ height: '329px', overflow: 'hidden auto', overflowX: 'hidden', border: '1px solid' }}>
-                            <button className="accordion" id="accordion1"><span className="iconspan czi-icon text_format">text_format</span> Font</button>
+                            <button className="accordion accactive" id="accordion1">
+                                <div className="indentdiv">
+                                <span className="iconspan czi-icon text_format" style={{ marginTop: '1px' }}>text_format</span>
+                                <label style={{ marginLeft: '-10px', marginTop: '2px', color: '#444' }}>Font</label>
+                                </div> 
+                                </button>
                             <div className="panel">
                                 <div className="sectiondiv">
                                     <select className="fonttype fontstyle" onChange={this.onFontNameChange.bind(this)} value={this.state.styles.fontname}>
@@ -419,7 +437,15 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
                             </div>
 
-                            <button className="accordion"> <span className="iconspan czi-icon format_textdirection_l_to_r">format_textdirection_l_to_r</span> PARAGRAPH</button>
+                            <button className="accordion accactive"> 
+                             
+                            <div className="indentdiv">
+                            <span className="iconspan czi-icon format_textdirection_l_to_r" style={{ marginTop: '1px' }}>format_textdirection_l_to_r</span>
+                                <label style={{ marginLeft: '-10px', marginTop: '2px', color: '#444' }}>Paragraph</label>
+                            </div> 
+
+                            
+                            </button>
                             <div className="panel1">
                                 <p className="formp">Alignment:</p>
                                 <div className="czi-custom-buttons">
@@ -460,11 +486,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
                             </div>
 
-                            <button className="accordion"><span className="iconspan czi-icon account_tree">account_tree</span>HIERARCHY</button>
+                            <button className="accordion accactive">
+                                
+                             <div className="indentdiv">
+                             <span className="iconspan czi-icon account_tree">account_tree</span>
+                                <label style={{ marginLeft: '-7px', marginTop: '2px', color: '#444' }}>Hierarchy</label>
+                             </div> 
+                            
+                            </button>
                             <div className="panel2 formp">
                                 <p className="formp">Level:</p>
                                 <div className="hierarchydiv">
-                                    <span>
+                                    <span style={{ float: 'left', marginTop: '8px' }}>
                                         <select className="leveltype fontstyle" id="levelValue" onChange={this.onLevelChange.bind(this)} value={this.state.styles.level}>
                                             {LEVEL_VALUES.map((value) => (
                                                 <option key={value} value={value}>
@@ -474,12 +507,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                         </select>
                                     </span>
                                     <span>
-                                        <label>
+                                        <label >
                                             <input checked={this.state.styles.hasnumbering} className="chknumbering" disabled={this.state.styles.level ? false : true}
                                                 onChange={this.handleNumbering.bind(this)} type="checkbox" />
                                     Numbering(1.1)
                                     </label>
-                                    </span>
+                                    <label >
+                                            <input checked={this.state.styles.boldNumbering} className="chkboldnumbering"  
+                                                onChange={this.handleBoldNumbering.bind(this)} type="checkbox" />
+                                    Bold numbering
+                                    </label>
+                                    </span>    
+                                    
                                 </div>
                                 <p className="formp">Indenting:</p>
                                 <div className="hierarchydiv">

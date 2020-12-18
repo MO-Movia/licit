@@ -253,6 +253,7 @@ label {
     color: #444;
     cursor: pointer;
     font-size: 14px;
+    height: 25px;
     text-align: left;
     transition: 0.4s;
     width: 100%;
@@ -285,7 +286,13 @@ label {
 }
 
 .chknumbering {
-    margin-left: 12px;
+    margin-left: 11px;
+    margin-top: 2px;
+    padding-top: 2px;
+}
+
+.chkboldnumbering {
+    margin-left: 11px;
     margin-top: 2px;
     padding-top: 2px;
 }
@@ -326,12 +333,11 @@ label {
     outline: none;
 }
 .activealignbuttons {
-    background-color: #f0f0f0;
-    border-color: #338eec;
+    border-color: #338eec!important;
     outline: none;
     padding: 0;
     text-align: center;
-    width: 70px;
+    width: 50px;
 }
 .panel.hr {
     margin-bottom: 0;

@@ -99,44 +99,8 @@ preLoadFonts();
 const handleDOMEvents = {
   drop: handleEditorDrop,
   keydown: handleEditorKeyDown,
+  paste: handleEditorPaste,
 };
-
-// [FS] IRAD-1076 2020-10-19
-// overrides the behavior of pasting.
-function handlePaste(view, event, slice): boolean{
-  event.preventDefault(true);
-popupPasteMenu(view, event,slice);
-return true;
-}
-
-// [FS] IRAD-1076 2020-10-20
-// show a pop up menu with options while pasting.
-function popupPasteMenu(view, event,slice){
-  let  _popUp = null;
-  _popUp = createPopUp(
-    PasteMenu,
-    {view},
-    {
-      modal: true,
-      autoDismiss: true,
-      onClose: val => {
-        if (_popUp) {
-          _popUp = null;
-          // [FS] IRAD-1076 2020-11-23
-          // to avoid paste when click outside the popup.
-          if(undefined !=val){
-             if(val==='keepTextOnly'){
-            pasteAsPlainText(slice);
-        }
-         handleEditorPaste(view, event);
-         const tr = view.state.tr.replaceSelection(slice);
-         view.dispatch(tr);
-          }
-        }
-      },
-    }
-  );
-}
 
 function bindNodeView(NodeView: CustomNodeView): Function {
   return (node, view, getPos, decorations) => {
@@ -206,7 +170,6 @@ class Editor extends React.PureComponent<any, any> {
         state: editorState || EDITOR_EMPTY_STATE,
         transformPastedHTML,
         handleDOMEvents,
-        handlePaste,
       }));
 
       view.runtime = runtime;

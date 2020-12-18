@@ -18,7 +18,15 @@ export function saveStyle(style: any, styleName: string) {
 
 // get all saved styles
 export function getCustomStyles() {
-    return window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
+    const styleNames=  window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
+    // to sort stylenames alphabetically.
+    styleNames.sort(function (a, b) {
+        var styleA = a.stylename.toUpperCase();
+        var styleB = b.stylename.toUpperCase();
+      
+        return styleA.localeCompare(styleB);
+      });
+    return styleNames;
 }
 
 // get a style by styleName
