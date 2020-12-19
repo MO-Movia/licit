@@ -71,7 +71,7 @@ export default class StylePlugin extends Plugin {
                 if (!this.loaded) {
                     this.loaded = true;
                     // do this only once when the document is loaded.
-                    tr = applyStyles(nextState, tr);
+                    // tr = applyStyles(nextState, tr);
                 } else if (isDocChanged(transactions)) {
                     if (!this.firstTime) {
                         // when user updates
