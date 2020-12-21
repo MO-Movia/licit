@@ -34,10 +34,10 @@ const ParagraphNodeSpec: NodeSpec = {
     // TODO: Add UI to let user edit / clear padding.
     paddingTop: { default: null },
     styleName: { default: 'None' },
-    styleLevel:  { default: null },
-    customStyle:  { default: null },
-    paragraphSpacingAfter: { default:null },
-    paragraphSpacingBefore: { default:null },
+    styleLevel: { default: null },
+    customStyle: { default: null },
+    paragraphSpacingAfter: { default: null },
+    paragraphSpacingBefore: { default: null },
   },
   content: 'inline*',
   group: 'block',
@@ -67,7 +67,7 @@ function getAttrs(dom: HTMLElement): Object {
   indent = indent || MIN_INDENT_LEVEL;
 
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
-  const spacingAfterParagraph = marginBottom? marginBottom:null;
+  const spacingAfterParagraph = marginBottom ? marginBottom : null;
 
   const id = dom.getAttribute('id') || '';
   const styleName = dom.getAttribute('styleName') || null;
@@ -108,10 +108,10 @@ function toDOM(node: Node): Array<any> {
   }
   // [FS] IRAD-1100 2020-11-04
   // Add in leading and trailing spacing (before and after a paragraph)
-  if(paragraphSpacingAfter){
+  if (paragraphSpacingAfter) {
     style += `margin-bottom: ${paragraphSpacingAfter}pt !important;`;
   }
-  if(paragraphSpacingBefore){
+  if (paragraphSpacingBefore) {
     style += `margin-top: ${paragraphSpacingBefore}pt !important;`;
   }
 
@@ -127,9 +127,13 @@ function toDOM(node: Node): Array<any> {
     attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
 
     if (customStyle) {
-      if (customStyle.strong || customStyle.boldNumbering) {
+      if (customStyle.strong) {
         style += 'font-weight: bold;';
       }
+      if (customStyle.boldNumbering) {
+        style += ' --czi-counter-bold: bold;';
+      }
+
       if (customStyle.em) {
         style += 'font-style: italic;';
       }

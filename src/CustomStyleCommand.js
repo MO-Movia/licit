@@ -513,18 +513,15 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
 
     if (style && style[NUMBERING]) {
         newattrs['styleLevel'] = Number(style.level);
-        let isBold = false;
-        if (style[STRONG] || style['boldNumbering']) {
-            isBold = true;
-        }
         newattrs['customStyle'] = {
-            strong: isBold,
+            strong: style[STRONG],
             em: style[EM],
             color: style[COLOR],
             fontSize: style[FONTSIZE],
             fontName: style[FONTNAME],
             strike: style[STRIKE],
-            underline: style[UNDERLINE]
+            underline: style[UNDERLINE],
+            boldNumbering:style['boldNumbering']
         };
     } else {
         newattrs['styleLevel'] = null;
