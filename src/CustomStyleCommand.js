@@ -542,41 +542,67 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
 }
 function createEmptyElement(state: EditorState, tr: Transform,
     node: Node, startPos: Number, endPos: Number, attrs) {
-    let found = false;
+
     const currentLevel = node.attrs.styleLevel;
-    let pos = 2;
-    let realPos = 0;
+
     let previousLevel = null;
-    // state.doc.nodesBetween(startPos, 0, (node, pos) => {
-    //         if (isAllowedNode(node)) {
-    //           //  tr = tr.setNodeMarkup(startPos, undefined, attribute);
-    //         }
-    //     });
+    const pArray = [];
+
     if (startPos !== 0) {
-        do {
-            // let pos =  node.nodeSize;
-            const p = state.doc.nodeAt(startPos - pos);
-            if (p && p.type.name === 'paragraph') {
 
-                previousLevel = p.attrs.styleLevel;
-                if (previousLevel) {
-                    found = true;
-                }
-                if (startPos - pos <= 0) {
-                    found = true;
-                }
-                realPos = pos;
-                pos = pos + 2;
-            }
-            else {
-                pos = realPos;
-                pos = pos + (p.nodeSize + 2);
-                // parent = findParentNodeOfType(p.type);
-                //  findParentNodeOfTypeClosestToPos()
-            }
+        state.doc.descendants((node, pos) => {
+            if (isAllowedNode(node)) {
 
-        }
-        while (!found);
+                if (pos >= startPos) {
+                    return false;
+                }
+                pArray.push({ pos, node });
+            }
+            return true;
+        });
+        pArray.reverse();
+        console.log(pArray);
+        pArray.every(item => {
+            if (null !== item.node.attrs.styleLevel) {
+                previousLevel = item.node.attrs.styleLevel;
+                return false;
+            }
+            return true;
+        });
+
+        // do {
+        //     // let pos =  node.nodeSize;
+        //     const p = state.doc.nodeAt(startPos - pos);
+        //     if (p && p.type.name === 'paragraph') {
+
+        //         previousLevel = p.attrs.styleLevel;
+        //         if (previousLevel) {
+        //             found = true;
+        //         }
+        //         if (startPos - pos <= 0) {
+        //             found = true;
+        //         }
+        //         realPos = pos;
+        //         pos = pos + 2;
+        //     }
+        //     else {
+        //         pos = realPos;
+        //         console.log(p.nodeSize);
+        //         const size = p.nodeSize;
+        //         // if (undefined !== p.nodeSize) {
+        //         pos = pos + size + 2;
+        //         console.log(p.nodeSize);
+        //         // }
+        //         // else {
+
+        //         //     pos = pos + 2;
+        //         // }
+        //         // parent = findParentNodeOfType(p.type);
+        //         //  findParentNodeOfTypeClosestToPos()
+        //     }
+
+        // }
+        // while (!found);
 
         if (null === previousLevel && null == currentLevel) {
             if (attrs.styleLevel !== 1) {
