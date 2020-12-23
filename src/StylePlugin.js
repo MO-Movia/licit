@@ -8,7 +8,7 @@ import {
     Node
 } from 'prosemirror-model';
 import {
-    applyLatestStyle,
+    // applyLatestStyle,
     // executeCommands,
     updateOverrideFlag,
     getMarkByStyleName,
@@ -179,20 +179,20 @@ function haveEligibleChildren(node, contentLen) {
     return (node instanceof Node) && (0 < contentLen) && (node.type.name === 'paragraph') && (NONE !== node.attrs.styleName);
 }
 
-function applyStyles(state, tr) {
-    if (!tr) {
-        tr = state.tr;
-    }
+// function applyStyles(state, tr) {
+//     if (!tr) {
+//         tr = state.tr;
+//     }
 
-    tr.doc.descendants(function (child, pos) {
-        const contentLen = child.content.size;
-        if (haveEligibleChildren(child, contentLen)) {
-            tr = applyLatestStyle(child.attrs.styleName, state, tr, child, pos, pos + contentLen + 1);
-        }
-    });
+//     tr.doc.descendants(function (child, pos) {
+//         const contentLen = child.content.size;
+//         if (haveEligibleChildren(child, contentLen)) {
+//             tr = applyLatestStyle(child.attrs.styleName, state, tr, child, pos, pos + contentLen + 1);
+//         }
+//     });
 
-    return tr;
-}
+//     return tr;
+// }
 
 function createMarkAttributes(mark, markName, existingAttr) {
     if (mark) {

@@ -42,7 +42,7 @@ class CustomMenuButton extends React.PureComponent<any, any> {
       className,
       label,
       icon,
-      title,
+
     } = this.props;
     // const enabled =
     //   !disabled &&

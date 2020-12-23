@@ -218,16 +218,16 @@ class Licit extends React.Component<any, any> {
     const { transaction } = data;
     let isEmpty = false;
      /*
-    ** ProseMirror Debug Tool's Snapshot creates a new state and sets that to editor view's state. 
-    ** This results in the connector's state as an orphan and thus transaction mismatch error. 
+    ** ProseMirror Debug Tool's Snapshot creates a new state and sets that to editor view's state.
+    ** This results in the connector's state as an orphan and thus transaction mismatch error.
     ** To resolve check and update the connector's state to keep in sync.
     */
-    let isSameState = (this._connector._editorState == this._editorView.state);
-    
+    const isSameState = (this._connector._editorState == this._editorView.state);
+
     if(!isSameState) {
     this._connector._editorState = this._editorView.state;
     }
-    
+
     this._connector.onEdit(transaction);
     if (transaction.docChanged) {
       const docJson = transaction.doc.toJSON();

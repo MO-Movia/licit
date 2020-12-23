@@ -9,7 +9,8 @@ import {
 import {
     EditorView
 } from 'prosemirror-view';
-import { Node, Schema } from 'prosemirror-model';
+import { Node, Fragment, Schema } from 'prosemirror-model';
+// import { findPositionOfNodeBefore, findParentNodeOfType, findParentNodeOfTypeClosestToPos } from 'prosemirror-utils';
 import UICommand from './ui/UICommand';
 import {
     atViewportCenter
@@ -44,6 +45,7 @@ import {
     MARK_TEXT_HIGHLIGHT,
     MARK_UNDERLINE
 } from './MarkNames';
+import { PARAGRAPH } from './NodeNames';
 import { getLineSpacingValue } from './ui/toCSSLineSpacing';
 
 export const STRONG = 'strong';
@@ -521,7 +523,7 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
             fontName: style[FONTNAME],
             strike: style[STRIKE],
             underline: style[UNDERLINE],
-            boldNumbering:style['boldNumbering']
+            boldNumbering: style['boldNumbering']
         };
     } else {
         newattrs['styleLevel'] = null;
@@ -534,7 +536,116 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
     // tr = tr.setSelection(selection);
     const storedmarks = getMarkByStyleName(styleName, state.schema);;
     tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
+    tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
     tr.storedMarks = storedmarks;
+    return tr;
+}
+function createEmptyElement(state: EditorState, tr: Transform,
+    node: Node, startPos: Number, endPos: Number, attrs) {
+    let found = false;
+    const currentLevel = node.attrs.styleLevel;
+    let pos = 2;
+    let realPos = 0;
+    let previousLevel = null;
+    // state.doc.nodesBetween(startPos, 0, (node, pos) => {
+    //         if (isAllowedNode(node)) {
+    //           //  tr = tr.setNodeMarkup(startPos, undefined, attribute);
+    //         }
+    //     });
+    if (startPos !== 0) {
+        do {
+            // let pos =  node.nodeSize;
+            const p = state.doc.nodeAt(startPos - pos);
+            if (p && p.type.name === 'paragraph') {
+
+                previousLevel = p.attrs.styleLevel;
+                if (previousLevel) {
+                    found = true;
+                }
+                if (startPos - pos <= 0) {
+                    found = true;
+                }
+                realPos = pos;
+                pos = pos + 2;
+            }
+            else {
+                pos = realPos;
+                pos = pos + (p.nodeSize + 2);
+                // parent = findParentNodeOfType(p.type);
+                //  findParentNodeOfTypeClosestToPos()
+            }
+
+        }
+        while (!found);
+
+        if (null === previousLevel && null == currentLevel) {
+            if (attrs.styleLevel !== 1) {
+                addElement(attrs, state, tr, startPos, null);
+            }
+        }
+        if (previousLevel) {
+            const dif = attrs.styleLevel - previousLevel;
+            if (dif === 0 || dif === 1) {
+
+            }
+            if (dif < 0) {
+
+            }
+            if (dif > 1) {
+                addElement(attrs, state, tr, startPos, dif);
+            }
+
+        }
+    } else {
+        if (attrs.styleLevel !== 1) {
+            addElement(attrs, state, tr, startPos, null);
+        }
+    }
+    // state.doc.nodesBetween(startPos, 0, (node, startPos) => {
+    //     if (isAllowedNode(node)) {
+    //       //  tr = tr.setNodeMarkup(startPos, undefined, attribute);
+    //     }
+    // });
+
+    //     const paragraph = state.schema.nodes[PARAGRAPH];
+    // const nodeAttrs = { ...node.attrs, id: 'xx' };
+    // nodeAttrs.styleLevel = 1;
+    // const paragraphNode = paragraph.create(
+    //     nodeAttrs,
+    //     null,
+    //     null
+    // );
+    // const nodeAttrs1 = { ...node.attrs, id: 'xx' };
+    // nodeAttrs1.styleLevel = 2;
+    // const paragraphNode1 = paragraph.create(
+    //     nodeAttrs1,
+    //     null,
+    //     null
+    // );
+    // if (startPos === 0) {
+    //     tr = tr.insert(startPos, Fragment.from(paragraphNode1));
+    //     tr = tr.insert(startPos, Fragment.from(paragraphNode));
+
+    // } else {
+    //     tr = tr.insert(startPos - 1, Fragment.from(paragraphNode1));
+    //     tr = tr.insert(startPos - 1, Fragment.from(paragraphNode));
+    // }
+
+    return tr;
+}
+function addElement(nodeAttrs, state, tr, startPos, diff) {
+    const level = diff ? diff : nodeAttrs.styleLevel;
+    const counter = diff ? 1 : 0;
+    const paragraph = state.schema.nodes[PARAGRAPH];
+    for (let index = level; index > counter; index--) {
+        nodeAttrs.styleLevel = index;
+        const paragraphNode = paragraph.create(
+            nodeAttrs,
+            null,
+            null
+        );
+        tr = tr.insert(startPos, Fragment.from(paragraphNode));
+    }
     return tr;
 }
 

@@ -90,7 +90,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     // set default values for text alignment and boldNumbering checkbox.
     if(!this.state.styles.align){
         this.state.styles.align = 'left';
-    }        
+    }
         // this.state.styles.boldNumbering=true;
     };
 
@@ -285,7 +285,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     // handles indent dropdown change
     onIndentChange(e: any) {
 
-        this.setState({ styles: { ...this.state.styles, indent: e.target.value } });
+        this.setState({ styles: { ...this.state.styles, indent: 'None' === e.target.value ? 0 : e.target.value } });
     }
 
     // shows color dialog based on input text-color/text-heighlight
@@ -429,11 +429,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     <span aria-label=" Italic" className="czi-tooltip-surface fontstyle markbutton-container" data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'em')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
                                         <span className="iconspan czi-icon format_italic editor-markbuttons">format_italic</span><span>  </span></span></span>
                                     <span aria-label=" Underline" className="czi-tooltip-surface fontstyle markbutton-container" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
-                                        <span  className="iconspan czi-icon  format_underline editor-markbuttons">format_underline</span><span>  </span></span></span>
+                                        <span className="iconspan czi-icon  format_underline editor-markbuttons">format_underline</span><span>  </span></span></span>
                                     <span aria-label=" Text color" className="czi-tooltip-surface fontstyle markbutton-container" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
                                         <span className="iconspan czi-icon format_color_text editor-markbuttons" style={{ color: this.state.styles.color !== 'rgba(0,0,0,0)' ? this.state.styles.color : '#666' }}>format_color_text</span><span>  </span></span></span>
                                     <span aria-label=" Highlight color" className="czi-tooltip-surface fontstyle markbutton-container" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
-                                        <span  className=" iconspan czi-icon border_color editor-markbuttons" style={{ color: this.state.styles.texthighlight !== 'rgba(0,0,0,0)' ? this.state.styles.texthighlight : '#666' }}>border_color</span><span>  </span></span></span>
+                                        <span className=" iconspan czi-icon border_color editor-markbuttons" style={{ color: this.state.styles.texthighlight !== 'rgba(0,0,0,0)' ? this.state.styles.texthighlight : '#666' }}>border_color</span><span>  </span></span></span>
 
                                 </div>
 
