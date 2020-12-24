@@ -546,23 +546,24 @@ function createEmptyElement(state: EditorState, tr: Transform,
     const currentLevel = node.attrs.styleLevel;
 
     let previousLevel = null;
-    const pArray = [];
+    let nextLevel = null;
+    const nodesBeforeSelection = [];
+    let nodesAfterSelection = null;
 
     if (startPos !== 0) {
 
         state.doc.descendants((node, pos) => {
             if (isAllowedNode(node)) {
-
                 if (pos >= startPos) {
                     return false;
                 }
-                pArray.push({ pos, node });
+                nodesBeforeSelection.push({ pos, node });
             }
             return true;
         });
-        pArray.reverse();
-        console.log(pArray);
-        pArray.every(item => {
+        nodesBeforeSelection.reverse();
+
+        nodesBeforeSelection.every(item => {
             if (null !== item.node.attrs.styleLevel) {
                 previousLevel = item.node.attrs.styleLevel;
                 return false;
@@ -570,101 +571,65 @@ function createEmptyElement(state: EditorState, tr: Transform,
             return true;
         });
 
-        // do {
-        //     // let pos =  node.nodeSize;
-        //     const p = state.doc.nodeAt(startPos - pos);
-        //     if (p && p.type.name === 'paragraph') {
 
-        //         previousLevel = p.attrs.styleLevel;
-        //         if (previousLevel) {
-        //             found = true;
-        //         }
-        //         if (startPos - pos <= 0) {
-        //             found = true;
-        //         }
-        //         realPos = pos;
-        //         pos = pos + 2;
-        //     }
-        //     else {
-        //         pos = realPos;
-        //         console.log(p.nodeSize);
-        //         const size = p.nodeSize;
-        //         // if (undefined !== p.nodeSize) {
-        //         pos = pos + size + 2;
-        //         console.log(p.nodeSize);
-        //         // }
-        //         // else {
-
-        //         //     pos = pos + 2;
-        //         // }
-        //         // parent = findParentNodeOfType(p.type);
-        //         //  findParentNodeOfTypeClosestToPos()
-        //     }
-
-        // }
-        // while (!found);
 
         if (null === previousLevel && null == currentLevel) {
             if (attrs.styleLevel !== 1) {
-                addElement(attrs, state, tr, startPos, null);
+                tr = addElement(attrs, state, tr, startPos, 0, null);
             }
         }
         if (previousLevel) {
             const dif = attrs.styleLevel - previousLevel;
-            if (dif === 0 || dif === 1) {
 
-            }
-            if (dif < 0) {
-
-            }
             if (dif > 1) {
-                addElement(attrs, state, tr, startPos, dif);
+                tr = addElement(attrs, state, tr, startPos, currentLevel, dif);
             }
 
+        }
+        else {
+            tr = addElement(attrs, state, tr, startPos, currentLevel, 0);
         }
     } else {
         if (attrs.styleLevel !== 1) {
-            addElement(attrs, state, tr, startPos, null);
+            tr = addElement(attrs, state, tr, startPos, 0, null);
         }
     }
-    // state.doc.nodesBetween(startPos, 0, (node, startPos) => {
-    //     if (isAllowedNode(node)) {
-    //       //  tr = tr.setNodeMarkup(startPos, undefined, attribute);
-    //     }
-    // });
+    const docSize = state.doc.nodeSize - 2;
+    if (docSize > endPos) {
+        state.doc.nodesBetween(endPos, docSize, (node, pos) => {
+            if (isAllowedNode(node) && node.attrs.styleLevel && null === nodesAfterSelection) {
+                // nodesAfterSelection.push({ pos, node });
+                nodesAfterSelection = node;
+                return false;
+            }
+            return true;
+        });
+    }
+    if (null !== nodesAfterSelection) {
+        nextLevel = nodesAfterSelection.attrs.styleLevel;
+        const dif = nextLevel - attrs.styleLevel;
+        if (nextLevel === attrs.styleLevel || dif === 1) {
 
-    //     const paragraph = state.schema.nodes[PARAGRAPH];
-    // const nodeAttrs = { ...node.attrs, id: 'xx' };
-    // nodeAttrs.styleLevel = 1;
-    // const paragraphNode = paragraph.create(
-    //     nodeAttrs,
-    //     null,
-    //     null
-    // );
-    // const nodeAttrs1 = { ...node.attrs, id: 'xx' };
-    // nodeAttrs1.styleLevel = 2;
-    // const paragraphNode1 = paragraph.create(
-    //     nodeAttrs1,
-    //     null,
-    //     null
-    // );
-    // if (startPos === 0) {
-    //     tr = tr.insert(startPos, Fragment.from(paragraphNode1));
-    //     tr = tr.insert(startPos, Fragment.from(paragraphNode));
+        }
+        else {
+            tr = addElementAfter(attrs, state, tr, endPos, 0, dif);
+        }
 
-    // } else {
-    //     tr = tr.insert(startPos - 1, Fragment.from(paragraphNode1));
-    //     tr = tr.insert(startPos - 1, Fragment.from(paragraphNode));
-    // }
+    }
 
     return tr;
 }
-function addElement(nodeAttrs, state, tr, startPos, diff) {
-    const level = diff ? diff : nodeAttrs.styleLevel;
-    const counter = diff ? 1 : 0;
+function addElement(nodeAttrs, state, tr, startPos, currentLevel, diff) {
+
+    const level = nodeAttrs.styleLevel;
+
+    const counter = currentLevel ? currentLevel + (diff - 1) : 1;
+    //const counter =  0;
     const paragraph = state.schema.nodes[PARAGRAPH];
     for (let index = level; index > counter; index--) {
-        nodeAttrs.styleLevel = index;
+        nodeAttrs.styleLevel = index - 1;
+        nodeAttrs.styleName = 'None';
+        nodeAttrs.customStyle = null;
         const paragraphNode = paragraph.create(
             nodeAttrs,
             null,
@@ -675,6 +640,26 @@ function addElement(nodeAttrs, state, tr, startPos, diff) {
     return tr;
 }
 
+function addElementAfter(nodeAttrs, state, tr, startPos, currentLevel, diff) {
+
+    // const level = nodeAttrs.styleLevel;
+
+    // const counter = currentLevel ? currentLevel + (diff - 1) : 1;
+    //const counter =  0;
+    const paragraph = state.schema.nodes[PARAGRAPH];
+    for (let index = diff; index >= 1; index--) {
+        nodeAttrs.styleLevel = index ;
+        nodeAttrs.styleName = 'None';
+        nodeAttrs.customStyle = null;
+        const paragraphNode = paragraph.create(
+            nodeAttrs,
+            null,
+            null
+        );
+        tr = tr.insert(startPos, Fragment.from(paragraphNode));
+    }
+    return tr;
+}
 export function executeCommands(state, tr, styleName, startPos, endPos) {
 
     const style = getCustomStyleByName(styleName);
