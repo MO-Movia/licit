@@ -27,7 +27,7 @@ class IndentCommand extends UICommand {
     const { selection, schema } = state;
     let { tr } = state;
     tr = tr.setSelection(selection);
-    tr = updateIndentLevel(tr, schema, this._delta);
+    tr = updateIndentLevel(state,tr, schema, this._delta);
     if (tr.docChanged) {
       dispatch && dispatch(tr);
       return true;

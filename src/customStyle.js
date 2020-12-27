@@ -18,14 +18,14 @@ export function saveStyle(style: any, styleName: string) {
 
 // get all saved styles
 export function getCustomStyles() {
-    const styleNames=  window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
+    const styleNames = window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
     // to sort stylenames alphabetically.
     styleNames.sort(function (a, b) {
         const styleA = a.stylename.toUpperCase();
         const styleB = b.stylename.toUpperCase();
 
         return styleA.localeCompare(styleB);
-      });
+    });
     return styleNames;
 }
 
@@ -39,6 +39,23 @@ export function getCustomStyleByName(name: string) {
                 style = obj.styles;
             }
         });
+    }
+    return style;
+}
+
+// get a style by Level
+export function getCustomStyleByLevel(level: Number) {
+    const itemsArray = window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
+    let style = null;
+    if (itemsArray.length > 0) {
+
+        for (const obj of itemsArray) {
+            if (obj.styles.level && level === Number(obj.styles.level)) {
+                if (null === style) {
+                    style = obj;
+                }
+            }
+        }
     }
     return style;
 }

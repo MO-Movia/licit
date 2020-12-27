@@ -1,19 +1,21 @@
 // @flow
 
-import {Fragment, Schema} from 'prosemirror-model';
-import {EditorState, TextSelection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {findParentNodeOfType} from 'prosemirror-utils';
-import {EditorView} from 'prosemirror-view';
+import { Fragment, Schema } from 'prosemirror-model';
+import { EditorState, TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { findParentNodeOfType } from 'prosemirror-utils';
+import { EditorView } from 'prosemirror-view';
 
-import {MARK_SPACER} from './MarkNames';
-import {HEADING, LIST_ITEM, PARAGRAPH} from './NodeNames';
-import {HAIR_SPACE_CHAR, SPACER_SIZE_TAB} from './SpacerMarkSpec';
+import { MARK_SPACER } from './MarkNames';
+import { HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
+import { HAIR_SPACE_CHAR, SPACER_SIZE_TAB } from './SpacerMarkSpec';
 import applyMark from './applyMark';
 import UICommand from './ui/UICommand';
+// import { getCustomStyleByLevel } from './customStyle';
+// import { applyLatestStyle } from './CustomStyleCommand';
 
-function insertTabSpace(tr: Transform, schema: Schema): Transform {
-  const {selection} = tr;
+function insertTabSpace(state: EditorState, tr: Transform, schema: Schema): Transform {
+  const { selection } = tr;
   if (!selection.empty || !(selection instanceof TextSelection)) {
     return tr;
   }
@@ -35,14 +37,23 @@ function insertTabSpace(tr: Transform, schema: Schema): Transform {
     return tr;
   }
 
-  const {from, to} = selection;
+  const { from, to } = selection;
 
-  if (found.node.type === listItem && found.pos === from - 2) {
+  if (found.node.type === listItem && found.pos === from - 2 && !found.node.attrs.styleLevel) {
     // Cursur is at te begin of the list-item, let the default indentation
     // behavior happen.
     return tr;
   }
 
+  if (found.node.type === paragraph && found.pos === from - 1 && found.node.attrs.styleLevel) {
+    // const nextLevel = found.node.attrs.styleLevel + 1;
+    // let posFrom = from - 1;
+    // const style = getCustomStyleByLevel(nextLevel);
+    // if (style) {
+    //   tr = applyLatestStyle(style.stylename, state, tr, found.node, posFrom, posFrom + found.node.nodeSize);
+    // }
+    return tr;
+  }
   const textNode = schema.text(HAIR_SPACE_CHAR);
   tr = tr.insert(to, Fragment.from(textNode));
   const attrs = {
@@ -65,8 +76,8 @@ class TextInsertTabSpaceCommand extends UICommand {
     view: ?EditorView,
     event: ?SyntheticEvent<>
   ): boolean => {
-    const {schema, tr} = state;
-    const trNext = insertTabSpace(tr, schema);
+    const { schema, tr } = state;
+    const trNext = insertTabSpace(state, tr, schema);
     if (trNext.docChanged) {
       dispatch && dispatch(trNext);
       return true;

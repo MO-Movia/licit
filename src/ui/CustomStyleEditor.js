@@ -87,11 +87,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         this.state = {
             ...props
         };
-    // set default values for text alignment and boldNumbering checkbox.
-    if(!this.state.styles.align){
-        this.state.styles.align = 'left';
-    }
-        // this.state.styles.boldNumbering=true;
+        // set default values for text alignment and boldNumbering checkbox.
+        if (!this.state.styles.align) {
+            this.state.styles.align = 'left';
+        }
+        if (0 === this.state.mode) {
+            this.state.styles.boldNumbering = true;
+            this.state.styles.boldScentence = true;
+        }
     };
 
     componentWillUnmount(): void {
@@ -253,13 +256,24 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     onFontNameChange(e: any) {
         this.setState({ styles: { ...this.state.styles, fontname: e.target.value } });
     }
-    // handles font name change
+    // handles indent radio button event
     onIndentRadioChanged(e: any) {
         if ('0' == e.target.value) {
             this.setState({ styles: { ...this.state.styles, islevelbased: true } });
         }
         else {
             this.setState({ styles: { ...this.state.styles, islevelbased: false } });
+        }
+
+    }
+
+    // handles scentece bold event
+    onScentenceRadioChanged(e: any) {
+        if ('0' == e.target.value) {
+            this.setState({ styles: { ...this.state.styles, boldScentence: true } });
+        }
+        else {
+            this.setState({ styles: { ...this.state.styles, boldScentence: false } });
         }
 
     }
@@ -331,6 +345,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         this.setState({ styles: { ...this.state.styles, boldNumbering: val.target.checked } });
     }
 
+    // handles the boldNumbering checkbox actions
+    handleBoldPartial(val: any) {
+        this.setState({ styles: { ...this.state.styles, boldPartial: val.target.checked } });
+        // this.setState({ styles: { ...this.state.styles, boldScentence: val.target.checked ? true : false } });
+    }
+
     componentDidMount() {
         const acc = document.getElementsByClassName('accordion');
         let i;
@@ -399,7 +419,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
                     <div className="sectiondiv editorsection">
                         <p className="formp">Style Attributes:</p>
-                        <div style={{ height: '329px', overflow: 'hidden auto', overflowX: 'hidden', border: '1px solid' }}>
+                        <div style={{ height: '332px', overflow: 'hidden auto', overflowX: 'hidden', border: '1px solid' }}>
                             <button className="accordion accactive" id="accordion1">
                                 <div className="indentdiv">
                                     <span className="iconspan czi-icon text_format" style={{ marginTop: '1px' }}>text_format</span>
@@ -437,16 +457,29 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
                                 </div>
 
+                                <div className="formp hierarchydiv">
+                                    <span style={{ float: 'left' }}>
+                                        <label >
+                                            <input checked={this.state.styles.boldPartial} className="chkboldnumbering"
+                                                onChange={this.handleBoldPartial.bind(this)} type="checkbox" />
+                                            Bold the
+                                    </label>
+                                    </span>
+                                    <span>
+                                        <input checked={this.state.styles.boldScentence} disabled={this.state.styles.boldPartial ? false : true} name="boldscentence" onChange={this.onScentenceRadioChanged.bind(this)}
+                                            type="radio" value="0" />
+                                        <label style={{ marginLeft: '4px', marginTop: '3px', marginBottom: '0' }}>First Sentence</label>
+                                        <input checked={!this.state.styles.boldScentence} disabled={this.state.styles.boldPartial ? false : true} name="boldscentence" onChange={this.onScentenceRadioChanged.bind(this)} style={{ marginLeft: '71px' }}
+                                            type="radio" value="1" />
+                                        <label style={{ marginLeft: '4px', marginTop: '3px', marginBottom: '0' }}>First Word</label>
+                                    </span>
+                                </div>
                             </div>
-
                             <button className="accordion accactive">
-
                                 <div className="indentdiv">
                                     <span className="iconspan czi-icon format_textdirection_l_to_r" style={{ marginTop: '1px' }}>format_textdirection_l_to_r</span>
                                     <label style={{ marginLeft: '-10px', marginTop: '2px', color: '#444' }}>Paragraph</label>
                                 </div>
-
-
                             </button>
                             <div className="panel1">
                                 <p className="formp">Alignment:</p>
@@ -487,14 +520,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                 </div>
 
                             </div>
-
                             <button className="accordion accactive">
-
                                 <div className="indentdiv">
                                     <span className="iconspan czi-icon account_tree">account_tree</span>
                                     <label style={{ marginLeft: '-7px', marginTop: '2px', color: '#444' }}>Hierarchy</label>
-                                </div>
-
+                               </div>
                             </button>
                             <div className="panel2 formp">
                                 <p className="formp">Level:</p>
@@ -512,12 +542,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                         <label >
                                             <input checked={this.state.styles.hasnumbering} className="chknumbering" disabled={this.state.styles.level ? false : true}
                                                 onChange={this.handleNumbering.bind(this)} type="checkbox" />
-                                    Numbering(1.1)
+                                            Numbering(1.1)
                                     </label>
                                         <label >
                                             <input checked={this.state.styles.boldNumbering} className="chkboldnumbering"
                                                 onChange={this.handleBoldNumbering.bind(this)} type="checkbox" />
-                                    Bold numbering
+                                            Bold numbering
                                     </label>
                                     </span>
 
