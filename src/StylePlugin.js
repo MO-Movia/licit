@@ -26,7 +26,7 @@ import {
     MARK_TEXT_HIGHLIGHT,
     MARK_UNDERLINE
 } from './MarkNames';
-
+import { getCustomStyleByName } from './customStyle';
 const ALLOWED_MARKS = [MARK_STRONG, MARK_EM, MARK_TEXT_COLOR, MARK_FONT_SIZE, MARK_FONT_TYPE, MARK_STRIKE, MARK_SUPER, MARK_TEXT_HIGHLIGHT, MARK_UNDERLINE];
 const SPEC = 'spec';
 const NEWATTRS = [ATTR_OVERRIDDEN];
@@ -119,21 +119,24 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
                 }
                 if (nextNode && IsActiveNode && nextNode.type.name === 'paragraph' && nextNode.attrs.styleName === 'None') {
                     // tr = executeCommands(nextState, tr, node.attrs[ATTR_STYLE_NAME], nextState.selection.$from.before(1), nextState.selection.$to.after(1));
-                    tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
-                    const marks = getMarkByStyleName(node.attrs[ATTR_STYLE_NAME], nextState.schema);
-                    node.descendants((child, pos) => {
-                        if (child.type.name === 'text') {
+                    const style = getCustomStyleByName(newattrs.styleName);
+                    if (!style.boldPartial) {
+                        tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
+                        const marks = getMarkByStyleName(node.attrs[ATTR_STYLE_NAME], nextState.schema);
+                        node.descendants((child, pos) => {
+                            if (child.type.name === 'text') {
+                                marks.forEach(mark => {
+                                    tr = tr.addStoredMark(mark);
+                                });
+                            }
+                        });
+                        if (node.content.size === 0) {
                             marks.forEach(mark => {
                                 tr = tr.addStoredMark(mark);
                             });
                         }
-                    });
-                    if (node.content.size === 0) {
-                        marks.forEach(mark => {
-                            tr = tr.addStoredMark(mark);
-                        });
+                        modified = true;
                     }
-                    modified = true;
                 }
 
             }

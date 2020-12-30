@@ -460,17 +460,17 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                 <div className="formp hierarchydiv">
                                     <span style={{ float: 'left' }}>
                                         <label >
-                                            <input checked={this.state.styles.boldPartial} className="chkboldnumbering"
+                                            <input checked={this.state.styles.boldPartial} 
                                                 onChange={this.handleBoldPartial.bind(this)} type="checkbox" />
                                             Bold the
                                     </label>
                                     </span>
                                     <span>
                                         <input checked={this.state.styles.boldScentence} disabled={this.state.styles.boldPartial ? false : true} name="boldscentence" onChange={this.onScentenceRadioChanged.bind(this)}
-                                            type="radio" value="0" />
+                                            type="radio" value="0" style={{ marginLeft: '20px' }} />
                                         <label style={{ marginLeft: '4px', marginTop: '3px', marginBottom: '0' }}>First Sentence</label>
-                                        <input checked={!this.state.styles.boldScentence} disabled={this.state.styles.boldPartial ? false : true} name="boldscentence" onChange={this.onScentenceRadioChanged.bind(this)} style={{ marginLeft: '71px' }}
-                                            type="radio" value="1" />
+                                        <input checked={!this.state.styles.boldScentence} disabled={this.state.styles.boldPartial ? false : true} name="boldscentence" onChange={this.onScentenceRadioChanged.bind(this)} 
+                                            type="radio" value="1" style={{ marginLeft: '20px' }} />
                                         <label style={{ marginLeft: '4px', marginTop: '3px', marginBottom: '0' }}>First Word</label>
                                     </span>
                                 </div>
