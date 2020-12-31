@@ -133,7 +133,7 @@ label {
     color: gray;
     cursor: text;
     flex-direction: column;
-    font: 400 11px Arial;    
+    font: 400 11px Arial;
     height: 164px;
     margin: 0;
     margin-left: 0;
@@ -370,7 +370,7 @@ label {
   .fontstyle {
     font-size: 13px;
   }
-  
+
   .buttonstyle {
     border-radius: revert;
     font-size: 13px;

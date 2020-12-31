@@ -33,7 +33,7 @@ app.get('/getcustomstyles/', function (req, res, next) {
         res.send(styles);
       });
     } else {
-      // create a customstyles json file if not exist. 
+      // create a customstyles json file if not exist.
       fs.appendFile('../customstyles/customstyles.json', '[]', function (err) {
         if (err) throw err;
         console.log('JSON File is created successfully.');
@@ -50,8 +50,22 @@ app.post('/savecustomstyle/', function (req, res) {
       return console.error(err);
     }
     var fresult = JSON.parse(data);
+    var exists = false;
 
-    fresult.push(req.body);
+    // to check, the style already exists
+    for (let i = 0; i < fresult.length; i++) {
+      if (fresult[i].stylename === req.body.stylename) {
+        //if style exists, then modify it
+        fresult[i].styles = req.body.styles;
+        exists = true;
+        break;
+      }
+    }
+
+    //if style not exists, then add the style to json array
+    if (!exists) {
+      fresult.push(req.body);
+    }
 
     fs.writeFile(
       '../customstyles/customstyles.json',
@@ -65,7 +79,7 @@ app.post('/savecustomstyle/', function (req, res) {
       }
     );
   });
-}); 
+});
 
 // [FS] IRAD-1128 2020-12-30
 // to remove the selected custom style from the json file.

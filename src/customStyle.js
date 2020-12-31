@@ -7,7 +7,7 @@ const localStorageKey = 'moStyles';
 let customStyles = null;
 
 export function saveStyle(style: any, styleName: string) {
-  let bOk = false;
+  const bOk = false;
   saveStyleToServer(style);
   return bOk;
 }
@@ -15,7 +15,6 @@ export function saveStyle(style: any, styleName: string) {
 // [FS] IRAD-1128 2020-12-29
 // save the custom style to server
 function saveStyleToServer(style) {
-  let img;
   const url =
     window.location.protocol +
     '//' +
@@ -24,7 +23,6 @@ function saveStyleToServer(style) {
   POST(url, JSON.stringify(style), 'application/json; charset=utf-8').then(
     (data) => {
       console.log(data);
-      img = data;
     },
     (err) => {}
   );
@@ -73,7 +71,7 @@ export function getCustomStyleByName(name: string) {
       }
     });
   } else {
-    let customStyles = getCustomStyles();
+    const customStyles = getCustomStyles();
     customStyles.then((result) => {
       if (null != result) {
         result.forEach((obj) => {
@@ -83,23 +81,23 @@ export function getCustomStyleByName(name: string) {
         });
         return style;
       }
+      return style;
     });
   }
   return style;
 }
 
-export function editStyle(name: String, style: any) {
+export function editStyle(name: string, style: any) {
   removeFromLocalStorage(name);
   addToLocalStorage(style);
 }
-export function removeStyle(name: String) {
+export function removeStyle(name: string) {
   removeFromLocalStorage(name);
 }
 
 // [FS] IRAD-1128 2020-12-29
 // to remove the selected Custom style.
 export function removeFromLocalStorage(name: string) {
-  let img;
   const url =
     window.location.protocol +
     '//' +
@@ -110,7 +108,7 @@ export function removeFromLocalStorage(name: string) {
       console.log(data);
     },
     (err) => {}
-  ); 
+  );
 }
 
 export function removeStyleFromLocalStorage(name: String, styleList: any) {

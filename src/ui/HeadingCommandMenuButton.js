@@ -37,7 +37,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     let HEADING_NAMES = null;
     customStyles.then((result) => {
       HEADING_NAMES = result;
-      
+
       if (null != HEADING_NAMES) {
         HEADING_NAMES.forEach((obj) => {
           HEADING_COMMANDS[obj.stylename] = new CustomStyleCommand(

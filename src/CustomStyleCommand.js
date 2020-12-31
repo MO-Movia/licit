@@ -582,7 +582,7 @@ function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Tra
     // const selection = TextSelection.create(tr.doc, endPos, endPos - 1);
     // tr = tr.setSelection(selection);
     tr = applyLineStyle(node, style, state, tr, startPos);
-    const storedmarks = getMarkByStyleName(styleName, state.schema);;
+    const storedmarks = getMarkByStyleName(styleName, state.schema);
     tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
     tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
     tr.storedMarks = storedmarks;
@@ -705,13 +705,12 @@ function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
 
 function applyLineStyle(node, style, state, tr, startPos) {
     if (style && style.boldPartial) {
-        let endPos = 0;
         let textContent = '';
         const markType = state.schema.marks[MARK_STRONG];
         if (style.boldScentence) {
             node.descendants(function (child: Node, pos: number, parent: Node) {
                 if ('text' === child.type.name) {
-                  
+
                     textContent = `${textContent}${child.text}`;
                 }
             });
@@ -721,13 +720,13 @@ function applyLineStyle(node, style, state, tr, startPos) {
         else {
             node.descendants(function (child: Node, pos: number, parent: Node) {
                 if ('text' === child.type.name) {
-                  
+
                     textContent = `${textContent}${child.text}`;
 
                 }
             });
             textContent = textContent.split(' ')[0];
-            
+
             tr = tr.addMark(startPos, (startPos + textContent.length) + 1, markType.create(null));
         }
     }
