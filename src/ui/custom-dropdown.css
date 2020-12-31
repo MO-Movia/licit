@@ -1,7 +1,9 @@
 
 .dropbtn {
     background-color: #fff;
-    border: 1px solid #cec7c7;
+    border-color: #cec7c7;
+    border-style: solid;
+    border-width: 1px;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     color: #5a615e;
     cursor: pointer;
@@ -24,19 +26,24 @@
 
 .dropdown-content {
     background-color: #f9f9f9;
-    border: 1px solid #cec7c7;
+    border-color: #cec7c7;
+    border-style: solid;
+    border-width: 1px;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     color: #5a615e;
     font-family: 'Arial', sans-serif;
     font-size: 14px;
     height: 95px;
-    min-width: 136px;
     line-height: 0.75;
+    min-width: 136px;
 }
 
 .dropdown-content a {
     display: block;
-    padding: 10px 14px;
+    padding-bottom: 10px;
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 10px;
     text-decoration: none;
 }
 

@@ -9,6 +9,7 @@ import createPopUp from './createPopUp';
 import { FONT_PT_SIZES } from './FontSizeCommandMenuButton';
 import { FONT_TYPE_NAMES } from '../FontTypeMarkSpec';
 import { getLineSpacingValue } from './toCSSLineSpacing';
+import { getCustomStyles } from '../customStyle';
 
 // Values to show in indent drop-down
 const INDENT_VALUES = [
@@ -52,6 +53,12 @@ const INDENT_VALUES = [
 
 
 ];
+
+let customStyles = [];
+getCustomStyles().then((result) => { 
+    customStyles = result;  
+  });
+
 
 // Values to show in Linespacing drop-down
 const LINE_SPACE = [
@@ -299,7 +306,99 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     // handles indent dropdown change
     onIndentChange(e: any) {
 
-        this.setState({ styles: { ...this.state.styles, indent: 'None' === e.target.value ? 0 : e.target.value } });
+this.setState({ styles: { ...this.state.styles, indent: 'None' === e.target.value ? 0 : e.target.value } });
+    }
+
+    onSelectCustomStyle(e: any) {
+        const value = customStyles.find(u => u.stylename === e.target.value);
+        this.populateControls(value,e.target.value);
+        //  const value = Array.from(e.target.selectedOptions, option => option.value);
+         console.log(this.state);
+    }
+
+    populateControls(styles,stylename){
+        this.setState({ styles:{}});
+        this.state.stylename= stylename;
+        this.state.description= stylename;
+        const appliedStyles = styles.styles;
+        // this.state.styles.fontname
+        for (const property in appliedStyles) {
+
+            switch (property) {
+              case 'align':
+                this.setState({ styles: { ...this.state.styles, align: appliedStyles[property] } });
+                // this.state.styles.align=appliedStyles[property];
+                break;
+
+              case 'color':
+                this.setState({ styles: { ...this.state.styles, color: appliedStyles[property] } });
+                // this.state.styles.color=appliedStyles[property];
+                break;
+
+              case 'em':
+                // this.state.styles.em = appliedStyles[property];
+                this.setState({ styles: { ...this.state.styles, em: appliedStyles[property] } });
+                break;
+
+              case 'fontname'  :
+                // this.state.styles.fontname = appliedStyles[property];
+                this.setState({ styles: { ...this.state.styles, fontname: appliedStyles[property] } });
+                break;
+
+              case 'fontsize':
+                this.setState({ styles: { ...this.state.styles, fontsize: appliedStyles[property] } });
+                // this.state.styles.fontsize = appliedStyles[property];
+                break;
+
+              case 'indent':
+                this.setState({ styles: { ...this.state.styles, indent: appliedStyles[property] } });
+                // this.state.styles.indent = appliedStyles[property];
+                break;
+
+              case 'underline':
+                this.setState({ styles: { ...this.state.styles, underline: appliedStyles[property] } });
+                    // this.state.styles.underline = appliedStyles[property];
+                break;
+
+              case 'level':
+                this.setState({ styles: { ...this.state.styles, level: appliedStyles[property] } });
+                // this.state.styles.level= appliedStyles[property];
+                break;
+
+              case 'lineheight':
+                this.setState({ styles: { ...this.state.styles, lineheight: appliedStyles[property] } });
+                // this.state.styles.lineheight = appliedStyles[property];
+                break;
+
+              case 'spacebefore':
+                this.setState({ styles: { ...this.state.styles, spacebefore: appliedStyles[property] } });
+                // this.state.styles.spacebefore = appliedStyles[property];
+                break;
+
+              case 'spaceafter':
+                this.setState({ styles: { ...this.state.styles, spaceafter: appliedStyles[property] } });
+                // this.state.styles.spaceafter = appliedStyles[property];
+                break;
+
+              case 'strong':
+                this.setState({ styles: { ...this.state.styles, strong: appliedStyles[property] } });
+                // this.state.styles.strong = appliedStyles[property];
+                break;
+
+              case 'texthighlight':
+                this.setState({ styles: { ...this.state.styles, texthighlight: appliedStyles[property] } });
+                // this.state.styles.texthighlight = appliedStyles[property];
+                break;
+
+                case 'strike':
+                    this.setState({ styles: { ...this.state.styles, strike: appliedStyles[property] } });
+                    // this.state.styles.strike = appliedStyles[property];
+                    break;  
+                   
+              default:
+                break;
+            }
+          }
     }
 
     // shows color dialog based on input text-color/text-heighlight
@@ -387,7 +486,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 </div>
                 <div className="customedit-body" >
                     <div className="sectiondiv">
-
+                    <p className="formp">Styles:</p>
+                                <select className="stylenameinput fontstyle" onChange={this.onSelectCustomStyle.bind(this)} style={{ height: '24px'}} value={this.state.styles.lineheight}>
+                                    {customStyles.map((style) => (
+                                        <option key={style.stylename} value={style.style}>
+                                            {style.stylename}
+                                        </option>
+                                    ))}
+                                </select>
                         <p className="formp">Style Name:</p>
                         <span>
                             <input className="stylenameinput fontstyle" key="name"
@@ -419,7 +525,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
                     <div className="sectiondiv editorsection">
                         <p className="formp">Style Attributes:</p>
-                        <div style={{ height: '332px', overflow: 'hidden auto', overflowX: 'hidden', border: '1px solid' }}>
+                        <div style={{ height: '329px', overflow: 'hidden auto', overflowX: 'hidden', border: '1px solid' }}>
                             <button className="accordion accactive" id="accordion1">
                                 <div className="indentdiv">
                                     <span className="iconspan czi-icon text_format" style={{ marginTop: '1px' }}>text_format</span>
@@ -449,11 +555,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                                     <span aria-label=" Italic" className="czi-tooltip-surface fontstyle markbutton-container" data-tooltip=" Italic" id="86ba61b0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'em')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.em ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
                                         <span className="iconspan czi-icon format_italic editor-markbuttons">format_italic</span><span>  </span></span></span>
                                     <span aria-label=" Underline" className="czi-tooltip-surface fontstyle markbutton-container" data-tooltip=" Underline" id="86ba88c0-ff11-11ea-930a-95c69ca4f97f" onClick={this.onStyleClick.bind(this, 'underline')} role="tooltip"><span aria-disabled="false" aria-pressed="false" className={this.state.styles.underline ? 'czi-custom-button use-icon active markbuttons' : 'czi-custom-button use-icon markbuttons'} role="button">
-                                        <span className="iconspan czi-icon  format_underline editor-markbuttons">format_underline</span><span>  </span></span></span>
+                                        <span  className="iconspan czi-icon  format_underline editor-markbuttons">format_underline</span><span>  </span></span></span>
                                     <span aria-label=" Text color" className="czi-tooltip-surface fontstyle markbutton-container" data-tooltip=" Text color" id="86bad6e1-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, true)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
                                         <span className="iconspan czi-icon format_color_text editor-markbuttons" style={{ color: this.state.styles.color !== 'rgba(0,0,0,0)' ? this.state.styles.color : '#666' }}>format_color_text</span><span>  </span></span></span>
                                     <span aria-label=" Highlight color" className="czi-tooltip-surface fontstyle markbutton-container" data-tooltip=" Highlight color" id="86bafdf0-ff11-11ea-930a-95c69ca4f97f" onClick={this.showColorDialog.bind(this, false)} role="tooltip"><span aria-disabled="false" aria-pressed="false" className="czi-custom-button use-icon markbuttons" role="button">
-                                        <span className=" iconspan czi-icon border_color editor-markbuttons" style={{ color: this.state.styles.texthighlight !== 'rgba(0,0,0,0)' ? this.state.styles.texthighlight : '#666' }}>border_color</span><span>  </span></span></span>
+                                        <span  className=" iconspan czi-icon border_color editor-markbuttons" style={{ color: this.state.styles.texthighlight !== 'rgba(0,0,0,0)' ? this.state.styles.texthighlight : '#666' }}>border_color</span><span>  </span></span></span>
 
                                 </div>
 

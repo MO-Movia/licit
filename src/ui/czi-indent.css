@@ -30,38 +30,31 @@
 
 /* list item indents */
 
-.ProseMirror ol[type='decimal'][data-indent='1']
-{
+.ProseMirror ol[type='decimal'][data-indent='1'] {
   margin-left: 12pt;
 }
 
-.ProseMirror ol[type='decimal'][data-indent='2']
-{
+.ProseMirror ol[type='decimal'][data-indent='2'] {
   margin-left: 24pt;
 }
 
-.ProseMirror ol[type='decimal'][data-indent='3']
-{
+.ProseMirror ol[type='decimal'][data-indent='3'] {
   margin-left: 36pt;
 }
 
-.ProseMirror ol[type='decimal'][data-indent='4']
-{
+.ProseMirror ol[type='decimal'][data-indent='4'] {
   margin-left: 48pt;
 }
 
-.ProseMirror ol[type='decimal'][data-indent='5']
-{
+.ProseMirror ol[type='decimal'][data-indent='5'] {
   margin-left: 60pt;
 }
 
-.ProseMirror ol[type='decimal'][data-indent='6']
-{
+.ProseMirror ol[type='decimal'][data-indent='6'] {
   margin-left: 72pt;
 }
 
-.ProseMirror ol[type='decimal'][data-indent='7']
-{
+.ProseMirror ol[type='decimal'][data-indent='7'] {
   margin-left: 84pt;
 }
 

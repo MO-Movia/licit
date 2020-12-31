@@ -2,7 +2,9 @@
     /* padding: 10px; */
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.26); */
     background: #e6e6e6;
-    border: 1px solid #4a4949;
+    border-color: #4a4949;
+    border-style: solid;
+    border-width: 1px;
     box-sizing: border-box !important;
     color: white;
     font-family: 'Arial', sans-serif;
@@ -13,7 +15,9 @@
 }
 
 .spacingdiv {
-    border: 1px solid gray;
+    border-color: gray;
+    border-style: solid;
+    border-width: 1px;
     margin-left: -3px;
     padding: 5px;
     width: auto;
@@ -60,11 +64,11 @@
     font-family: 'Arial', sans-serif;
     font-family: sans-serif;
     font-size: 25px;
+    font-weight: 500;
     height: 27px;
     margin-left: 2px;
     padding: 5px;
     text-align: left;
-    font-weight: 500;
 }
 
 .customedit-body {
@@ -75,14 +79,14 @@
     grid-template-columns: auto auto;
     line-height: 1.2 !important;
     margin-top: 3px;
+    padding: 5px;
     padding-bottom: 0;
     padding-top: 1px;
-    padding: 5px;
 }
 
 label {
     color: black;
-} 
+}
 
 .stylenameinput {
     box-sizing: unset !important;
@@ -95,7 +99,7 @@ label {
     margin-right: 0;
     padding-left: 0;
     padding-right: 0;
-    width: 97%;    
+    width: 97%;
 }
 
 .sectiondiv {
@@ -110,6 +114,10 @@ label {
     margin-top: 0;
 }
 
+.spanmargin {
+    margin-right: 10px;
+}
+
 .editorsection {
     box-sizing: border-box;
     padding-right: 5px;
@@ -120,13 +128,13 @@ label {
     border-color: grey;
     border-image: initial;
     border-style: solid;
-    box-sizing: unset !important;
     border-width: 1px;
+    box-sizing: unset !important;
     color: gray;
     cursor: text;
     flex-direction: column;
-    font: 400 11px Arial;
-    height: 214px;
+    font: 400 11px Arial;    
+    height: 164px;
     margin: 0;
     margin-left: 0;
     margin-right: 20px;
@@ -227,12 +235,17 @@ label {
 
 .dropdown-div {
     background: #fff;
-    border: 1px solid black;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
     box-shadow: 0 1px 3px rgb(90 45 45 / 26%);
 }
 
 .dropdown-buttons {
-    margin: 5px 8px;
+    margin-bottom: 5px;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 5px;
     padding-top: 5px;
 }
 
@@ -249,15 +262,17 @@ label {
 
 .accordion {
     background-color: #ccc;
-    border: 1px solid lightgray;
+    border-color: lightgray;
+    border-style: solid;
+    border-width: 1px;
     color: #444;
     cursor: pointer;
     font-size: 14px;
     height: 25px;
+    outline: none !important;
     text-align: left;
     transition: 0.4s;
     width: 100%;
-    outline: none !important;
 }
 
 .accordion:after {
@@ -281,7 +296,10 @@ label {
     margin-bottom: 10px;
     max-height: 0;
     overflow: hidden;
-    padding: 0 7px;
+    padding-bottom: 0;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 0;
     transition: max-height 0.2s ease-out;
     width: auto;
 }
@@ -353,12 +371,14 @@ label {
     font-size: 13px;
   }
   
-.buttonstyle {
+  .buttonstyle {
     border-radius: revert;
     font-size: 13px;
 }
   .hierarchydiv {
-    border: 1px solid gray;
+    border-color: gray;
+    border-style: solid;
+    border-width: 1px;
     margin-left: -1px;
     padding: 5px;
     width: auto;
@@ -377,12 +397,14 @@ label {
 .indentdiv{
     display: inline-flex;
 }
+
 .markbutton-container{
     margin-left: 5px !important;
     margin-right: 5px !important;
 }
+
 .editor-markbuttons{
     margin-right: 0 !important;
-    width:25px;
-    text-align:center !important
+    text-align: center !important;
+    width: 25px;
 }

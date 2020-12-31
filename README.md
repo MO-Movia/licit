@@ -81,6 +81,23 @@ python build_collab_server.py
 To run collab server:
 python run_collab_server.py 
 ```  
+### Start the custom style server
+```
+In Windows
+To build customstyle server:
+py build_customstyle_server.py
+
+To run customstyle server:
+py run_customstyle_server.py
+
+In MacOS/Linux
+To build customstyle server:
+python build_customstyle_server.py
+
+To run customstyle server:
+python run_customstyle_server.py 
+```  
+To save custom styles in server "customstyles" folder is expected outside the root folder 'licit'. 
 
 ### Start the image server for Upload image 
 ```

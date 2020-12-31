@@ -24,11 +24,12 @@ import TextAlignCommand from './TextAlignCommand';
 import FontTypeCommand from './FontTypeCommand';
 import FontSizeCommand from './FontSizeCommand';
 import TextLineSpacingCommand from './TextLineSpacingCommand';
-import { setTextAlign } from './TextAlignCommand';
+import {setTextAlign} from './TextAlignCommand';
 import ParagraphSpacingCommand from './ParagraphSpacingCommand';
 import IndentCommand from './IndentCommand';
 import {
-    clearCustomStyleMarks
+  removeTextAlignAndLineSpacing,
+  clearCustomStyleAttribute,
 } from './clearCustomStyleMarks';
 import {
     saveStyle,
@@ -110,34 +111,34 @@ export function getCustomStyleCommands(customStyle: any) {
                     commands.push(new MarkToggleCommand('strike'));
                 break;
 
-            case SUPER:
-                commands.push(new MarkToggleCommand('super'));
-                break;
+      case SUPER:
+        commands.push(new MarkToggleCommand('super'));
+        break;
 
-            case TEXTHL:
-                commands.push(new TextHighlightCommand(customStyle[property]));
-                break;
+      case TEXTHL:
+        commands.push(new TextHighlightCommand(customStyle[property]));
+        break;
 
-            case UNDERLINE:
-                // [FS] IRAD-1043 2020-12-15
-                // Issue fix: user unselect Underline from a existing custom style, it didn't reflect in editor
-                if (customStyle[property])
-                    commands.push(new MarkToggleCommand('underline'));
-                break;
+      case UNDERLINE:
+        // [FS] IRAD-1043 2020-12-15
+        // Issue fix: user unselect Underline from a existing custom style, it didn't reflect in editor
+        if (customStyle[property])
+          commands.push(new MarkToggleCommand('underline'));
+        break;
 
-            case ALIGN:
-                commands.push(new TextAlignCommand(customStyle[property]));
-                break;
+      case ALIGN:
+        commands.push(new TextAlignCommand(customStyle[property]));
+        break;
 
-            case LHEIGHT:
-                commands.push(new TextLineSpacingCommand(customStyle[property]));
-                break;
+      case LHEIGHT:
+        commands.push(new TextLineSpacingCommand(customStyle[property]));
+        break;
 
-            // [FS] IRAD-1100 2020-11-05
-            // Add in leading and trailing spacing (before and after a paragraph)
-            case SAFTER:
-                commands.push(new ParagraphSpacingCommand(customStyle[property], true));
-                break;
+      // [FS] IRAD-1100 2020-11-05
+      // Add in leading and trailing spacing (before and after a paragraph)
+      case SAFTER:
+        commands.push(new ParagraphSpacingCommand(customStyle[property], true));
+        break;
 
             case SBEFORE:
                 commands.push(new ParagraphSpacingCommand(customStyle[property], false));
@@ -191,213 +192,262 @@ class CustomStyleCommand extends UICommand {
         return attrs;
     };
 
-    isEmpty = (obj) => {
-        for (const key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    isEnabled = (state: EditorState, view: EditorView, menuTitle: string): boolean => {
-        // [FS] IRAD-1053 2020-10-22
-        // Disable the Clear style menu when no styles applied to a paragraph
-        return !('clearstyle' == menuTitle && NONE == this.isCustomStyleApplied(state));
-    };
-
-    // [FS] IRAD-1053 2020-10-22
-    // returns the applied style of a paragraph
-    isCustomStyleApplied(editorState: EditorState) {
-        const {
-            selection,
-            doc
-        } = editorState;
-        const {
-            from,
-            to
-        } = selection;
-        let customStyleName = NONE;
-        doc.nodesBetween(from, to, (node, pos) => {
-            if (node.attrs.styleName) {
-                customStyleName = node.attrs.styleName;
-            }
-        });
-        return customStyleName;
-    }
-
-    execute = (
-        state: EditorState,
-        dispatch: ?(tr: Transform) => void,
-        view: ?EditorView
-    ): boolean => {
-        let {
-            tr
-        } = state;
-        const {
-            selection
-        } = state;
-
-
-        if ('newstyle' === this._customStyle) {
-            this.editWindow(state, view);
-            return false;
-        }
-        // [FS] IRAD-1053 2020-10-08
-        // to remove the custom styles applied in the selected paragraph
-        else if ('clearstyle' === this._customStyle || 'None' === this._customStyle) {
-            tr = clearCustomStyleMarks(state.tr.setSelection(selection), state.schema, state);
-            if (dispatch && tr.docChanged) {
-                dispatch(tr);
-                return true;
-            }
-            return false;
-        }
-
-        tr = applyStyle(this._customStyle.styles, this._customStyle.stylename, state, tr);
-
-        if (tr.docChanged || tr.storedMarksSet) {
-            // view.focus();
-            dispatch && dispatch(tr);
-            return true;
-        }
+  isEmpty = (obj) => {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
         return false;
+      }
+    }
+    return true;
+  };
+
+  isEnabled = (
+    state: EditorState,
+    view: EditorView,
+    menuTitle: string
+  ): boolean => {
+    // [FS] IRAD-1053 2020-10-22
+    // Disable the Clear style menu when no styles applied to a paragraph
+    return !(
+      'clearstyle' == menuTitle && NONE == this.isCustomStyleApplied(state)
+    );
+  };
+
+  // [FS] IRAD-1053 2020-10-22
+  // returns the applied style of a paragraph
+  isCustomStyleApplied(editorState: EditorState) {
+    const {selection, doc} = editorState;
+    const {from, to} = selection;
+    let customStyleName = NONE;
+    doc.nodesBetween(from, to, (node, pos) => {
+      if (node.attrs.styleName) {
+        customStyleName = node.attrs.styleName;
+      }
+    });
+    return customStyleName;
+  }
+
+  execute = (
+    state: EditorState,
+    dispatch: ?(tr: Transform) => void,
+    view: ?EditorView
+  ): boolean => {
+    let {tr} = state;
+    const {selection} = state;
+
+    if ('newstyle' === this._customStyle) {
+      this.editWindow(state, view);
+      return false;
+    }
+    // [FS] IRAD-1053 2020-10-08
+    // to remove the custom styles applied in the selected paragraph
+    else if (
+      'clearstyle' === this._customStyle ||
+      'None' === this._customStyle
+    ) {
+      tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
+      tr = removeTextAlignAndLineSpacing(tr, state.schema);
+      if (dispatch && tr.docChanged) {
+        dispatch(tr);
+        return true;
+      }
+      return false;
+    }
+
+    tr = applyStyle(
+      this._customStyle.styles,
+      this._customStyle.stylename,
+      state,
+      tr
+    );
+
+    if (tr.docChanged || tr.storedMarksSet) {
+      // view.focus();
+      dispatch && dispatch(tr);
+      return true;
+    }
+    return false;
+  };
+
+  clearCustomStyles(tr, editorState: EditorState) {
+    const {selection, doc} = editorState;
+    const {from, to} = selection;
+    let customStyleName = NONE;
+    doc.nodesBetween(from, to, (node, pos) => {
+      if (node.attrs.styleName) {
+        customStyleName = node.attrs.styleName;
+        const storedmarks = getMarkByStyleName(
+          customStyleName,
+          editorState.schema
+        );
+        tr = this.removeMarks(storedmarks, tr, node);
+        return tr;
+      }
+      return tr;
+    });
+    return tr;
+  }
+
+  removeMarks(marks, tr, node) {
+    const {selection} = tr;
+    let {from, to} = selection;
+    const {empty} = selection;
+    if (empty) {
+      from = selection.$from.before(1);
+      to = selection.$to.after(1);
+    }
+
+    marks.forEach((mark) => {
+      tr = tr.removeMark(from, to, mark.type);
+      // reset the custom style name to NONE after remove the styles
+      clearCustomStyleAttribute(node);
+    });
+    return tr;
+  }
+
+  // shows the create style popup
+  editWindow(state: EditorState, view: EditorView) {
+    const {dispatch} = view;
+    let tr = state.tr;
+    const doc = state.doc;
+
+    this._popUp = createPopUp(CustomStyleEditor, this.createCustomObject(), {
+      autoDismiss: false,
+      position: atViewportCenter,
+      onClose: (val) => {
+        if (this._popUp) {
+          this._popUp = null;
+          //handle save style object part here
+          if (undefined !== val) {
+            this.saveStyleObject(val);
+            tr = tr.setSelection(TextSelection.create(doc, 0, 0));
+            // Apply created styles to document
+            tr = applyStyle(val.styles, val.stylename, state, tr);
+            dispatch(tr);
+            // view.focus();
+          }
+        }
+      },
+    });
+  }
+
+  // creates a sample style object
+  createCustomObject() {
+    return {
+      stylename: '',
+      mode: 0, //new
+      styles: {},
     };
+  }
 
-    // shows the create style popup
-    editWindow(state: EditorState, view: EditorView) {
-
-        const {
-            dispatch
-        } = view;
-        let tr = state.tr;
-        const doc = state.doc;
-
-        this._popUp = createPopUp(CustomStyleEditor, this.createCustomObject(), {
-            autoDismiss: false,
-            position: atViewportCenter,
-            onClose: val => {
-                if (this._popUp) {
-                    this._popUp = null;
-                    //handle save style object part here
-                    if (undefined !== val) {
-                        this.saveStyleObject(val);
-                        tr = tr.setSelection(TextSelection.create(doc, 0, 0));
-                        // Apply created styles to document
-                        tr = applyStyle(val.styles, val.stylename, state, tr);
-                        dispatch(tr);
-                        // view.focus();
-                    }
-                }
-            },
-        });
-    }
-
-    // creates a sample style object
-    createCustomObject() {
-        return {
-            stylename: '',
-            mode: 0,//new
-            styles: {},
-        };
-
-    }
-
-    // locally save style object
-    saveStyleObject(style: any) {
-        saveStyle(style, style.styleName);
-    }
+  // locally save style object
+  saveStyleObject(style: any) {
+    saveStyle(style, style.styleName);
+  }
 }
 
 function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
-    let same = false;
-    let overridden = false;
+  let same = false;
+  let overridden = false;
 
-    switch (mark.type.name) {
-        case MARK_STRONG:
-            same = (undefined != style[STRONG]);
-            break;
-        case MARK_EM:
-            same = (undefined != style[EM]);
-            break;
-        case MARK_TEXT_COLOR:
-            same = mark.attrs['color'] == style[COLOR];
-            break;
-        case MARK_FONT_SIZE:
-            same = mark.attrs['pt'] == style[FONTSIZE];
-            break;
-        case MARK_FONT_TYPE:
-            same = mark.attrs['name'] == style[FONTNAME];
-            break;
-        case MARK_STRIKE:
-            same = (undefined != style[STRIKE]);
-            break;
-        case MARK_SUPER:
-            break;
-        case MARK_TEXT_HIGHLIGHT:
-            break;
-        case MARK_UNDERLINE:
-            same = (undefined != style[UNDERLINE]);
-            break;
-        default:
-            break;
-    }
+  switch (mark.type.name) {
+    case MARK_STRONG:
+      same = undefined != style[STRONG];
+      break;
+    case MARK_EM:
+      same = undefined != style[EM];
+      break;
+    case MARK_TEXT_COLOR:
+      same = mark.attrs['color'] == style[COLOR];
+      break;
+    case MARK_FONT_SIZE:
+      same = mark.attrs['pt'] == style[FONTSIZE];
+      break;
+    case MARK_FONT_TYPE:
+      same = mark.attrs['name'] == style[FONTNAME];
+      break;
+    case MARK_STRIKE:
+      same = undefined != style[STRIKE];
+      break;
+    case MARK_SUPER:
+      break;
+    case MARK_TEXT_HIGHLIGHT:
+      break;
+    case MARK_UNDERLINE:
+      same = undefined != style[UNDERLINE];
+      break;
+    default:
+      break;
+  }
 
-    overridden = !same;
+  overridden = !same;
 
-    if (undefined != mark.attrs[ATTR_OVERRIDDEN] &&
-        mark.attrs[ATTR_OVERRIDDEN] != overridden &&
-        tr.curSelection) {
-        mark.attrs[ATTR_OVERRIDDEN] = overridden;
+  if (
+    undefined != mark.attrs[ATTR_OVERRIDDEN] &&
+    mark.attrs[ATTR_OVERRIDDEN] != overridden &&
+    tr.curSelection
+  ) {
+    mark.attrs[ATTR_OVERRIDDEN] = overridden;
 
-        tr = tr.removeMark(startPos, endPos, mark);
-        tr = tr.addMark(startPos, endPos, mark);
-        retObj.modified = true;
-    }
-    /*
+    tr = tr.removeMark(startPos, endPos, mark);
+    tr = tr.addMark(startPos, endPos, mark);
+    retObj.modified = true;
+  }
+  /*
     case SUPER:
     case TEXTHL:
     case ALIGN:
     case LHEIGHT:*/
 
-    return tr;
+  return tr;
 }
 
-export function updateOverrideFlag(styleName: string, tr: Transform, node: Node,
-    startPos: Number, endPos: Number, retObj: any) {
-    const style = getCustomStyleByName(styleName);
+export function updateOverrideFlag(
+  styleName: string,
+  tr: Transform,
+  node: Node,
+  startPos: Number,
+  endPos: Number,
+  retObj: any
+) {
+  const style = getCustomStyleByName(styleName);
 
-    if (style) {
-        node.descendants(function (child: Node, pos: number, parent: Node) {
-            if (child instanceof Node) {
-                child.marks.forEach(function (mark, index) {
-                    tr = compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj);
-                });
-            }
-        });
-    }
-
-    return tr;
-}
-
-function onLoadRemoveAllMarksExceptOverridden(node: Node, schema: Schema,
-    from: Number, to: Number, tr: Transform) {
-    const tasks = [];
+  if (style) {
     node.descendants(function (child: Node, pos: number, parent: Node) {
-        if (child instanceof Node) {
-            child.marks.forEach(function (mark, index) {
-                if (!mark.attrs[ATTR_OVERRIDDEN]) {
-                    tasks.push({
-                        child,
-                        pos,
-                        mark
-                    });
-                }
-            });
-        }
+      if (child instanceof Node) {
+        child.marks.forEach(function (mark, index) {
+          tr = compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj);
+        });
+      }
     });
+  }
 
-    return handleRemoveMarks(tr, tasks, from, to, schema);
+  return tr;
+}
+
+function onLoadRemoveAllMarksExceptOverridden(
+  node: Node,
+  schema: Schema,
+  from: Number,
+  to: Number,
+  tr: Transform
+) {
+  const tasks = [];
+  node.descendants(function (child: Node, pos: number, parent: Node) {
+    if (child instanceof Node) {
+      child.marks.forEach(function (mark, index) {
+        if (!mark.attrs[ATTR_OVERRIDDEN]) {
+          tasks.push({
+            child,
+            pos,
+            mark,
+          });
+        }
+      });
+    }
+  });
+
+  return handleRemoveMarks(tr, tasks, from, to, schema);
 }
 
 export function getMarkByStyleName(styleName: string, schema: Schema) {
@@ -417,51 +467,48 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
                 }
                 break;
 
-            case EM:
+      case EM:
+        markType = schema.marks[MARK_EM];
 
-                markType = schema.marks[MARK_EM];
+        if (style[property]) marks.push(markType.create(attrs));
+        break;
 
-                if (style[property]) marks.push(markType.create(attrs));
-                break;
+      case COLOR:
+        markType = schema.marks[MARK_TEXT_COLOR];
+        attrs = style[property] ? {color: style[property]} : null;
+        marks.push(markType.create(attrs));
+        break;
 
-            case COLOR:
-                markType = schema.marks[MARK_TEXT_COLOR];
-                attrs = style[property] ? { color: style[property] } : null;
-                marks.push(markType.create(attrs));
-                break;
+      case FONTSIZE:
+        markType = schema.marks[MARK_FONT_SIZE];
+        attrs = style[property] ? {pt: style[property]} : null;
+        marks.push(markType.create(attrs));
 
-            case FONTSIZE:
-                markType = schema.marks[MARK_FONT_SIZE];
-                attrs = style[property] ? { pt: style[property] } : null;
-                marks.push(markType.create(attrs));
+        break;
 
-                break;
+      case FONTNAME:
+        markType = schema.marks[MARK_FONT_TYPE];
+        attrs = style[property] ? {name: style[property]} : null;
+        marks.push(markType.create(attrs));
+        break;
 
-            case FONTNAME:
-                markType = schema.marks[MARK_FONT_TYPE];
-                attrs = style[property] ? { name: style[property] } : null;
-                marks.push(markType.create(attrs));
-                break;
+      case TEXTHL:
+        markType = schema.marks[MARK_TEXT_HIGHLIGHT];
+        attrs = style[property] ? {highlightColor: style[property]} : null;
+        marks.push(markType.create(attrs));
+        break;
 
+      case UNDERLINE:
+        markType = schema.marks[MARK_UNDERLINE];
 
-            case TEXTHL:
-                markType = schema.marks[MARK_TEXT_HIGHLIGHT];
-                attrs = style[property] ? { highlightColor: style[property] } : null;
-                marks.push(markType.create(attrs));
-                break;
+        marks.push(markType.create(attrs));
+        break;
 
-            case UNDERLINE:
-                markType = schema.marks[MARK_UNDERLINE];
-
-                marks.push(markType.create(attrs));
-                break;
-
-
-            default:
-                break;
-        }
+      default:
+        break;
     }
-    return marks;
+  }
+  return marks;
 }
 function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Transform,
     node: Node, startPos: Number, endPos: Number) {
@@ -711,77 +758,95 @@ function isAllowedNode(node) {
 
 // [FS] IRAD-1088 2020-10-05
 // set custom style for node
-function _setNodeAttribute(state: EditorState, tr: Transform, from: Number,
-    to: Number, attribute: any) {
-    // if (isAllowedNode(node)) {
-    //     node.descendants(function (child: Node, pos: number, parent: Node) {
-    //         tr = tr.setNodeMarkup(pos, undefined, attribute);
+function _setNodeAttribute(
+  state: EditorState,
+  tr: Transform,
+  from: Number,
+  to: Number,
+  attribute: any
+) {
+  // if (isAllowedNode(node)) {
+  //     node.descendants(function (child: Node, pos: number, parent: Node) {
+  //         tr = tr.setNodeMarkup(pos, undefined, attribute);
 
-    //     });
-    // }
-    // return tr;
+  //     });
+  // }
+  // return tr;
 
-    state.doc.nodesBetween(from, to, (node, startPos) => {
-        if (isAllowedNode(node)) {
-            tr = tr.setNodeMarkup(startPos, undefined, attribute);
-        }
-    });
-    return tr;
+  state.doc.nodesBetween(from, to, (node, startPos) => {
+    if (isAllowedNode(node)) {
+      tr = tr.setNodeMarkup(startPos, undefined, attribute);
+    }
+  });
+  return tr;
 }
 
 // [FS] IRAD-1087 2020-11-02
 // Issue fix: Missing the applied link after applying a style
-function removeAllMarksExceptLink(from: Number, to: Number, tr: Transform, schema: Schema) {
-    const { doc } = tr;
-    const tasks = [];
-    doc.nodesBetween(from, to, (node, pos) => {
-        if (node.marks && node.marks.length) {
-            node.marks.some(mark => {
-                if ('link' !== mark.type.name) {
-                    tasks.push({
-                        node,
-                        pos,
-                        mark
-                    });
-                }
-            });
-            return true;
+function removeAllMarksExceptLink(
+  from: Number,
+  to: Number,
+  tr: Transform,
+  schema: Schema
+) {
+  const {doc} = tr;
+  const tasks = [];
+  doc.nodesBetween(from, to, (node, pos) => {
+    if (node.marks && node.marks.length) {
+      node.marks.some((mark) => {
+        if ('link' !== mark.type.name) {
+          tasks.push({
+            node,
+            pos,
+            mark,
+          });
         }
-        return true;
-    });
-    return handleRemoveMarks(tr, tasks, from, to, schema);
+      });
+      return true;
+    }
+    return true;
+  });
+  return handleRemoveMarks(tr, tasks, from, to, schema);
 }
 
-function handleRemoveMarks(tr: Transform, tasks: any, from: Number,
-    to: Number, schema: Schema) {
-    tasks.forEach(job => {
-        const { mark } = job;
-        tr = tr.removeMark(from, to, mark.type);
-    });
-    tr = setTextAlign(tr, schema, null);
-    return tr;
+function handleRemoveMarks(
+  tr: Transform,
+  tasks: any,
+  from: Number,
+  to: Number,
+  schema: Schema
+) {
+  tasks.forEach((job) => {
+    const {mark} = job;
+    tr = tr.removeMark(from, to, mark.type);
+  });
+  tr = setTextAlign(tr, schema, null);
+  return tr;
 }
 
 // [FS] IRAD-1087 2020-10-14
 // Apply selected styles to document
-export function applyStyle(style: any, styleName: String, state: EditorState, tr: Transform) {
-    const {
-        selection
-    } = state;
-    const startPos = selection.$from.before(1);
-    const endPos = selection.$to.after(1);
-    const node = getNode(state, startPos, endPos);
-    return applyStyleEx(style, styleName, state, tr, node, startPos, endPos);
+export function applyStyle(
+  style: any,
+  styleName: String,
+  state: EditorState,
+  tr: Transform
+) {
+  const {selection} = state;
+  const startPos = selection.$from.before(1);
+  const endPos = selection.$to.after(1);
+  const node = getNode(state, startPos, endPos);
+  return applyStyleEx(style, styleName, state, tr, node, startPos, endPos);
 }
 
 //to get the selected node
 export function getNode(state: EditorState, from: Number, to: Number) {
-    let selectedNode = null;
-    state.doc.nodesBetween(from, to, (node, startPos) => {
-        if (node.type.name === 'paragraph') {
-            selectedNode = node;
-        }
-    });
-    return selectedNode;
+  let selectedNode = null;
+  state.doc.nodesBetween(from, to, (node, startPos) => {
+    if (node.type.name === 'paragraph') {
+      selectedNode = node;
+    }
+  });
+  return selectedNode;
 }
 export default CustomStyleCommand;

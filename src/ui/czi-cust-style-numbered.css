@@ -5,7 +5,7 @@ html {
     --czi-counter-bold: 100;
 }
 
-.ProseMirror p[data-style-level="1"] {
+.ProseMirror p[data-style-level='1'] {
   counter-increment: czi-cust-style-counter-1;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-2 czi-cust-style-counter-3 czi-cust-style-counter-4 czi-cust-style-counter-5
@@ -13,128 +13,128 @@ html {
     czi-cust-style-counter-10;
 }
 
-.ProseMirror p[data-style-level="2"] {
+.ProseMirror p[data-style-level='2'] {
   counter-increment: czi-cust-style-counter-2;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-3 czi-cust-style-counter-4 czi-cust-style-counter-5 czi-cust-style-counter-6
     czi-cust-style-counter-7 czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
-.ProseMirror p[data-style-level="3"] {
+.ProseMirror p[data-style-level='3'] {
   counter-increment: czi-cust-style-counter-3;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-4 czi-cust-style-counter-5 czi-cust-style-counter-6 czi-cust-style-counter-7
     czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
-.ProseMirror p[data-style-level="4"] {
+.ProseMirror p[data-style-level='4'] {
   counter-increment: czi-cust-style-counter-4;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-5 czi-cust-style-counter-6 czi-cust-style-counter-7 czi-cust-style-counter-8
     czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
-.ProseMirror p[data-style-level="5"] {
+.ProseMirror p[data-style-level='5'] {
   counter-increment: czi-cust-style-counter-5;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-6 czi-cust-style-counter-7 czi-cust-style-counter-8 czi-cust-style-counter-9
     czi-cust-style-counter-10;
 }
 
-.ProseMirror p[data-style-level="6"] {
+.ProseMirror p[data-style-level='6'] {
   counter-increment: czi-cust-style-counter-6;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-7 czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
-.ProseMirror p[data-style-level="7"] {
+.ProseMirror p[data-style-level='7'] {
   counter-increment: czi-cust-style-counter-7;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
-.ProseMirror p[data-style-level="8"] {
+.ProseMirror p[data-style-level='8'] {
   counter-increment: czi-cust-style-counter-8;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
-.ProseMirror p[data-style-level="9"] {
+.ProseMirror p[data-style-level='9'] {
   counter-increment: czi-cust-style-counter-9;
   /* Reset all other variables under the current one. */
   counter-reset: czi-cust-style-counter-10;
 }
 
-.ProseMirror p[data-style-level="10"] {
+.ProseMirror p[data-style-level='10'] {
   counter-increment: czi-cust-style-counter-10;
 }
 
-.ProseMirror p[data-style-level="1"]::before {
-  content: counter(czi-cust-style-counter-1, decimal) ". ";
-  font-weight : var( --czi-counter-bold);
+.ProseMirror p[data-style-level='1']::before {
+  content: counter(czi-cust-style-counter-1, decimal) '. ';
+  font-weight: var( --czi-counter-bold);
 }
 
-.ProseMirror p[data-style-level="2"]::before {
-  content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) " ";
-  font-weight : var( --czi-counter-bold);
+.ProseMirror p[data-style-level='2']::before {
+  content: counter(czi-cust-style-counter-1, decimal) '.' counter(czi-cust-style-counter-2, decimal) ' ';
+  font-weight: var( --czi-counter-bold);
 }
 
-.ProseMirror p[data-style-level="3"]::before {
-  content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
-    counter(czi-cust-style-counter-3, decimal) " ";
-    font-weight : var( --czi-counter-bold);
+.ProseMirror p[data-style-level='3']::before {
+  content: counter(czi-cust-style-counter-1, decimal) '.' counter(czi-cust-style-counter-2, decimal) '.'
+    counter(czi-cust-style-counter-3, decimal) ' ';
+    font-weight: var( --czi-counter-bold);
 }
 
-.ProseMirror p[data-style-level="4"]::before {
-  content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
-    counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) " ";
-    font-weight : var( --czi-counter-bold);
+.ProseMirror p[data-style-level='4']::before {
+  content: counter(czi-cust-style-counter-1, decimal) '.' counter(czi-cust-style-counter-2, decimal) '.'
+    counter(czi-cust-style-counter-3, decimal) '.' counter(czi-cust-style-counter-4, decimal) ' ';
+    font-weight: var( --czi-counter-bold);
 }
 
-.ProseMirror p[data-style-level="5"]::before {
-  content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
-    counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) "."
-    counter(czi-cust-style-counter-5, decimal) " ";
-    font-weight : var( --czi-counter-bold);
+.ProseMirror p[data-style-level='5']::before {
+  content: counter(czi-cust-style-counter-1, decimal) '.' counter(czi-cust-style-counter-2, decimal) '.'
+    counter(czi-cust-style-counter-3, decimal) '.' counter(czi-cust-style-counter-4, decimal) '.'
+    counter(czi-cust-style-counter-5, decimal) ' ';
+    font-weight: var( --czi-counter-bold);
 }
 
-.ProseMirror p[data-style-level="6"]::before {
-  content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
-    counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) "."
-    counter(czi-cust-style-counter-5, decimal) "." counter(czi-cust-style-counter-6, decimal) " ";
-    font-weight : var( --czi-counter-bold);
+.ProseMirror p[data-style-level='6']::before {
+  content: counter(czi-cust-style-counter-1, decimal) '.' counter(czi-cust-style-counter-2, decimal) '.'
+    counter(czi-cust-style-counter-3, decimal) '.' counter(czi-cust-style-counter-4, decimal) '.'
+    counter(czi-cust-style-counter-5, decimal) '.' counter(czi-cust-style-counter-6, decimal) ' ';
+    font-weight: var( --czi-counter-bold);
 }
 
-.ProseMirror p[data-style-level="7"]::before {
-  content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
-    counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) "."
-    counter(czi-cust-style-counter-5, decimal) "." counter(czi-cust-style-counter-6, decimal) "."
-    counter(czi-cust-style-counter-7, decimal) " ";
-    font-weight : var( --czi-counter-bold);
+.ProseMirror p[data-style-level='7']::before {
+  content: counter(czi-cust-style-counter-1, decimal) '.' counter(czi-cust-style-counter-2, decimal) '.'
+    counter(czi-cust-style-counter-3, decimal) '.' counter(czi-cust-style-counter-4, decimal) '.'
+    counter(czi-cust-style-counter-5, decimal) '.' counter(czi-cust-style-counter-6, decimal) '.'
+    counter(czi-cust-style-counter-7, decimal) ' ';
+    font-weight: var( --czi-counter-bold);
 }
 
-.ProseMirror p[data-style-level="8"]::before {
-  content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
-    counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) "."
-    counter(czi-cust-style-counter-5, decimal) "." counter(czi-cust-style-counter-6, decimal) "."
-    counter(czi-cust-style-counter-7, decimal) "." counter(czi-cust-style-counter-8, decimal) " ";
-    font-weight : var( --czi-counter-bold);
+.ProseMirror p[data-style-level='8']::before {
+  content: counter(czi-cust-style-counter-1, decimal) '.' counter(czi-cust-style-counter-2, decimal) '.'
+    counter(czi-cust-style-counter-3, decimal) '.' counter(czi-cust-style-counter-4, decimal) '.'
+    counter(czi-cust-style-counter-5, decimal) '.' counter(czi-cust-style-counter-6, decimal) '.'
+    counter(czi-cust-style-counter-7, decimal) '.' counter(czi-cust-style-counter-8, decimal) ' ';
+    font-weight: var( --czi-counter-bold);
 }
 
-.ProseMirror p[data-style-level="9"]::before {
-  content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
-    counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) "."
-    counter(czi-cust-style-counter-5, decimal) "." counter(czi-cust-style-counter-6, decimal) "."
-    counter(czi-cust-style-counter-7, decimal) "." counter(czi-cust-style-counter-8, decimal) "."
-    counter(czi-cust-style-counter-9, decimal) " ";
-    font-weight : var( --czi-counter-bold);
+.ProseMirror p[data-style-level='9']::before {
+  content: counter(czi-cust-style-counter-1, decimal) '.' counter(czi-cust-style-counter-2, decimal) '.'
+    counter(czi-cust-style-counter-3, decimal) '.' counter(czi-cust-style-counter-4, decimal) '.'
+    counter(czi-cust-style-counter-5, decimal) '.' counter(czi-cust-style-counter-6, decimal) '.'
+    counter(czi-cust-style-counter-7, decimal) '.' counter(czi-cust-style-counter-8, decimal) '.'
+    counter(czi-cust-style-counter-9, decimal) ' ';
+    font-weight: var( --czi-counter-bold);
 }
 
-.ProseMirror p[data-style-level="10"]::before {
-  content: counter(czi-cust-style-counter-1, decimal) "." counter(czi-cust-style-counter-2, decimal) "."
-    counter(czi-cust-style-counter-3, decimal) "." counter(czi-cust-style-counter-4, decimal) "."
-    counter(czi-cust-style-counter-5, decimal) "." counter(czi-cust-style-counter-6, decimal) "."
-    counter(czi-cust-style-counter-7, decimal) "." counter(czi-cust-style-counter-8, decimal) "."
-    counter(czi-cust-style-counter-9, decimal) "." counter(czi-cust-style-counter-10, decimal) " ";
-    font-weight : var( --czi-counter-bold);
+.ProseMirror p[data-style-level='10']::before {
+  content: counter(czi-cust-style-counter-1, decimal) '.' counter(czi-cust-style-counter-2, decimal) '.'
+    counter(czi-cust-style-counter-3, decimal) '.' counter(czi-cust-style-counter-4, decimal) '.'
+    counter(czi-cust-style-counter-5, decimal) '.' counter(czi-cust-style-counter-6, decimal) '.'
+    counter(czi-cust-style-counter-7, decimal) '.' counter(czi-cust-style-counter-8, decimal) '.'
+    counter(czi-cust-style-counter-9, decimal) '.' counter(czi-cust-style-counter-10, decimal) ' ';
+    font-weight: var( --czi-counter-bold);
 }

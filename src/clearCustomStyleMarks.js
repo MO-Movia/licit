@@ -32,7 +32,7 @@ const FORMAT_MARK_NAMES = [
 
 // [FS] IRAD-1053 2020-11-13
 // Issue fix: Line spacing and paragrapgh spacing not removed when select Remove style.
-function removeTextAlignAndLineSpacing(tr: Transform, schema: Schema): Transform {
+export function removeTextAlignAndLineSpacing(tr: Transform, schema: Schema): Transform {
   tr = setTextAlign(tr, schema, null);
   // to remove the applied line spacing
   tr = setTextLineSpacing(tr, schema, null);
@@ -129,7 +129,7 @@ export function clearCustomStyleMarks(tr: Transform, schema: Schema, state: Edit
   return tr;
 }
 
-function clearCustomStyleAttribute(node) {
+export function clearCustomStyleAttribute(node) {
   if (node.attrs) {
     if (node.attrs.styleName) {
       node.attrs.styleName = 'None';
