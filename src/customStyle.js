@@ -15,13 +15,14 @@ export function saveStyle(style: any, styleName: string) {
 // [FS] IRAD-1128 2020-12-29
 // save the custom style to server
 function saveStyleToServer(style) {
+  customStyles = null;
   const url =
     window.location.protocol +
     '//' +
     window.location.hostname +
     ':3005/savecustomstyle';
   POST(url, JSON.stringify(style), 'application/json; charset=utf-8').then(
-    (data) => {
+    (data) => {      
       console.log(data);
     },
     (err) => {}
@@ -87,6 +88,23 @@ export function getCustomStyleByName(name: string) {
   return style;
 }
 
+// get a style by Level
+export function getCustomStyleByLevel(level: Number) {
+  const itemsArray = window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
+  let style = null;
+  if (itemsArray.length > 0) {
+
+      for (const obj of itemsArray) {
+          if (obj.styles.level && level === Number(obj.styles.level)) {
+              if (null === style) {
+                  style = obj;
+              }
+          }
+      }
+  }
+  return style;
+}
+
 export function editStyle(name: string, style: any) {
   removeFromLocalStorage(name);
   addToLocalStorage(style);
@@ -98,6 +116,7 @@ export function removeStyle(name: string) {
 // [FS] IRAD-1128 2020-12-29
 // to remove the selected Custom style.
 export function removeFromLocalStorage(name: string) {
+  customStyles = null;
   const url =
     window.location.protocol +
     '//' +

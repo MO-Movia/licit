@@ -120,7 +120,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
                 if (nextNode && IsActiveNode && nextNode.type.name === 'paragraph' && nextNode.attrs.styleName === 'None') {
                     // tr = executeCommands(nextState, tr, node.attrs[ATTR_STYLE_NAME], nextState.selection.$from.before(1), nextState.selection.$to.after(1));
                     const style = getCustomStyleByName(newattrs.styleName);
-                    if (!style.boldPartial) {
+                    if (null !==style && !style.boldPartial) {
                         tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
                         const marks = getMarkByStyleName(node.attrs[ATTR_STYLE_NAME], nextState.schema);
                         node.descendants((child, pos) => {

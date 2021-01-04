@@ -14,9 +14,9 @@ html {
   counter-reset: none;
   display: flow-root;
   list-style-type: none;
+  margin: 0;
   margin-block-end: 0;
   margin-block-start: 0;
-  margin: 0;
   padding: 0;
 }
 
@@ -45,12 +45,12 @@ html {
   /* content: '\2022'; */
   display: inline-block;
   font-size: 1em;
+  left: -5px;
   line-height: 1em;
+  margin-left: -24pt;
   position: relative;
   text-align: right;
   top: 0;
-  left: -5px;
-  margin-left: -24pt;
   width: 24pt;
 }
 
@@ -138,12 +138,12 @@ Ordered list x.x.x formatting  fix */
     content: counter(czi-counter-0, decimal) '. ';
     display: inline-block;
     font-size: 1em;
+    left: -5px;
     line-height: 1em;
+    margin-left: -24pt;
     position: relative;
     text-align: right;
     top: 0;
-    left: -5px;
-    margin-left: -24pt;
     width: 24pt;
     /* padding-left: 20px; */
   }
@@ -203,12 +203,12 @@ Ordered list 1) formatting  fix */
     content: counter(czi-counter-0, decimal) ') ';
     display: inline-block;
     font-size: 1em;
+    left: -5px;
     line-height: 1em;
+    margin-left: -24pt;
     position: relative;
     text-align: right;
     top: 0;
-    left: -5px;
-    margin-left: -24pt;
     width: 24pt;
   }
 
@@ -217,12 +217,12 @@ Ordered list 1) formatting  fix */
     content: '(' counter(czi-counter-0, decimal) ') ';
     display: inline-block;
     font-size: 1em;
+    left: -5px;
     line-height: 1em;
+    margin-left: -24pt;
     position: relative;
     text-align: right;
     top: 0;
-    left: -5px;
-    margin-left: -24pt;
     width: 24pt;
   }
 
@@ -231,12 +231,12 @@ Ordered list 1) formatting  fix */
     content: counter(czi-counter-0, upper-alpha) ') ';
     display: inline-block;
     font-size: 1em;
+    left: -5px;
     line-height: 1em;
+    margin-left: -24pt;
     position: relative;
     text-align: right;
     top: 0;
-    left: -5px;
-    margin-left: -24pt;
     width: 24pt;
     /* padding-left: 20px; */
   }
@@ -246,14 +246,14 @@ Ordered list 1) formatting  fix */
     content: counter(czi-counter-0, lower-alpha) ') ';
     display: inline-block;
     font-size: 1em;
+    left: -5px;
     line-height: 1em;
+    margin-left: -26pt;
+    padding-left: 20px;
     position: relative;
     text-align: right;
     top: 0;
-    left: -5px;
-    margin-left: -26pt;
     width: 28pt;
-    padding-left: 20px;
   }
 
   .ProseMirror ol[type='lower_alpha_bracket_closed'][data-indent='0'] > li > p::before {
@@ -261,12 +261,12 @@ Ordered list 1) formatting  fix */
     content: '(' counter(czi-counter-0, lower-alpha) ') ';
     display: inline-block;
     font-size: 1em;
+    left: -5px;
     line-height: 1em;
+    margin-left: -28pt;
     position: relative;
     text-align: right;
     top: 0;
-    left: -5px;
-    margin-left: -28pt;
     width: 32pt;
     padding-left: 20px;
   }
@@ -276,12 +276,12 @@ Ordered list 1) formatting  fix */
   content: counter(czi-counter-0, decimal) '. ';
   display: inline-block;
   font-size: 1em;
+  left: -5px;
   line-height: 1em;
+  margin-left: -24pt;
   position: relative;
   text-align: right;
   top: 0;
-  left: -5px;
-  margin-left: -24pt;
   width: 24pt;
 }
 

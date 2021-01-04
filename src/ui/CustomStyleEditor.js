@@ -306,9 +306,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     this.state = {
         ...value,
       };
-      this.setState(this.state); 
+      this.setState(this.state);
   }
- 
+
 
   // shows color dialog based on input text-color/text-heighlight
   showColorDialog(isTextColor: Boolean, event: SyntheticEvent<*>) {
@@ -847,7 +847,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       value={this.state.styles.spacebefore}
                     />
                   </span>
-                  <label style={{marginLeft: '0'}}> pts</label>
+                  <label style={{marginLeft: '3px'}}> pts</label>
 
                   <label style={{marginLeft: '23px'}}>After: </label>
                   <span>

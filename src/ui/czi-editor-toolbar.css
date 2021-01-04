@@ -34,10 +34,9 @@
 
   /* 0.162 =~ 36px */
   flex: 0.162;
-
+  overflow: hidden;
   /* See https://css-tricks.com/using-css-transitions-auto-dimensions/ */
   transition: flex 0.3s ease-out;
-  overflow: hidden;
 }
 
 .czi-editor-toolbar.expanded .czi-editor-toolbar-body {
@@ -73,6 +72,7 @@
 }
 
 .czi-editor-toolbar .czi-custom-buttons {
+  border-right: solid 1px #efefef;
   display: inline-block;
   margin-left: 0;
   margin-right: 0;
@@ -80,7 +80,6 @@
   padding-right: 4px;
   position: relative;
   white-space: nowrap;
-  border-right: solid 1px #efefef;
 }
 
 .czi-editor-toolbar .czi-custom-button.czi-custom-button.czi-custom-button {
@@ -93,18 +92,18 @@
 }
 
 .czi-editor-toolbar-background {
-  position: absolute;
   left: 0;
+  pointer-events: none;
+  position: absolute;
   right: 0;
   top: 0;
   z-index: 3;
-  pointer-events: none;
 }
 
 .czi-editor-toolbar-background-line {
   box-sizing: border-box;
-  height: 32px;
   box-shadow: 0 1px 0 0.2px #efefef;
+  height: 32px;
 }
 
 @media only print {

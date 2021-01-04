@@ -51,7 +51,7 @@
 }
 
 .spacinginput {
-    box-sizing: revert !important;
+    box-sizing: content-box !important;
     font-family: inherit;
     font-size: 13px;
     line-height: unset;
@@ -385,7 +385,7 @@ label {
   }
 
   .hierarchydiv label {
-    box-sizing: revert !important;
+    box-sizing: content-box !important;
     color: #464343;
     font-size: 12px;
     margin-bottom: 4px;

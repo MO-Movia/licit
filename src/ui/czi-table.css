@@ -7,15 +7,15 @@
 }
 
 .ProseMirror table {
+  border: 1px solid var(--czi-table-border-color);
   border-collapse: initial;
   border-spacing: 0;
-  border: 1px solid var(--czi-table-border-color);
   border-width: 0 thin thin 0;
-  table-layout: fixed;
-  width: 100%;
   margin: 0;
   overflow: hidden;
   page-break-inside: avoid;
+  table-layout: fixed;
+  width: 100%;
 }
 
 .ProseMirror td,
@@ -69,13 +69,13 @@ Rezie cursor position issue fixed. */
 /* Give selected cells a blue overlay */
 .ProseMirror .selectedCell::after {
   background: var(--czi-selection-highlight-color);
+  bottom: 0;
   content: '';
   left: 0;
+  position: absolute;
+  pointer-events: none;
   right: 0;
   top: 0;
-  bottom: 0;
-  pointer-events: none;
-  position: absolute;
   z-index: 2;
 }
 

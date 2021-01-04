@@ -82,6 +82,9 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         if (1 === selectedStyleCount || (1 < selectedStyleCount && node.attrs.styleName === customStyleName)) {
           customStyleName = node.attrs.styleName;
         }
+        else{
+          customStyleName = 'None';
+        }
       }
     });
 
