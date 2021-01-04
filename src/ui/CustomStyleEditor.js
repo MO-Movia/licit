@@ -847,7 +847,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       value={this.state.styles.spacebefore}
                     />
                   </span>
-                  <label style={{marginLeft: '3px'}}> pts</label>
+                  <label style={{marginLeft: '0'}}> pts</label>
 
                   <label style={{marginLeft: '23px'}}>After: </label>
                   <span>

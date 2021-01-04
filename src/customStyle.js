@@ -22,7 +22,7 @@ function saveStyleToServer(style) {
     window.location.hostname +
     ':3005/savecustomstyle';
   POST(url, JSON.stringify(style), 'application/json; charset=utf-8').then(
-    (data) => {      
+    (data) => {
       console.log(data);
     },
     (err) => {}

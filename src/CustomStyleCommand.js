@@ -1,19 +1,19 @@
 // @flow
 import {
-    EditorState,
-    TextSelection
+  EditorState,
+  TextSelection
 } from 'prosemirror-state';
 import {
-    Transform
+  Transform
 } from 'prosemirror-transform';
 import {
-    EditorView
+  EditorView
 } from 'prosemirror-view';
 import { Node, Fragment, Schema } from 'prosemirror-model';
 // import { findPositionOfNodeBefore, findParentNodeOfType, findParentNodeOfTypeClosestToPos } from 'prosemirror-utils';
 import UICommand from './ui/UICommand';
 import {
-    atViewportCenter
+  atViewportCenter
 } from './ui/PopUpPosition';
 import createPopUp from './ui/createPopUp';
 import CustomStyleEditor from './ui/CustomStyleEditor';
@@ -24,7 +24,7 @@ import TextAlignCommand from './TextAlignCommand';
 import FontTypeCommand from './FontTypeCommand';
 import FontSizeCommand from './FontSizeCommand';
 import TextLineSpacingCommand from './TextLineSpacingCommand';
-import {setTextAlign} from './TextAlignCommand';
+import { setTextAlign } from './TextAlignCommand';
 import ParagraphSpacingCommand from './ParagraphSpacingCommand';
 import IndentCommand from './IndentCommand';
 import {
@@ -32,19 +32,19 @@ import {
   clearCustomStyleAttribute,
 } from './clearCustomStyleMarks';
 import {
-    saveStyle,
-    getCustomStyleByName
+  saveStyle,
+  getCustomStyleByName
 } from './customStyle';
 import {
-    MARK_STRONG,
-    MARK_EM,
-    MARK_TEXT_COLOR,
-    MARK_FONT_SIZE,
-    MARK_FONT_TYPE,
-    MARK_STRIKE,
-    MARK_SUPER,
-    MARK_TEXT_HIGHLIGHT,
-    MARK_UNDERLINE
+  MARK_STRONG,
+  MARK_EM,
+  MARK_TEXT_COLOR,
+  MARK_FONT_SIZE,
+  MARK_FONT_TYPE,
+  MARK_STRIKE,
+  MARK_SUPER,
+  MARK_TEXT_HIGHLIGHT,
+  MARK_UNDERLINE
 } from './MarkNames';
 import { PARAGRAPH } from './NodeNames';
 import { getLineSpacingValue } from './ui/toCSSLineSpacing';
@@ -72,44 +72,44 @@ export const LEVEL = 'level';
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
 export function getCustomStyleCommands(customStyle: any) {
-    const commands = [];
-    for (const property in customStyle) {
+  const commands = [];
+  for (const property in customStyle) {
 
-        switch (property) {
-            case STRONG:
-                // [FS] IRAD-1043 2020-10-23
-                // Issue fix : unselect a style when creating a new style
-                // and that unselected styles also applied in selected paragraph
-                if (customStyle[property])
-                    commands.push(new MarkToggleCommand('strong'));
-                break;
+    switch (property) {
+      case STRONG:
+        // [FS] IRAD-1043 2020-10-23
+        // Issue fix : unselect a style when creating a new style
+        // and that unselected styles also applied in selected paragraph
+        if (customStyle[property])
+          commands.push(new MarkToggleCommand('strong'));
+        break;
 
-            case EM:
-                // [FS] IRAD-1043 2020-10-23
-                // Issue fix : unselect a style when creating a new style
-                // and that unselected styles also applied in selected paragrapgh
-                if (customStyle[property]) commands.push(new MarkToggleCommand('em'));
-                break;
+      case EM:
+        // [FS] IRAD-1043 2020-10-23
+        // Issue fix : unselect a style when creating a new style
+        // and that unselected styles also applied in selected paragrapgh
+        if (customStyle[property]) commands.push(new MarkToggleCommand('em'));
+        break;
 
-            case COLOR:
-                commands.push(new TextColorCommand(customStyle[property]));
-                break;
+      case COLOR:
+        commands.push(new TextColorCommand(customStyle[property]));
+        break;
 
-            case FONTSIZE:
-                commands.push(new FontSizeCommand(Number(customStyle[property])));
-                break;
+      case FONTSIZE:
+        commands.push(new FontSizeCommand(Number(customStyle[property])));
+        break;
 
-            case FONTNAME:
-                commands.push(new FontTypeCommand(customStyle[property]));
-                break;
+      case FONTNAME:
+        commands.push(new FontTypeCommand(customStyle[property]));
+        break;
 
-            case STRIKE:
-                // [FS] IRAD-1043 2020-10-23
-                // Issue fix : unselect a style when creating a new style
-                // and that unselected styles also applied in selected paragrapgh
-                if (customStyle[property])
-                    commands.push(new MarkToggleCommand('strike'));
-                break;
+      case STRIKE:
+        // [FS] IRAD-1043 2020-10-23
+        // Issue fix : unselect a style when creating a new style
+        // and that unselected styles also applied in selected paragrapgh
+        if (customStyle[property])
+          commands.push(new MarkToggleCommand('strike'));
+        break;
 
       case SUPER:
         commands.push(new MarkToggleCommand('super'));
@@ -140,57 +140,57 @@ export function getCustomStyleCommands(customStyle: any) {
         commands.push(new ParagraphSpacingCommand(customStyle[property], true));
         break;
 
-            case SBEFORE:
-                commands.push(new ParagraphSpacingCommand(customStyle[property], false));
-                break;
-            case INDENT:
-                commands.push(new IndentCommand(customStyle[property]));
-                break;
+      case SBEFORE:
+        commands.push(new ParagraphSpacingCommand(customStyle[property], false));
+        break;
+      case INDENT:
+        commands.push(new IndentCommand(customStyle[property]));
+        break;
 
-            case LEVELBASEDINDENT:
-                if (customStyle[LEVEL] && Number(customStyle[LEVEL]) > 0) {
-                    commands.push(new IndentCommand(customStyle[LEVEL]));
-                }
-                break;
-            default:
-                break;
+      case LEVELBASEDINDENT:
+        if (customStyle[LEVEL] && Number(customStyle[LEVEL]) > 0) {
+          commands.push(new IndentCommand(customStyle[LEVEL]));
         }
+        break;
+      default:
+        break;
     }
-    return commands;
+  }
+  return commands;
 }
 
 class CustomStyleCommand extends UICommand {
-    _customStyleName: string;
-    _customStyle = [];
-    _popUp = null;
+  _customStyleName: string;
+  _customStyle = [];
+  _popUp = null;
 
-    constructor(customStyle: any, customStyleName: string) {
-        super();
-        this._customStyle = customStyle;
-        this._customStyleName = customStyleName;
-    }
+  constructor(customStyle: any, customStyleName: string) {
+    super();
+    this._customStyle = customStyle;
+    this._customStyleName = customStyleName;
+  }
 
-    renderLabel = (state: EditorState): any => {
-        return this._customStyleName;
-    };
+  renderLabel = (state: EditorState): any => {
+    return this._customStyleName;
+  };
 
-    getTheInlineStyles = (isInline: boolean) => {
-        let attrs = {};
-        let propsCopy = [];
-        propsCopy = Object.assign(propsCopy, this._customStyle);
+  getTheInlineStyles = (isInline: boolean) => {
+    let attrs = {};
+    let propsCopy = [];
+    propsCopy = Object.assign(propsCopy, this._customStyle);
 
-        propsCopy.forEach((style) => {
-            attrs = Object.assign(attrs, style);
-            Object.entries(style).forEach(([key, value]) => {
-                if (isInline && typeof value === 'boolean') {
-                    delete attrs[key];
-                } else if (!isInline && typeof value != 'boolean') {
-                    delete attrs[key];
-                }
-            });
-        });
-        return attrs;
-    };
+    propsCopy.forEach((style) => {
+      attrs = Object.assign(attrs, style);
+      Object.entries(style).forEach(([key, value]) => {
+        if (isInline && typeof value === 'boolean') {
+          delete attrs[key];
+        } else if (!isInline && typeof value != 'boolean') {
+          delete attrs[key];
+        }
+      });
+    });
+    return attrs;
+  };
 
   isEmpty = (obj) => {
     for (const key in obj) {
@@ -216,8 +216,8 @@ class CustomStyleCommand extends UICommand {
   // [FS] IRAD-1053 2020-10-22
   // returns the applied style of a paragraph
   isCustomStyleApplied(editorState: EditorState) {
-    const {selection, doc} = editorState;
-    const {from, to} = selection;
+    const { selection, doc } = editorState;
+    const { from, to } = selection;
     let customStyleName = NONE;
     doc.nodesBetween(from, to, (node, pos) => {
       if (node.attrs.styleName) {
@@ -232,8 +232,9 @@ class CustomStyleCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    let {tr} = state;
-    const {selection} = state;
+    let { tr } = state;
+    const { selection } = state;
+
 
     if ('newstyle' === this._customStyle) {
       this.editWindow(state, view);
@@ -241,12 +242,14 @@ class CustomStyleCommand extends UICommand {
     }
     // [FS] IRAD-1053 2020-10-08
     // to remove the custom styles applied in the selected paragraph
-    else if (
-      'clearstyle' === this._customStyle ||
-      'None' === this._customStyle
-    ) {
+    else if ('clearstyle' === this._customStyle || 'None' === this._customStyle) {
       tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
       tr = removeTextAlignAndLineSpacing(tr, state.schema);
+      const startPos = selection.$from.before(1);
+      const endPos = selection.$to.after(1);
+      const node = getNode(state, startPos, endPos);
+      const newattrs = Object.assign({}, node.attrs);
+      tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
       if (dispatch && tr.docChanged) {
         dispatch(tr);
         return true;
@@ -270,8 +273,8 @@ class CustomStyleCommand extends UICommand {
   };
 
   clearCustomStyles(tr, editorState: EditorState) {
-    const {selection, doc} = editorState;
-    const {from, to} = selection;
+    const { selection, doc } = editorState;
+    const { from, to } = selection;
     let customStyleName = NONE;
     doc.nodesBetween(from, to, (node, pos) => {
       if (node.attrs.styleName) {
@@ -289,9 +292,9 @@ class CustomStyleCommand extends UICommand {
   }
 
   removeMarks(marks, tr, node) {
-    const {selection} = tr;
-    let {from, to} = selection;
-    const {empty} = selection;
+    const { selection } = tr;
+    let { from, to } = selection;
+    const { empty } = selection;
     if (empty) {
       from = selection.$from.before(1);
       to = selection.$to.after(1);
@@ -307,7 +310,7 @@ class CustomStyleCommand extends UICommand {
 
   // shows the create style popup
   editWindow(state: EditorState, view: EditorView) {
-    const {dispatch} = view;
+    const { dispatch } = view;
     let tr = state.tr;
     const doc = state.doc;
 
@@ -452,20 +455,20 @@ function onLoadRemoveAllMarksExceptOverridden(
 
 export function getMarkByStyleName(styleName: string, schema: Schema) {
 
-    const style = getCustomStyleByName(styleName);
-    const marks = [];
-    let markType = null;
-    let attrs = null;
-    for (const property in style) {
+  const style = getCustomStyleByName(styleName);
+  const marks = [];
+  let markType = null;
+  let attrs = null;
+  for (const property in style) {
 
-        switch (property) {
-            case STRONG:
+    switch (property) {
+      case STRONG:
 
-                if (style[property]) {
-                    markType = schema.marks[MARK_STRONG];
-                    marks.push(markType.create(attrs));
-                }
-                break;
+        if (style[property]) {
+          markType = schema.marks[MARK_STRONG];
+          marks.push(markType.create(attrs));
+        }
+        break;
 
       case EM:
         markType = schema.marks[MARK_EM];
@@ -475,26 +478,26 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
 
       case COLOR:
         markType = schema.marks[MARK_TEXT_COLOR];
-        attrs = style[property] ? {color: style[property]} : null;
+        attrs = style[property] ? { color: style[property] } : null;
         marks.push(markType.create(attrs));
         break;
 
       case FONTSIZE:
         markType = schema.marks[MARK_FONT_SIZE];
-        attrs = style[property] ? {pt: style[property]} : null;
+        attrs = style[property] ? { pt: style[property] } : null;
         marks.push(markType.create(attrs));
 
         break;
 
       case FONTNAME:
         markType = schema.marks[MARK_FONT_TYPE];
-        attrs = style[property] ? {name: style[property]} : null;
+        attrs = style[property] ? { name: style[property] } : null;
         marks.push(markType.create(attrs));
         break;
 
       case TEXTHL:
         markType = schema.marks[MARK_TEXT_HIGHLIGHT];
-        attrs = style[property] ? {highlightColor: style[property]} : null;
+        attrs = style[property] ? { highlightColor: style[property] } : null;
         marks.push(markType.create(attrs));
         break;
 
@@ -511,248 +514,262 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
   return marks;
 }
 function applyStyleEx(style: any, styleName: string, state: EditorState, tr: Transform,
-    node: Node, startPos: Number, endPos: Number) {
-    const loading = !style;
-    if (loading) {
-        style = getCustomStyleByName(styleName);
+  node: Node, startPos: Number, endPos: Number) {
+  const loading = !style;
+  if (loading) {
+    style = getCustomStyleByName(styleName);
+  }
+  const _commands = getCustomStyleCommands(style);
+
+  if (loading) {
+    tr = onLoadRemoveAllMarksExceptOverridden(node, state.schema, startPos, endPos, tr);
+  } else {
+    // [FS] IRAD-1087 2020-11-02
+    // Issue fix: applied link is missing after applying a custom style.
+    tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema);
+  }
+
+  const newattrs = Object.assign({}, node.attrs);
+  // [FS] IRAD-1074 2020-10-22
+  // Issue fix on not removing center alignment when switch style with center
+  // alignment to style with left alignment
+  newattrs['align'] = null;
+  newattrs['lineSpacing'] = null;
+  newattrs['paragraphSpacingAfter'] = null;
+  newattrs['paragraphSpacingBefore'] = null;
+  newattrs['styleName'] = styleName;
+
+  _commands.forEach((element) => {
+    // to set the node attribute for text-align
+    if (element instanceof TextAlignCommand) {
+      newattrs['align'] = style.align;
+      // to set the node attribute for line-height
+    } else if (element instanceof TextLineSpacingCommand) {
+      // [FS] IRAD-1104 2020-11-13
+      // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
+      newattrs['lineSpacing'] = getLineSpacingValue(style.lineheight);
+    } else if (element instanceof ParagraphSpacingCommand) {
+      // [FS] IRAD-1100 2020-11-05
+      // Add in leading and trailing spacing (before and after a paragraph)
+      newattrs['paragraphSpacingAfter'] = style.spaceafter ? style.spaceafter : null;
+      newattrs['paragraphSpacingBefore'] = style.spacebefore ? style.spacebefore : null;
     }
-    const _commands = getCustomStyleCommands(style);
-
-    if (loading) {
-        tr = onLoadRemoveAllMarksExceptOverridden(node, state.schema, startPos, endPos, tr);
-    } else {
-        // [FS] IRAD-1087 2020-11-02
-        // Issue fix: applied link is missing after applying a custom style.
-        tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema);
+    else if (element instanceof IndentCommand) {
+      newattrs['indent'] = style.indent;
     }
-
-    const newattrs = Object.assign({}, node.attrs);
-    // [FS] IRAD-1074 2020-10-22
-    // Issue fix on not removing center alignment when switch style with center
-    // alignment to style with left alignment
-    newattrs['align'] = null;
-    newattrs['lineSpacing'] = null;
-    newattrs['paragraphSpacingAfter'] = null;
-    newattrs['paragraphSpacingBefore'] = null;
-    newattrs['styleName'] = styleName;
-
-    _commands.forEach((element) => {
-        // to set the node attribute for text-align
-        if (element instanceof TextAlignCommand) {
-            newattrs['align'] = style.align;
-            // to set the node attribute for line-height
-        } else if (element instanceof TextLineSpacingCommand) {
-            // [FS] IRAD-1104 2020-11-13
-            // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
-            newattrs['lineSpacing'] = getLineSpacingValue(style.lineheight);
-        } else if (element instanceof ParagraphSpacingCommand) {
-            // [FS] IRAD-1100 2020-11-05
-            // Add in leading and trailing spacing (before and after a paragraph)
-            newattrs['paragraphSpacingAfter'] = style.spaceafter ? style.spaceafter : null;
-            newattrs['paragraphSpacingBefore'] = style.spacebefore ? style.spacebefore : null;
-        }
-        else if (element instanceof IndentCommand) {
-            newattrs['indent'] = style.indent;
-        }
-        // to set the marks for the node
-        if (element.executeCustom) {
-            tr = element.executeCustom(state, tr, startPos, endPos);
-        }
-    });
-
-    if (style && style[NUMBERING]) {
-        newattrs['styleLevel'] = Number(style.level);
-        newattrs['customStyle'] = {
-            strong: style[STRONG],
-            em: style[EM],
-            color: style[COLOR],
-            fontSize: style[FONTSIZE],
-            fontName: style[FONTNAME],
-            strike: style[STRIKE],
-            underline: style[UNDERLINE],
-            boldNumbering: style['boldNumbering']
-        };
-    } else {
-        newattrs['styleLevel'] = null;
+    // to set the marks for the node
+    if (element.executeCustom) {
+      tr = element.executeCustom(state, tr, startPos, endPos);
     }
-    // to set custom styleName attribute for node
-    newattrs['styleName'] = styleName;
-    // tr = _setNodeAttribute(node, tr, startPos, endPos, newattrs);
+  });
 
-    // const selection = TextSelection.create(tr.doc, endPos, endPos - 1);
-    // tr = tr.setSelection(selection);
-    tr = applyLineStyle(node, style, state, tr, startPos);
-    const storedmarks = getMarkByStyleName(styleName, state.schema);
-    tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
-    tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
-    tr.storedMarks = storedmarks;
-    return tr;
+  if (style && style[NUMBERING]) {
+    newattrs['styleLevel'] = Number(style.level);
+    newattrs['customStyle'] = {
+      strong: style[STRONG],
+      em: style[EM],
+      color: style[COLOR],
+      fontSize: style[FONTSIZE],
+      fontName: style[FONTNAME],
+      strike: style[STRIKE],
+      underline: style[UNDERLINE],
+      boldNumbering: style['boldNumbering']
+    };
+  } else {
+    newattrs['styleLevel'] = null;
+  }
+  // to set custom styleName attribute for node
+  newattrs['styleName'] = styleName;
+  // tr = _setNodeAttribute(node, tr, startPos, endPos, newattrs);
+
+  // const selection = TextSelection.create(tr.doc, endPos, endPos - 1);
+  // tr = tr.setSelection(selection);
+  tr = applyLineStyle(node, style, state, tr, startPos);
+  const storedmarks = getMarkByStyleName(styleName, state.schema);
+  tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
+  tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
+  tr.storedMarks = storedmarks;
+  return tr;
 }
 
 function createEmptyElement(state: EditorState, tr: Transform,
-    node: Node, startPos: Number, endPos: Number, attrs) {
+  node: Node, startPos: Number, endPos: Number, attrs) {
 
-    const currentLevel = node.attrs.styleLevel;
-    let previousLevel = null;
-    let levelDiff = 0;
-    let nextLevel = null;
-    const nodesBeforeSelection = [];
-    let nodesAfterSelection = null;
-    const docSize = state.doc.nodeSize - 2;
-    // Manage heirachy for nodes of previous  position
-    if (startPos !== 0) {
-        state.doc.descendants((node, pos) => {
-            if (isAllowedNode(node)) {
-                if (pos >= startPos) {
-                    return false;
-                }
-                nodesBeforeSelection.push({ pos, node });
-            }
-            return true;
-        });
-
-        nodesBeforeSelection.reverse();
-        nodesBeforeSelection.every(item => {
-            if (null !== item.node.attrs.styleLevel) {
-                previousLevel = item.node.attrs.styleLevel;
-                return false;
-            }
-            return true;
-        });
-
-        if (null === previousLevel && null == currentLevel) {
-            if (attrs.styleLevel !== 1) {
-                tr = addElement(attrs, state, tr, startPos, null);
-            }
-        } else {
-            levelDiff = previousLevel ? attrs.styleLevel - previousLevel : attrs.styleLevel;
-
-            if (levelDiff > 1) {
-                tr = addElement(attrs, state, tr, startPos, previousLevel);
-            }
-
+  const currentLevel = node.attrs.styleLevel;
+  let previousLevel = null;
+  let levelDiff = 0;
+  let nextLevel = null;
+  const nodesBeforeSelection = [];
+  let nodesAfterSelection = null;
+  const docSize = state.doc.nodeSize - 2;
+  // Manage heirachy for nodes of previous  position
+  if (startPos !== 0) {
+    state.doc.descendants((node, pos) => {
+      if (isAllowedNode(node)) {
+        if (pos >= startPos) {
+          return false;
         }
+        nodesBeforeSelection.push({ pos, node });
+      }
+      return true;
+    });
+
+    nodesBeforeSelection.reverse();
+    nodesBeforeSelection.every(item => {
+      if (null !== item.node.attrs.styleLevel) {
+        previousLevel = item.node.attrs.styleLevel;
+        return false;
+      }
+      return true;
+    });
+
+    if (null === previousLevel && null == currentLevel) {
+      if (attrs.styleLevel !== 1) {
+        tr = addElement(attrs, state, tr, startPos, null);
+      }
     } else {
-        if (attrs.styleLevel !== 1) {
-            tr = addElement(attrs, state, tr, startPos, null);
-        }
+      levelDiff = previousLevel ? attrs.styleLevel - previousLevel : attrs.styleLevel;
+
+      if (levelDiff > 1) {
+        tr = addElement(attrs, state, tr, startPos, previousLevel);
+      }
+      if (levelDiff < 0) {
+        tr = addElement(attrs, state, tr, startPos, previousLevel);
+      }
     }
-    // Manage heirachy for nodes of next position
-
-
-    if (docSize > endPos) {
-        state.doc.nodesBetween(endPos, docSize, (node, pos) => {
-            if (isAllowedNode(node) && node.attrs.styleLevel && null === nodesAfterSelection) {
-                nodesAfterSelection = node;
-                return false;
-            }
-            return true;
-        });
+  } else {
+    if (attrs.styleLevel !== 1) {
+      tr = addElement(attrs, state, tr, startPos, null);
     }
-    if (null !== nodesAfterSelection) {
-        nextLevel = nodesAfterSelection.attrs.styleLevel;
-        levelDiff = nextLevel - attrs.styleLevel;
-        if (nextLevel === attrs.styleLevel || levelDiff === 1) {
+  }
+  // Manage heirachy for nodes of next position
 
-        }
-        else {
-            tr = addElementAfter(attrs, state, tr, endPos, nextLevel);
-        }
+
+  if (docSize > endPos) {
+    state.doc.nodesBetween(endPos, docSize, (node, pos) => {
+      if (isAllowedNode(node) && node.attrs.styleLevel && null === nodesAfterSelection) {
+        nodesAfterSelection = node;
+        return false;
+      }
+      return true;
+    });
+  }
+  if (null !== nodesAfterSelection) {
+    const selectedLevel = attrs.styleLevel ? attrs.styleLevel : 0;
+    nextLevel = nodesAfterSelection.attrs.styleLevel;
+    levelDiff = nextLevel - selectedLevel;
+    if (nextLevel === attrs.styleLevel || levelDiff === 1) {
 
     }
+    else {
+      tr = addElementAfter(attrs, state, tr, endPos, nextLevel);
+    }
 
-    return tr;
+  }
+
+  return tr;
 }
 
 function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
 
-    const level = nodeAttrs.styleLevel - 1;
-    const counter = previousLevel ? previousLevel : 0;
+  const level = nodeAttrs.styleLevel ? nodeAttrs.styleLevel - 1 : 0;
+  const counter = previousLevel ? previousLevel : 0;
 
-    const paragraph = state.schema.nodes[PARAGRAPH];
-    for (let index = level; index > counter; index--) {
-        nodeAttrs.styleLevel = index;
-        nodeAttrs.styleName = 'None';
-        nodeAttrs.customStyle = null;
-        const paragraphNode = paragraph.create(
-            nodeAttrs,
-            null,
-            null
-        );
-        tr = tr.insert(startPos, Fragment.from(paragraphNode));
-    }
-    return tr;
+  const paragraph = state.schema.nodes[PARAGRAPH];
+  for (let index = level; index > counter; index--) {
+    nodeAttrs.styleLevel = index;
+    nodeAttrs.styleName = 'None';
+    nodeAttrs.customStyle = null;
+    const paragraphNode = paragraph.create(
+      nodeAttrs,
+      null,
+      null
+    );
+    tr = tr.insert(startPos, Fragment.from(paragraphNode));
+  }
+  return tr;
 }
 
 function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
-    const counter = nodeAttrs.styleLevel;
-    const level = nextLevel ? nextLevel - 1 : 0;
+  const counter = nodeAttrs.styleLevel ? nodeAttrs.styleLevel : 1;
+  const level = nextLevel ? nextLevel - 1 : 0;
 
-    const paragraph = state.schema.nodes[PARAGRAPH];
-    for (let index = level; index > counter; index--) {
-        nodeAttrs.styleLevel = index;
-        nodeAttrs.styleName = 'None';
-        nodeAttrs.customStyle = null;
-        const paragraphNode = paragraph.create(
-            nodeAttrs,
-            null,
-            null
-        );
-        tr = tr.insert(startPos, Fragment.from(paragraphNode));
-    }
-    return tr;
+  const paragraph = state.schema.nodes[PARAGRAPH];
+  for (let index = level; index > counter; index--) {
+    nodeAttrs.styleLevel = index;
+    nodeAttrs.styleName = 'None';
+    nodeAttrs.customStyle = null;
+    const paragraphNode = paragraph.create(
+      nodeAttrs,
+      null,
+      null
+    );
+    tr = tr.insert(startPos, Fragment.from(paragraphNode));
+  }
+  if (level === counter) {
+    nodeAttrs.styleLevel = 1;
+    nodeAttrs.styleName = 'None';
+    nodeAttrs.customStyle = null;
+    const paragraphNode = paragraph.create(
+      nodeAttrs,
+      null,
+      null
+    );
+    tr = tr.insert(startPos, Fragment.from(paragraphNode));
+  }
+  return tr;
 }
 
 function applyLineStyle(node, style, state, tr, startPos) {
-    if (style && style.boldPartial) {
-        let textContent = '';
-        const markType = state.schema.marks[MARK_STRONG];
-        if (style.boldScentence) {
-            node.descendants(function (child: Node, pos: number, parent: Node) {
-                if ('text' === child.type.name) {
+  if (style && style.boldPartial) {
+    let textContent = '';
+    const markType = state.schema.marks[MARK_STRONG];
+    if (style.boldScentence) {
+      node.descendants(function (child: Node, pos: number, parent: Node) {
+        if ('text' === child.type.name) {
 
-                    textContent = `${textContent}${child.text}`;
-                }
-            });
-            textContent = textContent.split('.')[0];
-            tr = tr.addMark(startPos, (startPos + textContent.length) + 1, markType.create(null));
+          textContent = `${textContent}${child.text}`;
         }
-        else {
-            node.descendants(function (child: Node, pos: number, parent: Node) {
-                if ('text' === child.type.name) {
-
-                    textContent = `${textContent}${child.text}`;
-
-                }
-            });
-            textContent = textContent.split(' ')[0];
-
-            tr = tr.addMark(startPos, (startPos + textContent.length) + 1, markType.create(null));
-        }
+      });
+      textContent = textContent.split('.')[0];
+      tr = tr.addMark(startPos, (startPos + textContent.length) + 1, markType.create(null));
     }
-    return tr;
+    else {
+      node.descendants(function (child: Node, pos: number, parent: Node) {
+        if ('text' === child.type.name) {
+
+          textContent = `${textContent}${child.text}`;
+
+        }
+      });
+      textContent = textContent.split(' ')[0];
+
+      tr = tr.addMark(startPos, (startPos + textContent.length) + 1, markType.create(null));
+    }
+  }
+  return tr;
 }
 
 export function executeCommands(state, tr, styleName, startPos, endPos) {
 
-    const style = getCustomStyleByName(styleName);
-    const _commands = getCustomStyleCommands(style);
-    _commands.forEach((element) => {
-        if (element.executeCustom) {
-            tr = element.executeCustom(state, tr, startPos, endPos);
-        }
-    });
-    return tr;
+  const style = getCustomStyleByName(styleName);
+  const _commands = getCustomStyleCommands(style);
+  _commands.forEach((element) => {
+    if (element.executeCustom) {
+      tr = element.executeCustom(state, tr, startPos, endPos);
+    }
+  });
+  return tr;
 }
 
 // Need to change this function code duplicates with applyStyle()
 export function applyLatestStyle(styleName: String, state: EditorState, tr: Transform,
-    node: Node, startPos: Number, endPos: Number) {
-    return applyStyleEx(null, styleName, state, tr, node, startPos, endPos);
+  node: Node, startPos: Number, endPos: Number) {
+  return applyStyleEx(null, styleName, state, tr, node, startPos, endPos);
 }
 
 function isAllowedNode(node) {
-    return (node.type.name === 'paragraph');
+  return (node.type.name === 'paragraph');
 }
 
 // [FS] IRAD-1088 2020-10-05
@@ -788,7 +805,7 @@ function removeAllMarksExceptLink(
   tr: Transform,
   schema: Schema
 ) {
-  const {doc} = tr;
+  const { doc } = tr;
   const tasks = [];
   doc.nodesBetween(from, to, (node, pos) => {
     if (node.marks && node.marks.length) {
@@ -816,7 +833,7 @@ function handleRemoveMarks(
   schema: Schema
 ) {
   tasks.forEach((job) => {
-    const {mark} = job;
+    const { mark } = job;
     tr = tr.removeMark(from, to, mark.type);
   });
   tr = setTextAlign(tr, schema, null);
@@ -831,7 +848,7 @@ export function applyStyle(
   state: EditorState,
   tr: Transform
 ) {
-  const {selection} = state;
+  const { selection } = state;
   const startPos = selection.$from.before(1);
   const endPos = selection.$to.after(1);
   const node = getNode(state, startPos, endPos);
