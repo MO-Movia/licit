@@ -228,12 +228,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     } else {
       const levelValue = document && document.getElementById('levelValue');
       if (levelValue && levelValue.value) {
-        style.marginLeft = `${levelValue.value * 2}px`;
+        style.marginLeft = `${parseInt(levelValue.value) * 2}px`;
       }
     }
 
     if (this.state.styles.level && this.state.styles.hasnumbering) {
-      if (document.getElementById('sampletextdiv')) {
+      if (document.getElementById('sampletextdiv') && null !== document.getElementById('sampletextdiv')) {
         document.getElementById(
           'sampletextdiv'
         ).innerText = `${this.getNumberingLevel(
@@ -247,7 +247,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // get the numbering corresponding to the level
   getNumberingLevel(level: string) {
     let levelStyle = '';
-    for (let i = 0; i < level; i++) {
+    for (let i = 0; i < parseInt(level); i++) {
       levelStyle = levelStyle + '1.';
     }
     return levelStyle + ' ';
@@ -302,11 +302,13 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // [FS] IRAD-1127 2020-12-31
   // to populate the selected custom styles.
   onSelectCustomStyle(e: any) {
-    const value = customStyles.find((u) => u.stylename === e.target.value);
+    if(null!==customStyles){
+       const value = customStyles.find((u) => u.stylename === e.target.value);
     this.state = {
         ...value,
       };
       this.setState(this.state);
+    }   
   }
 
 
@@ -404,8 +406,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             <select
               className="stylenameinput fontstyle"
               onChange={this.onSelectCustomStyle.bind(this)}
-              style={{height: '24px'}}
-              value={this.state.styles.lineheight}
+              style={{height: '24px'}}              
+              
             >
               {customStyles.map((style) => (
                 <option key={style.stylename} value={style.style}>
@@ -847,7 +849,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       value={this.state.styles.spacebefore}
                     />
                   </span>
-                  <label style={{marginLeft: '0'}}> pts</label>
+                  <label style={{marginLeft: '3px'}}> pts</label>
 
                   <label style={{marginLeft: '23px'}}>After: </label>
                   <span>

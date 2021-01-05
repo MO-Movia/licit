@@ -89,7 +89,7 @@ function setHeadingNode(
     return tr;
   } else if (isListNode(node)) {
     // Toggle list
-    if (heading && level !== null) {
+    if (level !== null) {
       tr = unwrapNodesFromList(tr, schema, pos, paragraphNode => {
         const { content, marks, attrs } = paragraphNode;
         const headingAttrs = { ...attrs, level };

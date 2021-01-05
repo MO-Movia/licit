@@ -78,7 +78,7 @@ class TextHighlightCommand extends UICommand {
         // If selection is empty, the color is added to `storedMarks`, which
         // works like `toggleMark`
         // (see https://prosemirror.net/docs/ref/#commands.toggleMark).
-        dispatch && dispatch(tr);
+        dispatch(tr);
         return true;
       }
     }
@@ -90,8 +90,8 @@ class TextHighlightCommand extends UICommand {
   executeCustom = (
     state: EditorState,
     tr: Transform,
-    from: Number,
-    to: Number
+    from: number,
+    to: number
   ): Transform => {
 
     const { schema } = state;

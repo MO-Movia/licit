@@ -58,9 +58,7 @@ class MarkToggleCommand extends UICommand {
     // tr = setMark(tr, schema, markType);
     // if (tr.docChanged || tr.storedMarksSet) {
     //   dispatch && dispatch(tr);
-    // }
-    return true;
-
+    // }   
   };
 
 
@@ -70,6 +68,8 @@ class MarkToggleCommand extends UICommand {
   executeCustom = (
     state: EditorState,
     tr: Transform,
+    posfrom: number,
+    posto: number
   ) => {
     const { schema, selection } = state;
     const markType = schema.marks[this._markName];

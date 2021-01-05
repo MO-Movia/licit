@@ -4,7 +4,7 @@
 import {GET, POST} from './client/http';
 
 const localStorageKey = 'moStyles';
-let customStyles = null;
+let customStyles = [];
 
 export function saveStyle(style: any, styleName: string) {
   const bOk = false;
@@ -15,7 +15,7 @@ export function saveStyle(style: any, styleName: string) {
 // [FS] IRAD-1128 2020-12-29
 // save the custom style to server
 function saveStyleToServer(style) {
-  customStyles = null;
+  customStyles = [];
   const url =
     window.location.protocol +
     '//' +
@@ -31,7 +31,7 @@ function saveStyleToServer(style) {
 
 function getStyles() {
   let style;
-  if (null !== customStyles) {
+  if (customStyles.length > 0) {
     return new Promise((resolve, reject) => {
       resolve(customStyles);
     });
@@ -65,12 +65,12 @@ export async function getCustomStyles() {
 // get a style by styleName
 export function getCustomStyleByName(name: string) {
   let style = null;
-  if (null != customStyles) {
-    customStyles.forEach((obj) => {
+  if (customStyles.length > 0) {
+    for (const obj of customStyles) {
       if (name === obj.stylename) {
         style = obj.styles;
       }
-    });
+    };
   } else {
     const customStyles = getCustomStyles();
     customStyles.then((result) => {
@@ -90,17 +90,30 @@ export function getCustomStyleByName(name: string) {
 
 // get a style by Level
 export function getCustomStyleByLevel(level: Number) {
-  const itemsArray = window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
+  // const itemsArray = window.localStorage.getItem(localStorageKey) ? JSON.parse(window.localStorage.getItem(localStorageKey)) : [];
   let style = null;
-  if (itemsArray.length > 0) {
-
-      for (const obj of itemsArray) {
-          if (obj.styles.level && level === Number(obj.styles.level)) {
-              if (null === style) {
-                  style = obj;
-              }
-          }
+  if (customStyles.length > 0) {
+    for (const obj of customStyles) {
+      if (obj.styles.level && level === Number(obj.styles.level)) {
+        if (null === style) {
+          style = obj;
+        }
       }
+    }
+  } else {
+    const customStyles = getCustomStyles();
+    customStyles.then((result) => {
+      if (null != result) {
+        for (const obj of customStyles) {
+          if (obj.styles.level && level === Number(obj.styles.level)) {
+            if (null === style) {
+              style = obj;
+            }
+          }
+        }
+      }
+      return style;
+    });
   }
   return style;
 }
@@ -116,7 +129,7 @@ export function removeStyle(name: string) {
 // [FS] IRAD-1128 2020-12-29
 // to remove the selected Custom style.
 export function removeFromLocalStorage(name: string) {
-  customStyles = null;
+  customStyles = [];
   const url =
     window.location.protocol +
     '//' +

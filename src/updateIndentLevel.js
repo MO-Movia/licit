@@ -44,7 +44,7 @@ export default function updateIndentLevel(
       nodeType === heading ||
       nodeType === blockquote
     ) {
-      tr = setNodeIndentMarkup(state, tr, schema, pos, delta);
+      tr = setNodeIndentMarkup(state, tr, pos, delta);
       return false;
     } else if (isListNode(node)) {
       // List is tricky, we'll handle it later.
@@ -65,7 +65,7 @@ export default function updateIndentLevel(
       .sort(compareNumber)
       .reverse()
       .forEach(pos => {
-        tr2 = setListNodeIndent(tr2, schema, pos, delta);
+        tr2 = setListNodeIndent(state, tr2, schema, pos, delta);
       });
     tr2 = consolidateListNodes(tr2);
     return tr2;
@@ -75,6 +75,7 @@ export default function updateIndentLevel(
 }
 
 function setListNodeIndent(
+  state: EditorState,
   tr: Transform,
   schema: Schema,
   pos: number,
@@ -112,7 +113,7 @@ function setListNodeIndent(
   // It wont satisfy the list hve childrens
 
   if (from <= pos && to >= pos) {
-    return setNodeIndentMarkup(tr, schema, pos, delta);
+    return setNodeIndentMarkup(state, tr, pos, delta);
   }
 
   const listNodeType = listNode.type;
@@ -181,7 +182,6 @@ function setListNodeIndent(
 function setNodeIndentMarkup(
   state: EditorState,
   tr: Transform,
-  schema: Schema,
   pos: number,
   delta: number
 ): Transform {

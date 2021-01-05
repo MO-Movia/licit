@@ -41,8 +41,8 @@ class IndentCommand extends UICommand {
   executeCustom = (
     state: EditorState,
     tr: Transform,
-    from: Number,
-    to: Number
+    from: number,
+    to: number
   ): boolean => {
     const { schema } = state;
     tr = updateIndentLevel(state, tr.setSelection(TextSelection.create(tr.doc, from, to)),
