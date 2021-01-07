@@ -5,14 +5,11 @@ import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
-
 import { MARK_SPACER } from './MarkNames';
 import { HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
 import { HAIR_SPACE_CHAR, SPACER_SIZE_TAB } from './SpacerMarkSpec';
 import applyMark from './applyMark';
 import UICommand from './ui/UICommand';
-// import { getCustomStyleByLevel } from './customStyle';
-// import { applyLatestStyle } from './CustomStyleCommand';
 
 function insertTabSpace(state: EditorState, tr: Transform, schema: Schema): Transform {
   const { selection } = tr;
@@ -40,19 +37,13 @@ function insertTabSpace(state: EditorState, tr: Transform, schema: Schema): Tran
   const { from, to } = selection;
 
   if (found.node.type === listItem && found.pos === from - 2 && !found.node.attrs.styleLevel) {
-    // Cursur is at te begin of the list-item, let the default indentation
+    // Cursur is at the begin of the list-item, let the default indentation
     // behavior happen.
     return tr;
   }
 
   if (found.node.type === paragraph && found.pos === from - 1 && found.node.attrs.styleLevel) {
-    // const nextLevel = found.node.attrs.styleLevel + 1;
-    // let posFrom = from - 1;
-    // const style = getCustomStyleByLevel(nextLevel);
-    // if (style) {
-    //   tr = applyLatestStyle(style.stylename, state, tr, found.node, posFrom, posFrom + found.node.nodeSize);
-    // }
-    return tr;
+     return tr;
   }
   const textNode = schema.text(HAIR_SPACE_CHAR);
   tr = tr.insert(to, Fragment.from(textNode));

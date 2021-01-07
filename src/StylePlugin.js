@@ -8,8 +8,6 @@ import {
     Node
 } from 'prosemirror-model';
 import {
-    // applyLatestStyle,
-    // executeCommands,
     updateOverrideFlag,
     getMarkByStyleName,
     ATTR_OVERRIDDEN,
@@ -36,7 +34,6 @@ const ATTR_STYLE_NAME = 'styleName';
 
 
 const isNodeHasAttribute = (node, attrName) => {
-    // return (node.attrs && 'None' !== node.attrs[attrName]);
     return (node.attrs && node.attrs[attrName]);
 };
 const requiredAddAttr = (node) => {
@@ -59,7 +56,6 @@ export default class StylePlugin extends Plugin {
             props: {
                 handleDOMEvents: {
                     keydown(view, event) {
-                        // _keydown(view, event);
                         this.view = view;
                     }
                 },
@@ -71,7 +67,6 @@ export default class StylePlugin extends Plugin {
                 if (!this.loaded) {
                     this.loaded = true;
                     // do this only once when the document is loaded.
-                    // tr = applyStyles(nextState, tr);
                 } else if (isDocChanged(transactions)) {
                     if (!this.firstTime) {
                         // when user updates
@@ -104,9 +99,6 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
         nextState.doc.descendants((node, pos) => {
             let required = false;
             if (requiredAddAttr(node)) {
-                // if (isNewParagraph(prevState, nextState, pos, view)) {
-                //     required = true;
-                // }
                 required = true;
             }
             if (required) {
@@ -118,7 +110,6 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
                     IsActiveNode = true;
                 }
                 if (nextNode && IsActiveNode && nextNode.type.name === 'paragraph' && nextNode.attrs.styleName === 'None') {
-                    // tr = executeCommands(nextState, tr, node.attrs[ATTR_STYLE_NAME], nextState.selection.$from.before(1), nextState.selection.$to.after(1));
                     const style = getCustomStyleByName(newattrs.styleName);
                     if (null !==style && !style.boldPartial) {
                         tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
@@ -150,7 +141,6 @@ function isNewParagraph(prevState, nextState, view) {
     let bOk = false;
     if (ENTERKEYCODE === view.lastKeyCode
         && PARA_POSITION_DIFF === (nextState.selection.from - prevState.selection.from)
-        // && pos === (prevState.selection.from - 1)
     ) {
         bOk = true;
     }
@@ -181,21 +171,6 @@ function updateStyleOverrideFlag(state, tr) {
 function haveEligibleChildren(node, contentLen) {
     return (node instanceof Node) && (0 < contentLen) && (node.type.name === 'paragraph') && (NONE !== node.attrs.styleName);
 }
-
-// function applyStyles(state, tr) {
-//     if (!tr) {
-//         tr = state.tr;
-//     }
-
-//     tr.doc.descendants(function (child, pos) {
-//         const contentLen = child.content.size;
-//         if (haveEligibleChildren(child, contentLen)) {
-//             tr = applyLatestStyle(child.attrs.styleName, state, tr, child, pos, pos + contentLen + 1);
-//         }
-//     });
-
-//     return tr;
-// }
 
 function createMarkAttributes(mark, markName, existingAttr) {
     if (mark) {

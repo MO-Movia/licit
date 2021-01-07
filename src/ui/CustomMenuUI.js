@@ -325,15 +325,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
 
 }
 
-function haveEligibleChildren(node, contentLen, styleName) {
-  let bOk = false;
-
-  if (node.type.name === 'paragraph' && 0 < contentLen && styleName === node.attrs.styleName) {
-    bOk = true;
-  } else {
-    bOk = false;
-  }
-  return bOk;
+function  haveEligibleChildren(node, contentLen, styleName) {
+  return node.type.name === 'paragraph' && 0 < contentLen && styleName === node.attrs.styleName;
 }
 
 

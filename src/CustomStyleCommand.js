@@ -3,7 +3,6 @@ import {EditorState, TextSelection} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
 import {Node, Fragment, Schema} from 'prosemirror-model';
-// import { findPositionOfNodeBefore, findParentNodeOfType, findParentNodeOfTypeClosestToPos } from 'prosemirror-utils';
 import UICommand from './ui/UICommand';
 import {atViewportCenter} from './ui/PopUpPosition';
 import createPopUp from './ui/createPopUp';
@@ -586,10 +585,6 @@ function applyStyleEx(
   }
   // to set custom styleName attribute for node
   newattrs['styleName'] = styleName;
-  // tr = _setNodeAttribute(node, tr, startPos, endPos, newattrs);
-
-  // const selection = TextSelection.create(tr.doc, endPos, endPos - 1);
-  // tr = tr.setSelection(selection);
   tr = applyLineStyle(node, style, state, tr, startPos);
   const storedmarks = getMarkByStyleName(styleName, state.schema);
   tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
@@ -803,14 +798,6 @@ function _setNodeAttribute(
   to: number,
   attribute: any
 ) {
-  // if (isAllowedNode(node)) {
-  //     node.descendants(function (child: Node, pos: number, parent: Node) {
-  //         tr = tr.setNodeMarkup(pos, undefined, attribute);
-
-  //     });
-  // }
-  // return tr;
-
   state.doc.nodesBetween(from, to, (node, startPos) => {
     if (isAllowedNode(node)) {
       tr = tr.setNodeMarkup(startPos, undefined, attribute);
