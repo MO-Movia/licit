@@ -94,7 +94,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
     if (!tr) {
         tr = nextState.tr;
     }
-    if (isNewParagraph(prevState, nextState, view)) {
+    if (view && isNewParagraph(prevState, nextState, view)) {
 
         nextState.doc.descendants((node, pos) => {
             let required = false;
