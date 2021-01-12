@@ -4,7 +4,7 @@ import { Schema, Node } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
 import { setTextAlign } from './TextAlignCommand';
 import { setTextLineSpacing } from './TextLineSpacingCommand';
-import { setParagraphSpacing } from './ParagraphSpacingCommand'; 
+import { setParagraphSpacing } from './ParagraphSpacingCommand';
 
 // [FS] IRAD-1053 2020-11-13
 // Issue fix: Line spacing and paragrapgh spacing not removed when select Remove style.

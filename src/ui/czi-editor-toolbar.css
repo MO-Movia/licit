@@ -101,8 +101,8 @@
 }
 
 .czi-editor-toolbar-background-line {
-  box-sizing: border-box;
   box-shadow: 0 1px 0 0.2px #efefef;
+  box-sizing: border-box;
   height: 32px;
 }
 

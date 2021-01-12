@@ -11,9 +11,9 @@
 
 .czi-form legend {
   border: none;
+  font-size: var(--czi-content-font-size-h2);
   margin: 0 0 20px 0;
   padding: 0;
-  font-size: var(--czi-content-font-size-h2);
   user-select: none;
 }
 
@@ -32,8 +32,8 @@
 }
 
 .czi-form input[type='text'] {
-  border-width: 0 0 2px 0;
   border: var(--czi-border-blue);
+  border-width: 0 0 2px 0;
   box-sizing: border-box;
   display: block;
   font-family: var(--czi-font-family);
@@ -65,20 +65,20 @@
 }
 
 .alert {
-  padding: 20px;
   background-color: #f44336;
   color: white;
+  padding: 20px;
   width: 340px;
 }
 
 .closebtn {
-  margin-left: 15px;
   color: #9a9090;
+  cursor: pointer;
   font-weight: bold;
   float: right;
   font-size: 22px;
   line-height: 20px;
-  cursor: pointer;
+  margin-left: 15px;
   transition: 0.3s;
 }
 

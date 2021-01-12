@@ -5,7 +5,8 @@ import {
     PluginKey
 } from 'prosemirror-state';
 import {
-    Node
+    Node,
+    Fragment
 } from 'prosemirror-model';
 import {
     updateOverrideFlag,
@@ -71,6 +72,7 @@ export default class StylePlugin extends Plugin {
                     if (!this.firstTime) {
                         // when user updates
                         tr = updateStyleOverrideFlag(nextState, tr);
+                        tr = manageHierarchyOnDelete(prevState, nextState, tr, this.view);
                     }
                     this.firstTime = false;
                     // custom style for next line
@@ -88,6 +90,81 @@ export default class StylePlugin extends Plugin {
         return applyEffectiveSchema(schema);
     }
 }
+
+// [FS] IRAD-1130 2021-01-07
+// Handle heirarchy on delete
+function manageHierarchyOnDelete(prevState, nextState, tr, view) {
+    let nodes = null;
+    let prevN = null;
+    let index = 0;
+
+    if (prevState.doc !== nextState.doc) {
+        if (view && (46 === view.lastKeyCode || 8 === view.lastKeyCode)) {
+            const nextNodes = nodeAssignment(nextState);
+            let prevLevel = 1;
+            nextNodes.forEach(element => {
+
+                if (element.node.attrs.styleLevel - prevLevel > 1 && null === nodes) {
+                    prevLevel = element.node.attrs.styleLevel;
+                    nodes = element;
+                    prevN = nextNodes[index - 1];
+                }
+                else {
+                    if (prevLevel < 1) {
+                        prevLevel = element.node.attrs.styleLevel;
+                    }
+                }
+                index++;
+            });
+            if (nodes && prevN) {
+                if (!tr) {
+                    tr = nextState.tr;
+                }
+                const newattrs = Object.assign({}, prevN.node.attrs);
+                tr = addElementAfter(newattrs, nextState, tr, prevN.pos + prevN.node.nodeSize, prevLevel);
+            }
+
+        }
+    }
+    return tr;
+}
+function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
+    const counter = nodeAttrs.styleLevel ? nodeAttrs.styleLevel : 1;
+    const level = nextLevel ? nextLevel - 1 : 0;
+
+    const paragraph = state.schema.nodes['paragraph'];
+
+    for (let index = level; index > counter; index--) {
+        nodeAttrs.styleLevel = index;
+        nodeAttrs.styleName = 'None';
+        nodeAttrs.customStyle = null;
+        const paragraphNode = paragraph.create(
+            nodeAttrs,
+            null,
+            null
+        );
+        tr = tr.insert(startPos, Fragment.from(paragraphNode));
+    }
+
+    return tr;
+}
+
+function nodeAssignment(state) {
+    const nodes = [];
+    state.doc.descendants((node, pos) => {
+        if (requiredAddAttr(node)) {
+            if (node.attrs.styleLevel) {
+                nodes.push({
+                    node,
+                    pos,
+                });
+            }
+        }
+    });
+
+    return nodes;
+}
+
 // Continious Numbering for custom style
 function applyStyleForNextParagraph(prevState, nextState, tr, view) {
     let modified = false;
@@ -111,7 +188,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
                 }
                 if (nextNode && IsActiveNode && nextNode.type.name === 'paragraph' && nextNode.attrs.styleName === 'None') {
                     const style = getCustomStyleByName(newattrs.styleName);
-                    if (null !==style && !style.boldPartial) {
+                    if (null !== style && !style.boldPartial) {
                         tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
                         const marks = getMarkByStyleName(node.attrs[ATTR_STYLE_NAME], nextState.schema);
                         node.descendants((child, pos) => {

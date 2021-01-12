@@ -3,10 +3,15 @@
 .czi-selection-placeholder {
   background-color: var(--czi-selection-highlight-color-dark) !important;
   -webkit-animation-direction: alternate;
+  animation-direction: alternate;
   -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
   -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
   -webkit-animation-name: czi_selection_blink;
+  animation-name: czi_selection_blink;
   -webkit-animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
 }
 
 @-webkit-keyframes czi_selection_blink {

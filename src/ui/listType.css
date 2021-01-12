@@ -1,21 +1,21 @@
 .container {
+    background: #fffefe;
+    border: 1px solid #bdb5b5;
     display: grid;
+    grid-gap: 10px;
     grid-template-columns: auto auto auto;
     /* grid-template-rows: 33% 33% 33%;; */
-    border: 1px solid #bdb5b5;
     padding: 5px;
-    grid-gap: 10px;
-    background: #fffefe;
   }
 
-  .buttonSize{
+  .buttonsize{
     height: 50px;
     width: 50px;
   }
 
   /* [FS] IRAD-1076 2020-10-15
   Style for paste popup menu*/
-  .pasteMenu{
+  .pastemenu{
     height: 35px;
     width: 72px;
   }

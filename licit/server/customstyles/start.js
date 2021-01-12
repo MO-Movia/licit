@@ -74,12 +74,54 @@ app.post('/savecustomstyle/', function (req, res) {
         if (err) {
           return console.error(err);
         } else {
-          console.log('Success');
+          fresult.sort(function (a, b) {
+            var styleA = a.stylename.toUpperCase();
+            var styleB = b.stylename.toUpperCase();
+  
+            return styleA.localeCompare(styleB);
+          });
+          res.send(fresult);
         }
       }
     );
   });
 });
+
+// [FS] IRAD-1128 2020-12-24
+// save the custom style to the json file.
+app.post('/renamecustomstyle/', function (req, res) {
+  fs.readFile('../customstyles/customstyles.json', function (err, data) {
+    if (err) {
+      return console.error(err);
+    }
+    var fresult = JSON.parse(data);
+    for (let i = 0; i < fresult.length; i++) {
+      if (fresult[i].stylename === req.body.styleName) {
+        //if style exists, then modify the style name
+        fresult[i].stylename = req.body.modifiedStyleName; 
+        break;
+      }
+    }
+    fs.writeFile(
+      '../customstyles/customstyles.json',
+      JSON.stringify(fresult),
+      function (err, result) {
+        if (err) {
+          return console.error(err);
+        } else {
+          fresult.sort(function (a, b) {
+            var styleA = a.stylename.toUpperCase();
+            var styleB = b.stylename.toUpperCase();
+  
+            return styleA.localeCompare(styleB);
+          });
+          res.send(fresult);
+        }
+      }
+    );
+  });
+});
+
 
 // [FS] IRAD-1128 2020-12-30
 // to remove the selected custom style from the json file.

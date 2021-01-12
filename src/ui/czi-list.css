@@ -264,11 +264,11 @@ Ordered list 1) formatting  fix */
     left: -5px;
     line-height: 1em;
     margin-left: -28pt;
+    padding-left: 20px;
     position: relative;
     text-align: right;
     top: 0;
     width: 32pt;
-    padding-left: 20px;
   }
 
 .ProseMirror ol[type='decimal'][data-indent='0'] > li > p::before {

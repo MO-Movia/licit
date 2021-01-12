@@ -292,10 +292,10 @@ class CustomStyleCommand extends UICommand {
       to = selection.$to.after(1);
     }
 
+    // reset the custom style name to NONE after remove the styles
+    clearCustomStyleAttribute(node);
     marks.forEach((mark) => {
       tr = tr.removeMark(from, to, mark.type);
-      // reset the custom style name to NONE after remove the styles
-      clearCustomStyleAttribute(node);
     });
     return tr;
   }
@@ -337,7 +337,7 @@ class CustomStyleCommand extends UICommand {
 
   // locally save style object
   saveStyleObject(style: any) {
-    saveStyle(style, style.styleName);
+    saveStyle(style);
   }
 }
 
@@ -539,6 +539,9 @@ function applyStyleEx(
   newattrs['lineSpacing'] = null;
   newattrs['paragraphSpacingAfter'] = null;
   newattrs['paragraphSpacingBefore'] = null;
+  // [FS] IRAD-1131 2021-01-12
+  // Indent overriding not working on a paragraph where cussom style is applied
+  newattrs['indent'] = null;
   newattrs['styleName'] = styleName;
 
   _commands.forEach((element) => {
@@ -651,8 +654,6 @@ function createEmptyElement(
     }
   }
   // Manage heirachy for nodes of next position
-
-
   if (docSize > endPos) {
     state.doc.nodesBetween(endPos, docSize, (node, pos) => {
       if (isAllowedNode(node) && node.attrs.styleLevel && null === nodesAfterSelection) {
@@ -780,9 +781,10 @@ export function applyLatestStyle(
   tr: Transform,
   node: Node,
   startPos: number,
-  endPos: number
+  endPos: number,
+  style=null
 ) {
-  return applyStyleEx(null, styleName, state, tr, node, startPos, endPos);
+  return applyStyleEx(style, styleName, state, tr, node, startPos, endPos);
 }
 
 function isAllowedNode(node) {

@@ -29,7 +29,8 @@
     border-color: #cec7c7;
     border-style: solid;
     border-width: 1px;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px 0 rgba(26, 25, 25, 0.2);
+    box-sizing: border-box;
     color: #5a615e;
     font-family: 'Arial', sans-serif;
     font-size: 14px;
@@ -77,7 +78,7 @@
 #container1:hover {
     background-color: lightgrey;
 }
-.arrow_right {
+.arrow-right {
     text-align: right;
     width: 30px;
 }

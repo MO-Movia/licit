@@ -34,7 +34,9 @@ function patchTableCell(tdElement: HTMLElement): void {
         // The span has the same bg color as the cell does, erase its bg color.
         spanStyle.backgroundColor = '';
       }
+      return true;
     });
+    return true;
   }
 
   if (width) {

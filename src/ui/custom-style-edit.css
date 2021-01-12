@@ -18,6 +18,7 @@
     border-color: gray;
     border-style: solid;
     border-width: 1px;
+    box-sizing: border-box;
     margin-left: -3px;
     padding: 5px;
     width: auto;
@@ -104,6 +105,7 @@ label {
 
 .sectiondiv {
     /* margin: 5px 0; */
+    box-sizing: border-box;
     margin-left: 4px;
     padding-left: 2px;
     width: 240px;;
@@ -154,6 +156,7 @@ label {
 }
 
 .fontsize {
+    box-sizing: border-box;
     height: 22px;
     margin-bottom: 4px;
     margin-left: 7px;
@@ -164,6 +167,7 @@ label {
 }
 
 .fonttype {
+    box-sizing: border-box;
     height: 22px;
     margin-bottom: 3px;
     margin-left: -10px;
@@ -174,6 +178,7 @@ label {
 }
 
 .leveltype {
+    box-sizing: border-box;
     height: 22px;
     margin-left: 0;
     padding-left: 2px;
@@ -181,6 +186,7 @@ label {
 }
 
 .numbering {
+    box-sizing: border-box;
     font-size: 13px;
     height: 22px;
     margin-bottom: 0;
@@ -191,6 +197,7 @@ label {
 }
 
 .indenting {
+    box-sizing: border-box;
     font-size: 13px;
     height: 22px;
     margin-left: 10px;
@@ -265,6 +272,7 @@ label {
     border-color: lightgray;
     border-style: solid;
     border-width: 1px;
+    box-sizing: border-box;
     color: #444;
     cursor: pointer;
     font-size: 14px;
@@ -293,6 +301,7 @@ label {
 .panel1,
 .panel2 {
     background-color: transparent;
+    box-sizing: border-box;
     margin-bottom: 10px;
     max-height: 0;
     overflow: hidden;
@@ -379,6 +388,7 @@ label {
     border-color: gray;
     border-style: solid;
     border-width: 1px;
+    box-sizing: border-box;
     margin-left: -1px;
     padding: 5px;
     width: auto;

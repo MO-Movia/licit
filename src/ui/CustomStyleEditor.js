@@ -234,11 +234,23 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
     if (this.state.styles.level && this.state.styles.hasnumbering) {
       if (document.getElementById('sampletextdiv') && null !== document.getElementById('sampletextdiv')) {
-        document.getElementById(
-          'sampletextdiv'
-        ).innerText = `${this.getNumberingLevel(
-          this.state.styles.level
-        )}${SAMPLE_TEXT}`;
+       // [FS] IRAD-1137 2021-01-11
+       // Issue fix : The Preview text is not showing the numbering in bold after Bold Numbering is enabled.
+        if(this.state.styles.boldNumbering){
+          document.getElementById(
+            'sampletextdiv'
+          ).innerHTML = `<strong>${this.getNumberingLevel(
+            this.state.styles.level
+          )}</strong>${SAMPLE_TEXT}`;
+        }
+        else{
+          document.getElementById(
+            'sampletextdiv'
+          ).innerText = `${this.getNumberingLevel(
+            this.state.styles.level
+          )}${SAMPLE_TEXT}`;
+        }
+
       }
     }
     return style;
@@ -308,7 +320,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         ...value,
       };
       this.setState(this.state);
-    }   
+    }
   }
 
 
@@ -406,8 +418,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             <select
               className="stylenameinput fontstyle"
               onChange={this.onSelectCustomStyle.bind(this)}
-              style={{height: '24px'}}              
-              
+              style={{height: '24px'}}
+
             >
               {customStyles.map((style) => (
                 <option key={style.stylename} value={style.style}>
