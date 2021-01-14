@@ -20,7 +20,7 @@ export default function toggleBlockquote(
   const paragraph = nodes[PARAGRAPH];
   const listItem = nodes[LIST_ITEM];
 
-  if (!selection || !doc || !heading || !paragraph || !listItem || !heading) {
+  if (!selection || !doc || !heading || !paragraph || !listItem) {
     return tr;
   }
 

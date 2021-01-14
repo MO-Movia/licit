@@ -1,7 +1,10 @@
 .czi-bookmark-view {
   color: #5e8adb;
   display: inline-block;
-  margin: 0 4px;
+  margin-bottom: 0;
+  margin-top: 0;
+  margin-left: 4px;
+  margin-right: 4px;
   vertical-align: middle;
   width: 20px;
 }

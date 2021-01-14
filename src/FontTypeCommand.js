@@ -71,9 +71,18 @@ class FontTypeCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const { schema, selection } = state;
+    const { schema } = state;
+     // commnted selection because selection removes the storedMarks;
+    // {selection}
+
+    // const tr = setFontType(
+    //   state.tr.setSelection(selection),
+    //   schema,
+    //   this._name
+    // );
+
     const tr = setFontType(
-      state.tr.setSelection(selection),
+      state.tr,
       schema,
       this._name
     );
@@ -92,8 +101,8 @@ class FontTypeCommand extends UICommand {
   executeCustom = (
     state: EditorState,
     tr: Transform,
-    from: Number,
-    to: Number
+    from: number,
+    to: number
   ): Transform => {
 
     const { schema } = state;

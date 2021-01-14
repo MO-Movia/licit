@@ -15,7 +15,7 @@ import { Transform } from 'prosemirror-transform';
 class TextColorCommand extends UICommand {
 
   _popUp = null;
-  _color: string;
+  _color = '';
 
   constructor(color: ?string) {
     super();
@@ -70,11 +70,10 @@ class TextColorCommand extends UICommand {
   ): boolean => {
     if (dispatch && color !== undefined) {
       const { schema } = state;
-      let { tr } = state;
       const markType = schema.marks[MARK_TEXT_COLOR];
-      const attrs = color ? { color } : null;
-      tr = applyMark(
-        state.tr.setSelection(state.selection),
+      const attrs = color ? { color } : null;      
+      const tr = applyMark(
+        state.tr,
         schema,
         markType,
         attrs
@@ -83,7 +82,7 @@ class TextColorCommand extends UICommand {
         // If selection is empty, the color is added to `storedMarks`, which
         // works like `toggleMark`
         // (see https://prosemirror.net/docs/ref/#commands.toggleMark).
-        dispatch && dispatch(tr);
+        dispatch(tr);
         return true;
       }
     }
@@ -96,16 +95,18 @@ class TextColorCommand extends UICommand {
   executeCustom = (
     state: EditorState,
     tr: Transform,
-    from: Number,
-    to: Number
+    from: number,
+    to: number
   ): Transform => {
 
     const { schema } = state;
     const markType = schema.marks[MARK_TEXT_COLOR];
     const attrs = { color: this._color };
+    const storedmarks = tr.storedMarks;
     // [FS] IRAD-1043 2020-10-27
     // Issue fix on removing the  custom style if user click on the same style menu multiple times
-    tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, from, to)), schema, markType, attrs,true);
+    tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, from, to)), schema, markType, attrs, true);
+    tr.storedMarks = storedmarks;
     return tr;
   };
 }

@@ -2,6 +2,7 @@
 
 import applyDevTools from 'prosemirror-dev-tools';
 import { EditorState, TextSelection } from 'prosemirror-state';
+import { Node } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
@@ -131,7 +132,7 @@ class Licit extends React.Component<any, any> {
     }
   }
 
-  isNodeHasAttribute (node:Node, attrName:String)  {
+  isNodeHasAttribute (node: Node, attrName: string)  {
     return node.attrs && node.attrs[attrName];
   }
 
@@ -149,7 +150,7 @@ class Licit extends React.Component<any, any> {
     // set the value for object metadata  and objectId
     tr = this.isNodeHasAttribute(document,ATTR_OBJMETADATA)?tr.step(new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)) : tr;
     tr = this.isNodeHasAttribute(document,ATTR_OBJID)?tr.step(new SetDocAttrStep(ATTR_OBJID, document.attrs.objectId)) : tr;
-  
+
     this._skipSCU = true;
     this._editorView.dispatch(tr);
   }
@@ -216,6 +217,17 @@ class Licit extends React.Component<any, any> {
   _onChange = (data: { state: EditorState, transaction: Transform }): void => {
     const { transaction } = data;
     let isEmpty = false;
+     /*
+    ** ProseMirror Debug Tool's Snapshot creates a new state and sets that to editor view's state.
+    ** This results in the connector's state as an orphan and thus transaction mismatch error.
+    ** To resolve check and update the connector's state to keep in sync.
+    */
+    const isSameState = (this._connector._editorState == this._editorView.state);
+
+    if(!isSameState) {
+    this._connector._editorState = this._editorView.state;
+    }
+
     this._connector.onEdit(transaction);
     if (transaction.docChanged) {
       const docJson = transaction.doc.toJSON();

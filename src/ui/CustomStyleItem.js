@@ -9,54 +9,66 @@ import { EditorView } from 'prosemirror-view';
 import './custom-dropdown.css';
 import { getCustomStyleByName } from '../customStyle';
 import { getCustomStyle } from './findActiveHeading';
+import PointerSurface from './PointerSurface';
+import type { PointerSurfaceProps } from './PointerSurface';
+import Icon from './Icon';
+import cx from 'classnames';
 class CustomStyleItem extends React.PureComponent<any, any> {
-    props: {
+    props: PointerSurfaceProps & {
         command: UICommand,
         disabled?: ?boolean,
         dispatch: (tr: Transform) => void,
         editorState: EditorState,
         editorView: ?EditorView,
-        label?: string,
-        onClick?: ?(val: any, e: SyntheticEvent<>) => void,
-        hasText?: ?Boolean
+        label: string,
+        onClick: ?(value: any, e: SyntheticEvent<>) => void,
+        onMouseEnter: ?(value: any, e: SyntheticEvent<>) => void,
+        hasText?: ?Boolean,
+        onCommand: ?Function,
     };
 
     render(): React.Element<any> {
 
-        const { command, label, onClick, hasText } = this.props;
+        const { icon, label, hasText, ...pointerProps } = this.props;
         let text = '';
         let customStyle;
         text = this.sampleText();
         const style = getCustomStyleByName(label);
+        const className = 'czi-custom-menu-item';
         if (style) {
             customStyle = getCustomStyle(style);
         }
-
+        const klass = cx(className, '', {
+            'use-icon': !!icon,
+        });
         return (
             <div id="container1" tag={label}>
 
-                <div onClick={(e) => this._onUIEnter(command, e)} style={{ width: '140px', height: 'auto' }}>{label}</div>
-                <div onClick={(e) => this._onUIEnter(command, e)} style={{ width: '100px' }} style={customStyle}> {text}</div>
-                <div className="arrow_right" onClick={onClick.bind(this, command)} style={{ width: '50px' }} style={hasText ? { display: 'block' } : { display: 'none' }}>
-                    <span className="czi-icon keyboard_arrow_down">keyboard_arrow_down</span>
+                <div style={{ width: '140px', height: 'auto' }}>
+                    <PointerSurface {...pointerProps} className={klass} style={{ display: 'inline-block', width: '140px' }}>
+                        {icon}
+                        {label}
+                    </PointerSurface>
+                </div>
+                <div style={{ width: '100px' }} style={customStyle}>
+                    <PointerSurface {...pointerProps} className={klass} style={customStyle}>
+                        {icon}
+                        {text}
+                    </PointerSurface>
+                </div>
+                <div className="arrow_right" style={{ width: '50px' }} style={hasText ? { display: 'block' } : { display: 'none' }}>
+                    {/* Need to change the below icon to downarroe */}
+                    <PointerSurface {...pointerProps} className={klass + ' edit-icon'}>
+                        {Icon.get('edit')}
+                        {''}
+                    </PointerSurface>
                 </div>
             </div>
         );
     }
 
-    _onUIEnter = (command: UICommand, event: SyntheticEvent<*>) => {
-
-        this._execute(command, event);
-
-    };
-
-    _execute = (command: UICommand, e: SyntheticEvent<*>) => {
-        const { dispatch, editorState, editorView, onCommand } = this.props;
-        command.execute(editorState, dispatch, editorView, e);
-        onCommand && onCommand();
-    };
     // temp method to clear sample text for new and clear command menu item
-    sampleText(): String {
+    sampleText(): string {
 
         let text = 'AaBbCcDd';
         if (!this.props.hasText) {
@@ -64,7 +76,6 @@ class CustomStyleItem extends React.PureComponent<any, any> {
 
         }
         return text;
-
     }
 }
 

@@ -110,7 +110,7 @@ function wrapNodesWithList(
 function wrapNodesWithListInternal(
     memo: SelectionMemo,
     listNodeType: NodeType,
-    listStyleType: String,
+    listStyleType: string,
     newselection = null
 ): Transform {
   const { schema } = memo;

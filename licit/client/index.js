@@ -4,7 +4,6 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 
 import Licit from '../../src/client/Licit';
-import StylePlugin from '../../src/StylePlugin';
 
 function main(): void {
   const el = document.createElement('div');
@@ -25,7 +24,7 @@ function main(): void {
   // To pass prosemirror plugins to editor pass it to plugins property which accept array of plugin object.
   // null means no custom plugins to pass
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
-  const plugins = [new StylePlugin()];
+  const plugins = null;
   ReactDOM.render(<Licit data={docJSON} debug={true} docID={0} embedded={false}
   height={'100vh'} onChange={onChangeCB} onReady={onReadyCB} plugins={plugins}
   runtime={null} width={'100vw'} />, el);

@@ -42,7 +42,7 @@ class CustomMenuButton extends React.PureComponent<any, any> {
       className,
       label,
       icon,
-      title,
+
     } = this.props;
     // const enabled =
     //   !disabled &&
@@ -74,7 +74,7 @@ class CustomMenuButton extends React.PureComponent<any, any> {
         id={this._id}
         label={label}
         onClick={this._onClick}
-        title={title}
+        title={label}
       />
     );
   }

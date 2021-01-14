@@ -1,9 +1,9 @@
 import * as React from 'react';
 import UICommand from './UICommand';
-import {EditorState} from 'prosemirror-state';
-import {Schema} from 'prosemirror-model';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Schema } from 'prosemirror-model';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import uuid from './uuid';
 import './listType.css';
 import CustomStyleItem from './CustomStyleItem';
@@ -11,12 +11,12 @@ import CustomStyleItem from './CustomStyleItem';
 import createPopUp from './createPopUp';
 import CustomStyleSubMenu from './CustomStyleSubMenu';
 import CustomStyleEditor from './CustomStyleEditor';
-import {applyStyle} from '../CustomStyleCommand';
-import {atViewportCenter} from './PopUpPosition';
-import {saveStyle, removeStyle} from '../customStyle';
-import {setTextAlign} from '../TextAlignCommand';
-import {setTextLineSpacing} from '../TextLineSpacingCommand';
-import {setParagraphSpacing} from '../ParagraphSpacingCommand';
+import { applyLatestStyle } from '../CustomStyleCommand';
+import { atViewportCenter } from './PopUpPosition';
+import { saveStyle, removeStyle } from '../customStyle';
+import { setTextAlign } from '../TextAlignCommand';
+import { setTextLineSpacing } from '../TextLineSpacingCommand';
+import { setParagraphSpacing } from '../ParagraphSpacingCommand';
 
 // [FS] IRAD-1039 2020-09-24
 // UI to show the list buttons
@@ -29,8 +29,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
   // _popUpId = uuid();
   props: {
     className?: ?string,
-    commandGroups: Array<{[string]: UICommand}>,
-    staticCommand: Array<{[string]: UICommand}>,
+    commandGroups: Array<{ [string]: UICommand }>,
+    staticCommand: Array<{ [string]: UICommand }>,
     disabled?: ?boolean,
     dispatch: (tr: Transform) => void,
     editorState: EditorState,
@@ -69,7 +69,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     commandGroups.forEach((group, ii) => {
       Object.keys(group).forEach((label) => {
         const command = group[label];
-        const hasText= 'None'!==label;
+        const hasText = 'None' !== label;
         children.push(
           <CustomStyleItem
             command={command}
@@ -82,6 +82,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             label={label}
             onClick={this._onUIEnter}
             onCommand={onCommand}
+            onMouseEnter={this._onUIEnter}
+            value={command}
           ></CustomStyleItem>
         );
       });
@@ -101,6 +103,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             label={command._customStyleName}
             onClick={this._onUIEnter}
             onCommand={onCommand}
+            onMouseEnter={this._onUIEnter}
+            value={command}
           ></CustomStyleItem>
         );
       });
@@ -117,8 +121,26 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     );
   }
 
+
   _onUIEnter = (command: UICommand, event: SyntheticEvent<*>) => {
-    this.showSubMenu(command, event);
+
+    if (command.shouldRespondToUIEvent(event)) {
+      // check the mouse clicked on down arror to show sub menu
+      if (event.currentTarget.className === 'czi-custom-menu-item edit-icon') {
+        this.showSubMenu(command, event);
+      }
+      else {
+        this._execute(command, event);
+      }
+    }
+  };
+
+  _execute = (command: UICommand, e: SyntheticEvent<*>) => {
+    if (undefined !== command) {
+      const { dispatch, editorState, editorView, onCommand } = this.props;
+      command.execute(editorState, dispatch, editorView, e);
+      onCommand && onCommand();
+    }
   };
 
   //shows the alignment and line spacing option
@@ -138,7 +160,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
       },
       {
         anchor,
-        autoDismiss: false,
+        autoDismiss: true,
         IsChildDialog: true,
         onClose: (val) => {
           if (this._popUp) {
@@ -175,9 +197,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
   // [FS] IRAD-1099 2020-11-17
   // Issue fix: Even the applied style is removed the style name is showing in the editor
   removeCustomStyleName(editorState, removedStyleName, dispatch) {
-    const {selection, doc} = editorState;
-    let {from, to} = selection;
-    const {empty} = selection;
+    const { selection, doc } = editorState;
+    let { from, to } = selection;
+    const { empty } = selection;
     if (empty) {
       from = selection.$from.before(1);
       to = selection.$to.after(1);
@@ -198,18 +220,18 @@ class CustomMenuUI extends React.PureComponent<any, any> {
         ) {
           node.content.content[0].marks.some((mark) => {
             if (node.attrs.styleName === removedStyleName) {
-              tasks.push({node, pos, mark});
+              tasks.push({ node, pos, mark });
             }
           });
         } else {
-          textAlignNode.push({node, pos});
+          textAlignNode.push({ node, pos });
         }
       }
     });
 
     if (!tasks.length) {
       textAlignNode.forEach((eachnode) => {
-        const {node} = eachnode;
+        const { node } = eachnode;
         node.attrs.styleName = customStyleName;
       });
       // to remove both text align format and line spacing
@@ -217,7 +239,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     }
 
     tasks.forEach((job) => {
-      const {node, mark, pos} = job;
+      const { node, mark, pos } = job;
       tr = tr.removeMark(pos, pos + node.nodeSize, mark.type);
       // reset the custom style name to NONE after remove the styles
       node.attrs.styleName = customStyleName;
@@ -260,7 +282,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
       CustomStyleEditor,
       {
         stylename: command._customStyleName,
-         mode: 1, //edit
+        mode: 1, //edit
         description: command._customStyle.description,
         styles: command._customStyle.styles,
       },
@@ -272,18 +294,12 @@ class CustomMenuUI extends React.PureComponent<any, any> {
           if (this._stylePopup) {
             //handle save style object part here
             if (undefined !== val) {
-              const {dispatch} = this.props.editorView;
+              const { dispatch } = this.props.editorView;
               let tr = this.props.editorState.tr;
-              // const doc = this.props.editorState.doc;
-              saveStyle(val);
-              // tr = tr.setSelection(TextSelection.create(doc, 0, 0));
-              // Apply created styles to document
-              tr = applyStyle(
-                val.styles,
-                val.stylename,
-                this.props.editorState,
-                tr
-              );
+              // [FS] IRAD-1112 2020-12-14
+              // Issue fix: Duplicate style created while modified the style name.
+              saveStyle(val, this._styleName);
+              tr = this.updateDocument(this.props.editorState, this.props.editorState.tr, val.stylename);
               dispatch(tr);
               this.props.editorView.focus();
               this._stylePopup.close();
@@ -295,12 +311,23 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     );
   }
 
-  _execute = (command, e) => {
-    const {dispatch, editorState, editorView, onCommand} = this.props;
-    if (command.execute(editorState, dispatch, editorView, e)) {
-      onCommand && onCommand();
-    }
-  };
+  updateDocument(state: EditorState, tr: Transform, styleName) {
+    const { doc } = state;
+
+    doc.descendants(function (child, pos) {
+      const contentLen = child.content.size;
+      if (haveEligibleChildren(child, contentLen, styleName)) {
+        tr = applyLatestStyle(child.attrs.styleName, state, tr, child, pos, pos + contentLen + 1);
+      }
+    });
+    return tr;
+  }
+
 }
+
+function  haveEligibleChildren(node, contentLen, styleName) {
+  return node.type.name === 'paragraph' && 0 < contentLen && styleName === node.attrs.styleName;
+}
+
 
 export default CustomMenuUI;

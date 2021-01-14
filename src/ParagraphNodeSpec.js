@@ -12,6 +12,7 @@ export const INDENT_MARGIN_PT_SIZE = 36;
 export const MIN_INDENT_LEVEL = 0;
 export const MAX_INDENT_LEVEL = 7;
 export const ATTRIBUTE_INDENT = 'data-indent';
+export const ATTRIBUTE_STYLE_LEVEL = 'data-style-level';
 const cssVal = new Set<string>(['', '0%', '0pt', '0px']);
 
 export const EMPTY_CSS_VALUE = cssVal;
@@ -33,8 +34,10 @@ const ParagraphNodeSpec: NodeSpec = {
     // TODO: Add UI to let user edit / clear padding.
     paddingTop: { default: null },
     styleName: { default: 'None' },
-    paragraphSpacingAfter: { default:null },
-    paragraphSpacingBefore: { default:null },
+    styleLevel: { default: null },
+    customStyle: { default: null },
+    paragraphSpacingAfter: { default: null },
+    paragraphSpacingBefore: { default: null },
   },
   content: 'inline*',
   group: 'block',
@@ -49,7 +52,7 @@ function getAttrs(dom: HTMLElement): Object {
     marginLeft,
     paddingTop,
     paddingBottom,
-    paragraphSpacingAfter,
+    marginBottom,
   } = dom.style;
 
   let align = dom.getAttribute('align') || textAlign || '';
@@ -64,11 +67,14 @@ function getAttrs(dom: HTMLElement): Object {
   indent = indent || MIN_INDENT_LEVEL;
 
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
-  const spacingAfterParagraph = paragraphSpacingAfter? paragraphSpacingAfter:null;
+  const spacingAfterParagraph = marginBottom ? marginBottom : null;
 
   const id = dom.getAttribute('id') || '';
- const styleName = dom.getAttribute('styleName') || null;
-  return { align, indent, lineSpacing, paddingTop, paddingBottom, id, styleName, spacingAfterParagraph };
+  const styleName = dom.getAttribute('styleName') || null;
+  const styleLevel = parseInt(dom.getAttribute(ATTRIBUTE_STYLE_LEVEL), 10);
+  // TODO: customStyle
+
+  return { align, indent, lineSpacing, paddingTop, paddingBottom, id, styleName, spacingAfterParagraph, styleLevel };
 }
 
 function toDOM(node: Node): Array<any> {
@@ -80,6 +86,8 @@ function toDOM(node: Node): Array<any> {
     paddingBottom,
     id,
     styleName,
+    styleLevel,
+    customStyle,
     paragraphSpacingAfter,
     paragraphSpacingBefore
   } = node.attrs;
@@ -100,10 +108,10 @@ function toDOM(node: Node): Array<any> {
   }
   // [FS] IRAD-1100 2020-11-04
   // Add in leading and trailing spacing (before and after a paragraph)
-  if(paragraphSpacingAfter){
+  if (paragraphSpacingAfter) {
     style += `margin-bottom: ${paragraphSpacingAfter}pt !important;`;
   }
-  if(paragraphSpacingBefore){
+  if (paragraphSpacingBefore) {
     style += `margin-top: ${paragraphSpacingBefore}pt !important;`;
   }
 
@@ -113,6 +121,42 @@ function toDOM(node: Node): Array<any> {
 
   if (paddingBottom && !EMPTY_CSS_VALUE.has(paddingBottom)) {
     style += `padding-bottom: ${paddingBottom};`;
+  }
+
+  if (styleLevel) {
+    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
+
+    if (customStyle) {
+      if (customStyle.strong) {
+        style += 'font-weight: bold;';
+      }
+      if (customStyle.boldNumbering) {
+        style += ' --czi-counter-bold: bold;';
+      }
+
+      if (customStyle.em) {
+        style += 'font-style: italic;';
+      }
+      if (customStyle.color) {
+        style += `color: ${customStyle.color};`;
+      }
+      if (customStyle.fontSize) {
+        style += `font-size: ${customStyle.fontSize}pt;`;
+      }
+      if (customStyle.fontName) {
+        style += `font-family: ${customStyle.fontName};`;
+      }
+      // let textDecoration = '';
+      // if (customStyle.strike) {
+      //   textDecoration += ' line-through';
+      // }
+      // if (customStyle.underline) {
+      //   textDecoration += ' underline';
+      // }
+      // if (customStyle.strike || customStyle.underline) {
+      // style += `text-decoration: ${textDecoration};`;
+      // }
+    }
   }
 
   style && (attrs.style = style);
@@ -125,7 +169,7 @@ function toDOM(node: Node): Array<any> {
     attrs.id = id;
   }
 
- attrs.styleName = styleName;
+  attrs.styleName = styleName;
   return ['p', attrs, 0];
 }
 

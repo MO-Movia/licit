@@ -57,15 +57,7 @@ Python(3.8.2)
 
 ### Install dependencies
 
-### Build licit-doc-attrs-step module
-```
-# From the directory `*helpers/licit-doc-attrs-step*`
-npm install
-npm pack
-```  
-Now you will find a *modusoperandi-licit-doc-attrs-step-0.0.1-0.tgz* file in the *helpers/licit-doc-attrs-step* directory. 
-
-Add this *.tgz* file to your licit root folder and follow the below commands:
+ Build [licit-doc-attrs-step](https://github.com/MO-Movia/licit-doc-attrs-step) and copy _modusoperandi-licit-doc-attrs-step-0.0.1.tgz_ to the root folder.
 ```
 cd licit 
 npm install
@@ -89,6 +81,23 @@ python build_collab_server.py
 To run collab server:
 python run_collab_server.py 
 ```  
+### Start the custom style server
+```
+In Windows
+To build customstyle server:
+py build_customstyle_server.py
+
+To run customstyle server:
+py run_customstyle_server.py
+
+In MacOS/Linux
+To build customstyle server:
+python build_customstyle_server.py
+
+To run customstyle server:
+python run_customstyle_server.py 
+```  
+To save custom styles in server "customstyles" folder is expected outside the root folder 'licit'. 
 
 ### Start the image server for Upload image 
 ```

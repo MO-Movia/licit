@@ -2,11 +2,11 @@
 
 .czi-selection-placeholder {
   background-color: var(--czi-selection-highlight-color-dark) !important;
-  -webkit-animation-name: czi_selection_blink;
+  -webkit-animation-direction: alternate;
   -webkit-animation-duration: 0.5s;
   -webkit-animation-iteration-count: infinite;
+  -webkit-animation-name: czi_selection_blink;
   -webkit-animation-timing-function: ease-in-out;
-  -webkit-animation-direction: alternate;
 }
 
 @-webkit-keyframes czi_selection_blink {

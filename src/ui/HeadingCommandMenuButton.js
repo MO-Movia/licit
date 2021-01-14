@@ -8,6 +8,7 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { HEADING_NAME_DEFAULT } from './findActiveHeading';
 import { Transform } from 'prosemirror-transform';
+import { Node } from 'prosemirror-model';
 import { getCustomStyles } from '../customStyle';
 
 // [FS] IRAD-1042 2020-09-09
@@ -27,27 +28,39 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
   //[FS] IRAD-1085 2020-10-09
   //method to build commands for list buttons
   getCommandGroups() {
-    //get custom styles from local storage
-    // let HEADING_COMMANDS = this.clearCommands();
-    const HEADING_NAMES = getCustomStyles();
-    HEADING_COMMANDS = null;
     HEADING_COMMANDS = {
-      [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
+      // [FS] IRAD-1074 2020-12-09
+      // When apply 'None' from style menu, not clearing the applied custom style.
+      [HEADING_NAME_DEFAULT]: new CustomStyleCommand('None', 'None'),
     };
-    HEADING_NAMES.forEach(obj => {
-      HEADING_COMMANDS[obj.stylename] = new CustomStyleCommand(obj, obj.stylename);
+    const customStyles = getCustomStyles();
+    let HEADING_NAMES = null;
+    customStyles.then((result) => {
+      HEADING_NAMES = result;
 
+      if (null != HEADING_NAMES) {
+        HEADING_NAMES.forEach((obj) => {
+          HEADING_COMMANDS[obj.stylename] = new CustomStyleCommand(
+            obj,
+            obj.stylename
+          );
+        });
+      }
+      return [HEADING_COMMANDS];
     });
     return [HEADING_COMMANDS];
   }
   staticCommands() {
     const MENU_COMMANDS: Object = {
-      ['newstyle']: new CustomStyleCommand('newstyle', 'New Style..')
+      ['newstyle']: new CustomStyleCommand('newstyle', 'New Style..'),
     };
-    MENU_COMMANDS['clearstyle'] = new CustomStyleCommand('clearstyle', 'Clear Style');
+    MENU_COMMANDS['clearstyle'] = new CustomStyleCommand(
+      'clearstyle',
+      'Clear Style'
+    );
     return [MENU_COMMANDS];
   }
-  isAllowedNode(node) {
+  isAllowedNode(node: Node) {
     return (node.type.name === 'paragraph' || node.type.name === 'ordered_list');
   }
   render(): React.Element<any> {
@@ -68,6 +81,9 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         // Issue fix: style name shows blank when select multiple paragraph with same custom style applied
         if (1 === selectedStyleCount || (1 < selectedStyleCount && node.attrs.styleName === customStyleName)) {
           customStyleName = node.attrs.styleName;
+        }
+        else{
+          customStyleName = 'None';
         }
       }
     });

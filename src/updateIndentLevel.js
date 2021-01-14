@@ -1,17 +1,19 @@
 // @flow
-
 import clamp from './ui/clamp';
 import compareNumber from './compareNumber';
 import consolidateListNodes from './consolidateListNodes';
 import isListNode from './isListNode';
 import transformAndPreserveTextSelection from './transformAndPreserveTextSelection';
-import { AllSelection, TextSelection } from 'prosemirror-state';
+import { EditorState, AllSelection, TextSelection } from 'prosemirror-state';
 import { BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
 import { Fragment, Schema } from 'prosemirror-model';
 import { MAX_INDENT_LEVEL, MIN_INDENT_LEVEL } from './ParagraphNodeSpec';
 import { Transform } from 'prosemirror-transform';
+import { getCustomStyleByLevel } from './customStyle';
+import { applyLatestStyle } from './CustomStyleCommand';
 
 export default function updateIndentLevel(
+  state: EditorState,
   tr: Transform,
   schema: Schema,
   delta: number
@@ -42,7 +44,7 @@ export default function updateIndentLevel(
       nodeType === heading ||
       nodeType === blockquote
     ) {
-      tr = setNodeIndentMarkup(tr, schema, pos, delta);
+      tr = setNodeIndentMarkup(state, tr, pos, delta);
       return false;
     } else if (isListNode(node)) {
       // List is tricky, we'll handle it later.
@@ -63,7 +65,7 @@ export default function updateIndentLevel(
       .sort(compareNumber)
       .reverse()
       .forEach(pos => {
-        tr2 = setListNodeIndent(tr2, schema, pos, delta);
+        tr2 = setListNodeIndent(state, tr2, schema, pos, delta);
       });
     tr2 = consolidateListNodes(tr2);
     return tr2;
@@ -73,6 +75,7 @@ export default function updateIndentLevel(
 }
 
 function setListNodeIndent(
+  state: EditorState,
   tr: Transform,
   schema: Schema,
   pos: number,
@@ -110,7 +113,7 @@ function setListNodeIndent(
   // It wont satisfy the list hve childrens
 
   if (from <= pos && to >= pos) {
-    return setNodeIndentMarkup(tr, schema, pos, delta);
+    return setNodeIndentMarkup(state, tr, pos, delta);
   }
 
   const listNodeType = listNode.type;
@@ -177,8 +180,8 @@ function setListNodeIndent(
 }
 
 function setNodeIndentMarkup(
+  state: EditorState,
   tr: Transform,
-  schema: Schema,
   pos: number,
   delta: number
 ): Transform {
@@ -194,6 +197,17 @@ function setNodeIndentMarkup(
     (node.attrs.indent || 0) + delta,
     MAX_INDENT_LEVEL
   );
+
+  if (node.attrs.styleLevel) {
+    const nextLevel = node.attrs.styleLevel + delta;
+    const startPos = tr.selection.$from.before(1);
+    const endPos = tr.selection.$to.after(1);
+    const style = getCustomStyleByLevel(nextLevel);
+    if (style) {
+      tr = applyLatestStyle(style.stylename, state, tr, node, startPos, endPos);
+    }
+    return tr;
+  }
   if (indent === node.attrs.indent) {
     return tr;
   }

@@ -14,7 +14,7 @@ import { Transform } from 'prosemirror-transform';
 
 class TextHighlightCommand extends UICommand {
   _popUp = null;
-  _color: string;
+  _color = '';
 
   constructor(color: ?string) {
     super();
@@ -38,16 +38,16 @@ class TextHighlightCommand extends UICommand {
       return Promise.resolve(undefined);
     }
 
-    const {doc, selection, schema} = state;
+    const { doc, selection, schema } = state;
     const markType = schema.marks[MARK_TEXT_HIGHLIGHT];
-    const {from, to} = selection;
+    const { from, to } = selection;
     const result = findNodesWithSameMark(doc, from, to, markType);
     const hex = result ? result.mark.attrs.highlightColor : null;
     const anchor = event ? event.currentTarget : null;
     return new Promise(resolve => {
       this._popUp = createPopUp(
         ColorEditor,
-        {hex},
+        { hex },
         {
           anchor,
           onClose: val => {
@@ -68,16 +68,17 @@ class TextHighlightCommand extends UICommand {
     color: ?string
   ): boolean => {
     if (dispatch && color !== undefined) {
-      const {schema} = state;
-      let {tr} = state;
+      const { schema } = state;
+      let { tr } = state;
       const markType = schema.marks[MARK_TEXT_HIGHLIGHT];
-      const attrs = color ? {highlightColor: color} : null;
-      tr = applyMark(tr.setSelection(state.selection), schema, markType, attrs);
+      const attrs = color ? { highlightColor: color } : null;
+      // tr = applyMark(tr.setSelection(state.selection), schema, markType, attrs);
+      tr = applyMark(tr, schema, markType, attrs);
       if (tr.docChanged || tr.storedMarksSet) {
         // If selection is empty, the color is added to `storedMarks`, which
         // works like `toggleMark`
         // (see https://prosemirror.net/docs/ref/#commands.toggleMark).
-        dispatch && dispatch(tr);
+        dispatch(tr);
         return true;
       }
     }
@@ -89,8 +90,8 @@ class TextHighlightCommand extends UICommand {
   executeCustom = (
     state: EditorState,
     tr: Transform,
-    from: Number,
-    to: Number
+    from: number,
+    to: number
   ): Transform => {
 
     const { schema } = state;

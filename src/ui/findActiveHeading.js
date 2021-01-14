@@ -4,7 +4,7 @@ export const HEADING_NAME_DEFAULT = 'None';
 
 // [FS] IRAD-1046 2020-09-24
 // To create a style object from the customstyles to show the styles in the example piece.
-export function getCustomStyle(customStyle) {
+export function getCustomStyle(customStyle:any) {
   const style = {
     float: 'right',
   };
@@ -22,6 +22,10 @@ export function getCustomStyle(customStyle) {
 
       case 'color':
         style['color'] = customStyle[property];
+        break;
+
+      case 'texthighlight'  :
+        style['backgroundColor'] = customStyle[property];
         break;
 
       case 'fontsize':

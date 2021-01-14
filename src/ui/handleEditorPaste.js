@@ -31,20 +31,3 @@ export default function handleEditorPaste(
   }
   return false;
 }
-
-// [FS] IRAD-1076 2020-10-16
-// paste the text as a plain text.
-export function pasteAsPlainText(slice): boolean {
-
-  if (slice && slice.content && slice.content.content && 0 < slice.content.content.length) {
-    for (let i = 0; i < slice.content.content.length; i++) {
-      const node = slice.content.content[i];
-      if (node.content && node.content.content && 0 < node.content.content.length && node.content.content[0].marks) {
-        node.content.content[0].marks = [];
-      }
-    }
-    return true;
-  }
-  return false;
-}
-
