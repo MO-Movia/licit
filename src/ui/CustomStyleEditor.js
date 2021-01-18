@@ -9,7 +9,7 @@ import createPopUp from './createPopUp';
 import {FONT_PT_SIZES} from './FontSizeCommandMenuButton';
 import {FONT_TYPE_NAMES} from '../FontTypeMarkSpec';
 import {getLineSpacingValue} from './toCSSLineSpacing';
-import {getCustomStyles} from '../customStyle';
+import {getCustomStyles, isCustomStyleExists} from '../customStyle';
 
 // Values to show in indent drop-down
 const INDENT_VALUES = [
@@ -233,24 +233,25 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
 
     if (this.state.styles.level && this.state.styles.hasnumbering) {
-      if (document.getElementById('sampletextdiv') && null !== document.getElementById('sampletextdiv')) {
-       // [FS] IRAD-1137 2021-01-11
-       // Issue fix : The Preview text is not showing the numbering in bold after Bold Numbering is enabled.
-        if(this.state.styles.boldNumbering){
+      if (
+        document.getElementById('sampletextdiv') &&
+        null !== document.getElementById('sampletextdiv')
+      ) {
+        // [FS] IRAD-1137 2021-01-11
+        // Issue fix : The Preview text is not showing the numbering in bold after Bold Numbering is enabled.
+        if (this.state.styles.boldNumbering) {
           document.getElementById(
             'sampletextdiv'
           ).innerHTML = `<strong>${this.getNumberingLevel(
             this.state.styles.level
           )}</strong>${SAMPLE_TEXT}`;
-        }
-        else{
+        } else {
           document.getElementById(
             'sampletextdiv'
           ).innerText = `${this.getNumberingLevel(
             this.state.styles.level
           )}${SAMPLE_TEXT}`;
         }
-
       }
     }
     return style;
@@ -314,15 +315,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // [FS] IRAD-1127 2020-12-31
   // to populate the selected custom styles.
   onSelectCustomStyle(e: any) {
-    if(null!==customStyles){
-       const value = customStyles.find((u) => u.stylename === e.target.value);
-    this.state = {
+    if (null !== customStyles) {
+      const value = customStyles.find((u) => u.stylename === e.target.value);
+      this.state = {
         ...value,
       };
       this.setState(this.state);
     }
   }
-
 
   // shows color dialog based on input text-color/text-heighlight
   showColorDialog(isTextColor: Boolean, event: SyntheticEvent<*>) {
@@ -417,20 +417,23 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             <p className="formp">Styles:</p>
             <select
               className="stylenameinput fontstyle"
+              defaultValue={'DEFAULT'}
               onChange={this.onSelectCustomStyle.bind(this)}
               style={{height: '24px'}}
-
             >
+              <option disabled value="DEFAULT">{' '} -- select a style --{' '}
+              </option>
               {customStyles.map((style) => (
                 <option key={style.stylename} value={style.style}>
                   {style.stylename}
                 </option>
               ))}
             </select>
-            <p className="formp">Style Name:</p>
+            <p className="formp">Style Name: <span id='errormsg'style={{display: 'none', color: 'red'}} >{isCustomStyleExists(this.state.stylename) ? 'Style name already exists' : ''}</span></p>
             <span>
               <input
                 className="stylenameinput fontstyle"
+                disabled={this.state.mode == 1 ? true : false}
                 key="name"
                 onChange={this.onStyleClick.bind(this, 'name')}
                 type="text"
@@ -1007,8 +1010,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     this.props.close();
   };
   _save = (): void => {
-    if ('' != this.state.stylename) {
-      this.props.close(this.state);
+    // [FS] IRAD-1137 2021-01-15
+    // FIX: able to save a custom style name with already exist style name
+    if (0=== this.state.mode && isCustomStyleExists(this.state.stylename)) {
+      document.getElementById('errormsg').style.display= '';
+    } else {
+      if ('' != this.state.stylename) {
+        this.props.close(this.state);
+      }
     }
   };
 }

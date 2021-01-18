@@ -30,10 +30,10 @@ export function updateStyle(style) {
   let styles;
   return new Promise((resolve, reject) => {
     const url =
-    window.location.protocol +
-    '//' +
-    window.location.hostname +
-    ':3005/savecustomstyle';
+      window.location.protocol +
+      '//' +
+      window.location.hostname +
+      ':3005/savecustomstyle';
     POST(url, JSON.stringify(style), 'application/json; charset=utf-8').then(
       (data) => {
         styles = JSON.parse(data);
@@ -48,6 +48,20 @@ export function updateStyle(style) {
   });
 }
 
+// [FS] IRAD-1137 2021-01-15
+// check if the entered style name already exist
+export function isCustomStyleExists(styleName) {
+  let bOK = false;
+  if (customStyles.length > 0) {
+    for (const style of customStyles) {
+      if (styleName === style.stylename) {
+        bOK = true;
+        return bOK;
+      }
+    }
+  }
+  return bOK;
+}
 
 function getStyles() {
   let style;
@@ -156,20 +170,20 @@ export function removeStyle(name: string) {
 
 // [FS] IRAD-1128 2020-12-29
 // save the custom style to server
-export function renameStyle(oldStyleName,newStyleName) {
+export function renameStyle(oldStyleName, newStyleName) {
   customStyles = [];
   let styles = null;
-  const obj={
-    styleName:oldStyleName,
-    modifiedStyleName:newStyleName
+  const obj = {
+    styleName: oldStyleName,
+    modifiedStyleName: newStyleName,
   };
 
   return new Promise((resolve, reject) => {
     const url =
-    window.location.protocol +
-    '//' +
-    window.location.hostname +
-    ':3005/renamecustomstyle';
+      window.location.protocol +
+      '//' +
+      window.location.hostname +
+      ':3005/renamecustomstyle';
     POST(url, JSON.stringify(obj), 'application/json; charset=utf-8').then(
       (data) => {
         styles = JSON.parse(data);

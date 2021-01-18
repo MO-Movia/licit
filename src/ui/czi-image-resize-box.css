@@ -112,21 +112,21 @@
 }
 
 .czi-image-resize-box-control.bottom_right {
-  cursor: se-resize;
   bottom: -10px;
+  cursor: se-resize;
   right: -10px;
 }
 
 .czi-image-resize-box-control.bottom {
-  cursor: s-resize;
   bottom: -10px;
+  cursor: s-resize;
   left: 50%;
   margin-left: -10px;
 }
 
 .czi-image-resize-box-control.bottom_left {
-  cursor: sw-resize;
   bottom: -10px;
+  cursor: sw-resize;
   left: -10px;
 }
 

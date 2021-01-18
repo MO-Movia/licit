@@ -38,13 +38,13 @@
 .czi-image-upload-editor-input {
   cursor: pointer;
   font-size: 10000px;
+  height: 1000px;
   left: 0;
   opacity: 0;
   padding: 10000px;
   position: absolute;
   top: 0;
   width: 1000px;
-  height: 1000px;
 }
 
 .czi-image-upload-editor.pending .czi-image-upload-editor-input {

@@ -668,14 +668,12 @@ function createEmptyElement(
     nextLevel = nodesAfterSelection.attrs.styleLevel;
     levelDiff = nextLevel - selectedLevel;
     if (nextLevel === attrs.styleLevel || levelDiff === 1) {
-
+      return tr;
     }
     else {
       tr = addElementAfter(attrs, state, tr, endPos, nextLevel);
     }
-
   }
-
   return tr;
 }
 

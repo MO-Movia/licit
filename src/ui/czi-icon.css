@@ -14,7 +14,7 @@
   /* Support for Safari and Chrome. */
   text-rendering: optimizeLegibility;
   text-transform: none;
-  /* Support for all WebKit browsers. */
+   /* Support for all WebKit browsers. */
   -webkit-font-smoothing: subpixel-antialiased;
   white-space: nowrap;
   word-wrap: normal;
@@ -35,10 +35,10 @@
   Temporary Fix need to bring image instead of content */
   content: '---';
   height: 30px;
-  margin-left: 0 !important;
-  margin-top: -12px !important;
-  margin-right: 0 !important;
   margin-bottom: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: -12px !important;
   width: 20px;
 }
 

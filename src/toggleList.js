@@ -169,7 +169,7 @@ function wrapNodesWithListInternal(
     return tr;
   }
 
-  lists = lists.sort((a, b) => {
+  lists.sort((a, b) => {
     const pa = nullthrows(a[0]).pos;
     const pb = nullthrows(b[0]).pos;
     return pa >= pb ? 1 : -1;

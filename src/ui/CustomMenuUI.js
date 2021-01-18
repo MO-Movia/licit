@@ -180,7 +180,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                   this.props.editorView.dispatch
                 );
               } else if ('rename' === val.type) {
-                this.showStyleWindow(command, event, 2);                
+                this.showStyleWindow(command, event, 2);
               } else {
                 this.showStyleWindow(command, event, 1);
               }
