@@ -1,0 +1,10 @@
+FROM node:alpine
+
+RUN mkdir -p /app/customstyles && mkdir -p /app/server
+
+COPY servers/customstyles/run_customstyle_server.bundle.js /app/server/index.js
+
+VOLUME /app/customstyles
+EXPOSE 3005
+
+CMD cd /app/server && node .
