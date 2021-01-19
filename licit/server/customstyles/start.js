@@ -115,6 +115,16 @@ app.post('/removecustomstyle/', function (req, res) {
 });
 
 if (!module.parent) {
-  app.listen(PORT);
+  const server = app.listen(PORT);
   console.log('Custom Style Server running on port ' + PORT + '!...');
+
+  // Create shutdown method.
+  const shutdown = () => {
+    console.log('Beginning shutdown.');
+    server.close(() => console.log('Shutdown complete.'));
+  };
+
+  // Listen for terminal events to trigger shutdown.
+  process.on('SIGTERM', shutdown);
+  process.on('SIGINT', shutdown);
 }
