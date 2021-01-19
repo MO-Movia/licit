@@ -11,7 +11,9 @@
 
 FROM node:alpine
 
-RUN mkdir -p /app/customstyles && mkdir -p /app/server
+RUN mkdir -p /app/customstyles && mkdir -p /app/server && chown -R node:node /app
+
+USER node:node
 
 COPY servers/customstyles/run_customstyle_server.bundle.js /app/server/index.js
 

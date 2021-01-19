@@ -29,12 +29,13 @@ function readStyles() {
     const rawStyles = JSON.parse(json) || [];
     // Convert array into map.
     return rawStyles.reduce((out, style) => {
-      const key = style.styleName.toUpperCase();
-      out[key] = style;
+      if (style.stylename) {
+        out[style.stylename.toUpperCase()] = style;
+      }
       return out;
     });
   } catch (err) {
-    console.error('Failed to read style file.', JSONFILE);
+    console.error('Failed to read style file.', JSONFILE, err);
     // Return empty object.
     return {};
   }
@@ -45,7 +46,8 @@ function readStyles() {
  */
 function writeStyles() {
   try {
-    const json = JSON.stringify(allStyles);
+    // Save the array
+    const json = JSON.stringify(sortedStyles);
     fs.writeFileSync(JSONFILE, json, 'utf-8');
   } catch (err) {
     console.error('Failed to write style file', JSONFILE);
