@@ -10,6 +10,7 @@ import {
 } from 'prosemirror-model';
 import {
     updateOverrideFlag,
+    applyLatestStyle,
     getMarkByStyleName,
     ATTR_OVERRIDDEN,
     NONE
@@ -68,6 +69,7 @@ export default class StylePlugin extends Plugin {
                 if (!this.loaded) {
                     this.loaded = true;
                     // do this only once when the document is loaded.
+                     tr = applyStyles(nextState, tr);
                 } else if (isDocChanged(transactions)) {
                     if (!this.firstTime) {
                         // when user updates
@@ -91,6 +93,20 @@ export default class StylePlugin extends Plugin {
     }
 }
 
+function applyStyles(state, tr) {
+    if (!tr) {
+        tr = state.tr;
+    }
+
+    tr.doc.descendants(function(child, pos) {
+        const contentLen = child.content.size;
+        if (haveEligibleChildren(child, contentLen)) {
+            tr = applyLatestStyle(child.attrs.styleName, state, tr, child, pos, pos + contentLen + 1);
+        }
+    });
+
+    return tr;
+}
 // [FS] IRAD-1130 2021-01-07
 // Handle heirarchy on delete
 function manageHierarchyOnDelete(prevState, nextState, tr, view) {

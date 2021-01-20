@@ -1,11 +1,11 @@
 // @flow
 // [FS] IRAD-1085 2020-10-09
 // Handle custom style in local storage
-import {GET, POST} from './client/http';
+import { GET, POST } from './client/http';
 
 function buildRoute(...path) {
-  // const root = `${window.location.protocol}//${window.location.hostname}:3005`;
-  const root = '/style-service';
+  const root = `${window.location.protocol}//${window.location.hostname}:3005`;
+  // const root = '/style-service';
   return [root, ...path].join('/');
 }
 
@@ -23,7 +23,7 @@ export function saveStyle(style) {
       styles = JSON.parse(data);
       customStyles = styles;
     },
-    (err) => {}
+    (err) => { }
   );
 }
 
@@ -155,7 +155,7 @@ export function removeStyle(name: string) {
       customStyles = data;
       console.log(data);
     },
-    (err) => {}
+    (err) => { }
   );
 }
 

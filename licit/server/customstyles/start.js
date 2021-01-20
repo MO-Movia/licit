@@ -25,14 +25,16 @@ let sortedStyles = sortStyles(allStyles);
  */
 function readStyles() {
   try {
+    //Initially the out variable having some unexpected values, so created a new map variable
+    const mot = new Map();
     const json = fs.readFileSync(JSONFILE, 'utf-8');
     const rawStyles = JSON.parse(json) || [];
     // Convert array into map.
     return rawStyles.reduce((out, style) => {
       if (style.stylename) {
-        out[style.stylename.toUpperCase()] = style;
+        mot[style.stylename.toUpperCase()] = style;
       }
-      return out;
+      return mot;
     });
   } catch (err) {
     console.error('Failed to read style file.', JSONFILE, err);
@@ -63,7 +65,7 @@ function sortStyles() {
 
 // [FS] IRAD-1128 2020-12-24
 // read the custom style json file to return all styles.
-app.get('/getcustomstyles/', function (req, res, next) {
+app.get('/getcustomstyles/', function (req, res) {
   // Send the memory cache
   res.send(sortedStyles);
 });
@@ -84,7 +86,7 @@ app.post('/savecustomstyle/', function (req, res) {
 // [FS] IRAD-1128 2020-12-24
 // save the custom style to the json file.
 app.post('/renamecustomstyle/', function (req, res) {
-  const oldName = req.body.styleName.toUpperCase();
+  const oldName = req.body.stylename.toUpperCase();
   const style = allStyles[oldName];
   if (style) {
     const newName = req.body.modifiedStyleName;
