@@ -316,7 +316,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // to populate the selected custom styles.
   onSelectCustomStyle(e: any) {
     if (null !== customStyles) {
-      const value = customStyles.find((u) => u.stylename === e.target.value);
+      let value = customStyles.find((u) => u.stylename === e.target.value);
+      // FIX: not able to modify and save the populated style
+      value.mode= 1;
       this.state = {
         ...value,
       };
