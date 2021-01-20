@@ -12,146 +12,121 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 
+const JSONFILE = '../customstyles/customstyles.json';
+/** styles as map for fast lookup */
+const allStyles = readStyles();
+/** styles as sorted array for results */
+let sortedStyles = sortStyles(allStyles);
+
+/**
+ * Read styles from disk storage.
+ *
+ * @returns Dictionary of styles.
+ */
+function readStyles() {
+  try {
+    const json = fs.readFileSync(JSONFILE, 'utf-8');
+    const rawStyles = JSON.parse(json) || [];
+    // Convert array into map.
+    return rawStyles.reduce((out, style) => {
+      if (style.stylename) {
+        out[style.stylename.toUpperCase()] = style;
+      }
+      return out;
+    });
+  } catch (err) {
+    console.error('Failed to read style file.', JSONFILE, err);
+    // Return empty object.
+    return {};
+  }
+}
+
+/**
+ * Write styles to disk storage.
+ */
+function writeStyles() {
+  try {
+    // Save the array
+    const json = JSON.stringify(sortedStyles);
+    fs.writeFileSync(JSONFILE, json, 'utf-8');
+  } catch (err) {
+    console.error('Failed to write style file', JSONFILE);
+  }
+}
+
+/**
+ * Convert map to a sorted array.
+ */
+function sortStyles() {
+  return Object.keys(allStyles).sort().map(key => allStyles[key]);
+}
+
 // [FS] IRAD-1128 2020-12-24
 // read the custom style json file to return all styles.
 app.get('/getcustomstyles/', function (req, res, next) {
-  fs.exists('../customstyles/customstyles.json', function (exists) {
-    if (exists) {
-      // if json file exists
-      let styles = [];
-      fs.readFile('../customstyles/customstyles.json', function (err, data) {
-        if (err) {
-          res.send(styles);
-        }
-        styles = JSON.parse(data);
-        styles.sort(function (a, b) {
-          var styleA = a.stylename.toUpperCase();
-          var styleB = b.stylename.toUpperCase();
-
-          return styleA.localeCompare(styleB);
-        });
-        res.send(styles);
-      });
-    } else {
-      // create a customstyles json file if not exist.
-      fs.appendFile('../customstyles/customstyles.json', '[]', function (err) {
-        if (err) throw err;
-        console.log('JSON File is created successfully.');
-      });
-    }
-  });
+  // Send the memory cache
+  res.send(sortedStyles);
 });
 
 // [FS] IRAD-1128 2020-12-24
 // save the custom style to the json file.
 app.post('/savecustomstyle/', function (req, res) {
-  fs.readFile('../customstyles/customstyles.json', function (err, data) {
-    if (err) {
-      return console.error(err);
-    }
-    var fresult = JSON.parse(data);
-    var exists = false;
+  const name = req.body.stylename.toUpperCase();
+  // Attach new or overwite existing style
+  allStyles[name] = req.body;
+  // Save changes
+  sortedStyles = sortStyles();
+  writeStyles();
 
-    // to check, the style already exists
-    for (let i = 0; i < fresult.length; i++) {
-      if (fresult[i].stylename === req.body.stylename) {
-        //if style exists, then modify it
-        fresult[i].styles = req.body.styles;
-        exists = true;
-        break;
-      }
-    }
-
-    //if style not exists, then add the style to json array
-    if (!exists) {
-      fresult.push(req.body);
-    }
-
-    fs.writeFile(
-      '../customstyles/customstyles.json',
-      JSON.stringify(fresult),
-      function (err, result) {
-        if (err) {
-          return console.error(err);
-        } else {
-          fresult.sort(function (a, b) {
-            var styleA = a.stylename.toUpperCase();
-            var styleB = b.stylename.toUpperCase();
-  
-            return styleA.localeCompare(styleB);
-          });
-          res.send(fresult);
-        }
-      }
-    );
-  });
+  res.send(sortedStyles);
 });
 
 // [FS] IRAD-1128 2020-12-24
 // save the custom style to the json file.
 app.post('/renamecustomstyle/', function (req, res) {
-  fs.readFile('../customstyles/customstyles.json', function (err, data) {
-    if (err) {
-      return console.error(err);
-    }
-    var fresult = JSON.parse(data);
-    for (let i = 0; i < fresult.length; i++) {
-      if (fresult[i].stylename === req.body.styleName) {
-        //if style exists, then modify the style name
-        fresult[i].stylename = req.body.modifiedStyleName; 
-        break;
-      }
-    }
-    fs.writeFile(
-      '../customstyles/customstyles.json',
-      JSON.stringify(fresult),
-      function (err, result) {
-        if (err) {
-          return console.error(err);
-        } else {
-          fresult.sort(function (a, b) {
-            var styleA = a.stylename.toUpperCase();
-            var styleB = b.stylename.toUpperCase();
-  
-            return styleA.localeCompare(styleB);
-          });
-          res.send(fresult);
-        }
-      }
-    );
-  });
+  const oldName = req.body.styleName.toUpperCase();
+  const style = allStyles[oldName];
+  if (style) {
+    const newName = req.body.modifiedStyleName;
+    style.stylename = newName;
+    allStyles[newName.toUpperCase()] = style;
+    delete allStyles[oldName];
+
+    sortedStyles = sortStyles();
+    writeStyles();
+  }
+
+  // Send the memory cache
+  res.send(sortedStyles);
 });
 
 
 // [FS] IRAD-1128 2020-12-30
 // to remove the selected custom style from the json file.
 app.post('/removecustomstyle/', function (req, res) {
-  fs.readFile('../customstyles/customstyles.json', function (err, data) {
-    if (err) {
-      return console.error(err);
-    }
-    var fresult = JSON.parse(data);
-    for (let i = 0; i < fresult.length; i++) {
-      if (fresult[i].stylename === req.body) {
-        fresult.splice(i, 1);
-        break;
-      }
-    }
-    fs.writeFile(
-      '../customstyles/customstyles.json',
-      JSON.stringify(fresult),
-      function (err, result) {
-        if (err) {
-          return console.error(err);
-        } else {
-          console.log('Success');
-        }
-      }
-    );
-  });
+  const name = req.body.toUpperCase();
+
+  if (allStyles.hasOwnProperty(name)) {
+    delete allStyles[name];
+    sortedStyles = sortStyles();
+    writeStyles();
+  }
+
+  // Send the memory cache
+  res.send(sortedStyles);
 });
 
 if (!module.parent) {
-  app.listen(PORT);
+  const server = app.listen(PORT);
   console.log('Custom Style Server running on port ' + PORT + '!...');
+
+  // Create shutdown method.
+  const shutdown = () => {
+    console.log('Beginning shutdown.');
+    server.close(() => console.log('Shutdown complete.'));
+  };
+
+  // Listen for terminal events to trigger shutdown.
+  process.on('SIGTERM', shutdown);
+  process.on('SIGINT', shutdown);
 }

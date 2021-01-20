@@ -3,6 +3,13 @@
 // Handle custom style in local storage
 import {GET, POST} from './client/http';
 
+function buildRoute(...path) {
+  // const root = `${window.location.protocol}//${window.location.hostname}:3005`;
+  const root = '/style-service';
+  return [root, ...path].join('/');
+}
+
+
 let customStyles = [];
 
 // [FS] IRAD-1128 2020-12-29
@@ -10,11 +17,7 @@ let customStyles = [];
 export function saveStyle(style) {
   customStyles = [];
   let styles;
-  const url =
-    window.location.protocol +
-    '//' +
-    window.location.hostname +
-    ':3005/savecustomstyle';
+  const url = buildRoute('savecustomstyle');
   POST(url, JSON.stringify(style), 'application/json; charset=utf-8').then(
     (data) => {
       styles = JSON.parse(data);
@@ -29,11 +32,7 @@ export function saveStyle(style) {
 export function updateStyle(style) {
   let styles;
   return new Promise((resolve, reject) => {
-    const url =
-      window.location.protocol +
-      '//' +
-      window.location.hostname +
-      ':3005/savecustomstyle';
+    const url = buildRoute('savecustomstyle');
     POST(url, JSON.stringify(style), 'application/json; charset=utf-8').then(
       (data) => {
         styles = JSON.parse(data);
@@ -71,11 +70,7 @@ function getStyles() {
     });
   }
   return new Promise((resolve, reject) => {
-    const url =
-      window.location.protocol +
-      '//' +
-      window.location.hostname +
-      ':3005/getcustomstyles';
+    const url = buildRoute('getcustomstyles');
     GET(url).then(
       (data) => {
         style = JSON.parse(data);
@@ -154,11 +149,7 @@ export function getCustomStyleByLevel(level: Number) {
 // to remove the selected Custom style.
 export function removeStyle(name: string) {
   customStyles = [];
-  const url =
-    window.location.protocol +
-    '//' +
-    window.location.hostname +
-    ':3005/removecustomstyle';
+  const url = buildRoute('removecustomstyle');
   POST(url, name, 'text/plain').then(
     (data) => {
       customStyles = data;
@@ -179,11 +170,7 @@ export function renameStyle(oldStyleName, newStyleName) {
   };
 
   return new Promise((resolve, reject) => {
-    const url =
-      window.location.protocol +
-      '//' +
-      window.location.hostname +
-      ':3005/renamecustomstyle';
+    const url = buildRoute('renamecustomstyle');
     POST(url, JSON.stringify(obj), 'application/json; charset=utf-8').then(
       (data) => {
         styles = JSON.parse(data);
