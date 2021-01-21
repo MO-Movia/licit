@@ -26,15 +26,15 @@ let sortedStyles = sortStyles(allStyles);
 function readStyles() {
   try {
     //Initially the out variable having some unexpected values, so created a new map variable
-    const mot = new Map();
+    const out = {};
     const json = fs.readFileSync(JSONFILE, 'utf-8');
     const rawStyles = JSON.parse(json) || [];
     // Convert array into map.
-    return rawStyles.reduce((out, style) => {
+    return rawStyles.reduce((accumulator, style) => {
       if (style.stylename) {
-        mot[style.stylename.toUpperCase()] = style;
+        out[style.stylename.toUpperCase()] = style;
       }
-      return mot;
+      return out;
     });
   } catch (err) {
     console.error('Failed to read style file.', JSONFILE, err);
