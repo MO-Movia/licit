@@ -66,7 +66,7 @@ function sortStyles() {
 // read the custom style json file to return all styles.
 app.get('/getcustomstyles/', function (req, res) {
   // Send the memory cache
-  res.send(sortedStyles);
+  res.json(sortedStyles);
 });
 
 // [FS] IRAD-1128 2020-12-24
@@ -114,8 +114,48 @@ app.post('/removecustomstyle/', function (req, res) {
   }
 
   // Send the memory cache
-  res.send(sortedStyles);
+  res.json(sortedStyles);
 });
+
+// Not used by the editor!
+// Responds with the current collection of styles as a map. This endpoint
+// provides a way to backup / migrate styles from one instance of the service to
+// another.
+//
+// json respone:  { styles: {} }
+app.get('/bulk-export', (req, res) => {
+  // Wrap map in object to match bulk-import expectations.
+  res.json({styles: allStyles});
+});
+
+// Not used by the editor!
+// Accepts a collection of styles previously exported.  This endoint provides a
+// way to restore / migrate styles from one insdtance of the service to another.
+//
+// json body: { styles: {...}, replace?: true }
+//
+// The default behavior is to merge incomming styles with any existing ones.
+// Styles with same case-insensitvie name will be overwritten.  Setting replace
+// to true will delete all existing styles and only the imported styles will be
+// retained..
+app.post('/bulk-import', (req, res) => {
+  const { styles, replace } = req.body;
+  if (styles) {
+    if (replace) {
+      // Delete all existing styles.
+      Object.keys(allStyles).forEach(key => delete allStyles[key]);
+    }
+    // Add styles from incomming collection.
+    Object.keys(styles).forEach(key => allStyles[key] = styles[key]);
+    sortedStyles = sortStyles();
+    writeStyles();
+  }
+
+  // Respond with updated style data.
+  return res.json({styles: allStyles});
+});
+
+
 
 if (!module.parent) {
   const server = app.listen(PORT);
