@@ -26,11 +26,11 @@ export default function findActiveCustomStyle(state: EditorState): string {
         selection.$cursor.marks()) ||
       [];
     const sm = storedMarks.find(m => m.type === markType);
-    return (sm && sm.attrs.stylename) || CUSTOMSTYLE_NAME_DEFAULT;
+    return (sm && sm.attrs.styleName) || CUSTOMSTYLE_NAME_DEFAULT;
   }
 
   const mark = findActiveMark(doc, from, to, markType);
-  const name = mark && mark.attrs.stylename;
+  const name = mark && mark.attrs.styleName;
   if (!name) {
     return CUSTOMSTYLE_NAME_DEFAULT;
   }

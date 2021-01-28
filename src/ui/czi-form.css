@@ -12,7 +12,10 @@
 .czi-form legend {
   border: none;
   font-size: var(--czi-content-font-size-h2);
-  margin: 0 0 20px 0;
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 20px;
+  margin-left: 0;
   padding: 0;
   user-select: none;
 }
@@ -23,7 +26,10 @@
   border-width: 1px 0 0 0;
   box-sizing: border-box;
   height: 1px;
-  margin: 20px 0;
+  margin-bottom: 20px; 
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 20px;
 }
 
 .czi-form fieldset {
@@ -39,9 +45,15 @@
   display: block;
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
-  margin: 0 0 8px 0;
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 8px;
+  margin-left: 0;
   outline: none;
-  padding: 12px 0;
+  padding-bottom: 12px;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 12px;
   text-indent: 12px;
   width: 100%;
 }
@@ -51,7 +63,10 @@
   display: block;
   font-size: var(--czi-font-size-small);
   font-style: normal;
-  margin: 0 0 8px 0;
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 8px;
+  margin-left: 0;
   user-select: none;
 }
 
@@ -67,6 +82,7 @@
 
 .alert {
   background-color: #f44336;
+  box-sizing: border-box;
   color: white;
   padding: 20px;
   width: 340px;

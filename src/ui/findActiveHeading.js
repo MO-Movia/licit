@@ -4,60 +4,73 @@ export const HEADING_NAME_DEFAULT = 'None';
 
 // [FS] IRAD-1046 2020-09-24
 // To create a style object from the customstyles to show the styles in the example piece.
-export function getCustomStyle(customStyle:any) {
+export function getCustomStyle(customStyle: any) {
   const style = {
     float: 'right',
   };
 
   for (const property in customStyle) {
-
     switch (property) {
       case 'strong':
-        style['fontWeight'] = 'bold';
+        // [FS] IRAD-1137 2021-1-22 
+        // Deselected Bold, Italics and Underline are not removed from the example style near style name
+        if (customStyle[property]) {
+          style['fontWeight'] = 'bold';
+        }
         break;
 
       case 'em':
-        style['fontStyle'] = 'italic';
+        // [FS] IRAD-1137 2021-1-22 
+        // Deselected Bold, Italics and Underline are not removed from the example style near style name
+        if (customStyle[property]) {
+          style['fontStyle'] = 'italic';
+        }
         break;
 
       case 'color':
         style['color'] = customStyle[property];
         break;
 
-      case 'texthighlight'  :
+      case 'textHighlight':
         style['backgroundColor'] = customStyle[property];
         break;
 
-      case 'fontsize':
+      case 'fontSize':
         style['fontSize'] = customStyle[property];
         break;
 
-      case 'fontname':
+      case 'fontName':
         style['fontName'] = customStyle[property];
         break;
       // [FS] IRAD-1042 2020-09-29
       // Fix:icluded strike through in custom styles.
       case 'strike':
-        style['textDecorationLine'] = 'line-through';
+        if (customStyle[property]) {
+          style['textDecorationLine'] = 'line-through';
+        }
         break;
 
       case 'super':
         style['verticalAlign'] = 'super';
         break;
 
-      case 'text-highlight':
+      case 'textHighlight':
         style['backgroundColor'] = customStyle[property];
         break;
 
       case 'underline':
-        style['textDecoration'] = 'underline';
+        // [FS] IRAD-1137 2021-1-22 
+        // Deselected Bold, Italics and Underline are not removed from the example style near style name
+        if (customStyle[property]) {
+          style['textDecoration'] = 'underline';
+        }
         break;
 
-      case 'text-align':
+      case 'textAlign':
         style['textAlign'] = customStyle[property];
         break;
 
-      case 'line-height':
+      case 'lineHeight':
         style['lineHeight'] = customStyle[property];
         break;
 

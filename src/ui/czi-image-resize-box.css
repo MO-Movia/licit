@@ -2,12 +2,12 @@
 
 .czi-image-resize-box {
   background-repeat: no-repeat;
+  box-shadow: 0 0 1px 1px var(--czi-selection-highlight-color-dark);
   box-sizing: border-box;
   left: 0;
   position: absolute;
   top: 0;
   z-index: 1;
-  box-shadow: 0 0 1px 1px var(--czi-selection-highlight-color-dark);
 }
 
 .czi-image-resize-box-image {

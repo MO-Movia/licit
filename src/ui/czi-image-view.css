@@ -60,10 +60,10 @@
 
 .czi-image-view-body.error::before {
   background-color: #fff;
-  outline: solid 1px #cdcdcd;
   bottom: 0;
   content: '';
   left: 0;
+  outline: solid 1px #cdcdcd;
   position: absolute;
   right: 0;
   top: 0;
@@ -72,12 +72,12 @@
 
 .czi-image-view-body .czi-icon.error {
   color: red;
+  font-size: 22px;
   left: 50%;
+  margin: -11px 0 0 -11px;
   position: absolute;
   top: 50%;
   z-index: 4;
-  margin: -11px 0 0 -11px;
-  font-size: 22px;
 }
 
 .czi-image-view-body.selected::after {

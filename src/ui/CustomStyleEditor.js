@@ -50,7 +50,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
     if (0 === this.state.mode) {
       this.state.styles.boldNumbering = true;
-      this.state.styles.boldScentence = true;
+      this.state.styles.boldSentence = true;
     }
   }
 
@@ -96,7 +96,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       case 'name':
         if (undefined !== event) {
           this.setState({
-            stylename: event.target.value,
+            styleName: event.target.value,
           });
         }
         break;
@@ -111,14 +111,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       case 'before':
         if (undefined !== event) {
           this.setState({
-            styles: { ...this.state.styles, spacebefore: event.target.value },
+            styles: { ...this.state.styles, paragraphSpacingBefore: event.target.value },
           });
         }
         break;
       case 'after':
         if (undefined !== event) {
           this.setState({
-            styles: { ...this.state.styles, spaceafter: event.target.value },
+            styles: { ...this.state.styles, paragraphSpacingAfter: event.target.value },
           });
         }
         break;
@@ -131,11 +131,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // Build styles to display the example piece
   buildStyle() {
     const style = {};
-    if (this.state.styles.fontname) {
-      style.fontFamily = this.state.styles.fontname;
+    if (this.state.styles.fontName) {
+      style.fontFamily = this.state.styles.fontName;
     }
-    if (this.state.styles.fontsize) {
-      style.fontSize = `${this.state.styles.fontsize}px`;
+    if (this.state.styles.fontSize) {
+      style.fontSize = `${this.state.styles.fontSize}px`;
     }
     if (this.state.styles.strong) {
       style.fontWeight = 'bold';
@@ -158,30 +158,30 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     if (this.state.styles.em) {
       style.fontStyle = 'italic';
     }
-    if (this.state.styles.texthighlight) {
-      style.backgroundColor = this.state.styles.texthighlight;
+    if (this.state.styles.textHighlight) {
+      style.backgroundColor = this.state.styles.textHighlight;
     }
     if (this.state.styles.align) {
       style.textAlign = this.state.styles.align;
     }
-    if (this.state.styles.lineheight) {
+    if (this.state.styles.lineHeight) {
       // [FS] IRAD-1104 2020-11-13
       // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
-      style.lineHeight = getLineSpacingValue(this.state.styles.lineheight);
+      style.lineHeight = getLineSpacingValue(this.state.styles.lineHeight);
     }
     // [FS] IRAD-1111 2020-12-10
     // Issue fix : Paragrapgh space before is not applied in the sample text.
-    if (this.state.styles.spacebefore) {
-      style.marginTop = `${this.state.styles.spacebefore}px`;
+    if (this.state.styles.paragraphSpacingBefore) {
+      style.marginTop = `${this.state.styles.paragraphSpacingBefore}px`;
     }
     // [FS] IRAD-1111 2020-12-10
     // Issue fix : Paragrapgh space after is not applied in the sample text.
-    if (this.state.styles.spaceafter) {
-      style.marginBottom = `${this.state.styles.spaceafter}px`;
+    if (this.state.styles.paragraphSpacingAfter) {
+      style.marginBottom = `${this.state.styles.paragraphSpacingAfter}px`;
     }
     // [FS] IRAD-1111 2020-12-10
     // Issue fix : Indent is not applied in the sample text.
-    if (!this.state.styles.islevelbased) {
+    if (!this.state.styles.isLevelbased) {
       if (this.state.styles.indent) {
         style.marginLeft = `${this.state.styles.indent * 2}px`;
       }
@@ -192,7 +192,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       }
     }
 
-    if (this.state.styles.level && this.state.styles.hasnumbering) {
+    if (this.state.styles.styleLevel && this.state.styles.hasNumbering) {
       if (
         document.getElementById('sampletextdiv') &&
         null !== document.getElementById('sampletextdiv')
@@ -203,13 +203,13 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
           document.getElementById(
             'sampletextdiv'
           ).innerHTML = `<strong>${this.getNumberingLevel(
-            this.state.styles.level
+            this.state.styles.styleLevel
           )}</strong>${SAMPLE_TEXT}`;
         } else {
           document.getElementById(
             'sampletextdiv'
           ).innerText = `${this.getNumberingLevel(
-            this.state.styles.level
+            this.state.styles.styleLevel
           )}${SAMPLE_TEXT}`;
         }
       }
@@ -228,39 +228,39 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
   // handles font name change
   onFontNameChange(e: any) {
-    this.setState({ styles: { ...this.state.styles, fontname: e.target.value } });
+    this.setState({ styles: { ...this.state.styles, fontName: e.target.value } });
   }
   // handles indent radio button event
   onIndentRadioChanged(e: any) {
     if ('0' == e.target.value) {
-      this.setState({ styles: { ...this.state.styles, islevelbased: true } });
+      this.setState({ styles: { ...this.state.styles, isLevelbased: true } });
     } else {
-      this.setState({ styles: { ...this.state.styles, islevelbased: false } });
+      this.setState({ styles: { ...this.state.styles, isLevelbased: false } });
     }
   }
 
   // handles scentece bold event
   onScentenceRadioChanged(e: any) {
     if ('0' == e.target.value) {
-      this.setState({ styles: { ...this.state.styles, boldScentence: true } });
+      this.setState({ styles: { ...this.state.styles, boldSentence: true } });
     } else {
-      this.setState({ styles: { ...this.state.styles, boldScentence: false } });
+      this.setState({ styles: { ...this.state.styles, boldSentence: false } });
     }
   }
 
   // handles font size change
   onFontSizeChange(e: any) {
-    this.setState({ styles: { ...this.state.styles, fontsize: e.target.value } });
+    this.setState({ styles: { ...this.state.styles, fontSize: e.target.value } });
   }
 
   // handles line space  change
   onLineSpaceChange(e: any) {
-    this.setState({ styles: { ...this.state.styles, lineheight: e.target.value } });
+    this.setState({ styles: { ...this.state.styles, lineHeight: e.target.value } });
   }
   // handles Level drop down change
   onLevelChange(e: any) {
     const val = 'None' === e.target.value ? null : e.target.value;
-    this.setState({ styles: { ...this.state.styles, level: val } });
+    this.setState({ styles: { ...this.state.styles, styleLevel: val } });
   }
 
   // handles indent dropdown change
@@ -276,7 +276,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // to populate the selected custom styles.
   onSelectCustomStyle(e: any) {
     if (null !== customStyles) {
-      const value = customStyles.find((u) => u.stylename === e.target.value);
+      const value = customStyles.find((u) => u.styleName === e.target.value);
       // FIX: not able to modify and save the populated style
       value.mode= 1;
       this.state = {
@@ -305,7 +305,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 this.setState({ styles: { ...this.state.styles, color: val } });
               } else {
                 this.setState({
-                  styles: { ...this.state.styles, texthighlight: val },
+                  styles: { ...this.state.styles, textHighlight: val },
                 });
               }
             }
@@ -323,7 +323,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
   handleNumbering(val: any) {
     this.setState({
-      styles: { ...this.state.styles, hasnumbering: val.target.checked },
+      styles: { ...this.state.styles, hasNumbering: val.target.checked },
     });
   }
 
@@ -339,7 +339,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     this.setState({
       styles: { ...this.state.styles, boldPartial: val.target.checked },
     });
-    // this.setState({ styles: { ...this.state.styles, boldScentence: val.target.checked ? true : false } });
+    // this.setState({ styles: { ...this.state.styles, boldSentence: val.target.checked ? true : false } });
   }
 
   componentDidMount() {
@@ -386,12 +386,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
               <option disabled value="DEFAULT">{' '} -- select a style --{' '}
               </option>
               {customStyles.map((style) => (
-                <option key={style.stylename} value={style.style}>
-                  {style.stylename}
+                <option key={style.styleName} value={style.style}>
+                  {style.styleName}
                 </option>
               ))}
             </select>
-            <p className="formp">Style Name: <span id='errormsg' style={{ display: 'none', color: 'red' }} >{isCustomStyleExists(this.state.stylename) ? 'Style name already exists' : ''}</span></p>
+            <p className="formp">Style Name: <span id='errormsg' style={{ display: 'none', color: 'red' }} >{isCustomStyleExists(this.state.styleName) ? 'Style name already exists' : ''}</span></p>
             <span>
               <input
                 className="stylenameinput fontstyle"
@@ -399,7 +399,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 key="name"
                 onChange={this.onStyleClick.bind(this, 'name')}
                 type="text"
-                value={this.state.stylename}
+                value={this.state.styleName}
               />
             </span>
             <p className="formp">Description:</p>
@@ -484,7 +484,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <select
                     className="fonttype fontstyle"
                     onChange={this.onFontNameChange.bind(this)}
-                    value={this.state.styles.fontname}
+                    value={this.state.styles.fontName}
                   >
                     {FONT_TYPE_NAMES.map((value) => (
                       <option key={value} value={value}>
@@ -495,7 +495,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <select
                     className="fontsize fontstyle"
                     onChange={this.onFontSizeChange.bind(this)}
-                    value={this.state.styles.fontsize}
+                    value={this.state.styles.fontSize}
                   >
                     {FONT_PT_SIZES.map((value) => (
                       <option key={value} value={value}>
@@ -623,8 +623,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         className=" iconspan czi-icon border_color editor-markbuttons"
                         style={{
                           color:
-                            this.state.styles.texthighlight !== 'rgba(0,0,0,0)'
-                              ? this.state.styles.texthighlight
+                            this.state.styles.textHighlight !== 'rgba(0,0,0,0)'
+                              ? this.state.styles.textHighlight
                               : '#666',
                         }}
                       >
@@ -648,7 +648,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   </span>
                   <span>
                     <input
-                      checked={this.state.styles.boldScentence}
+                      checked={this.state.styles.boldSentence}
                       disabled={this.state.styles.boldPartial ? false : true}
                       name="boldscentence"
                       onChange={this.onScentenceRadioChanged.bind(this)}
@@ -666,11 +666,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       First Sentence
                     </label>
                     <input
-                      checked={!this.state.styles.boldScentence}
+                      checked={!this.state.styles.boldSentence}
                       disabled={this.state.styles.boldPartial ? false : true}
                       name="boldscentence"
                       onChange={this.onScentenceRadioChanged.bind(this)}
-                      style={{ marginLeft: '81px' }}
+                      style={{ marginLeft: '21px' }}
                       type="radio"
                       value="1"
                     />
@@ -805,7 +805,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 <select
                   className="linespacing fontstyle"
                   onChange={this.onLineSpaceChange.bind(this)}
-                  value={this.state.styles.lineheight}
+                  value={this.state.styles.lineHeight}
                 >
                   {LINE_SPACE.map((value) => (
                     <option key={value} value={value}>
@@ -823,7 +823,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       key="before"
                       onChange={this.onStyleClick.bind(this, 'before')}
                       type="text"
-                      value={this.state.styles.spacebefore}
+                      value={this.state.styles.paragraphSpacingBefore}
                     />
                   </span>
                   <label style={{ marginLeft: '3px' }}> pts</label>
@@ -835,7 +835,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       key="after"
                       onChange={this.onStyleClick.bind(this, 'after')}
                       type="text"
-                      value={this.state.styles.spaceafter}
+                      value={this.state.styles.paragraphSpacingAfter}
                     />
                   </span>
                   <label style={{ marginLeft: '3px' }}>pts</label>
@@ -865,7 +865,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       className="leveltype fontstyle"
                       id="levelValue"
                       onChange={this.onLevelChange.bind(this)}
-                      value={this.state.styles.level}
+                      value={this.state.styles.styleLevel}
                     >
                       {LEVEL_VALUES.map((value) => (
                         <option key={value} value={value}>
@@ -877,9 +877,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <span>
                     <label>
                       <input
-                        checked={this.state.styles.hasnumbering}
+                        checked={this.state.styles.hasNumbering}
                         className="chknumbering"
-                        disabled={this.state.styles.level ? false : true}
+                        disabled={this.state.styles.styleLevel ? false : true}
                         onChange={this.handleNumbering.bind(this)}
                         type="checkbox"
                       />
@@ -900,7 +900,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 <div className="hierarchydiv">
                   <div className="indentdiv">
                     <input
-                      checked={this.state.styles.islevelbased}
+                      checked={this.state.styles.isLevelbased}
                       name="indenting"
                       onChange={this.onIndentRadioChanged.bind(this)}
                       type="radio"
@@ -918,7 +918,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   </div>
                   <div className="indentdiv">
                     <input
-                      checked={!this.state.styles.islevelbased}
+                      checked={!this.state.styles.isLevelbased}
                       name="indenting"
                       onChange={this.onIndentRadioChanged.bind(this)}
                       type="radio"
@@ -974,10 +974,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   _save = (): void => {
     // [FS] IRAD-1137 2021-01-15
     // FIX: able to save a custom style name with already exist style name
-    if (0 === this.state.mode && isCustomStyleExists(this.state.stylename)) {
+    if (0 === this.state.mode && isCustomStyleExists(this.state.styleName)) {
       document.getElementById('errormsg').style.display = '';
     } else {
-      if ('' != this.state.stylename) {
+      if ('' != this.state.styleName) {
         this.props.close(this.state);
       }
     }

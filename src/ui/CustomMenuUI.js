@@ -278,7 +278,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     this._stylePopup = createPopUp(
       CustomStyleEditor,
       {
-        stylename: command._customStyleName,
+        styleName: command._customStyleName,
         mode: mode, //edit
         description: command._customStyle.description,
         styles: command._customStyle.styles,
@@ -300,7 +300,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                 customStyles = updateStyle(val);
               } else {
                 // rename
-                customStyles = renameStyle(this._styleName, val.stylename);
+                customStyles = renameStyle(this._styleName, val.styleName);
               }
 
               // [FS] IRAD-1133 2021-01-06
@@ -310,21 +310,21 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                   let tr;
                   result.forEach((obj) => {
                     if (1 === mode) {
-                      if (val.stylename === obj.stylename) {
+                      if (val.styleName === obj.styleName) {
                         tr = this.updateDocument(
                           this.props.editorState,
                           this.props.editorState.tr,
-                          val.stylename,
+                          val.styleName,
                           obj.styles
                         );
                       }
                     } else {
-                      if (val.stylename === obj.stylename) {
+                      if (val.styleName === obj.styleName) {
                         tr = this.renameStyleInDocument(
                           this.props.editorState,
                           this.props.editorState.tr,
                           this._styleName,
-                          val.stylename,
+                          val.styleName,
                           obj.styles
                         );
                       }

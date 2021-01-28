@@ -70,7 +70,7 @@ export function clearMarks(tr: Transform, schema: Schema): Transform {
         }
       });
       return true;
-    }    
+    }
   });
   if (!tasks.length) {
   // It should clear text alignment and line spacing.

@@ -1,7 +1,6 @@
 @import 'czi-vars.css';
 
 .czi-selection-placeholder {
-  background-color: var(--czi-selection-highlight-color-dark) !important;
   -webkit-animation-direction: alternate;
   animation-direction: alternate;
   -webkit-animation-duration: 0.5s;
@@ -12,6 +11,7 @@
   animation-name: czi_selection_blink;
   -webkit-animation-timing-function: ease-in-out;
   animation-timing-function: ease-in-out;
+  background-color: var(--czi-selection-highlight-color-dark) !important;
 }
 
 @-webkit-keyframes czi_selection_blink {

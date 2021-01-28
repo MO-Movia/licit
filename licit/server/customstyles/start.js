@@ -30,8 +30,8 @@ function readStyles() {
     const rawStyles = JSON.parse(json) || [];
     // Convert array into map.
     return rawStyles.reduce((out, style) => {
-      if (style.stylename) {
-        out[style.stylename.toUpperCase()] = style;
+      if (style.styleName) {
+        out[style.styleName.toUpperCase()] = style;
       }
       return out;
     }, {});
@@ -72,7 +72,7 @@ app.get('/getcustomstyles/', function (req, res) {
 // [FS] IRAD-1128 2020-12-24
 // save the custom style to the json file.
 app.post('/savecustomstyle/', function (req, res) {
-  const name = req.body.stylename.toUpperCase();
+  const name = req.body.styleName.toUpperCase();
   // Attach new or overwite existing style
   allStyles[name] = req.body;
   // Save changes
@@ -85,11 +85,11 @@ app.post('/savecustomstyle/', function (req, res) {
 // [FS] IRAD-1128 2020-12-24
 // save the custom style to the json file.
 app.post('/renamecustomstyle/', function (req, res) {
-  const oldName = req.body.stylename.toUpperCase();
+  const oldName = req.body.styleName.toUpperCase();
   const style = allStyles[oldName];
   if (style) {
     const newName = req.body.modifiedStyleName;
-    style.stylename = newName;
+    style.styleName = newName;
     allStyles[newName.toUpperCase()] = style;
     delete allStyles[oldName];
 

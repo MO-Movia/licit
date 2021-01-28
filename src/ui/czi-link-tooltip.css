@@ -59,8 +59,8 @@
   left: 35%;
   position: absolute;
   top: 37px;
-  width: 20px;
   transform: rotate(45deg);
+  width: 20px;
   z-index: 1;
 }
 

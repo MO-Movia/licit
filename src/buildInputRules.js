@@ -62,7 +62,7 @@ function headingRule(nodeType: NodeType, maxLevel: number): InputRule {
 export default function buildInputRules(schema: Schema) {
   const rules = smartQuotes.concat(ellipsis, emDash);
   let type;
-  if ((type = schema.nodes.blockquote)) {
+  if (schema.nodes.blockquote) {
     rules.push(blockQuoteInputRule());
   }
   if ((type = schema.nodes.ordered_list)) {

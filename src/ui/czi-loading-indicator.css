@@ -1,38 +1,38 @@
 .czi-loading-indicator {
   display: inline-block;
+  height: 13px;
   position: relative;
   width: 64px;
-  height: 13px;
 }
 
 .czi-loading-indicator .frag {
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+  background: var(--czi-selection-highlight-color-dark);
+  border-radius: 50%;
+  height: 11px;
   position: absolute;
   top: 3px;
   width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--czi-selection-highlight-color-dark);
-  animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 
 .czi-loading-indicator-frag-1 {
-  left: 6px;
   animation: czi_loading_animation 0.6s infinite;
+  left: 6px;
 }
 
 .czi-loading-indicator-frag-2 {
-  left: 6px;
   animation: lds-ellipsis2 0.6s infinite;
+  left: 6px;
 }
 
 .czi-loading-indicator-frag-3 {
-  left: 26px;
   animation: lds-ellipsis2 0.6s infinite;
+  left: 26px;
 }
 
 .czi-loading-indicator-frag-4 {
-  left: 45px;
   animation: lds-ellipsis3 0.6s infinite;
+  left: 45px;
 }
 
 @keyframes czi_loading_animation {

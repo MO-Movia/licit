@@ -2,7 +2,10 @@
 @import './czi-vars.css';
 
 .czi-custom-buttons {
-  margin: 0 8px;
+  margin-bottom: 0;
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-top: 0;
   white-space: nowrap;
 }
 
@@ -20,7 +23,10 @@
   font-weight: normal;
   line-height: 1.2em;
   overflow: hidden;
-  padding: 6px 12px;
+  padding-bottom: 6px;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 6px;
   position: relative;
   text-overflow: ellipsis;
   user-select: none;

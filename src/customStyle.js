@@ -53,7 +53,7 @@ export function isCustomStyleExists(styleName) {
   let bOK = false;
   if (customStyles.length > 0) {
     for (const style of customStyles) {
-      if (styleName === style.stylename) {
+      if (styleName === style.styleName) {
         bOK = true;
         return bOK;
       }
@@ -95,7 +95,7 @@ export function getCustomStyleByName(name: string) {
   let style = null;
   if (customStyles.length > 0) {
     for (const obj of customStyles) {
-      if (name === obj.stylename) {
+      if (name === obj.styleName) {
         style = obj.styles;
       }
     }
@@ -104,7 +104,7 @@ export function getCustomStyleByName(name: string) {
     customStyles.then((result) => {
       if (null != result) {
         result.forEach((obj) => {
-          if (name === obj.stylename) {
+          if (name === obj.styleName) {
             style = obj.styles;
           }
         });
@@ -121,7 +121,7 @@ export function getCustomStyleByLevel(level: Number) {
   let style = null;
   if (customStyles.length > 0) {
     for (const obj of customStyles) {
-      if (obj.styles.level && level === Number(obj.styles.level)) {
+      if (obj.styles.styleLevel && level === Number(obj.styles.styleLevel)) {
         if (null === style) {
           style = obj;
         }
@@ -132,7 +132,7 @@ export function getCustomStyleByLevel(level: Number) {
     customStyles.then((result) => {
       if (null != result) {
         for (const obj of customStyles) {
-          if (obj.styles.level && level === Number(obj.styles.level)) {
+          if (obj.styles.styleLevel && level === Number(obj.styles.styleLevel)) {
             if (null === style) {
               style = obj;
             }

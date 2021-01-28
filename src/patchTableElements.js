@@ -36,7 +36,6 @@ function patchTableCell(tdElement: HTMLElement): void {
       }
       return true;
     });
-    return true;
   }
 
   if (width) {
