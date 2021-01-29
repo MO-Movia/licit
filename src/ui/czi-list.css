@@ -242,6 +242,7 @@ Ordered list 1) formatting  fix */
   }
 
   .ProseMirror ol[type='lower_alpha_bracket'][data-indent='0'] > li > p::before {
+    box-sizing: border-box;
     color: var(--czi-list-style-color);
     content: counter(czi-counter-0, lower-alpha) ') ';
     display: inline-block;
@@ -257,6 +258,7 @@ Ordered list 1) formatting  fix */
   }
 
   .ProseMirror ol[type='lower_alpha_bracket_closed'][data-indent='0'] > li > p::before {
+    box-sizing: border-box;
     color: var(--czi-list-style-color);
     content: '(' counter(czi-counter-0, lower-alpha) ') ';
     display: inline-block;
@@ -264,11 +266,11 @@ Ordered list 1) formatting  fix */
     left: -5px;
     line-height: 1em;
     margin-left: -28pt;
+    padding-left: 20px;
     position: relative;
     text-align: right;
     top: 0;
     width: 32pt;
-    padding-left: 20px;
   }
 
 .ProseMirror ol[type='decimal'][data-indent='0'] > li > p::before {

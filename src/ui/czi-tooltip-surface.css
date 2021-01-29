@@ -27,8 +27,8 @@
 }
 
 .czi-tooltip-view.czi-animation-fade-in {
-  animation-duration: 250ms;
   animation-delay: 150ms;
+  animation-duration: 250ms;
 }
 
 .czi-tooltip-view::after {

@@ -58,7 +58,7 @@ class MarkToggleCommand extends UICommand {
     // tr = setMark(tr, schema, markType);
     // if (tr.docChanged || tr.storedMarksSet) {
     //   dispatch && dispatch(tr);
-    // }   
+    // }
   };
 
 

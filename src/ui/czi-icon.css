@@ -1,27 +1,23 @@
 .czi-icon {
-  font-family: 'Material Icons', sans-serif;
-  font-weight: normal;
-  font-style: normal;
-  font-size: 20px;  /* Preferred icon size */
-  display: inline-block;
-  line-height: 1;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
   direction: ltr;
-
-  /* Support for all WebKit browsers. */
-  -webkit-font-smoothing: subpixel-antialiased;
-
-  /* Support for Safari and Chrome. */
-  text-rendering: optimizeLegibility;
-
-  /* Support for Firefox. */
-  -moz-osx-font-smoothing: grayscale;
-
+  display: inline-block;
+  font-family: 'Material Icons', sans-serif;
   /* Support for IE. */
   font-feature-settings: 'liga';
+  font-size: 20px;  /* Preferred icon size */
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: subpixel-antialiased;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: 1;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
 }
 
 .czi-icon.h1,
@@ -38,12 +34,12 @@
   hr not grayed out on editor disable state
   Temporary Fix need to bring image instead of content */
   content: '---';
-  margin-top: -12px !important;
+  height: 30px;
+  margin-bottom: 0 !important;
   margin-left: 0 !important;
   margin-right: 0 !important;
-  margin-bottom: 0 !important;
+  margin-top: -12px !important;
   width: 20px;
-  height: 30px;
 }
 
 .czi-icon.hr::before {

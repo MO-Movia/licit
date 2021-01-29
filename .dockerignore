@@ -1,0 +1,4 @@
+# Ignore everything in the project
+**
+# Except servers folder
+!servers

@@ -71,7 +71,7 @@ class TextColorCommand extends UICommand {
     if (dispatch && color !== undefined) {
       const { schema } = state;
       const markType = schema.marks[MARK_TEXT_COLOR];
-      const attrs = color ? { color } : null;      
+      const attrs = color ? { color } : null;
       const tr = applyMark(
         state.tr,
         schema,

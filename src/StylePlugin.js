@@ -5,14 +5,17 @@ import {
     PluginKey
 } from 'prosemirror-state';
 import {
-    Node
+    Node,
+    Fragment
 } from 'prosemirror-model';
 import {
     updateOverrideFlag,
+    applyLatestStyle,
     getMarkByStyleName,
     ATTR_OVERRIDDEN,
     NONE
 } from './CustomStyleCommand';
+import { findParentNodeClosestToPos } from 'prosemirror-utils';
 import {
     MARK_STRONG,
     MARK_EM,
@@ -29,6 +32,8 @@ const ALLOWED_MARKS = [MARK_STRONG, MARK_EM, MARK_TEXT_COLOR, MARK_FONT_SIZE, MA
 const SPEC = 'spec';
 const NEWATTRS = [ATTR_OVERRIDDEN];
 const ENTERKEYCODE = 13;
+const DELKEYCODE = 46;
+const BACKSPACEKEYCODE = 8;
 const PARA_POSITION_DIFF = 2;
 const ATTR_STYLE_NAME = 'styleName';
 
@@ -67,14 +72,17 @@ export default class StylePlugin extends Plugin {
                 if (!this.loaded) {
                     this.loaded = true;
                     // do this only once when the document is loaded.
+                    tr = applyStyles(nextState, tr);
                 } else if (isDocChanged(transactions)) {
                     if (!this.firstTime) {
                         // when user updates
                         tr = updateStyleOverrideFlag(nextState, tr);
+                        tr = manageHierarchyOnDelete(prevState, nextState, tr, this.view);
                     }
+                    tr = applyLineStyle(prevState, nextState, tr);
                     this.firstTime = false;
                     // custom style for next line
-                    if (this.view && 13 === this.view.lastKeyCode) {
+                    if (this.view && ENTERKEYCODE === this.view.lastKeyCode) {
                         tr = applyStyleForNextParagraph(prevState, nextState, tr, this.view);
                     }
                 }
@@ -88,6 +96,95 @@ export default class StylePlugin extends Plugin {
         return applyEffectiveSchema(schema);
     }
 }
+
+function applyStyles(state, tr) {
+    if (!tr) {
+        tr = state.tr;
+    }
+
+    tr.doc.descendants(function (child, pos) {
+        const contentLen = child.content.size;
+        if (haveEligibleChildren(child, contentLen)) {
+            tr = applyLatestStyle(child.attrs.styleName, state, tr, child, pos, pos + contentLen + 1);
+        }
+    });
+
+    return tr;
+}
+// [FS] IRAD-1130 2021-01-07
+// Handle heirarchy on delete
+function manageHierarchyOnDelete(prevState, nextState, tr, view) {
+    let nodes = null;
+    let prevN = null;
+    let index = 0;
+
+    if (prevState.doc !== nextState.doc) {
+        if (view && (DELKEYCODE === view.lastKeyCode || BACKSPACEKEYCODE === view.lastKeyCode)) {
+            const nextNodes = nodeAssignment(nextState);
+            let prevLevel = 1;
+            nextNodes.forEach(element => {
+
+                if (element.node.attrs.styleLevel - prevLevel > 1 && null === nodes) {
+                    prevLevel = element.node.attrs.styleLevel;
+                    nodes = element;
+                    prevN = nextNodes[index - 1];
+                }
+                else {
+                    if (prevLevel < 1) {
+                        prevLevel = element.node.attrs.styleLevel;
+                    }
+                }
+                index++;
+            });
+            if (nodes && prevN) {
+                if (!tr) {
+                    tr = nextState.tr;
+                }
+                const newattrs = Object.assign({}, prevN.node.attrs);
+                tr = addElementAfter(newattrs, nextState, tr, prevN.pos + prevN.node.nodeSize, prevLevel);
+            }
+
+        }
+    }
+    return tr;
+}
+function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
+    const counter = nodeAttrs.styleLevel ? nodeAttrs.styleLevel : 1;
+    const level = nextLevel ? nextLevel - 1 : 0;
+
+    const paragraph = state.schema.nodes['paragraph'];
+
+    for (let index = level; index > counter; index--) {
+        nodeAttrs.styleLevel = index;
+        nodeAttrs.styleName = 'None';
+        nodeAttrs.customStyle = null;
+        const paragraphNode = paragraph.create(
+            nodeAttrs,
+            null,
+            null
+        );
+        tr = tr.insert(startPos, Fragment.from(paragraphNode));
+    }
+
+    return tr;
+}
+
+function nodeAssignment(state) {
+    const nodes = [];
+    state.doc.descendants((node, pos) => {
+        if (requiredAddAttr(node)) {
+            if (node.attrs.styleLevel) {
+                nodes.push({
+                    node,
+                    pos,
+                });
+            }
+        }
+    });
+
+    return nodes;
+}
+
 // Continious Numbering for custom style
 function applyStyleForNextParagraph(prevState, nextState, tr, view) {
     let modified = false;
@@ -111,7 +208,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
                 }
                 if (nextNode && IsActiveNode && nextNode.type.name === 'paragraph' && nextNode.attrs.styleName === 'None') {
                     const style = getCustomStyleByName(newattrs.styleName);
-                    if (null !==style && !style.boldPartial) {
+                    if (null !== style && !style.boldPartial) {
                         tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
                         const marks = getMarkByStyleName(node.attrs[ATTR_STYLE_NAME], nextState.schema);
                         node.descendants((child, pos) => {
@@ -146,6 +243,7 @@ function isNewParagraph(prevState, nextState, view) {
     }
     return bOk;
 }
+
 function isDocChanged(transactions) {
     return (transactions.some((transaction) => transaction.docChanged));
 }
@@ -268,4 +366,70 @@ function getContent(type, schema) {
     }
 
     return content;
+}
+
+// [FS] IRAD-1145 2021-01-22
+// apply first word/sentence bold style
+function applyLineStyle(prevState, nextState, tr) {
+
+    const { selection, schema } = nextState;
+    const currentPos = selection.$cursor
+        ? selection.$cursor.pos
+        : selection.$to.pos;
+    const para = findParentNodeClosestToPos(
+        nextState.doc.resolve(currentPos),
+        (node) => {
+            return node.type === schema.nodes.paragraph;
+        }
+    );
+
+    if (para) {
+        const {
+            pos,
+            node
+        } = para;
+        // Check styleName is available for node
+        if (node.attrs && node.attrs.styleName) {
+            const style = getCustomStyleByName(node.attrs.styleName);
+            if (null !== style && style.boldPartial) {
+                if (!tr) {
+                    tr = nextState.tr;
+                }
+                tr = addMarksToLine(tr, nextState, node, pos, style.boldSentence);
+            }
+        }
+    }
+    return tr;
+}
+
+// get text content from selected node
+function getNodeText(node: Node) {
+    let textContent = '';
+    node.descendants(function (child: Node, pos: number, parent: Node) {
+        if ('text' === child.type.name) {
+            textContent = `${textContent}${child.text}`;
+        }
+    });
+    return textContent;
+}
+
+// add bold marks to node
+function addMarksToLine(tr, state, node, pos, boldSentence) {
+
+    const markType = state.schema.marks[MARK_STRONG];
+    let textContent = getNodeText(node);
+    const endPos = textContent.length;
+    let content = '';
+    if (boldSentence) {
+        content = textContent.split('.');
+    }
+    else {
+        content = textContent.split(' ');
+    }
+    textContent = content[0];
+    tr = tr.addMark(pos, (pos + textContent.length) + 1, markType.create(null));
+    if (content.length > 1) {
+        tr = tr.removeMark((pos + textContent.length) + 1, (pos + endPos) + 1, markType);
+    }
+    return tr;
 }

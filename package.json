@@ -23,7 +23,9 @@
     "lint:js": "eslint \"**/*.js\"",
     "start": "node scripts/webserver.js",
     "postinstall": "node fix_pm_tables_dist.js",
-    "prepare": "npm run build:dist"
+    "prepare": "npm run build:dist",
+    "prebuild:style-service-docker": "node utils/build_customstyle_server.js",
+    "build:style-service-docker": "docker build . -f style-service.Dockerfile -t style-service:latest"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",

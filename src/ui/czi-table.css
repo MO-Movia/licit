@@ -72,8 +72,8 @@ Rezie cursor position issue fixed. */
   bottom: 0;
   content: '';
   left: 0;
-  position: absolute;
   pointer-events: none;
+  position: absolute;
   right: 0;
   top: 0;
   z-index: 2;

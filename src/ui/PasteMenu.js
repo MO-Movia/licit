@@ -25,7 +25,7 @@ class PasteMenu extends React.PureComponent<any, any> {
     const children = [];
     children.push(
       <button
-        className="pasteMenu"
+        className="pastemenu"
         id='paste'
         key='paste'
         onClick={(e) => this._onUIEnter('paste')}
@@ -36,7 +36,7 @@ class PasteMenu extends React.PureComponent<any, any> {
     );
     children.push(
       <button
-        className="pasteMenu"
+        className="pastemenu"
         id='keepTextOnly'
         key='keepTextOnly'
         onClick={(e) => this._onUIEnter('keepTextOnly')}

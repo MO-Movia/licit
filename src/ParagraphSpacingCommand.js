@@ -12,7 +12,7 @@ export function setParagraphSpacing(
   tr: Transform,
   schema: Schema,
   paragraphSpacing: ?string,
-  isAfter: ?boolean,
+  isAfter: ?boolean
 ): Transform {
   const {selection, doc} = tr;
   if (!selection || !doc) {
@@ -63,20 +63,22 @@ export function setParagraphSpacing(
     return tr;
   }
 
-  tasks.forEach(job => {
+  tasks.forEach((job) => {
     const {node, pos, nodeType} = job;
     let {attrs} = node;
-    if(isAfter)
-    {
+    if (isAfter) {
       attrs = {
         ...attrs,
-        paragraphSpacingAfter: paragraphSpacingValue? paragraphSpacingValue: null,
+        paragraphSpacingAfter: paragraphSpacingValue
+          ? paragraphSpacingValue
+          : null,
       };
-    }
-    else{
+    } else {
       attrs = {
         ...attrs,
-        paragraphSpacingBefore: paragraphSpacingValue? paragraphSpacingValue: null,
+        paragraphSpacingBefore: paragraphSpacingValue
+          ? paragraphSpacingValue
+          : null,
       };
     }
     tr = tr.setNodeMarkup(pos, nodeType, attrs, node.marks);
@@ -89,7 +91,7 @@ class ParagraphSpacingCommand extends UICommand {
   _paragraphSpacing: ?string;
   _isAfter: ?boolean;
 
-  constructor(paragraphSpacing: ?string , isAfter: ?boolean) {
+  constructor(paragraphSpacing: ?string, isAfter: ?boolean) {
     super();
     this._paragraphSpacing = paragraphSpacing;
     this._isAfter = isAfter;

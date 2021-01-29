@@ -56,8 +56,8 @@ class CustomStyleItem extends React.PureComponent<any, any> {
                         {text}
                     </PointerSurface>
                 </div>
-                <div className="arrow_right" style={{ width: '50px' }} style={hasText ? { display: 'block' } : { display: 'none' }}>
-                    {/* Need to change the below icon to downarroe */}
+                <div className="arrow-right" style={{ width: '50px' }} style={hasText ? { display: 'block' } : { display: 'none' }}>
+                   {/* Need to change the below icon to downarroe */}
                     <PointerSurface {...pointerProps} className={klass + ' edit-icon'}>
                         {Icon.get('edit')}
                         {''}

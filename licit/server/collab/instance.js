@@ -154,7 +154,7 @@ function doSave() {
   const out = {};
   for (const prop in instances)
     out[prop] = { doc: instances[prop].doc.toJSON() };
-  writeFile(saveFile, JSON.stringify(out), () => { null; });
+  writeFile(saveFile, JSON.stringify(out), () => { });
 }
 
 // [FS] IRAD-1040 2020-09-02
@@ -191,8 +191,10 @@ function newInstance(id: any, doc: any) {
       const inst = instances[id];
       if (!oldest || inst.lastActive < oldest.lastActive) oldest = inst;
     }
-    instances[oldest.id].stop();
-    delete instances[oldest.id];
+    if(null !== oldest){
+      instances[oldest.id].stop();
+      delete instances[oldest.id];
+    }    
     --instanceCount;
   }
   return instances[id] = new Instance(id, doc);

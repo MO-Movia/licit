@@ -15,26 +15,26 @@
 }
 
 .ProseMirror {
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  position: relative;
-  user-zoom: fixed;
+  background: var(--czi-content-body-background-color);
   border-radius: 1px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   box-sizing: border-box;
-  margin: 0 auto 0 auto;
-  outline: none;
-  z-index: 1;
-  background: var(--czi-content-body-background-color);
   color: var(--czi-content-font-color);
   font-family: var(--czi-content-font-family);
   font-size: var(--czi-content-font-size);
   line-height: var(--czi-content-line-height);
+  margin: 0 auto 0 auto;
+  -moz-osx-font-smoothing: grayscale;
+  outline: none;
+  position: relative;
+  user-zoom: fixed;
   /*[FS] IRAD-1011 2020-07-10
     White space issue in FF
     https://github.com/ProseMirror/prosemirror-view/commit/06147b49efec62f06738ce593a365f0d1d953858#diff-a2771f42f3074df8a6954ad49a080d84
     */
   white-space: break-spaces;
+  -webkit-font-smoothing: antialiased;
+  z-index: 1;
 }
 
 .ProseMirror nobr {
@@ -75,12 +75,11 @@
 .ProseMirror.czi-prosemirror-editor,
 .ProseMirror[data-layout='us_letter_portrait'] {
   min-height: 279mm;
-  padding: var(--czi-doc-padding-default);
-  width: var(--czi-doc-width-us-letter-portrait);
-
   /* [FS] IRAD-992 2020-06-25
   Fix:Image exceeds the canvas */
   overflow: hidden;
+  padding: var(--czi-doc-padding-default);
+  width: var(--czi-doc-width-us-letter-portrait);
 }
 
 .ProseMirror[data-layout='us_letter_landscape'] {
@@ -91,12 +90,11 @@
 
 .ProseMirror[data-layout='a4_portrait'] {
   min-height: 297mm;
-  padding: var(--czi-doc-padding-default);
-  width: var(--czi-doc-width-a4-portrait);
-
   /* [FS] IRAD-992 2020-06-25
   Fix:Image exceeds the canvas */
   overflow: hidden;
+  padding: var(--czi-doc-padding-default);
+  width: var(--czi-doc-width-a4-portrait);
 }
 
 .ProseMirror[data-layout='a4_landscape'] {

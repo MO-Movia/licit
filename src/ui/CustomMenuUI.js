@@ -13,7 +13,7 @@ import CustomStyleSubMenu from './CustomStyleSubMenu';
 import CustomStyleEditor from './CustomStyleEditor';
 import { applyLatestStyle } from '../CustomStyleCommand';
 import { atViewportCenter } from './PopUpPosition';
-import { saveStyle, removeStyle } from '../customStyle';
+import { removeStyle, updateStyle, renameStyle } from '../customStyle';
 import { setTextAlign } from '../TextAlignCommand';
 import { setTextLineSpacing } from '../TextLineSpacingCommand';
 import { setParagraphSpacing } from '../ParagraphSpacingCommand';
@@ -123,13 +123,11 @@ class CustomMenuUI extends React.PureComponent<any, any> {
 
 
   _onUIEnter = (command: UICommand, event: SyntheticEvent<*>) => {
-
     if (command.shouldRespondToUIEvent(event)) {
       // check the mouse clicked on down arror to show sub menu
       if (event.currentTarget.className === 'czi-custom-menu-item edit-icon') {
         this.showSubMenu(command, event);
-      }
-      else {
+      } else {
         this._execute(command, event);
       }
     }
@@ -183,9 +181,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                   this.props.editorView.dispatch
                 );
               } else if ('rename' === val.type) {
-                window.alert('Rename Style...');
+                this.showStyleWindow(command, event, 2);
               } else {
-                this.showStyleWindow(command, event);
+                this.showStyleWindow(command, event, 1);
               }
             }
           }
@@ -269,7 +267,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
   }
 
   //shows the alignment and line spacing option
-  showStyleWindow(command: UICommand, event: SyntheticEvent<*>) {
+  showStyleWindow(command: UICommand, event: SyntheticEvent<*>, mode) {
     // const anchor = event ? event.currentTarget : null;
     // close the popup toggling effect
     if (this._stylePopup) {
@@ -281,8 +279,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     this._stylePopup = createPopUp(
       CustomStyleEditor,
       {
-        stylename: command._customStyleName,
-        mode: 1, //edit
+        styleName: command._customStyleName,
+        mode: mode, //edit
         description: command._customStyle.description,
         styles: command._customStyle.styles,
       },
@@ -294,16 +292,53 @@ class CustomMenuUI extends React.PureComponent<any, any> {
           if (this._stylePopup) {
             //handle save style object part here
             if (undefined !== val) {
-              const { dispatch } = this.props.editorView;
-              let tr = this.props.editorState.tr;
+              const {dispatch} = this.props.editorView;
               // [FS] IRAD-1112 2020-12-14
               // Issue fix: Duplicate style created while modified the style name.
-              saveStyle(val, this._styleName);
-              tr = this.updateDocument(this.props.editorState, this.props.editorState.tr, val.stylename);
-              dispatch(tr);
-              this.props.editorView.focus();
-              this._stylePopup.close();
-              this._stylePopup = null;
+              let customStyles;
+              if (1 === mode) {
+                // update
+                customStyles = updateStyle(val);
+              } else {
+                // rename
+                customStyles = renameStyle(this._styleName, val.styleName);
+              }
+
+              // [FS] IRAD-1133 2021-01-06
+              // Issue fix: After modify a custom style, the modified style not applied to the paragraph.
+              customStyles.then((result) => {
+                if (null != result) {
+                  let tr;
+                  result.forEach((obj) => {
+                    if (1 === mode) {
+                      if (val.styleName === obj.styleName) {
+                        tr = this.updateDocument(
+                          this.props.editorState,
+                          this.props.editorState.tr,
+                          val.styleName,
+                          obj.styles
+                        );
+                      }
+                    } else {
+                      if (val.styleName === obj.styleName) {
+                        tr = this.renameStyleInDocument(
+                          this.props.editorState,
+                          this.props.editorState.tr,
+                          this._styleName,
+                          val.styleName,
+                          obj.styles
+                        );
+                      }
+                    }
+                  });
+                  if (tr) {
+                    dispatch(tr);
+                  }
+                  this.props.editorView.focus();
+                  this._stylePopup.close();
+                  this._stylePopup = null;
+                }
+              });
             }
           }
         },
@@ -311,23 +346,59 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     );
   }
 
-  updateDocument(state: EditorState, tr: Transform, styleName) {
-    const { doc } = state;
+  renameStyleInDocument(
+    state: EditorState,
+    tr: Transform,
+    oldStyleName,
+    styleName,
+    style
+  ) {
+    const {doc} = state;
 
     doc.descendants(function (child, pos) {
       const contentLen = child.content.size;
-      if (haveEligibleChildren(child, contentLen, styleName)) {
-        tr = applyLatestStyle(child.attrs.styleName, state, tr, child, pos, pos + contentLen + 1);
+      if (oldStyleName === child.attrs.styleName) {
+        child.attrs.styleName = styleName;
+        tr = applyLatestStyle(
+          child.attrs.styleName,
+          state,
+          tr,
+          child,
+          pos,
+          pos + contentLen + 1,
+          style
+        );
       }
     });
     return tr;
   }
 
+  updateDocument(state: EditorState, tr: Transform, styleName, style) {
+    const {doc} = state;
+    doc.descendants(function (child, pos) {
+      const contentLen = child.content.size;
+      if (haveEligibleChildren(child, contentLen, styleName)) {
+        tr = applyLatestStyle(
+          child.attrs.styleName,
+          state,
+          tr,
+          child,
+          pos,
+          pos + contentLen + 1,
+          style
+        );
+      }
+    });
+    return tr;
+  }
 }
 
-function  haveEligibleChildren(node, contentLen, styleName) {
-  return node.type.name === 'paragraph' && 0 < contentLen && styleName === node.attrs.styleName;
+function haveEligibleChildren(node, contentLen, styleName) {
+  return (
+    node.type.name === 'paragraph' &&
+    0 < contentLen &&
+    styleName === node.attrs.styleName
+  );
 }
-
 
 export default CustomMenuUI;

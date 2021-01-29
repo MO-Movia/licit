@@ -75,6 +75,10 @@ var options = {
         ],
       },
       {
+        test: /\.(jpe?g|png|gif|svg)$/i, 
+        loader: 'file-loader'
+      },
+      {
         test: /\.html$/,
         loader: 'html-loader',
         exclude: /node_modules/

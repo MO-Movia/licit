@@ -67,12 +67,17 @@
   box-sizing: border-box;
   height: 30px;
   line-height: 28px;
-  padding: 0 6px;
+  padding-bottom: 0;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 0;
   pointer-events: auto;
 }
 
-.czi-editor-toolbar .czi-custom-buttons {
-  border-right: solid 1px #efefef;
+.czi-editor-toolbar .czi-custom-buttons { 
+  border-right-color: #efefef;
+  border-right-style: solid;
+  border-right-width: 1px;
   display: inline-block;
   margin-left: 0;
   margin-right: 0;
@@ -88,7 +93,10 @@
 }
 
 .czi-editor-toolbar .czi-custom-button.use-icon .czi-icon {
-  margin: 4px 0;
+  margin-bottom: 4px;
+  margin-left: 0;
+  margin-top: 4px;
+  margin-right: 0;
 }
 
 .czi-editor-toolbar-background {
@@ -101,8 +109,8 @@
 }
 
 .czi-editor-toolbar-background-line {
-  box-sizing: border-box;
   box-shadow: 0 1px 0 0.2px #efefef;
+  box-sizing: border-box;
   height: 32px;
 }
 

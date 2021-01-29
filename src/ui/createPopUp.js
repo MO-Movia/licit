@@ -197,6 +197,6 @@ export default function createPopUp(
     },
   };
 
-  render(currentViewProps || emptyObj, popUpParams || emptyObj);
+  render(currentViewProps || emptyObj, popUpParams);
   return handle;
 }

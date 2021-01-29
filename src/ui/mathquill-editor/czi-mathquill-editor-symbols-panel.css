@@ -26,11 +26,11 @@
 .czi-custom-button.czi-mathquill-editor-symbols-panel-button {
   background: #fff;
   border: solid 1px #ccc;
+  font-size: 13px;
   margin: 0 4px 4px 0;
+  min-width: 36px;
   padding: 6px;
   text-align: center;
-  font-size: 13px;
-  min-width: 36px;
 }
 
 .czi-custom-button.czi-mathquill-editor-symbols-panel-button:hover {

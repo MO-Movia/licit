@@ -19,7 +19,7 @@ class CustomStyleSubMenu extends React.PureComponent<any, any> {
         return (
 
 
-            <div class="dropdown-content" id='mo-submenu'>
+            <div className="dropdown-content" id='mo-submenu'>
                 <a  onClick={this.onButtonClick.bind(this, { type: 'modify', command: command })}>Modify Style..</a>
                 <a  onClick={this.onButtonClick.bind(this, { type: 'rename', command: command })}>Rename Style..</a>
                 <a  onClick={this.onButtonClick.bind(this, { type: 'remove', command: command })}>Remove Style..</a>

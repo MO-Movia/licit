@@ -11,7 +11,6 @@ import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
 // [FS] IRAD-1040 2020-09-02
 import * as Flatted from 'flatted';
 
-SetDocAttrStep.register();
 const router = new Router();
 // [FS] IRAD-1040 2020-09-02
 let effectiveSchema = EditorSchema;
