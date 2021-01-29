@@ -346,7 +346,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   }
 
   componentDidMount() {
-    const acc = document.getElementsByClassName('accordion');
+    const acc = document.getElementsByClassName('licit-accordion');
     let i;
 
     for (i = 0; i < acc.length; i++) {
@@ -463,7 +463,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 border: '1px solid',
               }}
             >
-              <button className="accordion accactive" id="accordion1">
+              <button className="licit-accordion accactive" id="accordion1">
                 <div className="indentdiv">
                   <span
                     className="iconspan czi-icon text_format"
@@ -689,7 +689,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   </span>
                 </div>
               </div>
-              <button className="accordion accactive">
+              <button className="licit-accordion accactive">
                 <div className="indentdiv">
                   <span
                     className="iconspan czi-icon format_textdirection_l_to_r"
@@ -844,7 +844,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <label style={{ marginLeft: '3px' }}>pts</label>
                 </div>
               </div>
-              <button className="accordion accactive">
+              <button className="licit-accordion accactive">
                 <div className="indentdiv">
                   <span className="iconspan czi-icon account_tree">
                     account_tree
