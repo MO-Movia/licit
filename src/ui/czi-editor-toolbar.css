@@ -74,7 +74,7 @@
   pointer-events: auto;
 }
 
-.czi-editor-toolbar .czi-custom-buttons {
+.czi-editor-toolbar .czi-custom-buttons { 
   border-right-color: #efefef;
   border-right-style: solid;
   border-right-width: 1px;

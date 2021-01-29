@@ -108,6 +108,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
           });
         }
         break;
+        
       case 'before':
         if (undefined !== event) {
           this.setState({
@@ -115,6 +116,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
           });
         }
         break;
+        
       case 'after':
         if (undefined !== event) {
           this.setState({
@@ -122,6 +124,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
           });
         }
         break;
+
       default:
         break;
     }

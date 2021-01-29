@@ -305,8 +305,8 @@ class CustomStyleCommand extends UICommand {
   }
 
   // shows the create style popup
-  editWindow(state: EditorState, view: EditorView) {
-    const {dispatch} = view;
+  editWindow(state: EditorState, view: EditorView) { 
+    const { dispatch } = view;
     let tr = state.tr;
     const doc = state.doc;
 
@@ -746,7 +746,7 @@ function applyLineStyle(node, style, state, tr, startPos) {
         }
       });
       textContent = textContent.split(' ')[0];
-
+      
       tr = tr.addMark(
         startPos,
         startPos + textContent.length + 1,

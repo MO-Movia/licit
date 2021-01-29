@@ -195,7 +195,7 @@ function setNodeIndentMarkup(
     (node.attrs.indent || 0) + delta,
     MAX_INDENT_LEVEL
   );
-
+  
   if (indent === node.attrs.indent) {
     return tr;
   }
