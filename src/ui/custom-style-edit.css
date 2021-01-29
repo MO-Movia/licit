@@ -267,7 +267,7 @@ label {
     display: none;
 }
 
-.accordion {
+.licit-accordion {
     background-color: #ccc;
     border-color: lightgray;
     border-style: solid;
@@ -283,7 +283,7 @@ label {
     width: 100%;
 }
 
-.accordion:after {
+.licit-accordion:after {
     color: #777;
     content: '\002B';
     float: right;
