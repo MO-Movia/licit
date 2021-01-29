@@ -4,8 +4,7 @@
 import { GET, POST } from './client/http';
 
 function buildRoute(...path) {
-  const root = `${window.location.protocol}//${window.location.hostname}:3005`;
-  // const root = '/style-service';
+  const root = '/style-service';
   return [root, ...path].join('/');
 }
 
