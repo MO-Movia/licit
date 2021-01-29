@@ -25,9 +25,18 @@ let sortedStyles = sortStyles(allStyles);
  */
 function readStyles() {
   try {
-    //Initially the out variable having some unexpected values, so created a new map variable
+    //Made compatible with old and new JSON Format
     const json = fs.readFileSync(JSONFILE, 'utf-8');
-    const rawStyles = JSON.parse(json) || [];
+    const obj = JSON.parse(json);
+    let rawStyles = [];
+    const {styles} = obj;
+    if (styles) {
+      // Add styles from incomming collection.
+      Object.keys(styles).forEach((key) => rawStyles.push(styles[key]));
+    } else {
+      rawStyles = obj || [];
+    }
+
     // Convert array into map.
     return rawStyles.reduce((out, style) => {
       if (style.styleName) {
@@ -59,7 +68,9 @@ function writeStyles() {
  * Convert map to a sorted array.
  */
 function sortStyles() {
-  return Object.keys(allStyles).sort().map(key => allStyles[key]);
+  return Object.keys(allStyles)
+    .sort()
+    .map((key) => allStyles[key]);
 }
 
 // [FS] IRAD-1128 2020-12-24
@@ -101,7 +112,6 @@ app.post('/renamecustomstyle/', function (req, res) {
   res.send(sortedStyles);
 });
 
-
 // [FS] IRAD-1128 2020-12-30
 // to remove the selected custom style from the json file.
 app.post('/removecustomstyle/', function (req, res) {
@@ -125,7 +135,9 @@ app.post('/removecustomstyle/', function (req, res) {
 // json respone:  { styles: {} }
 app.get('/bulk-export', (req, res) => {
   // Wrap map in object to match bulk-import expectations.
-  res.json({styles: allStyles});
+  res.json({
+    styles: allStyles,
+  });
 });
 
 // Not used by the editor!
@@ -139,23 +151,22 @@ app.get('/bulk-export', (req, res) => {
 // to true will delete all existing styles and only the imported styles will be
 // retained..
 app.post('/bulk-import', (req, res) => {
-  const { styles, replace } = req.body;
+  const {styles, replace} = req.json;
   if (styles) {
     if (replace) {
       // Delete all existing styles.
-      Object.keys(allStyles).forEach(key => delete allStyles[key]);
+      Object.keys(allStyles).forEach((key) => delete allStyles[key]);
     }
     // Add styles from incomming collection.
-    Object.keys(styles).forEach(key => allStyles[key] = styles[key]);
+    Object.keys(styles).forEach((key) => (allStyles[key] = styles[key]));
     sortedStyles = sortStyles();
     writeStyles();
   }
-
   // Respond with updated style data.
-  return res.json({styles: allStyles});
+  return res.json({
+    styles: allStyles,
+  });
 });
-
-
 
 if (!module.parent) {
   const server = app.listen(PORT);

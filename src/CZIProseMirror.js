@@ -26,14 +26,14 @@ export function exportJSON(id: ?string): Object {
   }
   const view = viewsRegistery.get(String(id));
   if (!view) {
-    throw new Error('view ${id} does not exist');
+    throw new Error(`view ${id} does not exist`);
   }
   return convertToJSON(view.state);
 }
 
 export function registerEditorView(id: string, view: EditorView): void {
   if (viewsRegistery.has(id)) {
-    throw new Error('view ${id} already registered');
+    throw new Error(`view ${id} already registered`);
   }
   if (!(view instanceof CustomEditorView)) {
     throw new Error(`invalid view ${id}`);
@@ -46,7 +46,7 @@ export function registerEditorView(id: string, view: EditorView): void {
 
 export function releaseEditorView(id: string): void {
   if (!viewsRegistery.has(id)) {
-    throw new Error('view ${id} was released');
+    throw new Error(`view ${id} was released`);
   }
   viewsRegistery.delete(id);
 }
@@ -81,7 +81,7 @@ export function registerCommand(name: string, command: UICommand): void {
     throw new Error('invalid command name');
   }
   if (commandsRegistery.has(name)) {
-    throw new Error('command ${name} already registered');
+    throw new Error(`command ${name} already registered`);
   }
   commandsRegistery.set(name, command);
 }

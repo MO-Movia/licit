@@ -156,7 +156,7 @@ export function removeStyle(name: string) {
       console.log(data);
     },
     (err) => { }
-  ); 
+  );
 }
 
 // [FS] IRAD-1128 2020-12-29

@@ -55,6 +55,7 @@ export const INDENT = 'indent';
 export const NUMBERING = 'hasNumbering';
 export const LEVELBASEDINDENT = 'isLevelbased';
 export const LEVEL = 'styleLevel';
+export const BOLDPARTIAL = 'boldPartial';
 
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
@@ -305,8 +306,8 @@ class CustomStyleCommand extends UICommand {
   }
 
   // shows the create style popup
-  editWindow(state: EditorState, view: EditorView) { 
-    const { dispatch } = view;
+  editWindow(state: EditorState, view: EditorView) {
+    const {dispatch} = view;
     let tr = state.tr;
     const doc = state.doc;
 
@@ -457,6 +458,7 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
   for (const property in style) {
     switch (property) {
       case STRONG:
+      case BOLDPARTIAL:
         if (style[property]) {
           markType = schema.marks[MARK_STRONG];
           marks.push(markType.create(attrs));
@@ -465,7 +467,6 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
 
       case EM:
         markType = schema.marks[MARK_EM];
-
         if (style[property]) marks.push(markType.create(attrs));
         break;
 
@@ -479,7 +480,6 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
         markType = schema.marks[MARK_FONT_SIZE];
         attrs = style[property] ? {pt: style[property]} : null;
         marks.push(markType.create(attrs));
-
         break;
 
       case FONTNAME:
@@ -496,7 +496,6 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
 
       case UNDERLINE:
         markType = schema.marks[MARK_UNDERLINE];
-
         marks.push(markType.create(attrs));
         break;
 
@@ -746,7 +745,7 @@ function applyLineStyle(node, style, state, tr, startPos) {
         }
       });
       textContent = textContent.split(' ')[0];
-      
+
       tr = tr.addMark(
         startPos,
         startPos + textContent.length + 1,

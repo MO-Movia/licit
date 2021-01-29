@@ -54,10 +54,10 @@ class UICommand {
   };
 
   dryRun = (state: EditorState, view: ?EditorView): boolean => {
-    const {Proxy} = window;
+    const fnProxy = window['Proxy'];
 
-    const dryRunState = Proxy
-      ? new Proxy(state, {
+    const dryRunState = fnProxy
+      ? new fnProxy(state, {
           get: dryRunEditorStateProxyGetter,
           set: dryRunEditorStateProxySetter,
         })

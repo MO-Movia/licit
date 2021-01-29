@@ -52,11 +52,7 @@ export function getCustomStyle(customStyle: any) {
 
       case 'super':
         style['verticalAlign'] = 'super';
-        break;
-
-      case 'textHighlight':
-        style['backgroundColor'] = customStyle[property];
-        break;
+        break;      
 
       case 'underline':
         // [FS] IRAD-1137 2021-1-22 
