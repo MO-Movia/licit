@@ -30,6 +30,8 @@ jobs:
     # - run: npm run lint:js
     # - run: npm run lint:css
   lint:
+    runs-on: ubuntu-latest
+
     name: lint
     needs: build
     steps:
