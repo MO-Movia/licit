@@ -29,4 +29,11 @@ jobs:
     - run: npm run build:dist
     # - run: npm run lint:js
     # - run: npm run lint:css
+  lint:
+    name: lint
+    needs: build
+    steps:
+    - run: npm run -s lint:js
+    - run: npm run -s lint:css
+
 
