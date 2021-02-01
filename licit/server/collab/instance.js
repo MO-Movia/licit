@@ -1,9 +1,9 @@
 // @flow
 
-const { readFileSync, writeFile } = require('fs');
+const {readFileSync, writeFile} = require('fs');
 
 // [FS] IRAD-1040 2020-09-02
-import { Schema } from 'prosemirror-model';
+import {Schema} from 'prosemirror-model';
 
 let _editorSchema: Schema = null;
 
@@ -25,9 +25,11 @@ export class Instance {
   constructor(id: any, doc: any, effectiveSchema: Schema) {
     this.id = id;
     // [FS] IRAD-1040 2020-09-02
-    this.doc = doc || _editorSchema.node('doc', null, [_editorSchema.node('paragraph', null, [
-      _editorSchema.text(' ')
-    ])]);
+    this.doc =
+      doc ||
+      _editorSchema.node('doc', null, [
+        _editorSchema.node('paragraph', null, [_editorSchema.text(' ')]),
+      ]);
     // The version number of the document instance.
     this.version = 0;
     this.steps = [];
@@ -46,7 +48,8 @@ export class Instance {
   addEvents(version: any, steps: any, clientID: any) {
     this.checkVersion(version);
     if (this.version != version) return false;
-    let doc = this.doc, maps = [];
+    let doc = this.doc,
+      maps = [];
     for (let i = 0; i < steps.length; i++) {
       steps[i].clientID = clientID;
       const result = steps[i].apply(doc);
@@ -62,7 +65,7 @@ export class Instance {
     }
     this.sendUpdates();
     scheduleSave();
-    return { version: this.version };
+    return {version: this.version};
   }
 
   sendUpdates() {
@@ -93,10 +96,9 @@ export class Instance {
     //   users: this.userCount
     // }
 
-
     const steps: any[] = this.steps.slice(startIndex);
     const users = this.userCount;
-    return { 'steps': steps, 'users': users };
+    return {steps: steps, users: users};
   }
 
   collectUsers() {
@@ -130,20 +132,22 @@ const instances = Object.create(null);
 let instanceCount = 0;
 const maxCount = 20;
 
-let saveFile = __dirname + '/../demo-instances.json', json;
+let saveFile = __dirname + '/../demo-instances.json',
+  json;
 if (process.argv.indexOf('--fresh') == -1) {
   try {
     json = JSON.parse(readFileSync(saveFile, 'utf8'));
-  } catch (e) { }
+  } catch (e) {}
 }
 
 if (json && null != _editorSchema) {
+  // [FS] IRAD-1040 2020-09-02
   for (const prop in json)
-    // [FS] IRAD-1040 2020-09-02
     newInstance(prop, _editorSchema.nodeFromJSON(json[prop].doc));
 }
 
-let saveTimeout = null, saveEvery = 1e4;
+let saveTimeout = null,
+  saveEvery = 1e4;
 function scheduleSave() {
   if (saveTimeout != null) return;
   saveTimeout = setTimeout(doSave, saveEvery);
@@ -152,16 +156,17 @@ function scheduleSave() {
 function doSave() {
   saveTimeout = null;
   const out = {};
-  for (const prop in instances)
-    out[prop] = { doc: instances[prop].doc.toJSON() };
-  writeFile(saveFile, JSON.stringify(out), () => { });
+  for (const prop in instances) out[prop] = {doc: instances[prop].doc.toJSON()};
+  writeFile(saveFile, JSON.stringify(out), () => {});
 }
 
 // [FS] IRAD-1040 2020-09-02
 function updateDocs() {
   if (null != _editorSchema) {
     for (const prop in instances) {
-      instances[prop].doc = _editorSchema.nodeFromJSON(instances[prop].doc.toJSON());
+      instances[prop].doc = _editorSchema.nodeFromJSON(
+        instances[prop].doc.toJSON()
+      );
     }
   }
 }
@@ -172,7 +177,7 @@ export function setEditorSchema(effectiveSchema: Schema) {
 }
 
 export function initEditorSchema(effectiveSchema: Schema) {
-  if(null == _editorSchema) {
+  if (null == _editorSchema) {
     _editorSchema = effectiveSchema;
   }
 }
@@ -191,23 +196,23 @@ function newInstance(id: any, doc: any) {
       const inst = instances[id];
       if (!oldest || inst.lastActive < oldest.lastActive) oldest = inst;
     }
-    if(null !== oldest){
+    if (null !== oldest) {
       instances[oldest.id].stop();
       delete instances[oldest.id];
-    }    
+    }
     --instanceCount;
   }
-  return instances[id] = new Instance(id, doc);
+  return (instances[id] = new Instance(id, doc));
 }
 
 export function instanceInfo() {
   const found = [];
   for (const id in instances)
-    found.push({ id: id, users: instances[id].userCount });
+    found.push({id: id, users: instances[id].userCount});
   return found;
 }
 export class CustomError extends Error {
-  status: number
+  status: number;
   constructor(message: string) {
     super(message);
   }

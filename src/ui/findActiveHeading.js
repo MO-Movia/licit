@@ -12,7 +12,7 @@ export function getCustomStyle(customStyle: any) {
   for (const property in customStyle) {
     switch (property) {
       case 'strong':
-        // [FS] IRAD-1137 2021-1-22 
+        // [FS] IRAD-1137 2021-1-22
         // Deselected Bold, Italics and Underline are not removed from the example style near style name
         if (customStyle[property]) {
           style['fontWeight'] = 'bold';
@@ -20,7 +20,7 @@ export function getCustomStyle(customStyle: any) {
         break;
 
       case 'em':
-        // [FS] IRAD-1137 2021-1-22 
+        // [FS] IRAD-1137 2021-1-22
         // Deselected Bold, Italics and Underline are not removed from the example style near style name
         if (customStyle[property]) {
           style['fontStyle'] = 'italic';
@@ -52,10 +52,10 @@ export function getCustomStyle(customStyle: any) {
 
       case 'super':
         style['verticalAlign'] = 'super';
-        break;      
+        break;
 
       case 'underline':
-        // [FS] IRAD-1137 2021-1-22 
+        // [FS] IRAD-1137 2021-1-22
         // Deselected Bold, Italics and Underline are not removed from the example style near style name
         if (customStyle[property]) {
           style['textDecoration'] = 'underline';
