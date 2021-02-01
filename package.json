@@ -20,7 +20,7 @@
     "build:licit": "node utils/build_bin.js",
     "flow": "flow",
     "lint:css": "stylelint \"**/*.css\"",
-    "lint:js": "eslint \"**/*.js\"",
+    "lint:js": "eslint \"src/**/*.js\" \"licit/**/*.js\"",
     "start": "node scripts/webserver.js",
     "postinstall": "node fix_pm_tables_dist.js",
     "prepare": "npm run build:dist",
