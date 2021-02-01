@@ -242,7 +242,7 @@ class CustomStyleCommand extends UICommand {
       tr = removeTextAlignAndLineSpacing(tr, state.schema);
       const startPos = selection.$from.before(1);
       const endPos = selection.$to.after(1);
-      const node = getNode(state, startPos, endPos);
+      const node = getNode(state, startPos, endPos, tr);
       const newattrs = Object.assign({}, node.attrs);
       tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
       if (dispatch && tr.docChanged) {
@@ -615,10 +615,13 @@ function createEmptyElement(
   let nextLevel = null;
   const nodesBeforeSelection = [];
   let nodesAfterSelection = null;
-  const docSize = state.doc.nodeSize - 2;
+  const docSize = tr.doc.nodeSize - 2;
   // Manage heirachy for nodes of previous  position
   if (startPos !== 0) {
-    state.doc.descendants((node, pos) => {
+    // Fix: document Load Error- Instead of state doc here give transaction doc,because when we apply changes
+    // dynamically through transactions the node position  get affected,
+    // so depending on state doc nodes' positions is incorrect.
+    tr.doc.descendants((node, pos) => {
       if (isAllowedNode(node)) {
         if (pos >= startPos) {
           return false;
@@ -660,7 +663,10 @@ function createEmptyElement(
   }
   // Manage heirachy for nodes of next position
   if (docSize > endPos) {
-    state.doc.nodesBetween(endPos, docSize, (node, pos) => {
+    // Fix: document Load Error -Instead of state doc here give transaction doc,because when we apply changes
+    // dynamically through transactions the node position  get affected,
+    // so depending on state doc nodes' positions is incorrect.
+    tr.doc.nodesBetween(endPos, docSize, (node, pos) => {
       if (
         isAllowedNode(node) &&
         node.attrs.styleLevel &&
@@ -799,7 +805,7 @@ function _setNodeAttribute(
   to: number,
   attribute: any
 ) {
-  state.doc.nodesBetween(from, to, (node, startPos) => {
+  tr.doc.nodesBetween(from, to, (node, startPos) => {
     if (isAllowedNode(node)) {
       tr = tr.setNodeMarkup(startPos, undefined, attribute);
     }
@@ -861,14 +867,19 @@ export function applyStyle(
   const {selection} = state;
   const startPos = selection.$from.before(1);
   const endPos = selection.$to.after(1);
-  const node = getNode(state, startPos, endPos);
+  const node = getNode(state, startPos, endPos, tr);
   return applyStyleEx(style, styleName, state, tr, node, startPos, endPos);
 }
 
 //to get the selected node
-export function getNode(state: EditorState, from: Number, to: Number) {
+export function getNode(
+  state: EditorState,
+  from: Number,
+  to: Number,
+  tr: Transform
+) {
   let selectedNode = null;
-  state.doc.nodesBetween(from, to, (node, startPos) => {
+  tr.doc.nodesBetween(from, to, (node, startPos) => {
     if (node.type.name === 'paragraph') {
       selectedNode = node;
     }
