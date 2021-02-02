@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "subversion": "1",
   "description": "Rich text editor built with React and ProseMirror",
   "main": "dist/index.js",
@@ -79,7 +79,7 @@
     "write-file-webpack-plugin": "4.5.1"
   },
   "dependencies": {
-    "@modusoperandi/licit-doc-attrs-step": ">=0.0.1",
+    "@modusoperandi/licit-doc-attrs-step": ">=0.0.2",
     "body-parser": "^1.19.0",
     "browserkeymap": "2.0.2",
     "classnames": "2.2.6",

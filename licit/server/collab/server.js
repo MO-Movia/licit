@@ -1,13 +1,18 @@
 // @flow
 
-import { Step } from 'prosemirror-transform';
-import { Schema } from 'prosemirror-model';
+import {Step} from 'prosemirror-transform';
+import {Schema} from 'prosemirror-model';
 import Router from './route';
 import EditorSchema from '../../../src/EditorSchema';
-import { getInstance, instanceInfo, setEditorSchema, initEditorSchema } from './instance';
+import {
+  getInstance,
+  instanceInfo,
+  setEditorSchema,
+  initEditorSchema,
+} from './instance';
 // [FS] IRAD-899 2020-03-13
 // This is for Capcomode document attribute. Shared Step, so that capcomode can be dealt collaboratively.
-import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
+import '@modusoperandi/licit-doc-attrs-step';
 // [FS] IRAD-1040 2020-09-02
 import * as Flatted from 'flatted';
 
@@ -25,16 +30,15 @@ function handleCollabRequest(req: any, resp: any) {
     'Access-Control-Allow-Credential': false,
     'Access-Control-Max-Age': 86400, // 24hrs
     'Access-Control-Allow-Headers':
-      'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept'
+      'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept',
   };
   if (!router.resolve(req, resp)) {
     const method = req.method.toUpperCase();
     if (method === 'OPTIONS') {
-
       resp.writeHead(200, headers);
       resp.end();
     } else {
-      resp.writeHead(404, { 'Content-Type': 'text/plain' });
+      resp.writeHead(404, {'Content-Type': 'text/plain'});
       resp.end('Not found');
     }
   }
@@ -63,16 +67,15 @@ class Output {
   resp(resp: any) {
     const headers = {
       'Access-Control-Allow-Origin': '*',
-      'Content-Type': this.type
+      'Content-Type': this.type,
     };
     resp.writeHead(this.code, headers);
     resp.end(this.body);
-
   }
 }
 
 class CustomError extends Error {
-  status: number
+  status: number;
   constructor(message: string) {
     super(message);
   }
@@ -82,28 +85,34 @@ class CustomError extends Error {
 // Invoke a callback with a stream's data.
 function readStreamAsJSON(stream, callback) {
   let data = '';
-  stream.on('data', chunk => data += chunk);
+  stream.on('data', (chunk) => (data += chunk));
   stream.on('end', () => {
     let result, error;
-    try { result = JSON.parse(data); }
-    catch (e) { error = e; }
+    try {
+      result = JSON.parse(data);
+    } catch (e) {
+      error = e;
+    }
     callback(error, result);
   });
-  stream.on('error', e => callback(e));
+  stream.on('error', (e) => callback(e));
 }
 
 // : (stream.Readable, Function)
 // Invoke a callback with a stream's data.
 function readStreamAsFlatted(stream, callback) {
   let data = '';
-  stream.on('data', chunk => data += chunk);
+  stream.on('data', (chunk) => (data += chunk));
   stream.on('end', () => {
     let result, error;
-    try { result = Flatted.parse(data); }
-    catch (e) { error = e; }
+    try {
+      result = Flatted.parse(data);
+    } catch (e) {
+      error = e;
+    }
     callback(error, result);
   });
-  stream.on('error', e => callback(e));
+  stream.on('error', (e) => callback(e));
 }
 
 // : (string, Array, Function)
@@ -125,11 +134,12 @@ function handle(method, url, f, readFlatted = false) {
       const readMethod = readFlatted ? readStreamAsFlatted : readStreamAsJSON;
       readMethod(req, (err, val) => {
         if (err) new Output(500, err.toString()).resp(resp);
-        else { args.unshift(val); finish(); }
+        else {
+          args.unshift(val);
+          finish();
+        }
       });
-    }
-    else
-      finish();
+    } else finish();
   });
 }
 
@@ -145,7 +155,7 @@ handle('GET', ['docs', null], (id, req) => {
   return Output.json({
     doc_json: inst.doc.toJSON(),
     users: inst.userCount,
-    version: inst.version
+    version: inst.version,
   });
 });
 
@@ -162,11 +172,11 @@ function nonNegInteger(str) {
 // event data to the client.
 class Waiting {
   // fix_flow_errors:  declarion to  avoid flow errors
-  resp = null
-  inst: any = null
-  ip = ''
-  finish = null
-  done = false
+  resp = null;
+  inst: any = null;
+  ip = '';
+  finish = null;
+  done = false;
   //end
   constructor(resp, inst, ip, finish) {
     this.resp = resp;
@@ -197,9 +207,9 @@ class Waiting {
 function outputEvents(inst, data) {
   return Output.json({
     version: inst.version,
-    steps: data.steps.map(s => s.toJSON()),
-    clientIDs: data.steps.map(step => step.clientID),
-    users: data.users
+    steps: data.steps.map((s) => s.toJSON()),
+    clientIDs: data.steps.map((step) => step.clientID),
+    users: data.users,
   });
 }
 
@@ -211,12 +221,10 @@ handle('GET', ['docs', null, 'events'], (id, req, resp) => {
 
   const inst = getInstance(id, reqIP(req));
   const data = inst.getEvents(version);
-  if (data === false)
-    return new Output(410, 'History no longer available');
+  if (data === false) return new Output(410, 'History no longer available');
   // If the server version is greater than the given version,
   // return the data immediately.
-  if (data.steps.length)
-    return outputEvents(inst, data);
+  if (data.steps.length) return outputEvents(inst, data);
   // If the server version matches the given version,
   // wait until a new version is published to return the event data.
   const wait = new Waiting(resp, inst, reqIP(req), () => {
@@ -234,37 +242,53 @@ function reqIP(request) {
 // The event submission endpoint, which a client sends an event to.
 handle('POST', ['docs', null, 'events'], (data, id, req) => {
   const version = nonNegInteger(data.version);
-  const steps = data.steps.map(s => Step.fromJSON(effectiveSchema, s));
-  const result = getInstance(id, reqIP(req)).addEvents(version, steps, data.clientID);
-  if (!result)
-    return new Output(409, 'Version not current');
-  else
-    return Output.json(result);
+  const steps = data.steps.map((s) => Step.fromJSON(effectiveSchema, s));
+  const result = getInstance(id, reqIP(req)).addEvents(
+    version,
+    steps,
+    data.clientID
+  );
+  if (!result) return new Output(409, 'Version not current');
+  else return Output.json(result);
 });
 
 // [FS] IRAD-1040 2020-09-02
 // set the effective schema from client to work the plugins collaboratively
-handle('POST', ['docs', null, 'schema'], (data, id, req) => {
-  const updatedSchema = Flatted.stringify(data);
-  // Do a string comparison to see if they are same or not.
-  // if same, don't update
-  if (lastUpdatedSchema !== updatedSchema) {
-    lastUpdatedSchema = updatedSchema;
-    const spec = data['spec'];
-    updateSpec(spec, 'nodes');
-    updateSpec(spec, 'marks');
-    effectiveSchema = new Schema({ nodes: effectiveSchema.spec.nodes, marks: effectiveSchema.spec.marks });
-    setEditorSchema(effectiveSchema);
-  }
-  return Output.json({ result: 'success' });
-}, true);
+handle(
+  'POST',
+  ['docs', null, 'schema'],
+  (data, id, req) => {
+    const updatedSchema = Flatted.stringify(data);
+    // Do a string comparison to see if they are same or not.
+    // if same, don't update
+    if (lastUpdatedSchema !== updatedSchema) {
+      lastUpdatedSchema = updatedSchema;
+      const spec = data['spec'];
+      updateSpec(spec, 'nodes');
+      updateSpec(spec, 'marks');
+      effectiveSchema = new Schema({
+        nodes: effectiveSchema.spec.nodes,
+        marks: effectiveSchema.spec.marks,
+      });
+      setEditorSchema(effectiveSchema);
+    }
+    return Output.json({result: 'success'});
+  },
+  true
+);
 
 function updateSpec(spec, attrName) {
   // clear current array
-  effectiveSchema.spec[attrName].content.splice(0, effectiveSchema.spec[attrName].content.length);
+  effectiveSchema.spec[attrName].content.splice(
+    0,
+    effectiveSchema.spec[attrName].content.length
+  );
   const collection = spec[attrName]['content'];
   // update current array with the latest info
   for (let i = 0; i < collection.length; i += 2) {
-    effectiveSchema.spec[attrName] = effectiveSchema.spec[attrName].update(collection[i], collection[i + 1]);
+    effectiveSchema.spec[attrName] = effectiveSchema.spec[attrName].update(
+      collection[i],
+      collection[i + 1]
+    );
   }
 }

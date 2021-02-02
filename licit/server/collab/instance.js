@@ -42,14 +42,14 @@ export class Instance {
   }
 
   stop() {
-    if (this.collecting != null) clearInterval(this.collecting);
+    if (this.collecting != null) window.clearInterval(this.collecting);
   }
 
   addEvents(version: any, steps: any, clientID: any) {
     this.checkVersion(version);
     if (this.version != version) return false;
-    let doc = this.doc,
-      maps = [];
+    let doc = this.doc;
+    const maps = [];
     for (let i = 0; i < steps.length; i++) {
       steps[i].clientID = clientID;
       const result = steps[i].apply(doc);
@@ -132,8 +132,8 @@ const instances = Object.create(null);
 let instanceCount = 0;
 const maxCount = 20;
 
-let saveFile = __dirname + '/../demo-instances.json',
-  json;
+const saveFile = __dirname + '/../demo-instances.json';
+let json;
 if (process.argv.indexOf('--fresh') == -1) {
   try {
     json = JSON.parse(readFileSync(saveFile, 'utf8'));
@@ -146,8 +146,8 @@ if (json && null != _editorSchema) {
     newInstance(prop, _editorSchema.nodeFromJSON(json[prop].doc));
 }
 
-let saveTimeout = null,
-  saveEvery = 1e4;
+let saveTimeout = null;
+const saveEvery = 1e4;
 function scheduleSave() {
   if (saveTimeout != null) return;
   saveTimeout = setTimeout(doSave, saveEvery);
