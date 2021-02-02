@@ -104,8 +104,19 @@ function applyStyles(state, tr) {
 
     tr.doc.descendants(function (child, pos) {
         const contentLen = child.content.size;
+		// [FS] IRAD-1170 2021-02-02
+		// FIX: When loading some documents on load show "Cannot read nodeSize property of undefined" error.
+		const docLen = tr.doc.content.size;
+		let end = pos + contentLen;
+
+		// Validate end position.
+		if(end > docLen) {
+			// Can't be out of range.
+			end = docLen;
+		}
+
         if (haveEligibleChildren(child, contentLen)) {
-            tr = applyLatestStyle(child.attrs.styleName, state, tr, child, pos, pos + contentLen + 1);
+            tr = applyLatestStyle(child.attrs.styleName, state, tr, child, pos, end);
         }
     });
 
