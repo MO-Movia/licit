@@ -53,11 +53,10 @@
    * Firefox & Edge specifically only support the -webkit-text-stroke property.
    * https://caniuse.com/#feat=text-stroke
    */
-   border-color: #666;
-   color: #000;
+  border-color: #666;
+  color: #000;
   -webkit-text-stroke-color: #000;
   -webkit-text-stroke-width: 0.5px;
-  /* text-shadow: 0px 0px 1px #000; */
 }
 
 .czi-custom-button.pressed {
@@ -86,7 +85,6 @@
 
 .czi-custom-buttons > .czi-custom-button:last-child {
   border-bottom-right-radius: var(--czi-button-radius);
-  border-radius: 0;
   border-top-right-radius: var(--czi-button-radius);
 }
 
