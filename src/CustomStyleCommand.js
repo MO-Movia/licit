@@ -311,32 +311,41 @@ class CustomStyleCommand extends UICommand {
     let tr = state.tr;
     const doc = state.doc;
 
-    this._popUp = createPopUp(CustomStyleEditor, this.createCustomObject(), {
-      autoDismiss: false,
-      position: atViewportCenter,
-      onClose: (val) => {
-        if (this._popUp) {
-          this._popUp = null;
-          //handle save style object part here
-          if (undefined !== val) {
-            this.saveStyleObject(val);
-            tr = tr.setSelection(TextSelection.create(doc, 0, 0));
-            // Apply created styles to document
-            tr = applyStyle(val.styles, val.styleName, state, tr);
-            dispatch(tr);
-            // view.focus();
+    this._popUp = createPopUp(
+      CustomStyleEditor,
+      this.createCustomObject(view.runtime),
+      {
+        autoDismiss: false,
+        position: atViewportCenter,
+        onClose: (val) => {
+          if (this._popUp) {
+            this._popUp = null;
+            //handle save style object part here
+            if (undefined !== val) {
+              // this.saveStyleObject(val);
+              if (view.runtime && view.runtime.saveStyle) {
+                delete val.runtime;
+                view.runtime.saveStyle(val);
+              }
+              tr = tr.setSelection(TextSelection.create(doc, 0, 0));
+              // Apply created styles to document
+              tr = applyStyle(val.styles, val.styleName, state, tr);
+              dispatch(tr);
+              // view.focus();
+            }
           }
-        }
-      },
-    });
+        },
+      }
+    );
   }
 
   // creates a sample style object
-  createCustomObject() {
+  createCustomObject(runtime) {
     return {
       styleName: '',
       mode: 0, //new
       styles: {},
+      runtime: runtime,
     };
   }
 

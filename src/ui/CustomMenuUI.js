@@ -1,9 +1,9 @@
 import * as React from 'react';
 import UICommand from './UICommand';
-import { EditorState } from 'prosemirror-state';
-import { Schema } from 'prosemirror-model';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState} from 'prosemirror-state';
+import {Schema} from 'prosemirror-model';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 import uuid from './uuid';
 import './listType.css';
 import CustomStyleItem from './CustomStyleItem';
@@ -11,12 +11,11 @@ import CustomStyleItem from './CustomStyleItem';
 import createPopUp from './createPopUp';
 import CustomStyleSubMenu from './CustomStyleSubMenu';
 import CustomStyleEditor from './CustomStyleEditor';
-import { applyLatestStyle } from '../CustomStyleCommand';
-import { atViewportCenter } from './PopUpPosition';
-import { removeStyle, updateStyle, renameStyle } from '../customStyle';
-import { setTextAlign } from '../TextAlignCommand';
-import { setTextLineSpacing } from '../TextLineSpacingCommand';
-import { setParagraphSpacing } from '../ParagraphSpacingCommand';
+import {applyLatestStyle} from '../CustomStyleCommand';
+import {atViewportCenter} from './PopUpPosition';
+import {setTextAlign} from '../TextAlignCommand';
+import {setTextLineSpacing} from '../TextLineSpacingCommand';
+import {setParagraphSpacing} from '../ParagraphSpacingCommand';
 
 // [FS] IRAD-1039 2020-09-24
 // UI to show the list buttons
@@ -29,8 +28,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
   // _popUpId = uuid();
   props: {
     className?: ?string,
-    commandGroups: Array<{ [string]: UICommand }>,
-    staticCommand: Array<{ [string]: UICommand }>,
+    commandGroups: Array<{[string]: UICommand}>,
+    staticCommand: Array<{[string]: UICommand}>,
     disabled?: ?boolean,
     dispatch: (tr: Transform) => void,
     editorState: EditorState,
@@ -121,7 +120,6 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     );
   }
 
-
   _onUIEnter = (command: UICommand, event: SyntheticEvent<*>) => {
     if (command.shouldRespondToUIEvent(event)) {
       // check the mouse clicked on down arror to show sub menu
@@ -135,7 +133,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
 
   _execute = (command: UICommand, e: SyntheticEvent<*>) => {
     if (undefined !== command) {
-      const { dispatch, editorState, editorView, onCommand } = this.props;
+      const {dispatch, editorState, editorView, onCommand} = this.props;
       command.execute(editorState, dispatch, editorView, e);
       onCommand && onCommand();
     }
@@ -166,11 +164,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             if (undefined !== val && val.command._customStyle) {
               // do edit,remove,rename code here
               if ('remove' === val.type) {
-                removeStyle(
-                  val.command._customStyleName,
-                  val.command._customStyle,
-                  this.props.editorState,
-                  this.props.editorView.dispatch
+                this.props.editorView.runtime.removeStyle(
+                  val.command._customStyleName
                 );
 
                 // [FS] IRAD-1099 2020-11-17
@@ -195,9 +190,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
   // [FS] IRAD-1099 2020-11-17
   // Issue fix: Even the applied style is removed the style name is showing in the editor
   removeCustomStyleName(editorState, removedStyleName, dispatch) {
-    const { selection, doc } = editorState;
-    let { from, to } = selection;
-    const { empty } = selection;
+    const {selection, doc} = editorState;
+    let {from, to} = selection;
+    const {empty} = selection;
     if (empty) {
       from = selection.$from.before(1);
       to = selection.$to.after(1);
@@ -218,18 +213,18 @@ class CustomMenuUI extends React.PureComponent<any, any> {
         ) {
           node.content.content[0].marks.some((mark) => {
             if (node.attrs.styleName === removedStyleName) {
-              tasks.push({ node, pos, mark });
+              tasks.push({node, pos, mark});
             }
           });
         } else {
-          textAlignNode.push({ node, pos });
+          textAlignNode.push({node, pos});
         }
       }
     });
 
     if (!tasks.length) {
       textAlignNode.forEach((eachnode) => {
-        const { node } = eachnode;
+        const {node} = eachnode;
         node.attrs.styleName = customStyleName;
       });
       // to remove both text align format and line spacing
@@ -237,7 +232,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     }
 
     tasks.forEach((job) => {
-      const { node, mark, pos } = job;
+      const {node, mark, pos} = job;
       tr = tr.removeMark(pos, pos + node.nodeSize, mark.type);
       // reset the custom style name to NONE after remove the styles
       node.attrs.styleName = customStyleName;
@@ -283,6 +278,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
         mode: mode, //edit
         description: command._customStyle.description,
         styles: command._customStyle.styles,
+        runtime: this.props.editorView.runtime,
       },
       {
         position: atViewportCenter,
@@ -292,16 +288,20 @@ class CustomMenuUI extends React.PureComponent<any, any> {
           if (this._stylePopup) {
             //handle save style object part here
             if (undefined !== val) {
-              const {dispatch} = this.props.editorView;
+              const {dispatch, runtime} = this.props.editorView;
               // [FS] IRAD-1112 2020-12-14
               // Issue fix: Duplicate style created while modified the style name.
               let customStyles;
+              delete val.runtime;
               if (1 === mode) {
                 // update
-                customStyles = updateStyle(val);
+                customStyles = runtime.saveStyle(val);
               } else {
                 // rename
-                customStyles = renameStyle(this._styleName, val.styleName);
+                customStyles = runtime.renameStyle(
+                  this._styleName,
+                  val.styleName
+                );
               }
 
               // [FS] IRAD-1133 2021-01-06

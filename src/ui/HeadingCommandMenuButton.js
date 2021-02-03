@@ -4,12 +4,11 @@ import CustomMenuButton from './CustomMenuButton';
 import HeadingCommand from '../HeadingCommand';
 import CustomStyleCommand from '../CustomStyleCommand';
 import * as React from 'react';
-import { EditorState } from 'prosemirror-state';
-import { EditorView } from 'prosemirror-view';
-import { HEADING_NAME_DEFAULT } from './findActiveHeading';
-import { Transform } from 'prosemirror-transform';
-import { Node } from 'prosemirror-model';
-import { getCustomStyles } from '../customStyle';
+import {EditorState} from 'prosemirror-state';
+import {EditorView} from 'prosemirror-view';
+import {HEADING_NAME_DEFAULT} from './findActiveHeading';
+import {Transform} from 'prosemirror-transform';
+import {Node} from 'prosemirror-model';
 
 // [FS] IRAD-1042 2020-09-09
 // To include custom styles in the toolbar
@@ -33,21 +32,29 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
       // When apply 'None' from style menu, not clearing the applied custom style.
       [HEADING_NAME_DEFAULT]: new CustomStyleCommand('None', 'None'),
     };
-    const customStyles = getCustomStyles();
-    let HEADING_NAMES = null;
-    customStyles.then((result) => {
-      HEADING_NAMES = result;
+    // Check runtime is avilable in editorview
+    // Get styles form server configured in runtime
+    if (
+      this.props.editorView &&
+      this.props.editorView.runtime &&
+      this.props.editorView.runtime.getStylesAsync()
+    ) {
+      const customStyles = this.props.editorView.runtime.getStylesAsync();
+      let HEADING_NAMES = null;
+      customStyles.then((result) => {
+        HEADING_NAMES = result;
 
-      if (null != HEADING_NAMES) {
-        HEADING_NAMES.forEach((obj) => {
-          HEADING_COMMANDS[obj.styleName] = new CustomStyleCommand(
-            obj,
-            obj.styleName
-          );
-        });
-      }
-      return [HEADING_COMMANDS];
-    });
+        if (null != HEADING_NAMES) {
+          HEADING_NAMES.forEach((obj) => {
+            HEADING_COMMANDS[obj.styleName] = new CustomStyleCommand(
+              obj,
+              obj.styleName
+            );
+          });
+        }
+        return [HEADING_COMMANDS];
+      });
+    }
     return [HEADING_COMMANDS];
   }
   staticCommands() {
@@ -61,13 +68,12 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     return [MENU_COMMANDS];
   }
   isAllowedNode(node: Node) {
-    return (node.type.name === 'paragraph' || node.type.name === 'ordered_list');
+    return node.type.name === 'paragraph' || node.type.name === 'ordered_list';
   }
   render(): React.Element<any> {
-
-    const { dispatch, editorState, editorView } = this.props;
-    const { selection, doc } = editorState;
-    const { from, to } = selection;
+    const {dispatch, editorState, editorView} = this.props;
+    const {selection, doc} = editorState;
+    const {from, to} = selection;
     let customStyleName;
     let selectedStyleCount = 0;
     // [FS] IRAD-1088 2020-10-05
@@ -79,10 +85,12 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         selectedStyleCount++;
         // [FS] IRAD-1100 2020-10-30
         // Issue fix: style name shows blank when select multiple paragraph with same custom style applied
-        if (1 === selectedStyleCount || (1 < selectedStyleCount && node.attrs.styleName === customStyleName)) {
+        if (
+          1 === selectedStyleCount ||
+          (1 < selectedStyleCount && node.attrs.styleName === customStyleName)
+        ) {
           customStyleName = node.attrs.styleName;
-        }
-        else{
+        } else {
           customStyleName = 'None';
         }
       }

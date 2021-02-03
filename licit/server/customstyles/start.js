@@ -16,7 +16,7 @@ const JSONFILE = '../customstyles/customstyles.json';
 /** styles as map for fast lookup */
 const allStyles = readStyles();
 /** styles as sorted array for results */
-let sortedStyles = sortStyles(allStyles);
+let sortedStyles = sortStyles();
 
 /**
  * Read styles from disk storage.
