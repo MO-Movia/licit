@@ -10,7 +10,7 @@
   --czi-button-radius: 5px;
   --czi-button-text-color: #666;
   --czi-color-grey-200: rgba(0, 0, 0, 0.46);
-  --czi-font-family: Helvetica;
+  --czi-font-family: helvetica;
   --czi-font-size-small: 12px;
   --czi-font-size: 13px;
   --czi-link-color: rgb(0, 0, 238);
@@ -34,7 +34,7 @@
   /* content styles */
   --czi-content-body-background-color: #fff;
   --czi-content-font-color: #000;
-  --czi-content-font-family: Arial;
+  --czi-content-font-family: arial;
   --czi-content-font-size-h1: 18px;
   --czi-content-font-size-h2: 16px;
   --czi-content-font-size-h3: 13px;

@@ -1,84 +1,79 @@
-
 .dropbtn {
-    background-color: #fff;
-    border-color: #cec7c7;
-    border-style: solid;
-    border-width: 1px;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    color: #5a615e;
-    cursor: pointer;
-    font-family: 'Arial', sans-serif;
-    font-size: 14px;
-    min-width: 160px;
-    padding: 5px;
+  background-color: #fff;
+  border-color: #cec7c7;
+  border-style: solid;
+  border-width: 1px;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  color: #5a615e;
+  cursor: pointer;
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  min-width: 160px;
+  padding: 5px;
 }
 
 .stylenames {
-    max-height: 205px;
-    min-height: 30px;
-    overflow: auto;
+  max-height: 205px;
+  min-height: 30px;
+  overflow: auto;
 }
 
 .dropdown {
-    display: inline-block;
-    position: relative;
+  display: inline-block;
+  position: relative;
 }
 
 .dropdown-content {
-    background-color: #f9f9f9;
-    border-color: #cec7c7;
-    border-style: solid;
-    border-width: 1px;
-    box-shadow: 0 8px 16px 0 rgba(26, 25, 25, 0.2);
-    box-sizing: border-box;
-    color: #5a615e;
-    font-family: 'Arial', sans-serif;
-    font-size: 14px;
-    height: 95px;
-    line-height: 0.75;
-    min-width: 136px;
+  background-color: #f9f9f9;
+  border-color: #cec7c7;
+  border-style: solid;
+  border-width: 1px;
+  box-shadow: 0 8px 16px 0 rgba(26, 25, 25, 0.2);
+  box-sizing: border-box;
+  color: #5a615e;
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  height: 95px;
+  line-height: 0.75;
+  min-width: 136px;
 }
 
 .dropdown-content a {
-    display: block;
-    padding-bottom: 10px;
-    padding-left: 14px;
-    padding-right: 14px;
-    padding-top: 10px;
-    text-decoration: none;
+  display: block;
+  padding-bottom: 10px;
+  padding-left: 14px;
+  padding-right: 14px;
+  padding-top: 10px;
+  text-decoration: none;
 }
 
 .dropdown-content a:hover {
-    color: #5a615e;
-}
-.dropdown-content a:hover {
-    background-color: lightgrey;
+  background-color: lightgrey;
 }
 
 .dropdown:hover .dropdown-content {
-    opacity: 1;
-    transition: opacity;
-    transition-delay: 2s;
+  opacity: 1;
+  transition: opacity;
+  transition-delay: 2s;
 }
 
 #container1 {
-    /* background-color: #f9f9f9; */
-    display: flex;
-    justify-content: space-between;
-    line-height: 2;
-    width: 265px;
+  /* background-color: #f9f9f9; */
+  display: flex;
+  justify-content: space-between;
+  line-height: 2;
+  width: 265px;
 }
 
-#container1>div {
-    /* width: 100px; */
-    height: 30px;
-    /* border: 2px dashed red */
+#container1 > div {
+  height: 30px;
 }
 
 #container1:hover {
-    background-color: lightgrey;
+  background-color: lightgrey;
 }
+
 .arrow-right {
-    text-align: right;
-    width: 30px;
+  text-align: right;
+  width: 30px;
 }
