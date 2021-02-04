@@ -14,14 +14,11 @@ import uuid from './uuid';
 import type {EditorFramesetProps} from './EditorFrameset';
 import type {EditorProps} from './Editor';
 
-type Props = EditorFramesetProps &
-  EditorProps & { children?: ?any,
-  };
+type Props = EditorFramesetProps & EditorProps & {children?: ?any};
 
 type State = {
   editorView: ?EditorView,
 };
-
 
 const EMPTY_EDITOR_RUNTIME = {};
 
@@ -110,21 +107,18 @@ class RichTextEditor extends React.PureComponent<any, any> {
   }
 
   _dispatchTransaction = (tr: Transform): void => {
-    const {onChange, editorState, readOnly} = this.props;
-    if (readOnly === true) {
-      return;
-    }
-
+    const {onChange, editorState} = this.props;
+    // [FS] IRAD-1171 2021-02-04
+    // To bring selection on editor in read-only mode.
+    // Removed force return when readOnly flag is true
     if (onChange) {
       // [FS-AFQ][20-FEB-2020]
       // Collaboration
       onChange({
         state: editorState || Editor.EDITOR_EMPTY_STATE,
-        transaction: tr
+        transaction: tr,
       });
     }
-
-
   };
 
   _onReady = (editorView: EditorView): void => {

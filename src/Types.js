@@ -44,6 +44,35 @@ export type ImageLike = {
   width: number,
 };
 
+export type StyleProps = {
+  /**
+   * Name of the style. Case insensitive value must be unique.
+   */
+  styleName: string,
+  mode?: number,
+  description?: string,
+  styles?: {
+    align?: string,
+    boldNumbering?: boolean,
+    boldPartial?: boolean,
+    boldSentence?: boolean,
+    fontName?: string,
+    fontSize?: string,
+    strong?: boolean,
+    em?: boolean,
+    underline?: boolean,
+    color?: string,
+    textHighlight?: string,
+    hasNumbering?: boolean,
+    paragraphSpacingAfter?: string,
+    paragraphSpacingBefore?: string,
+    styleLevel?: string,
+    lineHeight?: string,
+    isLevelbased?: boolean,
+    indent?: string,
+  },
+};
+
 export type EditorRuntime = {
   // Image Proxy
   canProxyImageSrc?: (src: string) => boolean,
