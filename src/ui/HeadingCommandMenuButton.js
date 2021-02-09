@@ -37,7 +37,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     if (
       this.props.editorView &&
       this.props.editorView.runtime &&
-      this.props.editorView.runtime.getStylesAsync()
+      typeof this.props.editorView.runtime.getStylesAsync === 'function'
     ) {
       const customStyles = this.props.editorView.runtime.getStylesAsync();
       let HEADING_NAMES = null;
@@ -61,6 +61,12 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     const MENU_COMMANDS: Object = {
       ['newstyle']: new CustomStyleCommand('newstyle', 'New Style..'),
     };
+    // [FS] IRAD-1176 2021-02-08
+    // Added a menu "Edit All" for Edit All custom styles
+    MENU_COMMANDS['editall'] = new CustomStyleCommand(
+      'editall',
+      'Edit All'
+    );
     MENU_COMMANDS['clearstyle'] = new CustomStyleCommand(
       'clearstyle',
       'Clear Style'

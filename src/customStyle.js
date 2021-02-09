@@ -1,6 +1,7 @@
 // @flow
 // [FS] IRAD-1085 2020-10-09
-// Handle custom style in local storage
+
+import {applyLatestStyle} from './CustomStyleCommand';
 
 let customStyles = [];
 
@@ -50,4 +51,34 @@ export function getCustomStyleByLevel(level: Number) {
     }
   }
   return style;
+}
+
+// [FS] IRAD-1176 2021-02-08
+// update the editor doc with the modified style changes.
+export function updateDocument(state, tr, styleName, style) {
+  const {doc} = state;
+  doc.descendants(function (child, pos) {
+    const contentLen = child.content.size;
+    if (haveEligibleChildren(child, contentLen, styleName)) {
+      tr = applyLatestStyle(
+        child.attrs.styleName,
+        state,
+        tr,
+        child,
+        pos,
+        pos + contentLen + 1,
+        style
+      );
+    }
+  });
+  return tr;
+}
+
+
+function haveEligibleChildren(node, contentLen, styleName) {
+return (
+  node.type.name === 'paragraph' &&
+  0 < contentLen &&
+  styleName === node.attrs.styleName
+);
 }

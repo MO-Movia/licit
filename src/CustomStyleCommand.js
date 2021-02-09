@@ -21,7 +21,7 @@ import {
   removeTextAlignAndLineSpacing,
   clearCustomStyleAttribute,
 } from './clearCustomStyleMarks';
-import {saveStyle, getCustomStyleByName} from './customStyle';
+import {getCustomStyleByName} from './customStyle';
 import {
   MARK_STRONG,
   MARK_EM,
@@ -229,7 +229,11 @@ class CustomStyleCommand extends UICommand {
     const {selection} = state;
 
     if ('newstyle' === this._customStyle) {
-      this.editWindow(state, view);
+      this.editWindow(state, view,0);
+      return false;
+    }
+    else if ('editall' === this._customStyle) {
+      this.editWindow(state, view,3);
       return false;
     }
     // [FS] IRAD-1053 2020-10-08
@@ -306,14 +310,14 @@ class CustomStyleCommand extends UICommand {
   }
 
   // shows the create style popup
-  editWindow(state: EditorState, view: EditorView) {
+  editWindow(state: EditorState, view: EditorView, mode) {
     const {dispatch} = view;
     let tr = state.tr;
     const doc = state.doc;
 
     this._popUp = createPopUp(
       CustomStyleEditor,
-      this.createCustomObject(view.runtime),
+      this.createCustomObject(view, mode),
       {
         autoDismiss: false,
         position: atViewportCenter,
@@ -323,8 +327,8 @@ class CustomStyleCommand extends UICommand {
             //handle save style object part here
             if (undefined !== val) {
               // this.saveStyleObject(val);
-              if (view.runtime && view.runtime.saveStyle) {
-                delete val.runtime;
+              if (view.runtime &&  typeof view.runtime.saveStyle === 'function') {
+                delete val.editorView;
                 view.runtime.saveStyle(val);
               }
               tr = tr.setSelection(TextSelection.create(doc, 0, 0));
@@ -340,18 +344,14 @@ class CustomStyleCommand extends UICommand {
   }
 
   // creates a sample style object
-  createCustomObject(runtime) {
+  createCustomObject(editorView, mode) {
     return {
       styleName: '',
-      mode: 0, //new
+      mode: mode, //0 = new , 1- modify, 2- rename, 3- editall
       styles: {},
-      runtime: runtime,
+      // runtime: runtime,
+      editorView:editorView,
     };
-  }
-
-  // locally save style object
-  saveStyleObject(style: any) {
-    saveStyle(style);
   }
 }
 

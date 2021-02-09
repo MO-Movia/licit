@@ -5,7 +5,8 @@ import convertToCSSPTValue from './convertToCSSPTValue';
 import toCSSLineSpacing from './ui/toCSSLineSpacing';
 import { Node } from 'prosemirror-model';
 
-import type { NodeSpec } from './Types';
+import type {NodeSpec} from './Types';
+import {getCustomStyleByName} from './customStyle';
 
 // This assumes that every 36pt maps to one indent level.
 export const INDENT_MARGIN_PT_SIZE = 36;
@@ -74,7 +75,17 @@ function getAttrs(dom: HTMLElement): Object {
   const styleLevel = parseInt(dom.getAttribute(ATTRIBUTE_STYLE_LEVEL), 10);
   // TODO: customStyle
 
-  return { align, indent, lineSpacing, paddingTop, paddingBottom, id, styleName, spacingAfterParagraph, styleLevel };
+  return {
+    align,
+    indent,
+    lineSpacing,
+    paddingTop,
+    paddingBottom,
+    id,
+    styleName,
+    spacingAfterParagraph,
+    styleLevel,
+  };
 }
 
 function toDOM(node: Node): Array<any> {
@@ -86,14 +97,10 @@ function toDOM(node: Node): Array<any> {
     paddingBottom,
     id,
     styleName,
-    styleLevel,
-    customStyle,
-    paragraphSpacingAfter,
-    paragraphSpacingBefore
   } = node.attrs;
   const attrs = {};
-
   let style = '';
+
   if (align && align !== 'left') {
     style += `text-align: ${align};`;
   }
@@ -106,57 +113,48 @@ function toDOM(node: Node): Array<any> {
       // that its children may apply.
       `--czi-content-line-height: ${cssLineSpacing};`;
   }
-  // [FS] IRAD-1100 2020-11-04
-  // Add in leading and trailing spacing (before and after a paragraph)
-  if (paragraphSpacingAfter) {
-    style += `margin-bottom: ${paragraphSpacingAfter}pt !important;`;
-  }
-  if (paragraphSpacingBefore) {
-    style += `margin-top: ${paragraphSpacingBefore}pt !important;`;
+
+  //to get the styles of the corresponding style name
+  const customStyle = getCustomStyleByName(node.attrs.styleName);
+
+  if (null !== customStyle) {
+    // [FS] IRAD-1100 2020-11-04
+    // Add in leading and trailing spacing (before and after a paragraph)
+    if (customStyle.paragraphSpacingAfter) {
+      style += `margin-bottom: ${customStyle.paragraphSpacingAfter}pt !important;`;
+    }
+    if (customStyle.paragraphSpacingBefore) {
+      style += `margin-top: ${customStyle.paragraphSpacingBefore}pt !important;`;
+    }
   }
 
+  if (customStyle && customStyle.styleLevel) {
+    attrs[ATTRIBUTE_STYLE_LEVEL] = String(customStyle.styleLevel);
+    if (customStyle.strong) {
+      style += 'font-weight: bold;';
+    }
+    if (customStyle.boldNumbering) {
+      style += ' --czi-counter-bold: bold;';
+    }
+    if (customStyle.em) {
+      style += 'font-style: italic;';
+    }
+    if (customStyle.color) {
+      style += `color: ${customStyle.color};`;
+    }
+    if (customStyle.fontSize) {
+      style += `font-size: ${customStyle.fontSize}pt;`;
+    }
+    if (customStyle.fontName) {
+      style += `font-family: ${customStyle.fontName};`;
+    }
+  }
   if (paddingTop && !EMPTY_CSS_VALUE.has(paddingTop)) {
     style += `padding-top: ${paddingTop};`;
   }
 
   if (paddingBottom && !EMPTY_CSS_VALUE.has(paddingBottom)) {
     style += `padding-bottom: ${paddingBottom};`;
-  }
-
-  if (styleLevel) {
-    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
-
-    if (customStyle) {
-      if (customStyle.strong) {
-        style += 'font-weight: bold;';
-      }
-      if (customStyle.boldNumbering) {
-        style += ' --czi-counter-bold: bold;';
-      }
-
-      if (customStyle.em) {
-        style += 'font-style: italic;';
-      }
-      if (customStyle.color) {
-        style += `color: ${customStyle.color};`;
-      }
-      if (customStyle.fontSize) {
-        style += `font-size: ${customStyle.fontSize}pt;`;
-      }
-      if (customStyle.fontName) {
-        style += `font-family: ${customStyle.fontName};`;
-      }
-      // let textDecoration = '';
-      // if (customStyle.strike) {
-      //   textDecoration += ' line-through';
-      // }
-      // if (customStyle.underline) {
-      //   textDecoration += ' underline';
-      // }
-      // if (customStyle.strike || customStyle.underline) {
-      // style += `text-decoration: ${textDecoration};`;
-      // }
-    }
   }
 
   style && (attrs.style = style);

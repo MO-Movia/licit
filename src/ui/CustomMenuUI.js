@@ -278,7 +278,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
         mode: mode, //edit
         description: command._customStyle.description,
         styles: command._customStyle.styles,
-        runtime: this.props.editorView.runtime,
+        editorView: this.props.editorView,
       },
       {
         position: atViewportCenter,
