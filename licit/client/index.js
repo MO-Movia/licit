@@ -4,7 +4,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 
 import Licit from '../../src/client/Licit';
-
+import CustomLicitRuntime from './CustomLicitRuntime';
 function main(): void {
   const el = document.createElement('div');
   el.id = 'licit-app';
@@ -25,9 +25,22 @@ function main(): void {
   // null means no custom plugins to pass
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
   const plugins = null;
-  ReactDOM.render(<Licit data={docJSON} debug={true} docID={0} embedded={false}
-  height={'100vh'} onChange={onChangeCB} onReady={onReadyCB} plugins={plugins}
-  runtime={null} width={'100vw'} />, el);
+  const runtime = new CustomLicitRuntime();
+  ReactDOM.render(
+    <Licit
+      data={docJSON}
+      debug={true}
+      docID={0}
+      embedded={false}
+      height={'100vh'}
+      onChange={onChangeCB}
+      onReady={onReadyCB}
+      plugins={plugins}
+      runtime={runtime}
+      width={'100vw'}
+     />,
+    el
+  );
 }
 
 function onChangeCB(data) {

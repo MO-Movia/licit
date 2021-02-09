@@ -3,7 +3,7 @@
 import clamp from './ui/clamp';
 import convertToCSSPTValue from './convertToCSSPTValue';
 import toCSSLineSpacing from './ui/toCSSLineSpacing';
-import { Node } from 'prosemirror-model';
+import {Node} from 'prosemirror-model';
 
 import type {NodeSpec} from './Types';
 import {getCustomStyleByName} from './customStyle';
@@ -25,24 +25,20 @@ const ALIGN_PATTERN = /(left|right|center|justify)/;
 // as a `<p>` element.
 const ParagraphNodeSpec: NodeSpec = {
   attrs: {
-    align: { default: null },
-    color: { default: null },
-    id: { default: null },
-    indent: { default: null },
-    lineSpacing: { default: null },
+    align: {default: null},
+    color: {default: null},
+    id: {default: null},
+    indent: {default: null},
+    lineSpacing: {default: null},
     // TODO: Add UI to let user edit / clear padding.
-    paddingBottom: { default: null },
+    paddingBottom: {default: null},
     // TODO: Add UI to let user edit / clear padding.
-    paddingTop: { default: null },
-    styleName: { default: 'None' },
-    styleLevel: { default: null },
-    customStyle: { default: null },
-    paragraphSpacingAfter: { default: null },
-    paragraphSpacingBefore: { default: null },
+    paddingTop: {default: null},
+    styleName: {default: 'None'},
   },
   content: 'inline*',
   group: 'block',
-  parseDOM: [{ tag: 'p', getAttrs }],
+  parseDOM: [{tag: 'p', getAttrs}],
   toDOM,
 };
 
@@ -126,33 +122,32 @@ function toDOM(node: Node): Array<any> {
     if (customStyle.paragraphSpacingBefore) {
       style += `margin-top: ${customStyle.paragraphSpacingBefore}pt !important;`;
     }
+    if (customStyle.styleLevel) {
+      attrs[ATTRIBUTE_STYLE_LEVEL] = String(customStyle.styleLevel);
+      if (customStyle.strong) {
+        style += 'font-weight: bold;';
+      }
+      if (customStyle.boldNumbering) {
+        style += ' --czi-counter-bold: bold;';
+      }
+      if (customStyle.em) {
+        style += 'font-style: italic;';
+      }
+      if (customStyle.color) {
+        style += `color: ${customStyle.color};`;
+      }
+      if (customStyle.fontSize) {
+        style += `font-size: ${customStyle.fontSize}pt;`;
+      }
+      if (customStyle.fontName) {
+        style += `font-family: ${customStyle.fontName};`;
+      }
+    }
   }
 
-  if (customStyle && customStyle.styleLevel) {
-    attrs[ATTRIBUTE_STYLE_LEVEL] = String(customStyle.styleLevel);
-    if (customStyle.strong) {
-      style += 'font-weight: bold;';
-    }
-    if (customStyle.boldNumbering) {
-      style += ' --czi-counter-bold: bold;';
-    }
-    if (customStyle.em) {
-      style += 'font-style: italic;';
-    }
-    if (customStyle.color) {
-      style += `color: ${customStyle.color};`;
-    }
-    if (customStyle.fontSize) {
-      style += `font-size: ${customStyle.fontSize}pt;`;
-    }
-    if (customStyle.fontName) {
-      style += `font-family: ${customStyle.fontName};`;
-    }
-  }
   if (paddingTop && !EMPTY_CSS_VALUE.has(paddingTop)) {
     style += `padding-top: ${paddingTop};`;
   }
-
   if (paddingBottom && !EMPTY_CSS_VALUE.has(paddingBottom)) {
     style += `padding-bottom: ${paddingBottom};`;
   }

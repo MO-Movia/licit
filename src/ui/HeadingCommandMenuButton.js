@@ -23,7 +23,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     editorState: EditorState,
     editorView: ?EditorView,
   };
-
+  hasRuntime: boolean = true;
   //[FS] IRAD-1085 2020-10-09
   //method to build commands for list buttons
   getCommandGroups() {
@@ -54,6 +54,9 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         }
         return [HEADING_COMMANDS];
       });
+      this.hasRuntime = true;
+    } else {
+      this.hasRuntime = false;
     }
     return [HEADING_COMMANDS];
   }
@@ -108,7 +111,9 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         // [FS] IRAD-1008 2020-07-16
         // Disable font type menu on editor disable state
         commandGroups={this.getCommandGroups()}
-        disabled={editorView && editorView.disabled ? true : false}
+        disabled={
+          (editorView && editorView.disabled) || !this.hasRuntime ? true : false
+        }
         dispatch={dispatch}
         editorState={editorState}
         editorView={editorView}

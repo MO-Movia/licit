@@ -49,11 +49,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       this.state.styles.boldNumbering = true;
       this.state.styles.boldSentence = true;
     }
-    if (
-      props.editorView.runtime &&
-      typeof props.editorView.runtime.getStylesAsync === 'function'
-    ) {
-      props.editorView.runtime.getStylesAsync().then((result) => {
+    if (props.runtime && props.runtime.getStylesAsync()) {
+      props.runtime.getStylesAsync().then((result) => {
         customStyles = result;
       });
     }

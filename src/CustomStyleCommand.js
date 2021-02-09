@@ -229,11 +229,10 @@ class CustomStyleCommand extends UICommand {
     const {selection} = state;
 
     if ('newstyle' === this._customStyle) {
-      this.editWindow(state, view,0);
+      this.editWindow(state, view, 0);
       return false;
-    }
-    else if ('editall' === this._customStyle) {
-      this.editWindow(state, view,3);
+    } else if ('editall' === this._customStyle) {
+      this.editWindow(state, view, 3);
       return false;
     }
     // [FS] IRAD-1053 2020-10-08
@@ -317,7 +316,7 @@ class CustomStyleCommand extends UICommand {
 
     this._popUp = createPopUp(
       CustomStyleEditor,
-      this.createCustomObject(view, mode),
+      this.createCustomObject(view.runtime, mode),
       {
         autoDismiss: false,
         position: atViewportCenter,
@@ -326,10 +325,14 @@ class CustomStyleCommand extends UICommand {
             this._popUp = null;
             //handle save style object part here
             if (undefined !== val) {
-              // this.saveStyleObject(val);
-              if (view.runtime &&  typeof view.runtime.saveStyle === 'function') {
-                delete val.editorView;
-                view.runtime.saveStyle(val);
+              if (
+                view.runtime &&
+                typeof view.runtime.saveStyle === 'function'
+              ) {
+                delete val.runtime;
+                view.runtime.saveStyle(val).then((result) => {
+                  console.log(result);
+                });
               }
               tr = tr.setSelection(TextSelection.create(doc, 0, 0));
               // Apply created styles to document
@@ -344,13 +347,12 @@ class CustomStyleCommand extends UICommand {
   }
 
   // creates a sample style object
-  createCustomObject(editorView, mode) {
+  createCustomObject(runtime, mode) {
     return {
       styleName: '',
-      mode: mode, //0 = new , 1- modify, 2- rename, 3- editall
+      mode: 0, //new
       styles: {},
-      // runtime: runtime,
-      editorView:editorView,
+      runtime: runtime,
     };
   }
 }
@@ -742,30 +744,36 @@ function applyLineStyle(node, style, state, tr, startPos) {
     let textContent = '';
     const markType = state.schema.marks[MARK_STRONG];
     if (style.boldSentence) {
-      node.descendants(function (child: Node, pos: number, parent: Node) {
+      // [FS] IRAD-1181 2021-02-09
+      // Issue fix: Multi-selecting several paragraphs and applying a style is only partially successfull
+      tr.doc.descendants(function (child: Node, pos: number, parent: Node) {
         if ('text' === child.type.name) {
           textContent = `${textContent}${child.text}`;
+          if (textContent.includes('.')) {
+            textContent = textContent.split('.')[0];
+            tr = tr.addMark(
+              pos,
+              pos + textContent.length + 1,
+              markType.create(null)
+            );
+          }
+          textContent = '';
         }
       });
-      textContent = textContent.split('.')[0];
-      tr = tr.addMark(
-        startPos,
-        startPos + textContent.length + 1,
-        markType.create(null)
-      );
     } else {
-      node.descendants(function (child: Node, pos: number, parent: Node) {
+      tr.doc.descendants(function (child: Node, pos: number, parent: Node) {
         if ('text' === child.type.name) {
           textContent = `${textContent}${child.text}`;
+          if (textContent.includes(' ')) {
+            textContent = textContent.split(' ')[0];
+            tr = tr.addMark(
+              pos,
+              pos + textContent.length + 1,
+              markType.create(null)
+            );
+          }
         }
       });
-      textContent = textContent.split(' ')[0];
-
-      tr = tr.addMark(
-        startPos,
-        startPos + textContent.length + 1,
-        markType.create(null)
-      );
     }
   }
   return tr;

@@ -90,6 +90,26 @@ export type EditorRuntime = {
   // External HTML
   canLoadHTML?: () => boolean,
   loadHTML?: () => Promise<?string>,
+
+  /**
+   * Gets array of styles from the service
+   */
+  getStylesAsync: () => Promise<StyleProps[]>,
+  /**
+   * Renames an existing style from the service.
+   * @param oldStyleName
+   * @param newStyleName
+   */
+  renameStyle: (
+    oldStyleName: string,
+    newStyleName: string
+  ) => Promise<StyleProps[]>,
+
+  /**
+   * Remove an existing style from the service.
+   * @param name
+   */
+  removeStyle: (name: string) => boolean,
 };
 
 export type EditorState = any;

@@ -6,11 +6,13 @@
 
 import type {ImageLike, StyleProps} from '@modusoperandi/licit';
 import {POST, GET, DELETE, PATCH} from '@modusoperandi/licit';
-import {setStyle} from '@modusoperandi/licit';
+// import {setStyle} from '@modusoperandi/licit';
 
+const STYLES_URI = '/style-service';
 class CustomLicitRuntime {
   // keep styles locally
-  customStyles = new Array<StyleProps>();
+  customStyles: StyleProps[] = null;
+
   // Image Proxy
   canProxyImageSrc(): boolean {
     return false;
@@ -59,100 +61,117 @@ class CustomLicitRuntime {
       );
     });
   }
-  // [FS] IRAD-1128 2021-02-02
-  // To save a new style or modify/replace an existing style.
-  saveStyle(style: StyleProps) {
-    this.customStyles = [];
-    let styles;
-    const url = this.buildRoute('styles');
-    POST(url, JSON.stringify(style), 'application/json; charset=utf-8').then(
-      (data) => {
-        styles = JSON.parse(data);
-        this.customStyles = styles;
-        setStyle(styles);
-      },
-      (err) => {}
-    );
-  }
 
-  // [FS] IRAD-1128 2021-02-02
-  // Retrieve all styles from the service
-  getStyles() {
-    let style;
-    if (this.customStyles.length > 0) {
-      return new Promise((resolve, reject) => {
-        resolve(this.customStyles);
-      });
-    }
-    return new Promise((resolve, reject) => {
-      const url = this.buildRoute('styles');
-      GET(url).then(
-        (data) => {
-          style = JSON.parse(data);
-          resolve(style);
-          this.customStyles = style;
-          setStyle(style);
-        },
-        (err) => {
-          style = null;
-          resolve(style);
-        }
+  /**
+   * Save or update a style on the service.
+   *
+   * @param style Style to update.
+   */
+  async saveStyle(style: StyleProps): Promise<StyleProps[]> {
+    const url = this.buildRoute('styles');
+    await new Promise((resolve, reject) => {
+      POST(url, JSON.stringify(style), 'application/json; charset=utf-8').then(
+        (data) => {},
+        (err) => {}
       );
     });
+    // Refresh from server after save
+    // This could probably be done here in memory
+    this.styleProps = await this.fetchStyles();
+    return this.styleProps;
   }
 
-  // [FS] IRAD-1128 2021-02-03
-  // Get all styles
-  async getStylesAsync() {
-    return await this.getStyles();
+  /**
+   * Returns styles to editor
+   */
+  async getStylesAsync(): Promise<StyleProps[]> {
+    if (!this.styleProps) {
+      this.styleProps = this.fetchStyles();
+    }
+    return this.styleProps;
   }
 
-  //[FS] IRAD-1128 2021-02-03
-  //To rename an existing style on the service
-  renameStyle(oldStyleName, newStyleName) {
+  /**
+   * Renames an existing style on the service.
+   *
+   * @param oldStyleName name of style to rename
+   * @param newStyleName new name to apply to style
+   */
+  async renameStyle(oldStyleName, newStyleName) {
     this.customStyles = [];
-    let styles = null;
     const obj = {
       oldName: oldStyleName,
       newName: newStyleName,
     };
-    return new Promise((resolve, reject) => {
-      const url = this.buildRoute('styles/rename');
+    const url = this.buildRoute('styles/rename');
+    await new Promise((resolve, reject) => {
       PATCH(url, JSON.stringify(obj), 'application/json; charset=utf-8').then(
+        (data) => {},
+        (err) => {}
+      );
+    });
+    // Refresh from server after rename?
+    // This could probably be done here in memory
+    this.styleProps = await this.fetchStyles();
+    return this.styleProps;
+  }
+
+  /**
+   * Remove an existing style from the service
+   * @param styleName Name of style to delete
+   */
+  async removeStyle(styleName: string): Promise<StyleProps[]> {
+    const url = this.buildRoute('styles', encodeURIComponent(styleName));
+    await new Promise((resolve, reject) => {
+      // No post processing required since result is ignored beyond Angular's
+      // built in testing.
+      //
+      // Until it's known how to deal with request errors, they will be
+      // rejected and sent to editor as-is.
+      DELETE(url, 'text/plain').then(
+        (data) => {},
+        (err) => {}
+      );
+    });
+
+    // Editor handling of response seems to be incomplete in 0.0.20
+    // Returning styleProps here jut to be consistent with the other
+    // methods.
+    //
+    // Refresh from server after rename?
+    // This could probably be done here in memory.
+    this.styleProps = await this.fetchStyles();
+    return this.styleProps;
+  }
+
+  fetchStyles(): Promise<StyleProps[]> {
+    const url = this.buildRoute('styles');
+    return new Promise((resolve, reject) => {
+      // No post processing required since same array format is saved.
+      //
+      // Until it's known how to deal with request errors, they will be
+      // rejected and sent to editor as-is.
+      GET(url).then(
         (data) => {
-          //need list of styles here
-          console.log(data);
+          const style = JSON.parse(data);
+          resolve(style);
+          this.customStyles = style;
+          // setStyle(style);
         },
         (err) => {
-          styles = null;
-          resolve(styles);
+          resolve(null);
         }
       );
     });
   }
 
-  // [FS] IRAD-1128 2021-02-03
-  // To remove a single style from the service.
-  removeStyle(name: string) {
-    this.customStyles = [];
-    const url = this.buildRoute(`styles/${name}`);
-
-    DELETE(url, 'text/plain').then(
-      (data) => {
-        this.customStyles = data;
-        setStyle(data);
-      },
-      (err) => {}
-    );
-  }
-
-  // [FS] IRAD-1128 2021-02-03
-  // get the service url
-  // to change server edit here
-  buildRoute(...path) {
-    const root = 'http://localhost:3000';
-    // const root = '/style-service';
-    return [root, ...path].join('/');
+  /**
+   * Helper method for building URI
+   *
+   * @param path  path segments to join.
+   */
+  buildRoute(...path: string) {
+    return [STYLES_URI, ...path].join('/');
   }
 }
 export default CustomLicitRuntime;

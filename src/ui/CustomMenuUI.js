@@ -278,7 +278,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
         mode: mode, //edit
         description: command._customStyle.description,
         styles: command._customStyle.styles,
-        editorView: this.props.editorView,
+        runtime: this.props.editorView.runtime,
       },
       {
         position: atViewportCenter,
@@ -295,7 +295,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
               delete val.runtime;
               if (1 === mode) {
                 // update
-                customStyles = runtime.saveStyle(val);
+                customStyles = runtime.saveStyle(val).then((result) => {
+                  console.log(result);
+                });
               } else {
                 // rename
                 customStyles = runtime.renameStyle(
