@@ -316,7 +316,7 @@ class CustomStyleCommand extends UICommand {
 
     this._popUp = createPopUp(
       CustomStyleEditor,
-      this.createCustomObject(view.runtime, mode),
+      this.createCustomObject(view, mode),
       {
         autoDismiss: false,
         position: atViewportCenter,
@@ -329,7 +329,7 @@ class CustomStyleCommand extends UICommand {
                 view.runtime &&
                 typeof view.runtime.saveStyle === 'function'
               ) {
-                delete val.runtime;
+                delete val.editorView;
                 view.runtime.saveStyle(val).then((result) => {
                   console.log(result);
                 });
@@ -347,12 +347,13 @@ class CustomStyleCommand extends UICommand {
   }
 
   // creates a sample style object
-  createCustomObject(runtime, mode) {
+  createCustomObject(editorView, mode) {
     return {
       styleName: '',
-      mode: 0, //new
+      mode: mode, //0 = new , 1- modify, 2- rename, 3- editall
       styles: {},
-      runtime: runtime,
+      // runtime: runtime,
+      editorView: editorView,
     };
   }
 }
@@ -604,7 +605,7 @@ function applyStyleEx(
   }
   // to set custom styleName attribute for node
   newattrs['styleName'] = styleName;
-  tr = applyLineStyle(node, style, state, tr, startPos);
+  tr = applyLineStyle(node, style, state, tr, startPos,endPos);
   const storedmarks = getMarkByStyleName(styleName, state.schema);
   tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
   tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
@@ -739,16 +740,16 @@ function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
   return tr;
 }
 
-function applyLineStyle(node, style, state, tr, startPos) {
+function applyLineStyle(node, style, state, tr, startPos,endPos) {
   if (style && style.boldPartial) {
     let textContent = '';
     const markType = state.schema.marks[MARK_STRONG];
     if (style.boldSentence) {
       // [FS] IRAD-1181 2021-02-09
       // Issue fix: Multi-selecting several paragraphs and applying a style is only partially successfull
-      tr.doc.descendants(function (child: Node, pos: number, parent: Node) {
-        if ('text' === child.type.name) {
-          textContent = `${textContent}${child.text}`;
+      tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
+        if ('text' === node.type.name) {
+          textContent = `${textContent}${node.text}`;
           if (textContent.includes('.')) {
             textContent = textContent.split('.')[0];
             tr = tr.addMark(
@@ -759,11 +760,11 @@ function applyLineStyle(node, style, state, tr, startPos) {
           }
           textContent = '';
         }
-      });
+      }); 
     } else {
-      tr.doc.descendants(function (child: Node, pos: number, parent: Node) {
-        if ('text' === child.type.name) {
-          textContent = `${textContent}${child.text}`;
+      tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
+        if ('text' === node.type.name) {
+          textContent = `${textContent}${node.text}`;
           if (textContent.includes(' ')) {
             textContent = textContent.split(' ')[0];
             tr = tr.addMark(
@@ -772,6 +773,7 @@ function applyLineStyle(node, style, state, tr, startPos) {
               markType.create(null)
             );
           }
+          textContent = '';
         }
       });
     }
