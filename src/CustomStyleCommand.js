@@ -605,7 +605,7 @@ function applyStyleEx(
   }
   // to set custom styleName attribute for node
   newattrs['styleName'] = styleName;
-  tr = applyLineStyle(node, style, state, tr, startPos,endPos);
+  tr = applyLineStyle(node, style, state, tr, startPos, endPos);
   const storedmarks = getMarkByStyleName(styleName, state.schema);
   tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
   tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
@@ -740,7 +740,7 @@ function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
   return tr;
 }
 
-function applyLineStyle(node, style, state, tr, startPos,endPos) {
+function applyLineStyle(node, style, state, tr, startPos, endPos) {
   if (style && style.boldPartial) {
     let textContent = '';
     const markType = state.schema.marks[MARK_STRONG];
@@ -760,7 +760,7 @@ function applyLineStyle(node, style, state, tr, startPos,endPos) {
           }
           textContent = '';
         }
-      }); 
+      });
     } else {
       tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
         if ('text' === node.type.name) {
@@ -905,4 +905,34 @@ export function getNode(
   });
   return selectedNode;
 }
+
+// [FS] IRAD-1176 2021-02-08
+// update the editor doc with the modified style changes.
+export function updateDocument(state, tr, styleName, style) {
+  const {doc} = state;
+  doc.descendants(function (child, pos) {
+    const contentLen = child.content.size;
+    if (haveEligibleChildren(child, contentLen, styleName)) {
+      tr = applyLatestStyle(
+        child.attrs.styleName,
+        state,
+        tr,
+        child,
+        pos,
+        pos + contentLen + 1,
+        style
+      );
+    }
+  });
+  return tr;
+}
+
+function haveEligibleChildren(node, contentLen, styleName) {
+  return (
+    node.type.name === 'paragraph' &&
+    0 < contentLen &&
+    styleName === node.attrs.styleName
+  );
+}
+
 export default CustomStyleCommand;

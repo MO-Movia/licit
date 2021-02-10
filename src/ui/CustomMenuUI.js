@@ -372,7 +372,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
       }
     });
     return tr;
-  }   
+  }
 }
 
 export default CustomMenuUI;
