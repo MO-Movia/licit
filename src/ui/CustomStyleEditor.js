@@ -9,7 +9,8 @@ import createPopUp from './createPopUp';
 import {FONT_PT_SIZES} from './FontSizeCommandMenuButton';
 import {FONT_TYPE_NAMES} from '../FontTypeMarkSpec';
 import {getLineSpacingValue} from './toCSSLineSpacing';
-import {isCustomStyleExists, updateDocument} from '../customStyle';
+import {isCustomStyleExists} from '../customStyle';
+import {updateDocument} from '../CustomStyleCommand';
 
 let customStyles = [];
 
