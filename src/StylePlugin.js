@@ -427,12 +427,18 @@ function applyLineStyle(prevState, nextState, tr) {
     const {pos, node} = para;
     // Check styleName is available for node
     if (node.attrs && node.attrs.styleName) {
-      const style = getCustomStyleByName(node.attrs.styleName);
-  if (null !== style) {
+      const styleProp = getCustomStyleByName(node.attrs.styleName);
+      if (null !== styleProp && styleProp.styles.boldPartial) {
         if (!tr) {
           tr = nextState.tr;
         }
-        tr = addMarksToLine(tr, nextState, node, pos, style.boldSentence);
+        tr = addMarksToLine(
+          tr,
+          nextState,
+          node,
+          pos,
+          styleProp.styles.boldSentence
+        );
       }
     }
   }

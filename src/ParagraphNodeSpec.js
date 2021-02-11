@@ -111,36 +111,36 @@ function toDOM(node: Node): Array<any> {
   }
 
   //to get the styles of the corresponding style name
-  const customStyle = getCustomStyleByName(node.attrs.styleName);
+  const styleProps = getCustomStyleByName(node.attrs.styleName);
 
-  if (null !== customStyle) {
+  if (null !== styleProps) {
     // [FS] IRAD-1100 2020-11-04
     // Add in leading and trailing spacing (before and after a paragraph)
-    if (customStyle.paragraphSpacingAfter) {
-      style += `margin-bottom: ${customStyle.paragraphSpacingAfter}pt !important;`;
+    if (styleProps.styles.paragraphSpacingAfter) {
+      style += `margin-bottom: ${styleProps.styles.paragraphSpacingAfter}pt !important;`;
     }
-    if (customStyle.paragraphSpacingBefore) {
-      style += `margin-top: ${customStyle.paragraphSpacingBefore}pt !important;`;
+    if (styleProps.styles.paragraphSpacingBefore) {
+      style += `margin-top: ${styleProps.styles.paragraphSpacingBefore}pt !important;`;
     }
-    if (customStyle.styleLevel) {
-      attrs[ATTRIBUTE_STYLE_LEVEL] = String(customStyle.styleLevel);
-      if (customStyle.strong) {
+    if (styleProps.styles.styleLevel) {
+      attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleProps.styles.styleLevel);
+      if (styleProps.styles.strong) {
         style += 'font-weight: bold;';
       }
-      if (customStyle.boldNumbering) {
+      if (styleProps.styles.boldNumbering) {
         style += ' --czi-counter-bold: bold;';
       }
-      if (customStyle.em) {
+      if (styleProps.styles.em) {
         style += 'font-style: italic;';
       }
-      if (customStyle.color) {
-        style += `color: ${customStyle.color};`;
+      if (styleProps.styles.color) {
+        style += `color: ${styleProps.styles.color};`;
       }
-      if (customStyle.fontSize) {
-        style += `font-size: ${customStyle.fontSize}pt;`;
+      if (styleProps.styles.fontSize) {
+        style += `font-size: ${styleProps.styles.fontSize}pt;`;
       }
-      if (customStyle.fontName) {
-        style += `font-family: ${customStyle.fontName};`;
+      if (styleProps.styles.fontName) {
+        style += `font-family: ${styleProps.styles.fontName};`;
       }
     }
   }

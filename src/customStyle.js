@@ -1,6 +1,6 @@
 // @flow
 // [FS] IRAD-1085 2020-10-09
-
+import type {StyleProps} from './Types';
 let customStyles = [];
 
 // [FS] IRAD-1137 2021-01-15
@@ -20,12 +20,12 @@ export function isCustomStyleExists(styleName) {
 
 // [FS] IRAD-1128 2020-12-30
 // get a style by styleName
-export function getCustomStyleByName(name: string) {
-  let style = null;
+export function getCustomStyleByName(name: string): StyleProps {
+  let style: StyleProps = null;
   if (customStyles.length > 0) {
     for (const obj of customStyles) {
       if (name === obj.styleName) {
-        style = obj.styles;
+        style = obj;
       }
     }
   }

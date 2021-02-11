@@ -22,6 +22,7 @@ import {
   clearCustomStyleAttribute,
 } from './clearCustomStyleMarks';
 import {getCustomStyleByName} from './customStyle';
+import type {StyleProps} from './Types';
 import {
   MARK_STRONG,
   MARK_EM,
@@ -255,12 +256,7 @@ class CustomStyleCommand extends UICommand {
       return false;
     }
 
-    tr = applyStyle(
-      this._customStyle.styles,
-      this._customStyle.styleName,
-      state,
-      tr
-    );
+    tr = applyStyle(this._customStyle, this._customStyle.styleName, state, tr);
 
     if (tr.docChanged || tr.storedMarksSet) {
       // view.focus();
@@ -336,7 +332,7 @@ class CustomStyleCommand extends UICommand {
               }
               tr = tr.setSelection(TextSelection.create(doc, 0, 0));
               // Apply created styles to document
-              tr = applyStyle(val.styles, val.styleName, state, tr);
+              tr = applyStyle(val, val.styleName, state, tr);
               dispatch(tr);
               // view.focus();
             }
@@ -422,18 +418,23 @@ export function updateOverrideFlag(
   endPos: Number,
   retObj: any
 ) {
-  const style = getCustomStyleByName(styleName);
-
-  if (style) {
+  const styleProp = getCustomStyleByName(styleName);
+  if (styleProp && styleProp.styles) {
     node.descendants(function (child: Node, pos: number, parent: Node) {
       if (child instanceof Node) {
         child.marks.forEach(function (mark, index) {
-          tr = compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj);
+          tr = compareMarkWithStyle(
+            mark,
+            styleProp.styles,
+            tr,
+            startPos,
+            endPos,
+            retObj
+          );
         });
       }
     });
   }
-
   return tr;
 }
 
@@ -463,15 +464,15 @@ function onLoadRemoveAllMarksExceptOverridden(
 }
 
 export function getMarkByStyleName(styleName: string, schema: Schema) {
-  const style = getCustomStyleByName(styleName);
+  const styleProp = getCustomStyleByName(styleName);
   const marks = [];
   let markType = null;
   let attrs = null;
-  for (const property in style) {
+  for (const property in styleProp.styles) {
     switch (property) {
       case STRONG:
       case BOLDPARTIAL:
-        if (style[property]) {
+        if (styleProp.styles[property]) {
           markType = schema.marks[MARK_STRONG];
           marks.push(markType.create(attrs));
         }
@@ -479,30 +480,38 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
 
       case EM:
         markType = schema.marks[MARK_EM];
-        if (style[property]) marks.push(markType.create(attrs));
+        if (styleProp.styles[property]) marks.push(markType.create(attrs));
         break;
 
       case COLOR:
         markType = schema.marks[MARK_TEXT_COLOR];
-        attrs = style[property] ? {color: style[property]} : null;
+        attrs = styleProp.styles[property]
+          ? {color: styleProp.styles[property]}
+          : null;
         marks.push(markType.create(attrs));
         break;
 
       case FONTSIZE:
         markType = schema.marks[MARK_FONT_SIZE];
-        attrs = style[property] ? {pt: style[property]} : null;
+        attrs = styleProp.styles[property]
+          ? {pt: styleProp.styles[property]}
+          : null;
         marks.push(markType.create(attrs));
         break;
 
       case FONTNAME:
         markType = schema.marks[MARK_FONT_TYPE];
-        attrs = style[property] ? {name: style[property]} : null;
+        attrs = styleProp.styles[property]
+          ? {name: styleProp.styles[property]}
+          : null;
         marks.push(markType.create(attrs));
         break;
 
       case TEXTHL:
         markType = schema.marks[MARK_TEXT_HIGHLIGHT];
-        attrs = style[property] ? {highlightColor: style[property]} : null;
+        attrs = styleProp.styles[property]
+          ? {highlightColor: styleProp.styles[property]}
+          : null;
         marks.push(markType.create(attrs));
         break;
 
@@ -518,7 +527,7 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
   return marks;
 }
 function applyStyleEx(
-  style: any,
+  styleProp: StyleProps,
   styleName: string,
   state: EditorState,
   tr: Transform,
@@ -526,11 +535,11 @@ function applyStyleEx(
   startPos: number,
   endPos: number
 ) {
-  const loading = !style;
+  const loading = !styleProp;
   if (loading) {
-    style = getCustomStyleByName(styleName);
+    styleProp = getCustomStyleByName(styleName);
   }
-  const _commands = getCustomStyleCommands(style);
+  const _commands = getCustomStyleCommands(styleProp.styles);
 
   if (loading) {
     tr = onLoadRemoveAllMarksExceptOverridden(
@@ -562,25 +571,30 @@ function applyStyleEx(
   _commands.forEach((element) => {
     // to set the node attribute for text-align
     if (element instanceof TextAlignCommand) {
-      newattrs['align'] = style.align;
+      newattrs['align'] = styleProp.styles.align;
       // to set the node attribute for line-height
     } else if (element instanceof TextLineSpacingCommand) {
       // [FS] IRAD-1104 2020-11-13
       // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
-      newattrs['lineSpacing'] = getLineSpacingValue(style.lineHeight);
+      newattrs['lineSpacing'] = getLineSpacingValue(
+        styleProp.styles.lineHeight
+      );
     } else if (element instanceof ParagraphSpacingCommand) {
       // [FS] IRAD-1100 2020-11-05
       // Add in leading and trailing spacing (before and after a paragraph)
-      newattrs['paragraphSpacingAfter'] = style.paragraphSpacingAfter
-        ? style.paragraphSpacingAfter
+      newattrs['paragraphSpacingAfter'] = styleProp.styles.paragraphSpacingAfter
+        ? styleProp.styles.paragraphSpacingAfter
         : null;
-      newattrs['paragraphSpacingBefore'] = style.paragraphSpacingBefore
-        ? style.paragraphSpacingBefore
+      newattrs['paragraphSpacingBefore'] = styleProp.styles
+        .paragraphSpacingBefore
+        ? styleProp.styles.paragraphSpacingBefore
         : null;
     } else if (element instanceof IndentCommand) {
       // [FS] IRAD-1162 2021-1-25
       // Bug fix: indent not working along with level
-      newattrs['indent'] = style.isLevelbased ? style.styleLevel : style.indent;
+      newattrs['indent'] = styleProp.styles.isLevelbased
+        ? styleProp.styles.styleLevel
+        : styleProp.styles.indent;
     }
     // to set the marks for the node
     if (typeof element.executeCustom == 'function') {
@@ -588,24 +602,24 @@ function applyStyleEx(
     }
   });
 
-  if (style && style[NUMBERING]) {
-    newattrs['styleLevel'] = Number(style.styleLevel);
-    newattrs['customStyle'] = {
-      strong: style[STRONG],
-      em: style[EM],
-      color: style[COLOR],
-      fontSize: style[FONTSIZE],
-      fontName: style[FONTNAME],
-      strike: style[STRIKE],
-      underline: style[UNDERLINE],
-      boldNumbering: style['boldNumbering'],
-    };
+  if (styleProp.styles && styleProp.styles.hasNumbering) {
+    newattrs['styleLevel'] = Number(styleProp.styles.styleLevel);
+    // newattrs['customStyle'] = {
+    //   strong: style[STRONG],
+    //   em: style[EM],
+    //   color: style[COLOR],
+    //   fontSize: style[FONTSIZE],
+    //   fontName: style[FONTNAME],
+    //   strike: style[STRIKE],
+    //   underline: style[UNDERLINE],
+    //   boldNumbering: style['boldNumbering'],
+    // };
   } else {
     newattrs['styleLevel'] = null;
   }
   // to set custom styleName attribute for node
   newattrs['styleName'] = styleName;
-  tr = applyLineStyle(node, style, state, tr, startPos, endPos);
+  tr = applyLineStyle(node, styleProp.styles, state, tr, startPos, endPos);
   const storedmarks = getMarkByStyleName(styleName, state.schema);
   tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
   tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
@@ -645,8 +659,13 @@ function createEmptyElement(
 
     nodesBeforeSelection.reverse();
     nodesBeforeSelection.every((item) => {
-      if (null !== item.node.attrs.styleLevel) {
-        previousLevel = item.node.attrs.styleLevel;
+      const styleProp = getCustomStyleByName(item.node.attrs.styleName);
+      if (
+        styleProp &&
+        styleProp.styles.styleLevel &&
+        styleProp.styles.hasNumbering
+      ) {
+        previousLevel = styleProp.styles.styleLevel;
         return false;
       }
       return true;
@@ -878,7 +897,7 @@ function handleRemoveMarks(
 // [FS] IRAD-1087 2020-10-14
 // Apply selected styles to document
 export function applyStyle(
-  style: any,
+  style: StyleProps,
   styleName: string,
   state: EditorState,
   tr: Transform

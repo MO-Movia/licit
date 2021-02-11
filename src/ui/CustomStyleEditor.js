@@ -428,7 +428,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 key="name"
                 onChange={this.onStyleClick.bind(this, 'name')}
                 type="text"
-                value={this.state.styleName}
+                value={this.state.styleName|| ''}
               />
             </span>
             <p className="formp">Description:</p>
@@ -438,7 +438,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 key="description"
                 onChange={this.onStyleClick.bind(this, 'description')}
                 type="text"
-                value={this.state.description}
+                value={this.state.description || ''}
               />
             </span>
 
@@ -519,7 +519,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <select
                     className="fonttype fontstyle"
                     onChange={this.onFontNameChange.bind(this)}
-                    value={this.state.styles.fontName}
+                    value={this.state.styles.fontName || ''}
                   >
                     {FONT_TYPE_NAMES.map((value) => (
                       <option key={value} value={value}>
@@ -530,7 +530,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <select
                     className="fontsize fontstyle"
                     onChange={this.onFontSizeChange.bind(this)}
-                    value={this.state.styles.fontSize}
+                    value={this.state.styles.fontSize  || ''}
                   >
                     {FONT_PT_SIZES.map((value) => (
                       <option key={value} value={value}>
@@ -840,7 +840,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 <select
                   className="linespacing fontstyle"
                   onChange={this.onLineSpaceChange.bind(this)}
-                  value={this.state.styles.lineHeight}
+                  value={this.state.styles.lineHeight || ''}
                 >
                   {LINE_SPACE.map((value) => (
                     <option key={value} value={value}>
@@ -858,7 +858,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       key="before"
                       onChange={this.onStyleClick.bind(this, 'before')}
                       type="text"
-                      value={this.state.styles.paragraphSpacingBefore}
+                      value={this.state.styles.paragraphSpacingBefore || ''}
                     />
                   </span>
                   <label style={{marginLeft: '3px'}}> pts</label>
@@ -870,7 +870,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       key="after"
                       onChange={this.onStyleClick.bind(this, 'after')}
                       type="text"
-                      value={this.state.styles.paragraphSpacingAfter}
+                      value={this.state.styles.paragraphSpacingAfter || ''}
                     />
                   </span>
                   <label style={{marginLeft: '3px'}}>pts</label>
@@ -900,7 +900,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       className="leveltype fontstyle"
                       id="levelValue"
                       onChange={this.onLevelChange.bind(this)}
-                      value={this.state.styles.styleLevel}
+                      value={this.state.styles.styleLevel || ''}
                     >
                       {LEVEL_VALUES.map((value) => (
                         <option key={value} value={value}>
@@ -973,7 +973,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         className="leveltype specifiedindent fontstyle"
                         onChange={this.onIndentChange.bind(this)}
                         style={{width: '99px !important'}}
-                        value={this.state.styles.indent}
+                        value={this.state.styles.indent  || ''}
                       >
                         {LEVEL_VALUES.map((value) => (
                           <option key={value} value={value}>
