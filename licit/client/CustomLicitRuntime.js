@@ -6,12 +6,12 @@
 
 import type {ImageLike, StyleProps} from '@modusoperandi/licit';
 import {POST, GET, DELETE, PATCH} from '@modusoperandi/licit';
-// import {setStyle} from '@modusoperandi/licit';
+import {setStyle} from '@modusoperandi/licit';
 
-const STYLES_URI = '/style-service';
+const STYLES_URI = 'http://localhost:3000';
 class CustomLicitRuntime {
   // keep styles locally
-  customStyles: StyleProps[] = null;
+  styleProps: StyleProps[] = null;
 
   // Image Proxy
   canProxyImageSrc(): boolean {
@@ -74,11 +74,10 @@ class CustomLicitRuntime {
         (data) => {},
         (err) => {}
       );
+      // Refresh from server after save
+      this.styleProps = this.fetchStyles();
+      return this.styleProps;
     });
-    // Refresh from server after save
-    // This could probably be done here in memory
-    this.styleProps = await this.fetchStyles();
-    return this.styleProps;
   }
 
   /**
@@ -98,7 +97,6 @@ class CustomLicitRuntime {
    * @param newStyleName new name to apply to style
    */
   async renameStyle(oldStyleName, newStyleName) {
-    this.customStyles = [];
     const obj = {
       oldName: oldStyleName,
       newName: newStyleName,
@@ -106,14 +104,14 @@ class CustomLicitRuntime {
     const url = this.buildRoute('styles/rename');
     await new Promise((resolve, reject) => {
       PATCH(url, JSON.stringify(obj), 'application/json; charset=utf-8').then(
-        (data) => {},
+        (data) => {
+          // Refresh from server after rename
+          this.styleProps = this.fetchStyles();
+          return this.styleProps;
+        },
         (err) => {}
       );
     });
-    // Refresh from server after rename?
-    // This could probably be done here in memory
-    this.styleProps = await this.fetchStyles();
-    return this.styleProps;
   }
 
   /**
@@ -123,25 +121,14 @@ class CustomLicitRuntime {
   async removeStyle(styleName: string): Promise<StyleProps[]> {
     const url = this.buildRoute('styles', encodeURIComponent(styleName));
     await new Promise((resolve, reject) => {
-      // No post processing required since result is ignored beyond Angular's
-      // built in testing.
-      //
-      // Until it's known how to deal with request errors, they will be
-      // rejected and sent to editor as-is.
       DELETE(url, 'text/plain').then(
         (data) => {},
         (err) => {}
       );
+      // Refresh from server after remove
+      this.styleProps = this.fetchStyles();
+      return this.styleProps;
     });
-
-    // Editor handling of response seems to be incomplete in 0.0.20
-    // Returning styleProps here jut to be consistent with the other
-    // methods.
-    //
-    // Refresh from server after rename?
-    // This could probably be done here in memory.
-    this.styleProps = await this.fetchStyles();
-    return this.styleProps;
   }
 
   fetchStyles(): Promise<StyleProps[]> {
@@ -156,7 +143,7 @@ class CustomLicitRuntime {
           const style = JSON.parse(data);
           resolve(style);
           this.customStyles = style;
-          // setStyle(style);
+          setStyle(style);
         },
         (err) => {
           resolve(null);
