@@ -771,14 +771,12 @@ function applyLineStyle(node, style, state, tr, startPos, endPos) {
       tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
         if ('text' === node.type.name) {
           textContent = `${textContent}${node.text}`;
-          if (textContent.includes('.')) {
-            textContent = textContent.split('.')[0];
-            tr = tr.addMark(
-              pos,
-              pos + textContent.length + 1,
-              markType.create(null)
-            );
-          }
+          textContent = textContent.split('.')[0];
+          tr = tr.addMark(
+            pos,
+            pos + textContent.length + 1,
+            markType.create(null)
+          );
           textContent = '';
         }
       });
@@ -786,14 +784,12 @@ function applyLineStyle(node, style, state, tr, startPos, endPos) {
       tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
         if ('text' === node.type.name) {
           textContent = `${textContent}${node.text}`;
-          if (textContent.includes(' ')) {
-            textContent = textContent.split(' ')[0];
-            tr = tr.addMark(
-              pos,
-              pos + textContent.length + 1,
-              markType.create(null)
-            );
-          }
+          textContent = textContent.split(' ')[0];
+          tr = tr.addMark(
+            pos,
+            pos + textContent.length + 1,
+            markType.create(null)
+          );
           textContent = '';
         }
       });
@@ -907,11 +903,11 @@ export function applyStyle(
   const {selection} = state;
   const startPos = selection.$from.before(1);
   const endPos = selection.$to.after(1);
-  return getNode(state, startPos, endPos, tr, style, styleName);
+  return applyStyleToEachNode(state, startPos, endPos, tr, style, styleName);
 }
 
-//to get the selected node
-export function getNode(
+// apply style to each selected node (when style applied to multiple paragraphs)
+function applyStyleToEachNode(
   state: EditorState,
   from: Number,
   to: Number,
@@ -927,6 +923,22 @@ export function getNode(
     }
   });
   return tr;
+}
+
+//to get the selected node
+export function getNode(
+  state: EditorState,
+  from: Number,
+  to: Number,
+  tr: Transform
+) {
+  let selectedNode = null;
+  tr.doc.nodesBetween(from, to, (node, startPos) => {
+    if (node.type.name === 'paragraph') {
+      selectedNode = node;
+    }
+  });
+  return selectedNode;
 }
 
 // [FS] IRAD-1176 2021-02-08

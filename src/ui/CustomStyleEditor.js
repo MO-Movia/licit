@@ -990,7 +990,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         </div>
         <div className="btns">
           <button className="buttonstyle" onClick={this._cancel}>
-            Cancel
+          {this.state.mode == 3 ? 'Close' : 'Cancel'}
           </button>
           <button
             className="btnsave buttonstyle"

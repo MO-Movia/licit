@@ -85,18 +85,29 @@ function getAttrs(dom: HTMLElement): Object {
   };
 }
 
-function toDOM(node: Node): Array<any> {
-  const {
-    align,
-    indent,
-    lineSpacing,
-    paddingTop,
-    paddingBottom,
-    id,
-    styleName,
-    styleLevel,
-  } = node.attrs;
-  const attrs = {};
+function getStyle(attrs) {
+  return getStyleEx(
+    attrs.align,
+    attrs.lineSpacing,
+    attrs.paddingTop,
+    attrs.paddingBottom,
+    attrs.paragraphSpacingAfter,
+    attrs.paragraphSpacingBefore,
+    attrs.styleName,
+    attrs.styleLevel
+  );
+}
+
+function getStyleEx(
+  align,
+  lineSpacing,
+  paddingTop,
+  paddingBottom,
+  marginBottom,
+  marginTop,
+  styleName,
+  styleLevel
+) {
   let style = '';
 
   if (align && align !== 'left') {
@@ -113,10 +124,7 @@ function toDOM(node: Node): Array<any> {
   }
 
   //to get the styles of the corresponding style name
-  const styleProps = getCustomStyleByName(node.attrs.styleName);
-  if (styleLevel) {
-    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
-  }
+  const styleProps = getCustomStyleByName(styleName);
   if (null !== styleProps) {
     // [FS] IRAD-1100 2020-11-04
     // Add in leading and trailing spacing (before and after a paragraph)
@@ -127,7 +135,6 @@ function toDOM(node: Node): Array<any> {
       style += `margin-top: ${styleProps.styles.paragraphSpacingBefore}pt !important;`;
     }
     if (styleLevel) {
-      attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
       if (styleProps.styles.strong) {
         style += 'font-weight: bold;';
       }
@@ -155,8 +162,18 @@ function toDOM(node: Node): Array<any> {
   if (paddingBottom && !EMPTY_CSS_VALUE.has(paddingBottom)) {
     style += `padding-bottom: ${paddingBottom};`;
   }
+  return style;
+}
+
+function toDOM(node: Node): Array<any> {
+  const {indent, id, styleName, styleLevel} = node.attrs;
+  const attrs = {};
+  const style = getStyle(node.attrs);
 
   style && (attrs.style = style);
+  if (styleLevel) {
+    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
+  }
 
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);
@@ -172,6 +189,7 @@ function toDOM(node: Node): Array<any> {
 
 export const toParagraphDOM = toDOM;
 export const getParagraphNodeAttrs = getAttrs;
+export const getParagraphStyle = getStyle;
 
 export function convertMarginLeftToIndentValue(marginLeft: string): number {
   const ptValue = convertToCSSPTValue(marginLeft);
