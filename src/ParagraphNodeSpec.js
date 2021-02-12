@@ -35,6 +35,7 @@ const ParagraphNodeSpec: NodeSpec = {
     // TODO: Add UI to let user edit / clear padding.
     paddingTop: {default: null},
     styleName: {default: 'None'},
+    styleLevel: {default: null},
   },
   content: 'inline*',
   group: 'block',
@@ -93,6 +94,7 @@ function toDOM(node: Node): Array<any> {
     paddingBottom,
     id,
     styleName,
+    styleLevel,
   } = node.attrs;
   const attrs = {};
   let style = '';
@@ -112,7 +114,9 @@ function toDOM(node: Node): Array<any> {
 
   //to get the styles of the corresponding style name
   const styleProps = getCustomStyleByName(node.attrs.styleName);
-
+  if (styleLevel) {
+    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
+  }
   if (null !== styleProps) {
     // [FS] IRAD-1100 2020-11-04
     // Add in leading and trailing spacing (before and after a paragraph)
@@ -122,8 +126,8 @@ function toDOM(node: Node): Array<any> {
     if (styleProps.styles.paragraphSpacingBefore) {
       style += `margin-top: ${styleProps.styles.paragraphSpacingBefore}pt !important;`;
     }
-    if (styleProps.styles.styleLevel) {
-      attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleProps.styles.styleLevel);
+    if (styleLevel) {
+      attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
       if (styleProps.styles.strong) {
         style += 'font-weight: bold;';
       }

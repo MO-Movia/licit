@@ -468,60 +468,62 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
   const marks = [];
   let markType = null;
   let attrs = null;
-  for (const property in styleProp.styles) {
-    switch (property) {
-      case STRONG:
-      case BOLDPARTIAL:
-        if (styleProp.styles[property]) {
-          markType = schema.marks[MARK_STRONG];
+  if (styleProp) {
+    for (const property in styleProp.styles) {
+      switch (property) {
+        case STRONG:
+        case BOLDPARTIAL:
+          if (styleProp.styles[property]) {
+            markType = schema.marks[MARK_STRONG];
+            marks.push(markType.create(attrs));
+          }
+          break;
+
+        case EM:
+          markType = schema.marks[MARK_EM];
+          if (styleProp.styles[property]) marks.push(markType.create(attrs));
+          break;
+
+        case COLOR:
+          markType = schema.marks[MARK_TEXT_COLOR];
+          attrs = styleProp.styles[property]
+            ? {color: styleProp.styles[property]}
+            : null;
           marks.push(markType.create(attrs));
-        }
-        break;
+          break;
 
-      case EM:
-        markType = schema.marks[MARK_EM];
-        if (styleProp.styles[property]) marks.push(markType.create(attrs));
-        break;
+        case FONTSIZE:
+          markType = schema.marks[MARK_FONT_SIZE];
+          attrs = styleProp.styles[property]
+            ? {pt: styleProp.styles[property]}
+            : null;
+          marks.push(markType.create(attrs));
+          break;
 
-      case COLOR:
-        markType = schema.marks[MARK_TEXT_COLOR];
-        attrs = styleProp.styles[property]
-          ? {color: styleProp.styles[property]}
-          : null;
-        marks.push(markType.create(attrs));
-        break;
+        case FONTNAME:
+          markType = schema.marks[MARK_FONT_TYPE];
+          attrs = styleProp.styles[property]
+            ? {name: styleProp.styles[property]}
+            : null;
+          marks.push(markType.create(attrs));
+          break;
 
-      case FONTSIZE:
-        markType = schema.marks[MARK_FONT_SIZE];
-        attrs = styleProp.styles[property]
-          ? {pt: styleProp.styles[property]}
-          : null;
-        marks.push(markType.create(attrs));
-        break;
+        case TEXTHL:
+          markType = schema.marks[MARK_TEXT_HIGHLIGHT];
+          attrs = styleProp.styles[property]
+            ? {highlightColor: styleProp.styles[property]}
+            : null;
+          marks.push(markType.create(attrs));
+          break;
 
-      case FONTNAME:
-        markType = schema.marks[MARK_FONT_TYPE];
-        attrs = styleProp.styles[property]
-          ? {name: styleProp.styles[property]}
-          : null;
-        marks.push(markType.create(attrs));
-        break;
+        case UNDERLINE:
+          markType = schema.marks[MARK_UNDERLINE];
+          marks.push(markType.create(attrs));
+          break;
 
-      case TEXTHL:
-        markType = schema.marks[MARK_TEXT_HIGHLIGHT];
-        attrs = styleProp.styles[property]
-          ? {highlightColor: styleProp.styles[property]}
-          : null;
-        marks.push(markType.create(attrs));
-        break;
-
-      case UNDERLINE:
-        markType = schema.marks[MARK_UNDERLINE];
-        marks.push(markType.create(attrs));
-        break;
-
-      default:
-        break;
+        default:
+          break;
+      }
     }
   }
   return marks;
@@ -917,13 +919,11 @@ export function getNode(
   style: StyleProps,
   styleName: string
 ) {
-  let selectedNode = null;
   tr.doc.nodesBetween(from, to, (node, startPos) => {
     if (node.type.name === 'paragraph') {
-      selectedNode = node;
       // [FS] IRAD-1182 2021-02-11
       // Issue fix: When style applied to multiple paragraphs, some of the paragraph's objectId found in deletedObjectId's
-      tr= applyStyleEx(style, styleName, state, tr, node, startPos, to);
+      tr = applyStyleEx(style, styleName, state, tr, node, startPos, to);
     }
   });
   return tr;
