@@ -564,7 +564,7 @@ function applyStyleEx(
   newattrs['paragraphSpacingAfter'] = null;
   newattrs['paragraphSpacingBefore'] = null;
   // [FS] IRAD-1131 2021-01-12
-  // Indent overriding not working on a paragraph where cussom style is applied
+  // Indent overriding not working on a paragraph where custom style is applied
   newattrs['indent'] = null;
   newattrs['styleName'] = styleName;
 
@@ -905,8 +905,7 @@ export function applyStyle(
   const {selection} = state;
   const startPos = selection.$from.before(1);
   const endPos = selection.$to.after(1);
-  const node = getNode(state, startPos, endPos, tr);
-  return applyStyleEx(style, styleName, state, tr, node, startPos, endPos);
+  return getNode(state, startPos, endPos, tr, style, styleName);
 }
 
 //to get the selected node
@@ -914,15 +913,20 @@ export function getNode(
   state: EditorState,
   from: Number,
   to: Number,
-  tr: Transform
+  tr: Transform,
+  style: StyleProps,
+  styleName: string
 ) {
   let selectedNode = null;
   tr.doc.nodesBetween(from, to, (node, startPos) => {
     if (node.type.name === 'paragraph') {
       selectedNode = node;
+      // [FS] IRAD-1182 2021-02-11
+      // Issue fix: When style applied to multiple paragraphs, some of the paragraph's objectId found in deletedObjectId's
+      tr= applyStyleEx(style, styleName, state, tr, node, startPos, to);
     }
   });
-  return selectedNode;
+  return tr;
 }
 
 // [FS] IRAD-1176 2021-02-08
