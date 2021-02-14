@@ -59,7 +59,9 @@ export default class StylePlugin extends Plugin {
           this.loaded = false;
           this.firstTime = true;
         },
-        apply(tr, value, oldState, newState) {},
+        apply(tr, value, oldState, newState) {
+          remapCounterFlags(tr);
+        },
       },
       props: {
         handleDOMEvents: {
@@ -102,6 +104,15 @@ export default class StylePlugin extends Plugin {
 
   getEffectiveSchema(schema) {
     return applyEffectiveSchema(schema);
+  }
+}
+
+function remapCounterFlags(tr) {
+  const cFlags = tr.doc.attrs.counterFlags;
+  for (const key in cFlags) {
+    if (cFlags.hasOwnProperty(key)) {
+      window[key] = true;
+    }
   }
 }
 

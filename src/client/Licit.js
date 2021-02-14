@@ -1,5 +1,4 @@
 // @flow
-
 import applyDevTools from 'prosemirror-dev-tools';
 import {EditorState, TextSelection} from 'prosemirror-state';
 import {Node} from 'prosemirror-model';
@@ -87,7 +86,9 @@ class Licit extends React.Component<any, any> {
 
     const setState = this.setState.bind(this);
     this._connector = collaborative
-      ? new CollabConnector(editorState, setState, {docID})
+      ? new CollabConnector(editorState, setState, {
+          docID,
+        })
       : new SimpleConnector(editorState, setState);
 
     // FS IRAD-989 2020-18-06
@@ -126,6 +127,60 @@ class Licit extends React.Component<any, any> {
         }
       },
     });
+  }
+
+  resetCounters(transaction) {
+    for (let index = 1; index <= 10; index++) {
+      const counterVar = 'set-cust-style-counter-' + index;
+      const setCounterVal = window[counterVar];
+      if (setCounterVal) {
+        delete window[counterVar];
+      }
+    }
+    this.setCounterFlags(transaction, true);
+  }
+
+  setCounterFlags(transaction, reset) {
+    let modified = false;
+    let counterFlags = null;
+    const existingCFlags = transaction.doc.attrs.counterFlags;
+    if (reset && !existingCFlags) {
+      return;
+    }
+
+    for (let index = 1; index <= 10; index++) {
+      const counterVar = 'set-cust-style-counter-' + index;
+
+      const setCounterVal = window[counterVar];
+      if (setCounterVal) {
+        if (!counterFlags) {
+          counterFlags = {};
+        }
+        counterFlags[counterVar] = true;
+
+        if (!existingCFlags) {
+          modified = true;
+        }
+      }
+      if (!modified) {
+        if (existingCFlags) {
+          if (setCounterVal) {
+            modified = undefined == existingCFlags[counterVar];
+          } else {
+            modified = undefined != existingCFlags[counterVar];
+          }
+        } else {
+          modified = setCounterVal;
+        }
+      }
+    }
+
+    if (modified) {
+      const tr = this._editorView.state.tr.step(
+        new SetDocAttrStep('counterFlags', counterFlags)
+      );
+      this._editorView.dispatch(tr);
+    }
   }
 
   getDeletedArtifactIds() {
@@ -194,7 +249,9 @@ class Licit extends React.Component<any, any> {
         const docID = nextState.docID || 1;
         // create new connector
         this._connector = collabEditing
-          ? new CollabConnector(editorState, setState, {docID})
+          ? new CollabConnector(editorState, setState, {
+              docID,
+            })
           : new SimpleConnector(editorState, setState);
       }
     }
@@ -247,14 +304,23 @@ class Licit extends React.Component<any, any> {
     this._connector.onEdit(transaction);
     if (transaction.docChanged) {
       const docJson = transaction.doc.toJSON();
+      let setCFlags = true;
+
       if (docJson.content && docJson.content.length === 1) {
         if (
-          docJson.content[0].content &&
-          docJson.content[0].content[0].text &&
-          '' === docJson.content[0].content[0].text.trim()
+          undefined === docJson.content[0]['content'] ||
+          (docJson.content[0].content &&
+            docJson.content[0].content[0].text &&
+            '' === docJson.content[0].content[0].text.trim())
         ) {
           isEmpty = true;
+          this.resetCounters(transaction);
+          setCFlags = false;
         }
+      }
+
+      if (setCFlags) {
+        this.setCounterFlags(transaction, false);
       }
       this.state.onChangeCB(docJson, isEmpty);
     }

@@ -1,5 +1,4 @@
 // @flow
-
 import clamp from './ui/clamp';
 import convertToCSSPTValue from './convertToCSSPTValue';
 import toCSSLineSpacing from './ui/toCSSLineSpacing';
@@ -25,21 +24,41 @@ const ALIGN_PATTERN = /(left|right|center|justify)/;
 // as a `<p>` element.
 const ParagraphNodeSpec: NodeSpec = {
   attrs: {
-    align: {default: null},
-    color: {default: null},
-    id: {default: null},
-    indent: {default: null},
-    lineSpacing: {default: null},
+    align: {
+      default: null,
+    },
+    color: {
+      default: null,
+    },
+    id: {
+      default: null,
+    },
+    indent: {
+      default: null,
+    },
+    lineSpacing: {
+      default: null,
+    },
     // TODO: Add UI to let user edit / clear padding.
-    paddingBottom: {default: null},
+    paddingBottom: {
+      default: null,
+    },
     // TODO: Add UI to let user edit / clear padding.
-    paddingTop: {default: null},
-    styleName: {default: 'None'},
-    styleLevel: {default: null},
+    paddingTop: {
+      default: null,
+    },
+    styleName: {
+      default: 'None',
+    },
   },
   content: 'inline*',
   group: 'block',
-  parseDOM: [{tag: 'p', getAttrs}],
+  parseDOM: [
+    {
+      tag: 'p',
+      getAttrs,
+    },
+  ],
   toDOM,
 };
 
@@ -69,8 +88,6 @@ function getAttrs(dom: HTMLElement): Object {
 
   const id = dom.getAttribute('id') || '';
   const styleName = dom.getAttribute('styleName') || null;
-  const styleLevel = parseInt(dom.getAttribute(ATTRIBUTE_STYLE_LEVEL), 10);
-  // TODO: customStyle
 
   return {
     align,
@@ -81,7 +98,6 @@ function getAttrs(dom: HTMLElement): Object {
     id,
     styleName,
     spacingAfterParagraph,
-    styleLevel,
   };
 }
 
@@ -93,8 +109,7 @@ function getStyle(attrs) {
     attrs.paddingBottom,
     attrs.paragraphSpacingAfter,
     attrs.paragraphSpacingBefore,
-    attrs.styleName,
-    attrs.styleLevel
+    attrs.styleName
   );
 }
 
@@ -105,8 +120,7 @@ function getStyleEx(
   paddingBottom,
   marginBottom,
   marginTop,
-  styleName,
-  styleLevel
+  styleName
 ) {
   let style = '';
 
@@ -134,7 +148,7 @@ function getStyleEx(
     if (styleProps.styles.paragraphSpacingBefore) {
       style += `margin-top: ${styleProps.styles.paragraphSpacingBefore}pt !important;`;
     }
-    if (styleLevel) {
+    if (styleProps.styles.styleLevel) {
       if (styleProps.styles.strong) {
         style += 'font-weight: bold;';
       }
@@ -153,6 +167,8 @@ function getStyleEx(
       if (styleProps.styles.fontName) {
         style += `font-family: ${styleProps.styles.fontName};`;
       }
+
+      style += refreshCounters(parseInt(styleProps.styles.styleLevel));
     }
   }
 
@@ -165,14 +181,38 @@ function getStyleEx(
   return style;
 }
 
+function refreshCounters(styleLevel) {
+  let latestCounters = '';
+  let cssCounterReset = '';
+  let setCounterReset = false;
+
+  for (let index = 1; index <= styleLevel; index++) {
+    const counterVar = 'set-cust-style-counter-' + index;
+    const setCounterVal = window[counterVar];
+    if (!setCounterVal) {
+      cssCounterReset += `czi-cust-style-counter-${index} `;
+      setCounterReset = true;
+    }
+    window[counterVar] = true;
+  }
+
+  if (setCounterReset) {
+    latestCounters = `counter-increment: ${cssCounterReset};`;
+  }
+  return latestCounters;
+}
+
 function toDOM(node: Node): Array<any> {
-  const {indent, id, styleName, styleLevel} = node.attrs;
+  const {indent, id, styleName} = node.attrs;
   const attrs = {};
   const style = getStyle(node.attrs);
 
   style && (attrs.style = style);
-  if (styleLevel) {
-    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
+
+  const styleProps = getCustomStyleByName(styleName);
+
+  if (styleProps && styleProps.styles.styleLevel) {
+    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleProps.styles.styleLevel);
   }
 
   if (indent) {
