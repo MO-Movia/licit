@@ -13,6 +13,8 @@ export const MIN_INDENT_LEVEL = 0;
 export const MAX_INDENT_LEVEL = 7;
 export const ATTRIBUTE_INDENT = 'data-indent';
 export const ATTRIBUTE_STYLE_LEVEL = 'data-style-level';
+export const RESERVED_STYLE_NONE = 'None';
+export const RESERVED_STYLE_NONE_NUMBERING = RESERVED_STYLE_NONE + '-@#$-';
 const cssVal = new Set<string>(['', '0%', '0pt', '0px']);
 
 export const EMPTY_CSS_VALUE = cssVal;
@@ -168,11 +170,13 @@ function getStyleEx(
       if (styleProps.styles.fontName) {
         style += `font-family: ${styleProps.styles.fontName};`;
       }
+	  
+      styleLevel = parseInt(styleProps.styles.styleLevel);
 
-      style += refreshCounters(parseInt(styleProps.styles.styleLevel));
+      style += refreshCounters(styleLevel);
     }
-  } else if (styleName.includes('None-@#$-')){
-		const indices = styleName.split('None-@#$-');		
+  } else if (styleName.includes(RESERVED_STYLE_NONE_NUMBERING)){
+		const indices = styleName.split(RESERVED_STYLE_NONE_NUMBERING);		
 		if(indices && 2 == indices.length) {
 			styleLevel = parseInt(indices[1]);
 		}
@@ -191,11 +195,14 @@ function getStyleEx(
   return {style, styleLevel};
 }
 
+// [FS] IRAD-1202 2021-02-15
 function refreshCounters(styleLevel) {
   let latestCounters = '';
   let cssCounterReset = '';
   let setCounterReset = false;
-
+  
+  // set style counters in window variables,
+  // so that it is remapped later to add to document attribute via transaction.
   for (let index = 1; index <= styleLevel; index++) {
     const counterVar = 'set-cust-style-counter-' + index;
     const setCounterVal = window[counterVar];

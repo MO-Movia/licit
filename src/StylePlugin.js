@@ -60,6 +60,7 @@ export default class StylePlugin extends Plugin {
           this.firstTime = true;
         },
         apply(tr, value, oldState, newState) {
+          // [FS] IRAD-1202 2021-02-15
           remapCounterFlags(tr);
         },
       },
@@ -107,7 +108,10 @@ export default class StylePlugin extends Plugin {
   }
 }
 
+// [FS] IRAD-1202 2021-02-15
 function remapCounterFlags(tr) {
+  // Depending on the window variables,
+  // set counters for numbering.
   const cFlags = tr.doc.attrs.counterFlags;
   for (const key in cFlags) {
     if (cFlags.hasOwnProperty(key)) {

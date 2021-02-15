@@ -3,6 +3,9 @@
 import type {StyleProps} from './Types';
 let customStyles = [];
 
+// [FS] IRAD-1202 2021-02-15
+// None & None-@#$- have same effect of None.
+// None-@#$-<styleLevel> is used for numbering to set style level for None, based on the cursor level style level.
 function isValidStyleName(styleName) {
 	return (name != 'None' && !name.includes('None-@#$-') && customStyles.length > 0);
 }
@@ -26,7 +29,7 @@ export function isCustomStyleExists(styleName) {
 // get a style by styleName
 export function getCustomStyleByName(name: string): StyleProps {
   let style: StyleProps = null;
-  if (isValidStyleName(styleName)) {
+  if (isValidStyleName(name)) {
     for (const obj of customStyles) {
       if (name === obj.styleName) {
         style = obj;

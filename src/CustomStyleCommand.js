@@ -36,6 +36,7 @@ import {
 } from './MarkNames';
 import {PARAGRAPH} from './NodeNames';
 import {getLineSpacingValue} from './ui/toCSSLineSpacing';
+import {RESERVED_STYLE_NONE, RESERVED_STYLE_NONE_NUMBERING} from './ParagraphNodeSpec';
 
 export const STRONG = 'strong';
 export const EM = 'em';
@@ -730,7 +731,10 @@ function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
 
   const paragraph = state.schema.nodes[PARAGRAPH];
   for (let index = level; index > counter; index--) {
-    nodeAttrs.styleName = 'None-@#$-' + index;
+    // [FS] IRAD-1202 2021-02-15
+    // Handle Numbering case for None styles.
+    // Use the styleName to hold the style level.
+    nodeAttrs.styleName = RESERVED_STYLE_NONE_NUMBERING + index;
     const paragraphNode = paragraph.create(nodeAttrs, null, null);
     tr = tr.insert(startPos, Fragment.from(paragraphNode));
   }

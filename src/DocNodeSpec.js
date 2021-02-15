@@ -55,6 +55,8 @@ const DocNodeSpec = {
     layout: {default: null},
     padding: {default: null},
     width: {default: null},
+    // [FS] IRAD-1202 2021-02-15
+    // Counter flags for Numbering
     counterFlags: {default: null},
   },
   content: 'block+',
