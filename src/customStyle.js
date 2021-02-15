@@ -3,11 +3,15 @@
 import type {StyleProps} from './Types';
 let customStyles = [];
 
+function isValidStyleName(styleName) {
+	return (name != 'None' && !name.includes('None-@#$-') && customStyles.length > 0);
+}
+
 // [FS] IRAD-1137 2021-01-15
 // check if the entered style name already exist
 export function isCustomStyleExists(styleName) {
   let bOK = false;
-  if (customStyles.length > 0) {
+  if (isValidStyleName(styleName)) {
     for (const style of customStyles) {
       if (styleName === style.styleName) {
         bOK = true;
@@ -22,7 +26,7 @@ export function isCustomStyleExists(styleName) {
 // get a style by styleName
 export function getCustomStyleByName(name: string): StyleProps {
   let style: StyleProps = null;
-  if (customStyles.length > 0) {
+  if (isValidStyleName(styleName)) {
     for (const obj of customStyles) {
       if (name === obj.styleName) {
         style = obj;

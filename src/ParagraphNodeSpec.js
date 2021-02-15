@@ -123,6 +123,7 @@ function getStyleEx(
   styleName
 ) {
   let style = '';
+  let styleLevel = 0;
 
   if (align && align !== 'left') {
     style += `text-align: ${align};`;
@@ -170,6 +171,15 @@ function getStyleEx(
 
       style += refreshCounters(parseInt(styleProps.styles.styleLevel));
     }
+  } else if (styleName.includes('None-@#$-')){
+		const indices = styleName.split('None-@#$-');		
+		if(indices && 2 == indices.length) {
+			styleLevel = parseInt(indices[1]);
+		}
+		
+		if(styleLevel) {
+			style += refreshCounters(styleLevel);
+		}
   }
 
   if (paddingTop && !EMPTY_CSS_VALUE.has(paddingTop)) {
@@ -178,7 +188,7 @@ function getStyleEx(
   if (paddingBottom && !EMPTY_CSS_VALUE.has(paddingBottom)) {
     style += `padding-bottom: ${paddingBottom};`;
   }
-  return style;
+  return {style, styleLevel};
 }
 
 function refreshCounters(styleLevel) {
@@ -205,14 +215,12 @@ function refreshCounters(styleLevel) {
 function toDOM(node: Node): Array<any> {
   const {indent, id, styleName} = node.attrs;
   const attrs = {};
-  const style = getStyle(node.attrs);
+  const { style, styleLevel } = getStyle(node.attrs);
 
   style && (attrs.style = style);
 
-  const styleProps = getCustomStyleByName(styleName);
-
-  if (styleProps && styleProps.styles.styleLevel) {
-    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleProps.styles.styleLevel);
+  if (styleLevel) {
+    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
   }
 
   if (indent) {

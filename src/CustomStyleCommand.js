@@ -730,9 +730,7 @@ function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
 
   const paragraph = state.schema.nodes[PARAGRAPH];
   for (let index = level; index > counter; index--) {
-    nodeAttrs.styleLevel = index;
-    nodeAttrs.styleName = 'None';
-    nodeAttrs.customStyle = null;
+    nodeAttrs.styleName = 'None-@#$-' + index;
     const paragraphNode = paragraph.create(nodeAttrs, null, null);
     tr = tr.insert(startPos, Fragment.from(paragraphNode));
   }
