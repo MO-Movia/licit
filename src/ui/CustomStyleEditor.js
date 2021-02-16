@@ -287,6 +287,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       },
     });
   }
+
+  onNextLineStyleSelected(e: any) {
+  }
+
   // [FS] IRAD-1127 2020-12-31
   // to populate the selected custom styles.
   onSelectCustomStyle(e: any) {
@@ -377,6 +381,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     mp1.style.maxHeight = mp1.scrollHeight + 'px';
     const mp2 = document.getElementsByClassName('panel2')[0];
     mp2.style.maxHeight = mp2.scrollHeight + 'px';
+    const mp3 = document.getElementsByClassName('panel3')[0];
+    mp3.style.maxHeight = mp3.scrollHeight + 'px';
 
     // const ac = document.getElementById('accordion1');
     // ac.classList.toggle('accactive');
@@ -705,7 +711,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       disabled={this.state.styles.boldPartial ? false : true}
                       name="boldscentence"
                       onChange={this.onScentenceRadioChanged.bind(this)}
-                      style={{marginLeft: '81px'}}
+                      style={{marginLeft: '20px'}}
                       type="radio"
                       value="1"
                     />
@@ -985,6 +991,111 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   </div>
                 </div>
               </div>
+
+              <button className="licit-accordion accactive">
+                <div className="indentdiv">
+                  {/* <span className="iconspan czi-icon account_tree">
+                    account_tree
+                  </span> */}
+                  <label
+                    style={{
+                      marginLeft: '-7px',
+                      marginTop: '2px',
+                      color: '#444',
+                    }}
+                  >
+                    Style Settings
+                  </label>
+                </div>
+              </button>
+
+
+             <div className="panel3 formp">                
+                <p className="formp">Select style for next line:</p>
+                <div className="hierarchydiv">
+                  <div className="indentdiv">
+                    <input
+                      checked={this.state.styles.nextLineStyle}
+                      name="indenting"
+                      onChange={this.onNextLineStyleSelected.bind(this)}
+                      type="radio"
+                      value="1"
+                    />
+                    <div  style={{marginTop: '-3px'}}>
+                    <label
+                      style={{
+                        marginLeft: '4px',
+                        marginTop: '3px',
+                        marginBottom: '0',
+                      }}
+                    >
+                      Continue this style
+                    </label>
+                    </div>
+                  </div>
+                  <div className="indentdiv">
+                    <input
+                      checked={this.state.styles.nextLineStyle}
+                      name="indenting"
+                      onChange={this.onNextLineStyleSelected.bind(this)}
+                      style={{
+                        marginLeft: '20px'
+                      }}
+                      type="radio"
+                      value="0"
+                    />
+                    <div  style={{marginTop: '-3px', marginLeft: '1px',}}>
+                    <label
+                      style={{
+                        marginLeft: '4px',
+                        marginTop: '3px',
+                        marginBottom: '0',
+                      }}
+                    >
+                      None
+                    </label>
+                    </div>
+                  </div>
+                  <div className="indentdiv">
+                    <input
+                      checked={!this.state.styles.nextLineStyle}
+                      name="indenting"
+                      onChange={this.onNextLineStyleSelected.bind(this)}
+                      type="radio"
+                      value="0"
+                    />
+                    <label
+                      style={{
+                        marginLeft: '4px',
+                        marginTop: '3px',
+                        marginBottom: '0',
+                      }}
+                    >
+                      Select style
+                    </label>
+                    <span>
+                    <select
+                className="stylenameinput fontstyle"
+                defaultValue={'DEFAULT'}
+                onChange={this.onSelectCustomStyle.bind(this)}
+                style={{height: '20px',width: '99px', marginLeft: '8px'}}
+              >
+                <option disabled value="DEFAULT">
+                  {' '}
+                  select a style
+                </option>
+                {customStyles.map((style) => (
+                  <option key={style.styleName} value={style.style}>
+                    {style.styleName}
+                  </option>
+                ))}
+              </select>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+
             </div>
           </div>
         </div>
