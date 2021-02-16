@@ -16,6 +16,7 @@ import {atViewportCenter} from './PopUpPosition';
 import {setTextAlign} from '../TextAlignCommand';
 import {setTextLineSpacing} from '../TextLineSpacingCommand';
 import {setParagraphSpacing} from '../ParagraphSpacingCommand';
+import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
 
 // [FS] IRAD-1039 2020-09-24
 // UI to show the list buttons
@@ -68,7 +69,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     commandGroups.forEach((group, ii) => {
       Object.keys(group).forEach((label) => {
         const command = group[label];
-        const hasText = 'None' !== label;
+        const hasText = RESERVED_STYLE_NONE !== label;
         children.push(
           <CustomStyleItem
             command={command}
@@ -199,7 +200,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     }
 
     let tr = editorState.tr;
-    const customStyleName = 'None';
+    const customStyleName = RESERVED_STYLE_NONE;
     const tasks = [];
     const textAlignNode = [];
 

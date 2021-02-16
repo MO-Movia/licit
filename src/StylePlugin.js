@@ -7,7 +7,6 @@ import {
   applyLatestStyle,
   getMarkByStyleName,
   ATTR_OVERRIDDEN,
-  NONE,
 } from './CustomStyleCommand';
 import {findParentNodeClosestToPos} from 'prosemirror-utils';
 import {
@@ -22,6 +21,7 @@ import {
   MARK_UNDERLINE,
 } from './MarkNames';
 import {getCustomStyleByName} from './customStyle';
+import {RESERVED_STYLE_NONE} from './ParagraphNodeSpec';
 const ALLOWED_MARKS = [
   MARK_STRONG,
   MARK_EM,
@@ -158,13 +158,16 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
       const nextNodes = nodeAssignment(nextState);
       let prevLevel = 1;
       nextNodes.forEach((element) => {
-        if (element.node.attrs.styleLevel - prevLevel > 1 && null === nodes) {
-          prevLevel = element.node.attrs.styleLevel;
-          nodes = element;
-          prevN = nextNodes[index - 1];
-        } else {
-          if (prevLevel < 1) {
-            prevLevel = element.node.attrs.styleLevel;
+        const styleProps = getCustomStyleByName(element.node.attrs.styleName);
+        if (null !== styleProps) {
+          if (styleProps.styles.styleLevel - prevLevel > 1 && null === nodes) {
+            prevLevel = styleProps.styles.styleLevel;
+            nodes = element;
+            prevN = nextNodes[index - 1];
+          } else {
+            if (prevLevel < 1) {
+              prevLevel = styleProps.styles.styleLevel;
+            }
           }
         }
         index++;
@@ -187,19 +190,17 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
   return tr;
 }
 function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
-  const counter = nodeAttrs.styleLevel ? nodeAttrs.styleLevel : 1;
-  const level = nextLevel ? nextLevel - 1 : 0;
-
-  const paragraph = state.schema.nodes['paragraph'];
-
-  for (let index = level; index > counter; index--) {
-    nodeAttrs.styleLevel = index;
-    nodeAttrs.styleName = 'None';
-    nodeAttrs.customStyle = null;
-    const paragraphNode = paragraph.create(nodeAttrs, null, null);
-    tr = tr.insert(startPos, Fragment.from(paragraphNode));
+  const styleProps = getCustomStyleByName(nodeAttrs.styleName);
+  if (null !== styleProps) {
+    const counter = styleProps.styles.styleLevel ? styleProps.styles.styleLevel : 1;
+    const level = nextLevel ? nextLevel - 1 : 0;
+    const paragraph = state.schema.nodes['paragraph'];
+    for (let index = level; index > counter; index--) {
+      nodeAttrs.styleName = 'None';
+      const paragraphNode = paragraph.create(nodeAttrs, null, null);
+      tr = tr.insert(startPos, Fragment.from(paragraphNode));
+    }
   }
-
   return tr;
 }
 
@@ -207,7 +208,8 @@ function nodeAssignment(state) {
   const nodes = [];
   state.doc.descendants((node, pos) => {
     if (requiredAddAttr(node)) {
-      if (node.attrs.styleLevel) {
+      const styleProps = getCustomStyleByName(node.attrs.styleName);
+      if (null !== styleProps && styleProps.styles.styleLevel) {
         nodes.push({
           node,
           pos,
@@ -215,7 +217,6 @@ function nodeAssignment(state) {
       }
     }
   });
-
   return nodes;
 }
 
@@ -246,7 +247,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
           nextNode &&
           IsActiveNode &&
           nextNode.type.name === 'paragraph' &&
-          nextNode.attrs.styleName === 'None'
+          nextNode.attrs.styleName === RESERVED_STYLE_NONE
         ) {
           const style = getCustomStyleByName(newattrs.styleName);
           if (null !== style) {
@@ -322,7 +323,7 @@ function haveEligibleChildren(node, contentLen) {
     node instanceof Node &&
     0 < contentLen &&
     node.type.name === 'paragraph' &&
-    NONE !== node.attrs.styleName
+    RESERVED_STYLE_NONE !== node.attrs.styleName
   );
 }
 

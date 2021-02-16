@@ -36,7 +36,10 @@ import {
 } from './MarkNames';
 import {PARAGRAPH} from './NodeNames';
 import {getLineSpacingValue} from './ui/toCSSLineSpacing';
-import {RESERVED_STYLE_NONE, RESERVED_STYLE_NONE_NUMBERING} from './ParagraphNodeSpec';
+import {
+  RESERVED_STYLE_NONE,
+  RESERVED_STYLE_NONE_NUMBERING,
+} from './ParagraphNodeSpec';
 
 export const STRONG = 'strong';
 export const EM = 'em';
@@ -49,7 +52,6 @@ export const TEXTHL = 'textHighlight';
 export const UNDERLINE = 'underline';
 export const ALIGN = 'align';
 export const LHEIGHT = 'lineHeight';
-export const NONE = 'None';
 export const SAFTER = 'paragraphSpacingAfter';
 export const SBEFORE = 'paragraphSpacingBefore';
 export const ATTR_OVERRIDDEN = 'overridden';
@@ -204,7 +206,8 @@ class CustomStyleCommand extends UICommand {
     // [FS] IRAD-1053 2020-10-22
     // Disable the Clear style menu when no styles applied to a paragraph
     return !(
-      'clearstyle' == menuTitle && NONE == this.isCustomStyleApplied(state)
+      'clearstyle' == menuTitle &&
+      RESERVED_STYLE_NONE == this.isCustomStyleApplied(state)
     );
   };
 
@@ -213,7 +216,7 @@ class CustomStyleCommand extends UICommand {
   isCustomStyleApplied(editorState: EditorState) {
     const {selection, doc} = editorState;
     const {from, to} = selection;
-    let customStyleName = NONE;
+    let customStyleName = RESERVED_STYLE_NONE;
     doc.nodesBetween(from, to, (node, pos) => {
       if (node.attrs.styleName) {
         customStyleName = node.attrs.styleName;
@@ -241,7 +244,7 @@ class CustomStyleCommand extends UICommand {
     // to remove the custom styles applied in the selected paragraph
     else if (
       'clearstyle' === this._customStyle ||
-      'None' === this._customStyle
+      RESERVED_STYLE_NONE === this._customStyle
     ) {
       tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
       tr = removeTextAlignAndLineSpacing(tr, state.schema);
@@ -272,7 +275,7 @@ class CustomStyleCommand extends UICommand {
   clearCustomStyles(tr, editorState: EditorState) {
     const {selection, doc} = editorState;
     const {from, to} = selection;
-    let customStyleName = NONE;
+    let customStyleName = RESERVED_STYLE_NONE;
     doc.nodesBetween(from, to, (node, pos) => {
       if (node.attrs.styleName) {
         customStyleName = node.attrs.styleName;
@@ -605,21 +608,11 @@ function applyStyleEx(
     }
   });
 
-  if (styleProp.styles && styleProp.styles.hasNumbering) {
-    newattrs['styleLevel'] = Number(styleProp.styles.styleLevel);
-    // newattrs['customStyle'] = {
-    //   strong: style[STRONG],
-    //   em: style[EM],
-    //   color: style[COLOR],
-    //   fontSize: style[FONTSIZE],
-    //   fontName: style[FONTNAME],
-    //   strike: style[STRIKE],
-    //   underline: style[UNDERLINE],
-    //   boldNumbering: style['boldNumbering'],
-    // };
-  } else {
-    newattrs['styleLevel'] = null;
-  }
+  // if (styleProp.styles && styleProp.styles.hasNumbering) {
+  //   newattrs['styleLevel'] = Number(styleProp.styles.styleLevel);
+  // } else {
+  //   newattrs['styleLevel'] = null;
+  // }
   // to set custom styleName attribute for node
   newattrs['styleName'] = styleName;
   tr = applyLineStyle(node, styleProp.styles, state, tr, startPos, endPos);
@@ -638,7 +631,8 @@ function createEmptyElement(
   endPos: number,
   attrs
 ) {
-  const currentLevel = node.attrs.styleLevel;
+  const styleProps = getCustomStyleByName(node.attrs.styleName);
+  const currentLevel = getStyleLevel(node.attrs.styleName);
   let previousLevel = null;
   let levelDiff = 0;
   let nextLevel = null;
@@ -662,36 +656,29 @@ function createEmptyElement(
 
     nodesBeforeSelection.reverse();
     nodesBeforeSelection.every((item) => {
-      const styleProp = getCustomStyleByName(item.node.attrs.styleName);
-      if (
-        styleProp &&
-        styleProp.styles.styleLevel &&
-        styleProp.styles.hasNumbering
-      ) {
-        previousLevel = styleProp.styles.styleLevel;
-        return false;
-      }
-      return true;
+      previousLevel = getStyleLevel(item.node.attrs.styleName);
+      return previousLevel === 0 ? true : false;
     });
+    if (null !== styleProps) {
+      if (null === previousLevel && null == currentLevel) {
+        if (styleProps.styles.styleLevel !== 1) {
+          tr = addElement(attrs, state, tr, startPos, null);
+        }
+      } else {
+        levelDiff = previousLevel
+          ? styleProps.styles.styleLevel - previousLevel
+          : styleProps.styles.styleLevel;
 
-    if (null === previousLevel && null == currentLevel) {
-      if (attrs.styleLevel !== 1) {
-        tr = addElement(attrs, state, tr, startPos, null);
-      }
-    } else {
-      levelDiff = previousLevel
-        ? attrs.styleLevel - previousLevel
-        : attrs.styleLevel;
-
-      if (levelDiff > 1) {
-        tr = addElement(attrs, state, tr, startPos, previousLevel);
-      }
-      if (levelDiff < 0) {
-        tr = addElement(attrs, state, tr, startPos, previousLevel);
+        if (levelDiff > 1) {
+          tr = addElement(attrs, state, tr, startPos, previousLevel);
+        }
+        if (levelDiff < 0) {
+          tr = addElement(attrs, state, tr, startPos, previousLevel);
+        }
       }
     }
   } else {
-    if (attrs.styleLevel !== 1) {
+    if (null !== styleProps && styleProps.styles.styleLevel !== 1) {
       tr = addElement(attrs, state, tr, startPos, null);
     }
   }
@@ -701,9 +688,11 @@ function createEmptyElement(
     // dynamically through transactions the node position  get affected,
     // so depending on state doc nodes' positions is incorrect.
     tr.doc.nodesBetween(endPos, docSize, (node, pos) => {
+      const styleProp = getCustomStyleByName(node.attrs.styleName);
       if (
         isAllowedNode(node) &&
-        node.attrs.styleLevel &&
+        null !== styleProp &&
+        styleProp.styles.styleLevel &&
         null === nodesAfterSelection
       ) {
         nodesAfterSelection = node;
@@ -713,20 +702,32 @@ function createEmptyElement(
     });
   }
   if (null !== nodesAfterSelection) {
-    const selectedLevel = attrs.styleLevel ? attrs.styleLevel : 0;
-    nextLevel = nodesAfterSelection.attrs.styleLevel;
-    levelDiff = nextLevel - selectedLevel;
-    if (nextLevel === attrs.styleLevel || levelDiff === 1) {
-      return tr;
-    } else {
-      tr = addElementAfter(attrs, state, tr, endPos, nextLevel);
+    const styleProps = getCustomStyleByName(attrs.styleName);
+    const nodesAfterSelectionStyle = getCustomStyleByName(
+      nodesAfterSelection.attrs.styleName
+    );
+    if (null !== styleProps) {
+      const selectedLevel = styleProps.styles.styleLevel
+        ? styleProps.styles.styleLevel
+        : 0;
+      nextLevel = nodesAfterSelectionStyle.styles.styleLevel;
+      levelDiff = nextLevel - selectedLevel;
+      if (nextLevel === styleProps.styles.styleLevel || levelDiff === 1) {
+        return tr;
+      } else {
+        tr = addElementAfter(attrs, state, tr, endPos, nextLevel);
+      }
     }
   }
   return tr;
 }
 
 function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
-  const level = nodeAttrs.styleLevel ? nodeAttrs.styleLevel - 1 : 0;
+  const styleProps = getCustomStyleByName(nodeAttrs.styleName);
+  const level =
+    null !== styleProps && styleProps.styles.styleLevel
+      ? styleProps.styles.styleLevel - 1
+      : 0;
   const counter = previousLevel ? previousLevel : 0;
 
   const paragraph = state.schema.nodes[PARAGRAPH];
@@ -741,22 +742,40 @@ function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
   return tr;
 }
 
+function getStyleLevel(styleName) {
+  let styleLevel = 0;
+  const styleProp = getCustomStyleByName(styleName);
+  if (
+    null !== styleProp &&
+    styleProp.styles.styleLevel &&
+    styleProp.styles.hasNumbering
+  ) {
+    styleLevel = styleProp.styles.styleLevel;
+  } else {
+    if (styleName.includes(RESERVED_STYLE_NONE_NUMBERING)) {
+      const indices = styleName.split(RESERVED_STYLE_NONE_NUMBERING);
+
+      if (indices && 2 == indices.length) {
+        styleLevel = parseInt(indices[1]);
+      }
+    }
+  }
+  return styleLevel;
+}
+
 function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
-  const counter = nodeAttrs.styleLevel ? nodeAttrs.styleLevel : 1;
+  const styleProps = getCustomStyleByName(nodeAttrs.styleName);
+  const counter = styleProps ? styleProps.styles.styleLevel : 1;
   const level = nextLevel ? nextLevel - 1 : 0;
 
   const paragraph = state.schema.nodes[PARAGRAPH];
   for (let index = level; index > counter; index--) {
-    nodeAttrs.styleLevel = index;
-    nodeAttrs.styleName = 'None';
-    nodeAttrs.customStyle = null;
+    nodeAttrs.styleName = RESERVED_STYLE_NONE;
     const paragraphNode = paragraph.create(nodeAttrs, null, null);
     tr = tr.insert(startPos, Fragment.from(paragraphNode));
   }
   if (level === counter) {
-    nodeAttrs.styleLevel = 1;
-    nodeAttrs.styleName = 'None';
-    nodeAttrs.customStyle = null;
+    nodeAttrs.styleName = RESERVED_STYLE_NONE;
     const paragraphNode = paragraph.create(nodeAttrs, null, null);
     tr = tr.insert(startPos, Fragment.from(paragraphNode));
   }

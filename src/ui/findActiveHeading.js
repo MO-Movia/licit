@@ -1,7 +1,5 @@
 // @flow
 
-export const HEADING_NAME_DEFAULT = 'None';
-
 // [FS] IRAD-1046 2020-09-24
 // To create a style object from the customstyles to show the styles in the example piece.
 export function getCustomStyle(customStyle: any) {

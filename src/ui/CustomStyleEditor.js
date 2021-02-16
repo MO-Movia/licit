@@ -11,6 +11,7 @@ import {FONT_TYPE_NAMES} from '../FontTypeMarkSpec';
 import {getLineSpacingValue} from './toCSSLineSpacing';
 import {isCustomStyleExists} from '../customStyle';
 import {updateDocument} from '../CustomStyleCommand';
+import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
 
 let customStyles = [];
 
@@ -274,7 +275,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   }
   // handles Level drop down change
   onLevelChange(e: any) {
-    const val = 'None' === e.target.value ? null : e.target.value;
+    const val = RESERVED_STYLE_NONE === e.target.value ? null : e.target.value;
     this.setState({styles: {...this.state.styles, styleLevel: val}});
   }
 
@@ -1008,12 +1009,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   </label>
                 </div>
               </button>
-
-
-             <div className="panel3 formp">                
+             <div className="panel3 formp">
                 <p className="formp">Select style for next line:</p>
                 <div className="hierarchydiv">
-                  <div className="indentdiv">
+                  <div className="settingsdiv">
                     <input
                       checked={this.state.styles.nextLineStyle}
                       name="indenting"
@@ -1021,7 +1020,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       type="radio"
                       value="1"
                     />
-                    <div  style={{marginTop: '-3px'}}>
+                    {/* <div  style={{marginTop: '-3px'}}> */}
                     <label
                       style={{
                         marginLeft: '4px',
@@ -1031,9 +1030,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     >
                       Continue this style
                     </label>
-                    </div>
+                    {/* </div> */}
                   </div>
-                  <div className="indentdiv">
+                  <div className="settingsdiv">
                     <input
                       checked={this.state.styles.nextLineStyle}
                       name="indenting"
@@ -1044,7 +1043,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       type="radio"
                       value="0"
                     />
-                    <div  style={{marginTop: '-3px', marginLeft: '1px',}}>
+                    {/* <div  style={{marginTop: '-3px', marginLeft: '1px',}}> */}
                     <label
                       style={{
                         marginLeft: '4px',
@@ -1054,7 +1053,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     >
                       None
                     </label>
-                    </div>
+                    {/* </div> */}
                   </div>
                   <div className="indentdiv">
                     <input
@@ -1069,6 +1068,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         marginLeft: '4px',
                         marginTop: '3px',
                         marginBottom: '0',
+                        width:'62px'
                       }}
                     >
                       Select style
@@ -1078,7 +1078,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 className="stylenameinput fontstyle"
                 defaultValue={'DEFAULT'}
                 onChange={this.onSelectCustomStyle.bind(this)}
-                style={{height: '20px',width: '99px', marginLeft: '8px'}}
+                style={{height: '20px',width: '97px', marginLeft: '7px'}}
               >
                 <option disabled value="DEFAULT">
                   {' '}
@@ -1094,7 +1094,6 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   </div>
                 </div>
               </div>
-
 
             </div>
           </div>

@@ -50,7 +50,7 @@ const ParagraphNodeSpec: NodeSpec = {
       default: null,
     },
     styleName: {
-      default: 'None',
+      default: RESERVED_STYLE_NONE,
     },
   },
   content: 'inline*',
@@ -170,17 +170,14 @@ function getStyleEx(
       if (styleProps.styles.fontName) {
         style += `font-family: ${styleProps.styles.fontName};`;
       }
-	  
       styleLevel = parseInt(styleProps.styles.styleLevel);
-
       style += refreshCounters(styleLevel);
     }
   } else if (styleName.includes(RESERVED_STYLE_NONE_NUMBERING)){
-		const indices = styleName.split(RESERVED_STYLE_NONE_NUMBERING);		
+		const indices = styleName.split(RESERVED_STYLE_NONE_NUMBERING);
 		if(indices && 2 == indices.length) {
 			styleLevel = parseInt(indices[1]);
 		}
-		
 		if(styleLevel) {
 			style += refreshCounters(styleLevel);
 		}
@@ -200,7 +197,6 @@ function refreshCounters(styleLevel) {
   let latestCounters = '';
   let cssCounterReset = '';
   let setCounterReset = false;
-  
   // set style counters in window variables,
   // so that it is remapped later to add to document attribute via transaction.
   for (let index = 1; index <= styleLevel; index++) {

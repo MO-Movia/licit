@@ -6,15 +6,16 @@ import CustomStyleCommand from '../CustomStyleCommand';
 import * as React from 'react';
 import {EditorState} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
-import {HEADING_NAME_DEFAULT} from './findActiveHeading';
 import {Transform} from 'prosemirror-transform';
 import {Node} from 'prosemirror-model';
+import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
+
 
 // [FS] IRAD-1042 2020-09-09
 // To include custom styles in the toolbar
 
 let HEADING_COMMANDS: Object = {
-  [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
+  [RESERVED_STYLE_NONE]: new HeadingCommand(0),
 };
 
 class HeadingCommandMenuButton extends React.PureComponent<any, any> {
@@ -30,7 +31,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     HEADING_COMMANDS = {
       // [FS] IRAD-1074 2020-12-09
       // When apply 'None' from style menu, not clearing the applied custom style.
-      [HEADING_NAME_DEFAULT]: new CustomStyleCommand('None', 'None'),
+      [RESERVED_STYLE_NONE]: new CustomStyleCommand(RESERVED_STYLE_NONE, RESERVED_STYLE_NONE),
     };
     // Check runtime is avilable in editorview
     // Get styles form server configured in runtime
@@ -100,7 +101,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         ) {
           customStyleName = node.attrs.styleName;
         } else {
-          customStyleName = 'None';
+          customStyleName = RESERVED_STYLE_NONE;
         }
       }
     });
