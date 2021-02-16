@@ -197,6 +197,7 @@ function refreshCounters(styleLevel) {
   let latestCounters = '';
   let cssCounterReset = '';
   let setCounterReset = false;
+
   // set style counters in window variables,
   // so that it is remapped later to add to document attribute via transaction.
   for (let index = 1; index <= styleLevel; index++) {

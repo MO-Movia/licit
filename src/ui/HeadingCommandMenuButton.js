@@ -10,7 +10,6 @@ import {Transform} from 'prosemirror-transform';
 import {Node} from 'prosemirror-model';
 import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
 
-
 // [FS] IRAD-1042 2020-09-09
 // To include custom styles in the toolbar
 

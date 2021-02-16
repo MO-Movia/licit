@@ -10,7 +10,7 @@ import {Fragment, Schema} from 'prosemirror-model';
 import {MAX_INDENT_LEVEL, MIN_INDENT_LEVEL} from './ParagraphNodeSpec';
 import {Transform} from 'prosemirror-transform';
 import {getCustomStyleByLevel, getCustomStyleByName} from './customStyle';
-import {applyLatestStyle} from './CustomStyleCommand';
+import {applyLatestStyle, getStyleLevel} from './CustomStyleCommand';
 
 export default function updateIndentLevel(
   state: EditorState,
@@ -197,9 +197,9 @@ function setNodeIndentMarkup(
     (node.attrs.indent || 0) + delta,
     MAX_INDENT_LEVEL
   );
-  const styleProp = getCustomStyleByName(node.attrs.styleName);
-  if (null !== styleProp && styleProp.styles.styleLevel) {
-    const nextLevel = styleProp.styles.styleLevel + delta;
+  const styleLevel = getStyleLevel(node.attrs.styleName);
+  if (styleLevel) {
+    const nextLevel = styleLevel + delta;
     const startPos = tr.selection.$from.before(1);
     const endPos = tr.selection.$to.after(1);
     const style = getCustomStyleByLevel(nextLevel);

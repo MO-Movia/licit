@@ -608,11 +608,6 @@ function applyStyleEx(
     }
   });
 
-  // if (styleProp.styles && styleProp.styles.hasNumbering) {
-  //   newattrs['styleLevel'] = Number(styleProp.styles.styleLevel);
-  // } else {
-  //   newattrs['styleLevel'] = null;
-  // }
   // to set custom styleName attribute for node
   newattrs['styleName'] = styleName;
   tr = applyLineStyle(node, styleProp.styles, state, tr, startPos, endPos);
@@ -631,7 +626,7 @@ function createEmptyElement(
   endPos: number,
   attrs
 ) {
-  const styleProps = getCustomStyleByName(node.attrs.styleName);
+  const styleLevel = getStyleLevel(attrs.styleName);
   const currentLevel = getStyleLevel(node.attrs.styleName);
   let previousLevel = null;
   let levelDiff = 0;
@@ -659,26 +654,25 @@ function createEmptyElement(
       previousLevel = getStyleLevel(item.node.attrs.styleName);
       return previousLevel === 0 ? true : false;
     });
-    if (null !== styleProps) {
-      if (null === previousLevel && null == currentLevel) {
-        if (styleProps.styles.styleLevel !== 1) {
-          tr = addElement(attrs, state, tr, startPos, null);
-        }
-      } else {
-        levelDiff = previousLevel
-          ? styleProps.styles.styleLevel - previousLevel
-          : styleProps.styles.styleLevel;
 
-        if (levelDiff > 1) {
-          tr = addElement(attrs, state, tr, startPos, previousLevel);
-        }
-        if (levelDiff < 0) {
-          tr = addElement(attrs, state, tr, startPos, previousLevel);
-        }
+    if (null === previousLevel && null == currentLevel) {
+      if (styleLevel !== 1) {
+        tr = addElement(attrs, state, tr, startPos, null);
+      }
+    } else {
+      levelDiff = previousLevel
+        ? styleLevel - previousLevel
+        : styleLevel;
+
+      if (levelDiff > 1) {
+        tr = addElement(attrs, state, tr, startPos, previousLevel);
+      }
+      if (levelDiff < 0) {
+        tr = addElement(attrs, state, tr, startPos, previousLevel);
       }
     }
   } else {
-    if (null !== styleProps && styleProps.styles.styleLevel !== 1) {
+    if (styleLevel !== 1) {
       tr = addElement(attrs, state, tr, startPos, null);
     }
   }
@@ -688,11 +682,10 @@ function createEmptyElement(
     // dynamically through transactions the node position  get affected,
     // so depending on state doc nodes' positions is incorrect.
     tr.doc.nodesBetween(endPos, docSize, (node, pos) => {
-      const styleProp = getCustomStyleByName(node.attrs.styleName);
+      const nodeStyleLevel = getStyleLevel(node.attrs.styleName);
       if (
         isAllowedNode(node) &&
-        null !== styleProp &&
-        styleProp.styles.styleLevel &&
+        nodeStyleLevel &&
         null === nodesAfterSelection
       ) {
         nodesAfterSelection = node;
@@ -702,32 +695,21 @@ function createEmptyElement(
     });
   }
   if (null !== nodesAfterSelection) {
-    const styleProps = getCustomStyleByName(attrs.styleName);
-    const nodesAfterSelectionStyle = getCustomStyleByName(
-      nodesAfterSelection.attrs.styleName
-    );
-    if (null !== styleProps) {
-      const selectedLevel = styleProps.styles.styleLevel
-        ? styleProps.styles.styleLevel
-        : 0;
-      nextLevel = nodesAfterSelectionStyle.styles.styleLevel;
-      levelDiff = nextLevel - selectedLevel;
-      if (nextLevel === styleProps.styles.styleLevel || levelDiff === 1) {
-        return tr;
-      } else {
-        tr = addElementAfter(attrs, state, tr, endPos, nextLevel);
-      }
+    const selectedLevel = styleLevel;
+    nextLevel = getStyleLevel(nodesAfterSelection.attrs.styleName);
+    levelDiff = nextLevel - selectedLevel;
+    if (nextLevel === styleLevel || levelDiff === 1) {
+      return tr;
+    } else {
+      tr = addElementAfter(attrs, state, tr, endPos, nextLevel);
     }
   }
   return tr;
 }
 
 function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
-  const styleProps = getCustomStyleByName(nodeAttrs.styleName);
-  const level =
-    null !== styleProps && styleProps.styles.styleLevel
-      ? styleProps.styles.styleLevel - 1
-      : 0;
+  const styleLevel = getStyleLevel(nodeAttrs.styleName);
+  const level = styleLevel ? styleLevel - 1 : 0;
   const counter = previousLevel ? previousLevel : 0;
 
   const paragraph = state.schema.nodes[PARAGRAPH];
@@ -742,7 +724,7 @@ function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
   return tr;
 }
 
-function getStyleLevel(styleName) {
+export function getStyleLevel(styleName) {
   let styleLevel = 0;
   const styleProp = getCustomStyleByName(styleName);
   if (
@@ -764,18 +746,18 @@ function getStyleLevel(styleName) {
 }
 
 function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
-  const styleProps = getCustomStyleByName(nodeAttrs.styleName);
-  const counter = styleProps ? styleProps.styles.styleLevel : 1;
+  const styleLevel = getStyleLevel(nodeAttrs.styleName);
+  const counter = styleLevel ? styleLevel : 1;
   const level = nextLevel ? nextLevel - 1 : 0;
 
   const paragraph = state.schema.nodes[PARAGRAPH];
   for (let index = level; index > counter; index--) {
-    nodeAttrs.styleName = RESERVED_STYLE_NONE;
+    nodeAttrs.styleName = RESERVED_STYLE_NONE_NUMBERING + index;
     const paragraphNode = paragraph.create(nodeAttrs, null, null);
     tr = tr.insert(startPos, Fragment.from(paragraphNode));
   }
   if (level === counter) {
-    nodeAttrs.styleName = RESERVED_STYLE_NONE;
+    nodeAttrs.styleName = RESERVED_STYLE_NONE_NUMBERING + 1;
     const paragraphNode = paragraph.create(nodeAttrs, null, null);
     tr = tr.insert(startPos, Fragment.from(paragraphNode));
   }
