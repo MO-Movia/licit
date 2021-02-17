@@ -9,6 +9,8 @@ import { BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
 import { Fragment, Schema } from 'prosemirror-model';
 import { MAX_INDENT_LEVEL, MIN_INDENT_LEVEL } from './ParagraphNodeSpec';
 import { Transform } from 'prosemirror-transform';
+import { getCustomStyleByLevel } from './customStyle';
+import { applyLatestStyle } from './CustomStyleCommand';
 
 export default function updateIndentLevel(
   state: EditorState,
@@ -196,6 +198,16 @@ function setNodeIndentMarkup(
     MAX_INDENT_LEVEL
   );
 
+  if (node.attrs.styleLevel) {
+    const nextLevel = node.attrs.styleLevel + delta;
+    const startPos = tr.selection.$from.before(1);
+    const endPos = tr.selection.$to.after(1);
+    const style = getCustomStyleByLevel(nextLevel);
+    if (style) {
+      tr = applyLatestStyle(style.stylename, state, tr, node, startPos, endPos);
+    }
+    return tr;
+  }
   if (indent === node.attrs.indent) {
     return tr;
   }

@@ -1,10 +1,10 @@
 // @flow
 
 import applyDevTools from 'prosemirror-dev-tools';
-import { EditorState, TextSelection } from 'prosemirror-state';
-import { Node } from 'prosemirror-model';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState, TextSelection} from 'prosemirror-state';
+import {Node} from 'prosemirror-model';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
 
 import convertFromJSON from '../convertFromJSON';
@@ -13,10 +13,10 @@ import uuid from '../uuid';
 import LicitRuntime from './LicitRuntime';
 import SimpleConnector from './SimpleConnector';
 import CollabConnector from './CollabConnector';
-import { EMPTY_DOC_JSON } from '../createEmptyEditorState';
-import type { EditorRuntime } from '../Types';
+import {EMPTY_DOC_JSON} from '../createEmptyEditorState';
+import type {EditorRuntime} from '../Types';
 import createPopUp from '../ui/createPopUp';
-import { atViewportCenter } from '../ui/PopUpPosition';
+import {atViewportCenter} from '../ui/PopUpPosition';
 import AlertInfo from '../ui/AlertInfo';
 import {SetDocAttrStep} from '@modusoperandi/licit-doc-attrs-step';
 import './licit.css';
@@ -47,15 +47,21 @@ class Licit extends React.Component<any, any> {
 
   _popUp = null;
 
-  constructor(props: any, context: any) {
+  /**
+   * Provides access to prosemirror view.
+   */
+  get editorView(): EditorView {
+    return this._editorView;
+  }
 
+  constructor(props: any, context: any) {
     super(props, context);
 
     this._clientID = uuid();
     this._editorView = null;
     this._skipSCU = true;
 
-    const noop = function () { };
+    const noop = function () {};
 
     // [FS] IRAD-981 2020-06-10
     // Component's configurations.
@@ -65,15 +71,18 @@ class Licit extends React.Component<any, any> {
     // Default width and height to undefined
     const width = props.width || undefined;
     const height = props.height || undefined;
-    const onChangeCB = (typeof props.onChange === 'function') ? props.onChange : noop;
-    const onReadyCB = (typeof props.onReady === 'function') ? props.onReady : noop;
+    const onChangeCB =
+      typeof props.onChange === 'function' ? props.onChange : noop;
+    const onReadyCB =
+      typeof props.onReady === 'function' ? props.onReady : noop;
     const readOnly = props.readOnly || false;
     const data = props.data || null;
     const disabled = props.disabled || false;
-    const embedded = props.embedded || false;// [FS] IRAD-996 2020-06-30
+    const embedded = props.embedded || false; // [FS] IRAD-996 2020-06-30
     // [FS] 2020-07-03
     // Handle Image Upload from Angular App
     const runtime = props.runtime ? props.runtime : new LicitRuntime();
+    //const runtime = null;
     const plugins = props.plugins || null;
     let editorState = convertFromJSON(data, null, plugins);
     // [FS] IRAD-1067 2020-09-19
@@ -85,7 +94,7 @@ class Licit extends React.Component<any, any> {
 
     const setState = this.setState.bind(this);
     this._connector = collaborative
-      ? new CollabConnector(editorState, setState, { docID })
+      ? new CollabConnector(editorState, setState, {docID})
       : new SimpleConnector(editorState, setState);
 
     // FS IRAD-989 2020-18-06
@@ -102,7 +111,7 @@ class Licit extends React.Component<any, any> {
       debug,
       disabled,
       embedded,
-      runtime
+      runtime,
     };
     // FS IRAD-1040 2020-26-08
     // Get the modified schema from editorstate and send it to collab server
@@ -118,7 +127,7 @@ class Licit extends React.Component<any, any> {
     this._popUp = createPopUp(AlertInfo, null, {
       anchor,
       position: atViewportCenter,
-      onClose: val => {
+      onClose: (val) => {
         if (this._popUp) {
           this._popUp = null;
         }
@@ -132,13 +141,13 @@ class Licit extends React.Component<any, any> {
     }
   }
 
-  isNodeHasAttribute (node: Node, attrName: string)  {
+  isNodeHasAttribute(node: Node, attrName: string) {
     return node.attrs && node.attrs[attrName];
   }
 
   setContent = (content: any = {}): void => {
-    const { doc, schema } = this._connector.getState();
-    let { tr } = this._connector.getState();
+    const {doc, schema} = this._connector.getState();
+    let {tr} = this._connector.getState();
     const document = content
       ? schema.nodeFromJSON(content)
       : schema.nodeFromJSON(EMPTY_DOC_JSON);
@@ -148,12 +157,18 @@ class Licit extends React.Component<any, any> {
     tr = tr.setSelection(selection).replaceSelectionWith(document, false);
     // [FS] IRAD-1092 2020-12-03
     // set the value for object metadata  and objectId
-    tr = this.isNodeHasAttribute(document,ATTR_OBJMETADATA)?tr.step(new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)) : tr;
-    tr = this.isNodeHasAttribute(document,ATTR_OBJID)?tr.step(new SetDocAttrStep(ATTR_OBJID, document.attrs.objectId)) : tr;
+    tr = this.isNodeHasAttribute(document, ATTR_OBJMETADATA)
+      ? tr.step(
+          new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)
+        )
+      : tr;
+    tr = this.isNodeHasAttribute(document, ATTR_OBJID)
+      ? tr.step(new SetDocAttrStep(ATTR_OBJID, document.attrs.objectId))
+      : tr;
 
     this._skipSCU = true;
     this._editorView.dispatch(tr);
-  }
+  };
 
   shouldComponentUpdate(nextProps: any, nextState: any) {
     // Only interested if properties are set from outside.
@@ -180,13 +195,13 @@ class Licit extends React.Component<any, any> {
 
       if (this.state.docID !== nextState.docID) {
         // Collaborative mode changed
-        const collabEditing = (nextState.docID != 0);
+        const collabEditing = nextState.docID != 0;
         const editorState = this._connector.getState();
         const setState = this.setState.bind(this);
         const docID = nextState.docID || 1;
         // create new connector
         this._connector = collabEditing
-          ? new CollabConnector(editorState, setState, { docID })
+          ? new CollabConnector(editorState, setState, {docID})
           : new SimpleConnector(editorState, setState);
       }
     }
@@ -195,7 +210,15 @@ class Licit extends React.Component<any, any> {
   }
 
   render(): React.Element<any> {
-    const { editorState, width, height, readOnly, disabled, embedded, runtime } = this.state;
+    const {
+      editorState,
+      width,
+      height,
+      readOnly,
+      disabled,
+      embedded,
+      runtime,
+    } = this.state;
     // [FS] IRAD-978 2020-06-05
     // Using 100vw & 100vh (100% viewport) is not ideal for a component which is expected to be a part of a page,
     // so changing it to 100%  width & height which will occupy the area relative to its parent.
@@ -214,25 +237,29 @@ class Licit extends React.Component<any, any> {
     );
   }
 
-  _onChange = (data: { state: EditorState, transaction: Transform }): void => {
-    const { transaction } = data;
+  _onChange = (data: {state: EditorState, transaction: Transform}): void => {
+    const {transaction} = data;
     let isEmpty = false;
-     /*
-    ** ProseMirror Debug Tool's Snapshot creates a new state and sets that to editor view's state.
-    ** This results in the connector's state as an orphan and thus transaction mismatch error.
-    ** To resolve check and update the connector's state to keep in sync.
-    */
-    const isSameState = (this._connector._editorState == this._editorView.state);
+    /*
+     ** ProseMirror Debug Tool's Snapshot creates a new state and sets that to editor view's state.
+     ** This results in the connector's state as an orphan and thus transaction mismatch error.
+     ** To resolve check and update the connector's state to keep in sync.
+     */
+    const isSameState = this._connector._editorState == this._editorView.state;
 
-    if(!isSameState) {
-    this._connector._editorState = this._editorView.state;
+    if (!isSameState) {
+      this._connector._editorState = this._editorView.state;
     }
 
     this._connector.onEdit(transaction);
     if (transaction.docChanged) {
       const docJson = transaction.doc.toJSON();
       if (docJson.content && docJson.content.length === 1) {
-        if (docJson.content[0].content && docJson.content[0].content[0].text && '' === docJson.content[0].content[0].text.trim()) {
+        if (
+          docJson.content[0].content &&
+          docJson.content[0].content[0].text &&
+          '' === docJson.content[0].content[0].text.trim()
+        ) {
           isEmpty = true;
         }
       }
@@ -243,7 +270,7 @@ class Licit extends React.Component<any, any> {
   _onReady = (editorView: EditorView): void => {
     // [FS][06-APR-2020][IRAD-922]
     // Showing focus in the editor.
-    const { state, dispatch } = editorView;
+    const {state, dispatch} = editorView;
     this._editorView = editorView;
     const tr = state.tr;
     const doc = state.doc;
@@ -263,20 +290,20 @@ class Licit extends React.Component<any, any> {
   };
 
   /**
-  * LICIT properties:
-  *  docID {number} [0] Collaborative Doument ID
-  *  debug {boolean} [false] To enable/disable ProseMirror Debug Tools, available only in development.
-  *  width {string} [100%] Width of the editor.
-  *  height {height} [100%] Height of the editor.
-  *  readOnly {boolean} [false] To enable/disable editing mode.
-  *  onChange {@callback} [null] Fires after each significant change.
-  *      @param data {JSON} Modified document data.
-  *  onReady {@callback} [null] Fires when the editor is fully ready.
-  *      @param ref {LICIT} Rerefence of the editor.
-  *  data {JSON} [null] Document data to be loaded into the editor.
-  *  disabled {boolean} [false] Disable the editor.
-  *  embedded {boolean} [false] Disable/Enable inline behaviour.
-  */
+   * LICIT properties:
+   *  docID {number} [0] Collaborative Doument ID
+   *  debug {boolean} [false] To enable/disable ProseMirror Debug Tools, available only in development.
+   *  width {string} [100%] Width of the editor.
+   *  height {height} [100%] Height of the editor.
+   *  readOnly {boolean} [false] To enable/disable editing mode.
+   *  onChange {@callback} [null] Fires after each significant change.
+   *      @param data {JSON} Modified document data.
+   *  onReady {@callback} [null] Fires when the editor is fully ready.
+   *      @param ref {LICIT} Rerefence of the editor.
+   *  data {JSON} [null] Document data to be loaded into the editor.
+   *  disabled {boolean} [false] Disable the editor.
+   *  embedded {boolean} [false] Disable/Enable inline behaviour.
+   */
   setProps = (props: any): void => {
     if (this.state.readOnly) {
       // It should be possible to load content into the editor in readonly as well.

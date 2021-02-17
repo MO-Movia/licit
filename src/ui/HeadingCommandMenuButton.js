@@ -23,7 +23,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     editorState: EditorState,
     editorView: ?EditorView,
   };
-
+  hasRuntime: boolean = true;
   //[FS] IRAD-1085 2020-10-09
   //method to build commands for list buttons
   getCommandGroups() {
@@ -37,7 +37,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     if (
       this.props.editorView &&
       this.props.editorView.runtime &&
-      this.props.editorView.runtime.getStylesAsync()
+      typeof this.props.editorView.runtime.getStylesAsync === 'function'
     ) {
       const customStyles = this.props.editorView.runtime.getStylesAsync();
       let HEADING_NAMES = null;
@@ -54,6 +54,9 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         }
         return [HEADING_COMMANDS];
       });
+      this.hasRuntime = true;
+    } else {
+      this.hasRuntime = false;
     }
     return [HEADING_COMMANDS];
   }
@@ -61,6 +64,12 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     const MENU_COMMANDS: Object = {
       ['newstyle']: new CustomStyleCommand('newstyle', 'New Style..'),
     };
+    // [FS] IRAD-1176 2021-02-08
+    // Added a menu "Edit All" for Edit All custom styles
+    MENU_COMMANDS['editall'] = new CustomStyleCommand(
+      'editall',
+      'Edit All'
+    );
     MENU_COMMANDS['clearstyle'] = new CustomStyleCommand(
       'clearstyle',
       'Clear Style'
@@ -102,7 +111,9 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         // [FS] IRAD-1008 2020-07-16
         // Disable font type menu on editor disable state
         commandGroups={this.getCommandGroups()}
-        disabled={editorView && editorView.disabled ? true : false}
+        disabled={
+          (editorView && editorView.disabled) || !this.hasRuntime ? true : false
+        }
         dispatch={dispatch}
         editorState={editorState}
         editorView={editorView}

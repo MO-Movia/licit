@@ -1,7 +1,6 @@
 // @flow
 // [FS] IRAD-1085 2020-10-09
-// Handle custom style in local storage
-
+import type {StyleProps} from './Types';
 let customStyles = [];
 
 // [FS] IRAD-1137 2021-01-15
@@ -21,12 +20,14 @@ export function isCustomStyleExists(styleName) {
 
 // [FS] IRAD-1128 2020-12-30
 // get a style by styleName
-export function getCustomStyleByName(name: string) {
-  let style = null;
+export function getCustomStyleByName(name: string): StyleProps {
+  let style: StyleProps = null;
+  let has = false;
   if (customStyles.length > 0) {
-    for (const obj of customStyles) {
-      if (name === obj.styleName) {
-        style = obj.styles;
+    for (let i = 0; !has && i < customStyles.length; i++) {
+      if (name === customStyles[i].styleName) {
+        style = customStyles[i];
+        has = true;
       }
     }
   }
@@ -45,6 +46,7 @@ export function getCustomStyleByLevel(level: Number) {
       if (obj.styles.styleLevel && level === Number(obj.styles.styleLevel)) {
         if (null === style) {
           style = obj;
+          return style;
         }
       }
     }

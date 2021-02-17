@@ -11,7 +11,7 @@ import CustomStyleItem from './CustomStyleItem';
 import createPopUp from './createPopUp';
 import CustomStyleSubMenu from './CustomStyleSubMenu';
 import CustomStyleEditor from './CustomStyleEditor';
-import {applyLatestStyle} from '../CustomStyleCommand';
+import {applyLatestStyle, updateDocument} from '../CustomStyleCommand';
 import {atViewportCenter} from './PopUpPosition';
 import {setTextAlign} from '../TextAlignCommand';
 import {setTextLineSpacing} from '../TextLineSpacingCommand';
@@ -278,7 +278,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
         mode: mode, //edit
         description: command._customStyle.description,
         styles: command._customStyle.styles,
-        runtime: this.props.editorView.runtime,
+        editorView: this.props.editorView,
       },
       {
         position: atViewportCenter,
@@ -295,7 +295,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
               delete val.runtime;
               if (1 === mode) {
                 // update
-                customStyles = runtime.saveStyle(val);
+                delete val.editorView;
+                customStyles = runtime.saveStyle(val).then((result) => {
+                });
               } else {
                 // rename
                 customStyles = runtime.renameStyle(
@@ -303,7 +305,6 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                   val.styleName
                 );
               }
-
               // [FS] IRAD-1133 2021-01-06
               // Issue fix: After modify a custom style, the modified style not applied to the paragraph.
               customStyles.then((result) => {
@@ -312,7 +313,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                   result.forEach((obj) => {
                     if (1 === mode) {
                       if (val.styleName === obj.styleName) {
-                        tr = this.updateDocument(
+                        tr = updateDocument(
                           this.props.editorState,
                           this.props.editorState.tr,
                           val.styleName,
@@ -372,33 +373,6 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     });
     return tr;
   }
-
-  updateDocument(state: EditorState, tr: Transform, styleName, style) {
-    const {doc} = state;
-    doc.descendants(function (child, pos) {
-      const contentLen = child.content.size;
-      if (haveEligibleChildren(child, contentLen, styleName)) {
-        tr = applyLatestStyle(
-          child.attrs.styleName,
-          state,
-          tr,
-          child,
-          pos,
-          pos + contentLen + 1,
-          style
-        );
-      }
-    });
-    return tr;
-  }
-}
-
-function haveEligibleChildren(node, contentLen, styleName) {
-  return (
-    node.type.name === 'paragraph' &&
-    0 < contentLen &&
-    styleName === node.attrs.styleName
-  );
 }
 
 export default CustomMenuUI;

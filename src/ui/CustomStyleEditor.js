@@ -10,6 +10,7 @@ import {FONT_PT_SIZES} from './FontSizeCommandMenuButton';
 import {FONT_TYPE_NAMES} from '../FontTypeMarkSpec';
 import {getLineSpacingValue} from './toCSSLineSpacing';
 import {isCustomStyleExists} from '../customStyle';
+import {updateDocument} from '../CustomStyleCommand';
 
 let customStyles = [];
 
@@ -49,8 +50,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       this.state.styles.boldNumbering = true;
       this.state.styles.boldSentence = true;
     }
-    if (props.runtime && props.runtime.getStylesAsync()) {
-      props.runtime.getStylesAsync().then((result) => {
+    if (
+      props.editorView.runtime &&
+      typeof props.editorView.runtime.getStylesAsync === 'function'
+    ) {
+      props.editorView.runtime.getStylesAsync().then((result) => {
         customStyles = result;
       });
     }
@@ -289,7 +293,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     if (null !== customStyles) {
       const value = customStyles.find((u) => u.styleName === e.target.value);
       // FIX: not able to modify and save the populated style
-      value.mode = 1;
+      value.mode = 3;
       this.state = {
         ...value,
       };
@@ -386,23 +390,29 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         </div>
         <div className="customedit-body">
           <div className="sectiondiv">
-            <p className="formp">Styles:</p>
-            <select
-              className="stylenameinput fontstyle"
-              defaultValue={'DEFAULT'}
-              onChange={this.onSelectCustomStyle.bind(this)}
-              style={{height: '24px'}}
+            <div
+              style={
+                3 > this.props.mode ? {display: 'none'} : {display: 'block'}
+              }
             >
-              <option disabled value="DEFAULT">
-                {' '}
-                -- select a style --{' '}
-              </option>
-              {customStyles.map((style) => (
-                <option key={style.styleName} value={style.style}>
-                  {style.styleName}
+              <p className="formp">Styles:</p>
+              <select
+                className="stylenameinput fontstyle"
+                defaultValue={'DEFAULT'}
+                onChange={this.onSelectCustomStyle.bind(this)}
+                style={{height: '24px'}}
+              >
+                <option disabled value="DEFAULT">
+                  {' '}
+                  -- select a style --{' '}
                 </option>
-              ))}
-            </select>
+                {customStyles.map((style) => (
+                  <option key={style.styleName} value={style.style}>
+                    {style.styleName}
+                  </option>
+                ))}
+              </select>
+            </div>
             <p className="formp">
               Style Name:{' '}
               <span id="errormsg" style={{display: 'none', color: 'red'}}>
@@ -418,7 +428,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 key="name"
                 onChange={this.onStyleClick.bind(this, 'name')}
                 type="text"
-                value={this.state.styleName}
+                value={this.state.styleName|| ''}
               />
             </span>
             <p className="formp">Description:</p>
@@ -428,12 +438,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 key="description"
                 onChange={this.onStyleClick.bind(this, 'description')}
                 type="text"
-                value={this.state.description}
+                value={this.state.description || ''}
               />
             </span>
 
             <p className="formp">Preview:</p>
-            <div className="textareadiv" name="body">
+            <div
+              className="textareadiv"
+              name="body"
+              style={
+                3 == this.props.mode ? {height: '164px'} : {height: '215px'}
+              }
+            >
               <div className="sampletext">
                 Paragraph Paragraph Paragraph Paragraph Paragraph Paragraph
                 Paragraph Paragraph Paragraph Paragraph
@@ -503,7 +519,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <select
                     className="fonttype fontstyle"
                     onChange={this.onFontNameChange.bind(this)}
-                    value={this.state.styles.fontName}
+                    value={this.state.styles.fontName || ''}
                   >
                     {FONT_TYPE_NAMES.map((value) => (
                       <option key={value} value={value}>
@@ -514,7 +530,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <select
                     className="fontsize fontstyle"
                     onChange={this.onFontSizeChange.bind(this)}
-                    value={this.state.styles.fontSize}
+                    value={this.state.styles.fontSize  || ''}
                   >
                     {FONT_PT_SIZES.map((value) => (
                       <option key={value} value={value}>
@@ -689,7 +705,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       disabled={this.state.styles.boldPartial ? false : true}
                       name="boldscentence"
                       onChange={this.onScentenceRadioChanged.bind(this)}
-                      style={{marginLeft: '21px'}}
+                      style={{marginLeft: '81px'}}
                       type="radio"
                       value="1"
                     />
@@ -824,7 +840,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 <select
                   className="linespacing fontstyle"
                   onChange={this.onLineSpaceChange.bind(this)}
-                  value={this.state.styles.lineHeight}
+                  value={this.state.styles.lineHeight || ''}
                 >
                   {LINE_SPACE.map((value) => (
                     <option key={value} value={value}>
@@ -842,7 +858,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       key="before"
                       onChange={this.onStyleClick.bind(this, 'before')}
                       type="text"
-                      value={this.state.styles.paragraphSpacingBefore}
+                      value={this.state.styles.paragraphSpacingBefore || ''}
                     />
                   </span>
                   <label style={{marginLeft: '3px'}}> pts</label>
@@ -854,7 +870,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       key="after"
                       onChange={this.onStyleClick.bind(this, 'after')}
                       type="text"
-                      value={this.state.styles.paragraphSpacingAfter}
+                      value={this.state.styles.paragraphSpacingAfter || ''}
                     />
                   </span>
                   <label style={{marginLeft: '3px'}}>pts</label>
@@ -884,7 +900,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       className="leveltype fontstyle"
                       id="levelValue"
                       onChange={this.onLevelChange.bind(this)}
-                      value={this.state.styles.styleLevel}
+                      value={this.state.styles.styleLevel || ''}
                     >
                       {LEVEL_VALUES.map((value) => (
                         <option key={value} value={value}>
@@ -957,7 +973,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         className="leveltype specifiedindent fontstyle"
                         onChange={this.onIndentChange.bind(this)}
                         style={{width: '99px !important'}}
-                        value={this.state.styles.indent}
+                        value={this.state.styles.indent  || ''}
                       >
                         {LEVEL_VALUES.map((value) => (
                           <option key={value} value={value}>
@@ -974,7 +990,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         </div>
         <div className="btns">
           <button className="buttonstyle" onClick={this._cancel}>
-            Cancel
+          {this.state.mode == 3 ? 'Close' : 'Cancel'}
           </button>
           <button
             className="btnsave buttonstyle"
@@ -990,17 +1006,54 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   _cancel = (): void => {
     this.props.close();
   };
+
   _save = (): void => {
     // [FS] IRAD-1137 2021-01-15
     // FIX: able to save a custom style name with already exist style name
     if (0 === this.state.mode && isCustomStyleExists(this.state.styleName)) {
       document.getElementById('errormsg').style.display = '';
+
+      // [FS] IRAD-1176 2021-02-08
+      // save the custom styles from Edit all option.
+    } else if (3 === this.state.mode) {
+      this.modifyCustomStyle(this.state);
     } else {
       if ('' != this.state.styleName) {
         this.props.close(this.state);
       }
     }
   };
+
+  // [FS] IRAD-1176 2021-02-08
+  // save the custom styles from Edit all option.
+  modifyCustomStyle(val) {
+    const {dispatch, runtime} = this.props.editorView;
+    let customStyles;
+    if (runtime && typeof runtime.saveStyle === 'function') {
+      delete val.editorView;
+      runtime.saveStyle(val).then((result) => {
+        customStyles = result;
+        customStyles.then((result) => {
+          if (null != result) {
+            let tr;
+            result.forEach((obj) => {
+              if (val.styleName === obj.styleName) {
+                tr = updateDocument(
+                  this.props.editorState,
+                  this.props.editorState.tr,
+                  val.styleName,
+                  obj.styles
+                );
+              }
+            });
+            if (tr) {
+              dispatch(tr);
+            }
+          }
+        });
+      });
+    }
+  }
 }
 
 export default CustomStyleEditor;

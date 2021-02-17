@@ -234,7 +234,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
           nextNode.attrs.styleName === 'None'
         ) {
           const style = getCustomStyleByName(newattrs.styleName);
-          if (null !== style && !style.boldPartial) {
+          if (null !== style) {
             tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
             const marks = getMarkByStyleName(
               node.attrs[ATTR_STYLE_NAME],
@@ -427,12 +427,18 @@ function applyLineStyle(prevState, nextState, tr) {
     const {pos, node} = para;
     // Check styleName is available for node
     if (node.attrs && node.attrs.styleName) {
-      const style = getCustomStyleByName(node.attrs.styleName);
-      if (null !== style && style.boldPartial) {
+      const styleProp = getCustomStyleByName(node.attrs.styleName);
+      if (null !== styleProp && styleProp.styles.boldPartial) {
         if (!tr) {
           tr = nextState.tr;
         }
-        tr = addMarksToLine(tr, nextState, node, pos, style.boldSentence);
+        tr = addMarksToLine(
+          tr,
+          nextState,
+          node,
+          pos,
+          styleProp.styles.boldSentence
+        );
       }
     }
   }
