@@ -109,7 +109,7 @@ export type EditorRuntime = {
    * Remove an existing style from the service.
    * @param name
    */
-  removeStyle: (name: string) => boolean,
+  removeStyle: (name: string) => Promise<StyleProps[]>,
 };
 
 export type EditorState = any;

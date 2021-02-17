@@ -327,7 +327,6 @@ class CustomStyleCommand extends UICommand {
               ) {
                 delete val.editorView;
                 view.runtime.saveStyle(val).then((result) => {
-                  console.log(result);
                 });
               }
               tr = tr.setSelection(TextSelection.create(doc, 0, 0));

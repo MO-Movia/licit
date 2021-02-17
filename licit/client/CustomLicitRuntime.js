@@ -56,7 +56,7 @@ class CustomLicitRuntime {
             height: 0,
             src: '',
           };
-          resolve(img);
+          reject(img);
         }
       );
     });
@@ -76,7 +76,7 @@ class CustomLicitRuntime {
       );
       // Refresh from server after save
       this.styleProps = this.fetchStyles();
-      return this.styleProps;
+      resolve(this.styleProps);
     });
   }
 
@@ -107,9 +107,11 @@ class CustomLicitRuntime {
         (data) => {
           // Refresh from server after rename
           this.styleProps = this.fetchStyles();
-          return this.styleProps;
+          resolve(this.styleProps);
         },
-        (err) => {}
+        (err) => {
+          reject(null);
+        }
       );
     });
   }
@@ -127,7 +129,7 @@ class CustomLicitRuntime {
       );
       // Refresh from server after remove
       this.styleProps = this.fetchStyles();
-      return this.styleProps;
+      resolve(this.styleProps);
     });
   }
 
@@ -141,12 +143,11 @@ class CustomLicitRuntime {
       GET(url).then(
         (data) => {
           const style = JSON.parse(data);
-          resolve(style);
           this.customStyles = style;
-          setStyle(style);
+          resolve(setStyle(style));
         },
         (err) => {
-          resolve(null);
+          reject(null);
         }
       );
     });
