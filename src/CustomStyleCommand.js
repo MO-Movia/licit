@@ -660,9 +660,7 @@ function createEmptyElement(
         tr = addElement(attrs, state, tr, startPos, null);
       }
     } else {
-      levelDiff = previousLevel
-        ? styleLevel - previousLevel
-        : styleLevel;
+      levelDiff = previousLevel ? styleLevel - previousLevel : styleLevel;
 
       if (levelDiff > 1) {
         tr = addElement(attrs, state, tr, startPos, previousLevel);
@@ -682,16 +680,16 @@ function createEmptyElement(
     // dynamically through transactions the node position  get affected,
     // so depending on state doc nodes' positions is incorrect.
     tr.doc.nodesBetween(endPos, docSize, (node, pos) => {
-      const nodeStyleLevel = getStyleLevel(node.attrs.styleName);
-      if (
-        isAllowedNode(node) &&
-        nodeStyleLevel &&
-        null === nodesAfterSelection
-      ) {
-        nodesAfterSelection = node;
-        return false;
+      let met = true;
+      if (isAllowedNode(node)) {
+        const nodeStyleLevel = getStyleLevel(node.attrs.styleName);
+        if (nodeStyleLevel && null === nodesAfterSelection) {
+          nodesAfterSelection = node;
+          met = false;
+        }
       }
-      return true;
+
+      return met;
     });
   }
   if (null !== nodesAfterSelection) {
