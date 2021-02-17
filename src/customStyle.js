@@ -30,10 +30,13 @@ export function isCustomStyleExists(styleName) {
 // get a style by styleName
 export function getCustomStyleByName(name: string): StyleProps {
   let style: StyleProps = null;
+  let has = false;
   if (isValidStyleName(name)) {
-    for (const obj of customStyles) {
-      if (name === obj.styleName) {
-        style = obj;
+    // break the loop if find any matches
+    for (let i = 0; !has && i < customStyles.length; i++) {
+      if (name === customStyles[i].styleName) {
+        style = customStyles[i];
+        has = true;
       }
     }
   }
@@ -52,6 +55,7 @@ export function getCustomStyleByLevel(level: Number) {
       if (obj.styles.styleLevel && level === Number(obj.styles.styleLevel)) {
         if (null === style) {
           style = obj;
+          return style;
         }
       }
     }

@@ -71,7 +71,7 @@ function getAttrs(dom: HTMLElement): Object {
     marginLeft,
     paddingTop,
     paddingBottom,
-    marginBottom,
+    // marginBottom,
   } = dom.style;
 
   let align = dom.getAttribute('align') || textAlign || '';
@@ -86,7 +86,7 @@ function getAttrs(dom: HTMLElement): Object {
   indent = indent || MIN_INDENT_LEVEL;
 
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
-  const spacingAfterParagraph = marginBottom ? marginBottom : null;
+  // const spacingAfterParagraph = marginBottom ? marginBottom : null;
 
   const id = dom.getAttribute('id') || '';
   const styleName = dom.getAttribute('styleName') || null;
@@ -99,7 +99,7 @@ function getAttrs(dom: HTMLElement): Object {
     paddingBottom,
     id,
     styleName,
-    spacingAfterParagraph,
+    // spacingAfterParagraph,
   };
 }
 
@@ -109,9 +109,9 @@ function getStyle(attrs) {
     attrs.lineSpacing,
     attrs.paddingTop,
     attrs.paddingBottom,
-    attrs.paragraphSpacingAfter,
-    attrs.paragraphSpacingBefore,
-    attrs.styleName
+    // attrs.paragraphSpacingAfter,
+    // attrs.paragraphSpacingBefore,
+    attrs.styleName,    
   );
 }
 
@@ -120,9 +120,10 @@ function getStyleEx(
   lineSpacing,
   paddingTop,
   paddingBottom,
-  marginBottom,
-  marginTop,
-  styleName
+  // marginBottom,
+  // marginTop,
+  styleName,
+
 ) {
   let style = '';
   let styleLevel = 0;

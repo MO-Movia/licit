@@ -8,7 +8,7 @@ import {EditorState} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
 import {Transform} from 'prosemirror-transform';
 import {Node} from 'prosemirror-model';
-import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
+import {RESERVED_STYLE_NONE, RESERVED_STYLE_NONE_NUMBERING} from '../ParagraphNodeSpec';
 
 // [FS] IRAD-1042 2020-09-09
 // To include custom styles in the toolbar
@@ -30,7 +30,10 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     HEADING_COMMANDS = {
       // [FS] IRAD-1074 2020-12-09
       // When apply 'None' from style menu, not clearing the applied custom style.
-      [RESERVED_STYLE_NONE]: new CustomStyleCommand(RESERVED_STYLE_NONE, RESERVED_STYLE_NONE),
+      [RESERVED_STYLE_NONE]: new CustomStyleCommand(
+        RESERVED_STYLE_NONE,
+        RESERVED_STYLE_NONE
+      ),
     };
     // Check runtime is avilable in editorview
     // Get styles form server configured in runtime
@@ -79,6 +82,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
   isAllowedNode(node: Node) {
     return node.type.name === 'paragraph' || node.type.name === 'ordered_list';
   }
+  
   render(): React.Element<any> {
     const {dispatch, editorState, editorView} = this.props;
     const {selection, doc} = editorState;
@@ -98,7 +102,11 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
           1 === selectedStyleCount ||
           (1 < selectedStyleCount && node.attrs.styleName === customStyleName)
         ) {
-          customStyleName = node.attrs.styleName;
+          customStyleName = node.attrs.styleName.includes(
+            RESERVED_STYLE_NONE_NUMBERING
+          )
+            ? RESERVED_STYLE_NONE
+            : node.attrs.styleName;
         } else {
           customStyleName = RESERVED_STYLE_NONE;
         }

@@ -331,7 +331,6 @@ class CustomStyleCommand extends UICommand {
               ) {
                 delete val.editorView;
                 view.runtime.saveStyle(val).then((result) => {
-                  console.log(result);
                 });
               }
               tr = tr.setSelection(TextSelection.create(doc, 0, 0));
@@ -724,19 +723,21 @@ function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
 
 export function getStyleLevel(styleName) {
   let styleLevel = 0;
-  const styleProp = getCustomStyleByName(styleName);
-  if (
-    null !== styleProp &&
-    styleProp.styles.styleLevel &&
-    styleProp.styles.hasNumbering
-  ) {
-    styleLevel = styleProp.styles.styleLevel;
-  } else {
-    if (styleName.includes(RESERVED_STYLE_NONE_NUMBERING)) {
-      const indices = styleName.split(RESERVED_STYLE_NONE_NUMBERING);
+  if (undefined !== styleName) {
+    const styleProp = getCustomStyleByName(styleName);
+    if (
+      null !== styleProp &&
+      styleProp.styles.styleLevel &&
+      styleProp.styles.hasNumbering
+    ) {
+      styleLevel = styleProp.styles.styleLevel;
+    } else {
+      if (styleName.includes(RESERVED_STYLE_NONE_NUMBERING)) {
+        const indices = styleName.split(RESERVED_STYLE_NONE_NUMBERING);
 
-      if (indices && 2 == indices.length) {
-        styleLevel = parseInt(indices[1]);
+        if (indices && 2 == indices.length) {
+          styleLevel = parseInt(indices[1]);
+        }
       }
     }
   }
