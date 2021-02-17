@@ -6,7 +6,7 @@
 
 import type {ImageLike, StyleProps} from '@modusoperandi/licit';
 import {POST, GET, DELETE, PATCH} from '@modusoperandi/licit';
-import {setStyle} from '@modusoperandi/licit';
+import {setStyles} from '@modusoperandi/licit';
 
 const STYLES_URI = 'http://localhost:3000';
 class CustomLicitRuntime {
@@ -142,9 +142,10 @@ class CustomLicitRuntime {
       // rejected and sent to editor as-is.
       GET(url).then(
         (data) => {
-          const style = JSON.parse(data);
-          this.customStyles = style;
-          resolve(setStyle(style));
+          const styles = JSON.parse(data);
+          this.customStyles = styles;
+          setStyles(styles);
+          resolve(styles);
         },
         (err) => {
           reject(null);
