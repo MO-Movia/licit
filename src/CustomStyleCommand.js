@@ -330,8 +330,7 @@ class CustomStyleCommand extends UICommand {
                 typeof view.runtime.saveStyle === 'function'
               ) {
                 delete val.editorView;
-                view.runtime.saveStyle(val).then((result) => {
-                });
+                view.runtime.saveStyle(val).then((result) => {});
               }
               tr = tr.setSelection(TextSelection.create(doc, 0, 0));
               // Apply created styles to document
@@ -620,10 +619,10 @@ function applyStyleEx(
 function createEmptyElement(
   state: EditorState,
   tr: Transform,
-  node: Node,
+  node: Node /* The current node */,
   startPos: number,
   endPos: number,
-  attrs
+  attrs /* New style to be applied */
 ) {
   const styleLevel = getStyleLevel(attrs.styleName);
   const currentLevel = getStyleLevel(node.attrs.styleName);
@@ -631,8 +630,7 @@ function createEmptyElement(
   let levelDiff = 0;
   let nextLevel = null;
   const nodesBeforeSelection = [];
-  let nodesAfterSelection = null;
-  const docSize = tr.doc.nodeSize - 2;
+  let nodesAfterSelection = [];
   // Manage heirachy for nodes of previous  position
   if (startPos !== 0) {
     // Fix: document Load Error- Instead of state doc here give transaction doc,because when we apply changes
@@ -640,10 +638,14 @@ function createEmptyElement(
     // so depending on state doc nodes' positions is incorrect.
     tr.doc.descendants((node, pos) => {
       if (isAllowedNode(node)) {
-        if (pos >= startPos) {
-          return false;
+        if (pos < startPos) {
+          nodesBeforeSelection.push({pos, node});
+        } else if (pos > endPos) {
+          const nodeStyleLevel = getStyleLevel(node.attrs.styleName);
+          if (nodeStyleLevel) {
+            nodesAfterSelection.push(node);
+          }
         }
-        nodesBeforeSelection.push({pos, node});
       }
       return true;
     });
@@ -655,16 +657,16 @@ function createEmptyElement(
     });
 
     if (null === previousLevel && null == currentLevel) {
+      // No levels established before.
       if (styleLevel !== 1) {
         tr = addElement(attrs, state, tr, startPos, null);
       }
     } else {
+      //	If this is the first level, identify the level difference with previous level.
       levelDiff = previousLevel ? styleLevel - previousLevel : styleLevel;
 
-      if (levelDiff > 1) {
-        tr = addElement(attrs, state, tr, startPos, previousLevel);
-      }
-      if (levelDiff < 0) {
+      if (1 < levelDiff || 0 > levelDiff) {
+        // If NOT applying (same level OR adjacent level)
         tr = addElement(attrs, state, tr, startPos, previousLevel);
       }
     }
@@ -673,30 +675,16 @@ function createEmptyElement(
       tr = addElement(attrs, state, tr, startPos, null);
     }
   }
-  // Manage heirachy for nodes of next position
-  if (docSize > endPos) {
-    // Fix: document Load Error -Instead of state doc here give transaction doc,because when we apply changes
-    // dynamically through transactions the node position  get affected,
-    // so depending on state doc nodes' positions is incorrect.
-    tr.doc.nodesBetween(endPos, docSize, (node, pos) => {
-      let met = true;
-      if (isAllowedNode(node)) {
-        const nodeStyleLevel = getStyleLevel(node.attrs.styleName);
-        if (nodeStyleLevel && null === nodesAfterSelection) {
-          nodesAfterSelection = node;
-          met = false;
-        }
-      }
 
-      return met;
-    });
-  }
-  if (null !== nodesAfterSelection) {
+  if (0 < nodesAfterSelection.length) {
     const selectedLevel = styleLevel;
-    nextLevel = getStyleLevel(nodesAfterSelection.attrs.styleName);
+    nextLevel = getStyleLevel(nodesAfterSelection[0].attrs.styleName);
     levelDiff = nextLevel - selectedLevel;
     if (nextLevel === styleLevel || levelDiff === 1) {
-      return tr;
+      // do nothing
+    } else if (0 == styleLevel) {
+      // No level style
+      adjustElementAfter(attrs, state, tr, endPos, nodesAfterSelection);
     } else {
       tr = addElementAfter(attrs, state, tr, endPos, nextLevel);
     }
@@ -704,19 +692,49 @@ function createEmptyElement(
   return tr;
 }
 
-function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
+function insertParagraph(nodeAttrs, startPos, tr, index) {
+  const paragraph = state.schema.nodes[PARAGRAPH];
+  // [FS] IRAD-1202 2021-02-15
+  // Handle Numbering case for None styles.
+  // Use the styleName to hold the style level.
+  nodeAttrs.styleName = RESERVED_STYLE_NONE_NUMBERING + index;
+  const paragraphNode = paragraph.create(nodeAttrs, null, null);
+  tr = tr.insert(startPos, Fragment.from(paragraphNode));
+  return tr;
+}
+
+function adjustElementAfter(attrs, state, tr, endPos, nodesAfterSelection) {}
+
+function addElementEx(
+  nodeAttrs,
+  state,
+  tr,
+  startPos,
+  adjust,
+  counter,
+  defaultLevel
+) {
   const styleLevel = getStyleLevel(nodeAttrs.styleName);
-  const level = styleLevel ? styleLevel - 1 : 0;
+  const level = styleLevel ? styleLevel + adjust : defaultLevel;
+  for (let index = level; index > counter; index--) {
+    tr = insertParagraph(nodeAttrs, startPos, tr, index);
+  }
+  return tr;
+}
+
+function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
   const counter = previousLevel ? previousLevel : 0;
 
-  const paragraph = state.schema.nodes[PARAGRAPH];
-  for (let index = level; index > counter; index--) {
-    // [FS] IRAD-1202 2021-02-15
-    // Handle Numbering case for None styles.
-    // Use the styleName to hold the style level.
-    nodeAttrs.styleName = RESERVED_STYLE_NONE_NUMBERING + index;
-    const paragraphNode = paragraph.create(nodeAttrs, null, null);
-    tr = tr.insert(startPos, Fragment.from(paragraphNode));
+  return addElementEx(nodeAttrs, state, tr, startPos, -1, counter, 0);
+}
+
+function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
+  const level = nextLevel ? nextLevel - 1 : 0;
+
+  tr = addElementEx(nodeAttrs, state, tr, startPos, 0, counter, 1);
+
+  if (level === counter) {
+    tr = insertParagraph(nodeAttrs, startPos, tr, 1);
   }
   return tr;
 }
@@ -742,25 +760,6 @@ export function getStyleLevel(styleName) {
     }
   }
   return styleLevel;
-}
-
-function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
-  const styleLevel = getStyleLevel(nodeAttrs.styleName);
-  const counter = styleLevel ? styleLevel : 1;
-  const level = nextLevel ? nextLevel - 1 : 0;
-
-  const paragraph = state.schema.nodes[PARAGRAPH];
-  for (let index = level; index > counter; index--) {
-    nodeAttrs.styleName = RESERVED_STYLE_NONE_NUMBERING + index;
-    const paragraphNode = paragraph.create(nodeAttrs, null, null);
-    tr = tr.insert(startPos, Fragment.from(paragraphNode));
-  }
-  if (level === counter) {
-    nodeAttrs.styleName = RESERVED_STYLE_NONE_NUMBERING + 1;
-    const paragraphNode = paragraph.create(nodeAttrs, null, null);
-    tr = tr.insert(startPos, Fragment.from(paragraphNode));
-  }
-  return tr;
 }
 
 function applyLineStyle(node, style, state, tr, startPos, endPos) {
