@@ -1,12 +1,18 @@
 // @flow
 
 // This implements the interface of `EditorRuntime`.
-// import type {ImageLike} from '../../src/Types';
-// import {POST} from '../../src/client/http';
+// To  run  editor directly:
+import type {ImageLike, StyleProps} from '../../src/Types';
+import {POST, GET, DELETE, PATCH} from '../../src/client/http';
+import {setStyles} from '../../src/customStyle';
 
-import type {ImageLike, StyleProps} from '@modusoperandi/licit';
-import {POST, GET, DELETE, PATCH} from '@modusoperandi/licit';
-import {setStyles} from '@modusoperandi/licit';
+// When use it in a componet:
+
+/*
+ import type {ImageLike, StyleProps} from '@modusoperandi/licit';
+ import {POST, GET, DELETE, PATCH} from '@modusoperandi/licit';
+ import {setStyles} from '@modusoperandi/licit';
+ */
 
 const STYLES_URI = 'http://localhost:3000';
 class CustomLicitRuntime {

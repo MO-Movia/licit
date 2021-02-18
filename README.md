@@ -108,6 +108,12 @@ py run_image_server.py
 In MacOS/Linux
 python run_image_server.py
 ```
+### Start the style service for Custom Styles
+```
+git clone https://github.com/MO-Movia/licit-style-service.git
+Follow the README.md file to run the service.
+
+```
 
 ### Start the web server
 
@@ -165,6 +171,14 @@ ReactDOM.render(React.createElement(Licit, {docID:2}), document.getElementById("
  User can enable the same using the below configuration:
  ```
  ReactDOM.render(React.createElement(Licit, {docID: 1, debug: true}), document.getElementById('root'));
+```
+**To use Custom run time in your component :**
+ ```
+ Use the below imports for access the image and style API
+ 
+import type {ImageLike, StyleProps} from '@modusoperandi/licit';
+import {POST, GET, DELETE, PATCH} from '@modusoperandi/licit';
+import {setStyles} from '@modusoperandi/licit';
 ```
 
 Please refer *licit\client\index.js* for getting more detailed idea on passing properties and fires events.
