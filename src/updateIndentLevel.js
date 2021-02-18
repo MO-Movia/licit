@@ -9,7 +9,7 @@ import {BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH} from './NodeNames';
 import {Fragment, Schema} from 'prosemirror-model';
 import {MAX_INDENT_LEVEL, MIN_INDENT_LEVEL} from './ParagraphNodeSpec';
 import {Transform} from 'prosemirror-transform';
-import {getCustomStyleByLevel, getCustomStyleByName} from './customStyle';
+import {getCustomStyleByLevel} from './customStyle';
 import {applyLatestStyle, getStyleLevel} from './CustomStyleCommand';
 
 export default function updateIndentLevel(

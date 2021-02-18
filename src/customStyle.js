@@ -1,14 +1,22 @@
 // @flow
 // [FS] IRAD-1085 2020-10-09
 import type {StyleProps} from './Types';
-import {RESERVED_STYLE_NONE, RESERVED_STYLE_NONE_NUMBERING} from './ParagraphNodeSpec';
+import {
+  RESERVED_STYLE_NONE,
+  RESERVED_STYLE_NONE_NUMBERING,
+} from './ParagraphNodeSpec';
 let customStyles = [];
 
 // [FS] IRAD-1202 2021-02-15
 // None & None-@#$- have same effect of None.
 // None-@#$-<styleLevel> is used for numbering to set style level for None, based on the cursor level style level.
 function isValidStyleName(styleName) {
-	return (styleName && styleName != RESERVED_STYLE_NONE && !styleName.includes(RESERVED_STYLE_NONE_NUMBERING) && customStyles.length > 0);
+  return (
+    styleName &&
+    styleName != RESERVED_STYLE_NONE &&
+    !styleName.includes(RESERVED_STYLE_NONE_NUMBERING) &&
+    customStyles.length > 0
+  );
 }
 
 // [FS] IRAD-1137 2021-01-15

@@ -630,7 +630,7 @@ function createEmptyElement(
   let levelDiff = 0;
   let nextLevel = null;
   const nodesBeforeSelection = [];
-  let nodesAfterSelection = [];
+  const nodesAfterSelection = [];
   // Manage heirachy for nodes of previous  position
   if (startPos !== 0) {
     // Fix: document Load Error- Instead of state doc here give transaction doc,because when we apply changes

@@ -82,7 +82,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
   isAllowedNode(node: Node) {
     return node.type.name === 'paragraph' || node.type.name === 'ordered_list';
   }
-  
+
   render(): React.Element<any> {
     const {dispatch, editorState, editorView} = this.props;
     const {selection, doc} = editorState;

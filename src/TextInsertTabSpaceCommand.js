@@ -10,7 +10,6 @@ import { HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
 import { HAIR_SPACE_CHAR, SPACER_SIZE_TAB } from './SpacerMarkSpec';
 import applyMark from './applyMark';
 import UICommand from './ui/UICommand';
-import { getCustomStyleByName } from './customStyle';
 import { getStyleLevel } from './CustomStyleCommand';
 
 function insertTabSpace(state: EditorState, tr: Transform, schema: Schema): Transform {

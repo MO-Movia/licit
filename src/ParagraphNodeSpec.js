@@ -110,13 +110,7 @@ function getStyle(attrs) {
   );
 }
 
-function getStyleEx(
-  align,
-  lineSpacing,
-  paddingTop,
-  paddingBottom,
-  styleName
-) {
+function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
   let style = '';
   let styleLevel = 0;
 
@@ -166,14 +160,14 @@ function getStyleEx(
       styleLevel = parseInt(styleProps.styles.styleLevel);
       style += refreshCounters(styleLevel);
     }
-  } else if (styleName.includes(RESERVED_STYLE_NONE_NUMBERING)){
-		const indices = styleName.split(RESERVED_STYLE_NONE_NUMBERING);
-		if(indices && 2 == indices.length) {
-			styleLevel = parseInt(indices[1]);
-		}
-		if(styleLevel) {
-			style += refreshCounters(styleLevel);
-		}
+  } else if (styleName.includes(RESERVED_STYLE_NONE_NUMBERING)) {
+    const indices = styleName.split(RESERVED_STYLE_NONE_NUMBERING);
+    if (indices && 2 == indices.length) {
+      styleLevel = parseInt(indices[1]);
+    }
+    if (styleLevel) {
+      style += refreshCounters(styleLevel);
+    }
   }
 
   if (paddingTop && !EMPTY_CSS_VALUE.has(paddingTop)) {
@@ -212,7 +206,7 @@ function refreshCounters(styleLevel) {
 function toDOM(node: Node): Array<any> {
   const {indent, id, styleName} = node.attrs;
   const attrs = {};
-  const { style, styleLevel } = getStyle(node.attrs);
+  const {style, styleLevel} = getStyle(node.attrs);
 
   style && (attrs.style = style);
 

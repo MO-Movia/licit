@@ -289,8 +289,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     });
   }
 
-  onNextLineStyleSelected(e: any) {
-  }
+  onNextLineStyleSelected(e: any) {}
 
   // [FS] IRAD-1127 2020-12-31
   // to populate the selected custom styles.
@@ -435,7 +434,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 key="name"
                 onChange={this.onStyleClick.bind(this, 'name')}
                 type="text"
-                value={this.state.styleName|| ''}
+                value={this.state.styleName || ''}
               />
             </span>
             <p className="formp">Description:</p>
@@ -537,7 +536,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <select
                     className="fontsize fontstyle"
                     onChange={this.onFontSizeChange.bind(this)}
-                    value={this.state.styles.fontSize  || ''}
+                    value={this.state.styles.fontSize || ''}
                   >
                     {FONT_PT_SIZES.map((value) => (
                       <option key={value} value={value}>
@@ -980,7 +979,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         className="leveltype specifiedindent fontstyle"
                         onChange={this.onIndentChange.bind(this)}
                         style={{width: '99px !important'}}
-                        value={this.state.styles.indent  || ''}
+                        value={this.state.styles.indent || ''}
                       >
                         {LEVEL_VALUES.map((value) => (
                           <option key={value} value={value}>
@@ -1009,7 +1008,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   </label>
                 </div>
               </button>
-             <div className="panel3 formp">
+              <div className="panel3 formp">
                 <p className="formp">Select style for next line:</p>
                 <div className="hierarchydiv">
                   <div className="settingsdiv">
@@ -1038,7 +1037,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       name="indenting"
                       onChange={this.onNextLineStyleSelected.bind(this)}
                       style={{
-                        marginLeft: '20px'
+                        marginLeft: '20px',
                       }}
                       type="radio"
                       value="0"
@@ -1068,39 +1067,42 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         marginLeft: '4px',
                         marginTop: '3px',
                         marginBottom: '0',
-                        width:'62px'
+                        width: '62px',
                       }}
                     >
                       Select style
                     </label>
                     <span>
-                    <select
-                className="stylenameinput fontstyle"
-                defaultValue={'DEFAULT'}
-                onChange={this.onSelectCustomStyle.bind(this)}
-                style={{height: '20px',width: '97px', marginLeft: '7px'}}
-              >
-                <option disabled value="DEFAULT">
-                  {' '}
-                  select a style
-                </option>
-                {customStyles.map((style) => (
-                  <option key={style.styleName} value={style.style}>
-                    {style.styleName}
-                  </option>
-                ))}
-              </select>
+                      <select
+                        className="stylenameinput fontstyle"
+                        defaultValue={'DEFAULT'}
+                        onChange={this.onSelectCustomStyle.bind(this)}
+                        style={{
+                          height: '20px',
+                          width: '97px',
+                          marginLeft: '7px',
+                        }}
+                      >
+                        <option disabled value="DEFAULT">
+                          {' '}
+                          select a style
+                        </option>
+                        {customStyles.map((style) => (
+                          <option key={style.styleName} value={style.style}>
+                            {style.styleName}
+                          </option>
+                        ))}
+                      </select>
                     </span>
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
         <div className="btns">
           <button className="buttonstyle" onClick={this._cancel}>
-          {this.state.mode == 3 ? 'Close' : 'Cancel'}
+            {this.state.mode == 3 ? 'Close' : 'Cancel'}
           </button>
           <button
             className="btnsave buttonstyle"
