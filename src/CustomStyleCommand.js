@@ -765,36 +765,24 @@ export function getStyleLevel(styleName) {
 function applyLineStyle(node, style, state, tr, startPos, endPos) {
   if (style && style.boldPartial) {
     let textContent = '';
+    let separator = '';
     const markType = state.schema.marks[MARK_STRONG];
-    if (style.boldSentence) {
-      // [FS] IRAD-1181 2021-02-09
-      // Issue fix: Multi-selecting several paragraphs and applying a style is only partially successfull
-      tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
-        if ('text' === node.type.name) {
-          textContent = `${textContent}${node.text}`;
-          textContent = textContent.split('.')[0];
-          tr = tr.addMark(
-            pos,
-            pos + textContent.length + 1,
-            markType.create(null)
-          );
-          textContent = '';
-        }
-      });
-    } else {
-      tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
-        if ('text' === node.type.name) {
-          textContent = `${textContent}${node.text}`;
-          textContent = textContent.split(' ')[0];
-          tr = tr.addMark(
-            pos,
-            pos + textContent.length + 1,
-            markType.create(null)
-          );
-          textContent = '';
-        }
-      });
-    }
+    separator = style.boldSentence ? '.' : ' ';
+
+    // [FS] IRAD-1181 2021-02-09
+    // Issue fix: Multi-selecting several paragraphs and applying a style is only partially successfull
+    tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
+      if ('text' === node.type.name) {
+        textContent = `${textContent}${node.text}`;
+        textContent = textContent.split('.')[0];
+        tr = tr.addMark(
+          pos,
+          pos + textContent.length + 1,
+          markType.create(null)
+        );
+        textContent = '';
+      }
+    });
   }
   return tr;
 }
