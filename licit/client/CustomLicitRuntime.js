@@ -7,7 +7,7 @@
 
 import type {ImageLike, StyleProps} from '../../src/Types';
 import {POST, GET, DELETE, PATCH} from '../../src/client/http';
-import {setStyle} from '../../src/customStyle';
+import {setStyles} from '../../src/customStyle';
 
 const STYLES_URI = 'http://localhost:3000';
 class CustomLicitRuntime {
@@ -143,9 +143,10 @@ class CustomLicitRuntime {
       // rejected and sent to editor as-is.
       GET(url).then(
         (data) => {
-          const style = JSON.parse(data);
-          this.customStyles = style;
-          resolve(setStyle(style));
+          const styles = JSON.parse(data);
+          this.customStyles = styles;
+          setStyles(styles);
+          resolve(styles);
         },
         (err) => {
           reject(null);

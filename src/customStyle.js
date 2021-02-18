@@ -44,7 +44,7 @@ export function getCustomStyleByName(name: string): StyleProps {
 }
 
 // store styles in cache
-export function setStyle(style) {
+export function setStyles(style) {
   customStyles = style;
 }
 // get a style by Level
