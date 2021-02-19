@@ -692,8 +692,8 @@ function createEmptyElement(
   return tr;
 }
 
-function insertParagraph(nodeAttrs, startPos, tr, index) {
-  const paragraph = tr.state.schema.nodes[PARAGRAPH];
+function insertParagraph(nodeAttrs, startPos, tr, index,state) {
+  const paragraph = state.schema.nodes[PARAGRAPH];
   // [FS] IRAD-1202 2021-02-15
   // Handle Numbering case for None styles.
   // Use the styleName to hold the style level.
@@ -705,7 +705,7 @@ function insertParagraph(nodeAttrs, startPos, tr, index) {
 
 function adjustElementAfter(attrs, state, tr, endPos, nodesAfterSelection) {}
 
-function addElementEx(nodeAttrs, state, tr, startPos, after) {
+function addElementEx(nodeAttrs, state, tr, startPos, after,previousLevel) {
   const styleLevel = getStyleLevel(nodeAttrs.styleName);
   let level = 0;
   let counter = 0;
@@ -719,22 +719,22 @@ function addElementEx(nodeAttrs, state, tr, startPos, after) {
   }
 
   for (let index = level; index > counter; index--) {
-    tr = insertParagraph(nodeAttrs, startPos, tr, index);
+    tr = insertParagraph(nodeAttrs, startPos, tr, index,state);
   }
   return {tr, level, counter};
 }
 
 function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
-  return addElementEx(nodeAttrs, state, tr, startPos, false).tr;
+  return addElementEx(nodeAttrs, state, tr, startPos, false,previousLevel).tr;
 }
 
 function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
-  let {tr, level, counter} = addElementEx(nodeAttrs, state, tr, startPos, true);
+  let {trx, level, counter} = addElementEx(nodeAttrs, state, tr, startPos, true);
 
   if (level === counter) {
-    tr = insertParagraph(nodeAttrs, startPos, tr, 1);
+    trx = insertParagraph(nodeAttrs, startPos, trx, 1);
   }
-  return tr;
+  return trx;
 }
 
 export function getStyleLevel(styleName) {
