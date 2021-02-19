@@ -693,7 +693,7 @@ function createEmptyElement(
 }
 
 function insertParagraph(nodeAttrs, startPos, tr, index) {
-  const paragraph = state.schema.nodes[PARAGRAPH];
+  const paragraph = tr.state.schema.nodes[PARAGRAPH];
   // [FS] IRAD-1202 2021-02-15
   // Handle Numbering case for None styles.
   // Use the styleName to hold the style level.
@@ -729,6 +729,7 @@ function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
 }
 
 function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
+  const counter = nodeAttrs.styleLevel ? nodeAttrs.styleLevel : 1;
   const level = nextLevel ? nextLevel - 1 : 0;
 
   tr = addElementEx(nodeAttrs, state, tr, startPos, 0, counter, 1);
@@ -774,7 +775,7 @@ function applyLineStyle(node, style, state, tr, startPos, endPos) {
     tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
       if ('text' === node.type.name) {
         textContent = `${textContent}${node.text}`;
-        textContent = textContent.split('.')[0];
+        textContent = textContent.split(separator)[0];
         tr = tr.addMark(
           pos,
           pos + textContent.length + 1,

@@ -14,6 +14,7 @@ import {updateDocument} from '../CustomStyleCommand';
 import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
 
 let customStyles = [];
+let otherStyleSelected= false;
 
 // Values to show in Linespacing drop-down
 const LINE_SPACE = ['Single', '1.15', '1.5', 'Double'];
@@ -50,6 +51,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     if (0 === this.state.mode) {
       this.state.styles.boldNumbering = true;
       this.state.styles.boldSentence = true;
+      this.state.styles.nextLineStyleName = RESERVED_STYLE_NONE;
     }
     if (
       props.editorView.runtime &&
@@ -289,7 +291,36 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     });
   }
 
-  onNextLineStyleSelected(e: any) {}
+  // [FS] IRAD-1201 2021-02-18
+  // set the nextLineStyle to JSON on style selection changed
+  onOtherStyleSelectionChanged(e: any) {    
+    if (this.selectStyleCheckboxState()) {
+      this.setState({
+        styles: {...this.state.styles, nextLineStyleName: e.target.value},
+      });
+    }
+  }
+
+  // [FS] IRAD-1201 2021-02-18
+  // set the nextLineStyle to JSON according to the selected option
+  onNextLineStyleSelected(selectedOption ,e) {
+    var hiddenDiv = document.getElementById('nextStyle');
+    hiddenDiv.style.display = 'none';
+    if (0 === selectedOption) {
+      otherStyleSelected= false;
+      this.setState({
+        styles: {...this.state.styles, nextLineStyleName: 'None'},
+      });
+    } else if (1 === selectedOption) {
+      otherStyleSelected= false;
+      this.setState({
+        styles: {...this.state.styles, nextLineStyleName: this.state.styleName},
+      });
+    } else {      
+      hiddenDiv.style.display = 'block';
+      otherStyleSelected= true;
+    }
+  }
 
   // [FS] IRAD-1127 2020-12-31
   // to populate the selected custom styles.
@@ -360,6 +391,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     // this.setState({ styles: { ...this.state.styles, boldSentence: val.target.checked ? true : false } });
   }
 
+  // [FS] IRAD-1201 2021-02-17
+  // to check if the select "style option" selected by user
+  selectStyleCheckboxState() {
+    let chceked = false;
+    if (this.state.styles.nextLineStyleName) {
+      chceked =
+        this.state.styles.nextLineStyleName !== 'None' &&
+        this.state.styles.nextLineStyleName !== this.state.styleName;
+    }
+    return chceked;
+  }
+
   componentDidMount() {
     const acc = document.getElementsByClassName('licit-accordion');
     let i;
@@ -413,7 +456,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   -- select a style --{' '}
                 </option>
                 {customStyles.map((style) => (
-                  <option key={style.styleName} value={style.style}>
+                  <option key={style.styleName} value={style.styles}>
                     {style.styleName}
                   </option>
                 ))}
@@ -994,9 +1037,6 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
               <button className="licit-accordion accactive">
                 <div className="indentdiv">
-                  {/* <span className="iconspan czi-icon account_tree">
-                    account_tree
-                  </span> */}
                   <label
                     style={{
                       marginLeft: '-7px',
@@ -1008,18 +1048,20 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   </label>
                 </div>
               </button>
+
               <div className="panel3 formp">
                 <p className="formp">Select style for next line:</p>
                 <div className="hierarchydiv">
                   <div className="settingsdiv">
                     <input
-                      checked={this.state.styles.nextLineStyle}
-                      name="indenting"
-                      onChange={this.onNextLineStyleSelected.bind(this)}
+                      checked={
+                        this.state.styles.nextLineStyleName === this.state.styleName
+                      }
+                      name="nextlinestyle"
+                      onChange={this.onNextLineStyleSelected.bind(this,1)}
                       type="radio"
-                      value="1"
+                      value="0"
                     />
-                    {/* <div  style={{marginTop: '-3px'}}> */}
                     <label
                       style={{
                         marginLeft: '4px',
@@ -1029,20 +1071,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     >
                       Continue this style
                     </label>
-                    {/* </div> */}
                   </div>
                   <div className="settingsdiv">
                     <input
-                      checked={this.state.styles.nextLineStyle}
-                      name="indenting"
-                      onChange={this.onNextLineStyleSelected.bind(this)}
+                      checked={this.state.styles.nextLineStyleName === 'None'}
+                      name="nextlinestyle"
+                      onChange={this.onNextLineStyleSelected.bind(this,0)}
                       style={{
                         marginLeft: '20px',
                       }}
                       type="radio"
                       value="0"
                     />
-                    {/* <div  style={{marginTop: '-3px', marginLeft: '1px',}}> */}
                     <label
                       style={{
                         marginLeft: '4px',
@@ -1052,13 +1092,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     >
                       None
                     </label>
-                    {/* </div> */}
-                  </div>
-                  <div className="indentdiv">
-                    <input
-                      checked={!this.state.styles.nextLineStyle}
-                      name="indenting"
-                      onChange={this.onNextLineStyleSelected.bind(this)}
+                    </div>
+                  <div className="indentdiv">                     
+                      <input
+                      checked={
+                        otherStyleSelected
+                      }
+                      name="nextlinestyle"
+                      onChange={this.onNextLineStyleSelected.bind(this,2)}
                       type="radio"
                       value="0"
                     />
@@ -1072,23 +1113,19 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     >
                       Select style
                     </label>
-                    <span>
+                    <span id="nextStyle" style={{display: 'none'}}>
                       <select
                         className="stylenameinput fontstyle"
                         defaultValue={'DEFAULT'}
-                        onChange={this.onSelectCustomStyle.bind(this)}
+                        onChange={this.onOtherStyleSelectionChanged.bind(this)}
                         style={{
                           height: '20px',
                           width: '97px',
                           marginLeft: '7px',
                         }}
-                      >
-                        <option disabled value="DEFAULT">
-                          {' '}
-                          select a style
-                        </option>
+                      >                        
                         {customStyles.map((style) => (
-                          <option key={style.styleName} value={style.style}>
+                          <option key={style.styleName} value={style.styles}>
                             {style.styleName}
                           </option>
                         ))}

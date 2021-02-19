@@ -255,9 +255,12 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
         ) {
           const style = getCustomStyleByName(newattrs.styleName);
           if (null !== style) {
+            newattrs.styleName = style.styles.nextLineStyleName;
             tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
+            // [FS] IRAD-1201 2021-02-18
+            // get the nextLine Style from the current style object.
             const marks = getMarkByStyleName(
-              node.attrs[ATTR_STYLE_NAME],
+              style.styles.nextLineStyleName,
               nextState.schema
             );
             node.descendants((child, pos) => {
