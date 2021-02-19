@@ -630,7 +630,7 @@ function createEmptyElement(
   let levelDiff = 0;
   let nextLevel = null;
   const nodesBeforeSelection = [];
-  const nodesAfterSelection = [];
+  let nodesAfterSelection = [];
   // Manage heirachy for nodes of previous  position
   if (startPos !== 0) {
     // Fix: document Load Error- Instead of state doc here give transaction doc,because when we apply changes
@@ -705,34 +705,31 @@ function insertParagraph(nodeAttrs, startPos, tr, index) {
 
 function adjustElementAfter(attrs, state, tr, endPos, nodesAfterSelection) {}
 
-function addElementEx(
-  nodeAttrs,
-  state,
-  tr,
-  startPos,
-  adjust,
-  counter,
-  defaultLevel
-) {
+function addElementEx(nodeAttrs, state, tr, startPos, after) {
   const styleLevel = getStyleLevel(nodeAttrs.styleName);
-  const level = styleLevel ? styleLevel + adjust : defaultLevel;
+  let level = 0;
+  let counter = 0;
+
+  if (after) {
+    level = nextLevel ? nextLevel - 1 : 0;
+    counter = styleLevel ? styleLevel : 1;
+  } else {
+    level = styleLevel ? styleLevel - 1 : 0;
+    counter = previousLevel ? previousLevel : 0;
+  }
+
   for (let index = level; index > counter; index--) {
     tr = insertParagraph(nodeAttrs, startPos, tr, index);
   }
-  return tr;
+  return {tr, level, counter};
 }
 
 function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
-  const counter = previousLevel ? previousLevel : 0;
-
-  return addElementEx(nodeAttrs, state, tr, startPos, -1, counter, 0);
+  return addElementEx(nodeAttrs, state, tr, startPos, false).tr;
 }
 
 function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
-  const counter = nodeAttrs.styleLevel ? nodeAttrs.styleLevel : 1;
-  const level = nextLevel ? nextLevel - 1 : 0;
-
-  tr = addElementEx(nodeAttrs, state, tr, startPos, 0, counter, 1);
+  let {tr, level, counter} = addElementEx(nodeAttrs, state, tr, startPos, true);
 
   if (level === counter) {
     tr = insertParagraph(nodeAttrs, startPos, tr, 1);
