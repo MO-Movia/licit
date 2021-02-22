@@ -3,7 +3,7 @@
 // This implements the interface of `EditorRuntime`.
 import type {ImageLike, StyleProps} from '../Types';
 import {POST, GET, DELETE, PATCH} from './http';
-import {setStyle} from '../customStyle';
+import {setStyles} from '../customStyle';
 class LicitRuntime {
   // keep styles locally
   customStyles = new Array<StyleProps>();
@@ -61,7 +61,7 @@ class LicitRuntime {
       (data) => {
         styles = JSON.parse(data);
         this.customStyles = styles;
-        setStyle(styles);
+        setStyles(styles);
       },
       (err) => {}
     );
@@ -83,7 +83,7 @@ class LicitRuntime {
           style = JSON.parse(data);
           resolve(style);
           this.customStyles = style;
-          setStyle(style);
+          setStyles(style);
         },
         (err) => {
           style = null;
@@ -132,7 +132,7 @@ class LicitRuntime {
     DELETE(url, 'text/plain').then(
       (data) => {
         this.customStyles = data;
-        setStyle(data);
+        setStyles(data);
       },
       (err) => {}
     );

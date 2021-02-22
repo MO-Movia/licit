@@ -14,7 +14,7 @@ import {updateDocument} from '../CustomStyleCommand';
 import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
 
 let customStyles = [];
-let otherStyleSelected= false;
+const otherStyleSelected = false;
 
 // Values to show in Linespacing drop-down
 const LINE_SPACE = ['Single', '1.15', '1.5', 'Double'];
@@ -43,6 +43,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     super(props);
     this.state = {
       ...props,
+      otherStyleSelected,
     };
     // set default values for text alignment and boldNumbering checkbox.
     if (!this.state.styles.align) {
@@ -293,7 +294,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
   // [FS] IRAD-1201 2021-02-18
   // set the nextLineStyle to JSON on style selection changed
-  onOtherStyleSelectionChanged(e: any) {    
+  onOtherStyleSelectionChanged(e: any) {
     if (this.selectStyleCheckboxState()) {
       this.setState({
         styles: {...this.state.styles, nextLineStyleName: e.target.value},
@@ -303,22 +304,34 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
   // [FS] IRAD-1201 2021-02-18
   // set the nextLineStyle to JSON according to the selected option
-  onNextLineStyleSelected(selectedOption ,e) {
-    var hiddenDiv = document.getElementById('nextStyle');
+  onNextLineStyleSelected(selectedOption, e) {
+    const hiddenDiv = document.getElementById('nextStyle');
     hiddenDiv.style.display = 'none';
     if (0 === selectedOption) {
-      otherStyleSelected= false;
+      this.setState({
+        otherStyleSelected: false,
+      });
       this.setState({
         styles: {...this.state.styles, nextLineStyleName: 'None'},
       });
     } else if (1 === selectedOption) {
-      otherStyleSelected= false;
+      this.setState({
+        otherStyleSelected: false,
+      });
       this.setState({
         styles: {...this.state.styles, nextLineStyleName: this.state.styleName},
       });
-    } else {      
+    } else {
       hiddenDiv.style.display = 'block';
-      otherStyleSelected= true;
+      const selectedStyle = document.getElementById('nextStyleValue');
+      this.setState({
+        otherStyleSelected: true,
+        styles: {
+          ...this.state.styles,
+          nextLineStyleName:
+            selectedStyle.options[selectedStyle.selectedIndex].text,
+        },
+      });
     }
   }
 
@@ -392,7 +405,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   }
 
   // [FS] IRAD-1201 2021-02-17
-  // to check if the select "style option" selected by user
+  // to check if the "select style" option selected by user
   selectStyleCheckboxState() {
     let chceked = false;
     if (this.state.styles.nextLineStyleName) {
@@ -456,7 +469,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   -- select a style --{' '}
                 </option>
                 {customStyles.map((style) => (
-                  <option key={style.styleName} value={style.styles}>
+                  <option key={style.styleName} value={style.style}>
                     {style.styleName}
                   </option>
                 ))}
@@ -473,7 +486,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             <span>
               <input
                 className="stylenameinput fontstyle"
-                disabled={this.state.mode == 1 ? true : false}
+                disabled={(this.state.mode == 1 || this.state.mode == 3) ? true : false}
                 key="name"
                 onChange={this.onStyleClick.bind(this, 'name')}
                 type="text"
@@ -1055,12 +1068,13 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <div className="settingsdiv">
                     <input
                       checked={
-                        this.state.styles.nextLineStyleName === this.state.styleName
+                        this.state.styles.nextLineStyleName ===
+                          this.state.styleName && !this.state.otherStyleSelected
                       }
                       name="nextlinestyle"
-                      onChange={this.onNextLineStyleSelected.bind(this,1)}
+                      onChange={this.onNextLineStyleSelected.bind(this, 1)}
                       type="radio"
-                      value="0"
+                      value="1"
                     />
                     <label
                       style={{
@@ -1076,12 +1090,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     <input
                       checked={this.state.styles.nextLineStyleName === 'None'}
                       name="nextlinestyle"
-                      onChange={this.onNextLineStyleSelected.bind(this,0)}
+                      onChange={this.onNextLineStyleSelected.bind(this, 0)}
                       style={{
                         marginLeft: '20px',
                       }}
                       type="radio"
-                      value="0"
+                      value="2"
                     />
                     <label
                       style={{
@@ -1092,14 +1106,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     >
                       None
                     </label>
-                    </div>
-                  <div className="indentdiv">                     
-                      <input
-                      checked={
-                        otherStyleSelected
-                      }
+                  </div>
+                  <div className="indentdiv">
+                    <input
+                      checked={this.state.otherStyleSelected}
                       name="nextlinestyle"
-                      onChange={this.onNextLineStyleSelected.bind(this,2)}
+                      onChange={this.onNextLineStyleSelected.bind(this, 2)}
                       type="radio"
                       value="0"
                     />
@@ -1115,17 +1127,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     </label>
                     <span id="nextStyle" style={{display: 'none'}}>
                       <select
-                        className="stylenameinput fontstyle"
+                        className="fontstyle stylenameinput"
                         defaultValue={'DEFAULT'}
+                        id="nextStyleValue"
                         onChange={this.onOtherStyleSelectionChanged.bind(this)}
                         style={{
                           height: '20px',
-                          width: '97px',
                           marginLeft: '7px',
+                          width: '97px',
                         }}
-                      >                        
+                      >
                         {customStyles.map((style) => (
-                          <option key={style.styleName} value={style.styles}>
+                          <option key={style.styleName} value={style.style}>
                             {style.styleName}
                           </option>
                         ))}
@@ -1157,6 +1170,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   };
 
   _save = (): void => {
+    delete this.state.otherStyleSelected;
     // [FS] IRAD-1137 2021-01-15
     // FIX: able to save a custom style name with already exist style name
     if (0 === this.state.mode && isCustomStyleExists(this.state.styleName)) {

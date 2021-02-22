@@ -63,7 +63,6 @@ export function getCustomStyleByLevel(level: Number) {
       if (obj.styles.styleLevel && level === Number(obj.styles.styleLevel)) {
         if (null === style) {
           style = obj;
-          return style;
         }
       }
     }

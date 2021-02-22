@@ -630,7 +630,7 @@ function createEmptyElement(
   let levelDiff = 0;
   let nextLevel = null;
   const nodesBeforeSelection = [];
-  let nodesAfterSelection = [];
+  const nodesAfterSelection = [];
   // Manage heirachy for nodes of previous  position
   if (startPos !== 0) {
     // Fix: document Load Error- Instead of state doc here give transaction doc,because when we apply changes
@@ -659,7 +659,7 @@ function createEmptyElement(
     if (null === previousLevel && null == currentLevel) {
       // No levels established before.
       if (styleLevel !== 1) {
-        tr = addElement(attrs, state, tr, startPos, null);
+        tr = addElement(attrs, state, tr, startPos, null, nextLevel);
       }
     } else {
       //	If this is the first level, identify the level difference with previous level.
@@ -667,12 +667,12 @@ function createEmptyElement(
 
       if (1 < levelDiff || 0 > levelDiff) {
         // If NOT applying (same level OR adjacent level)
-        tr = addElement(attrs, state, tr, startPos, previousLevel);
+        tr = addElement(attrs, state, tr, startPos, previousLevel, nextLevel);
       }
     }
   } else {
     if (styleLevel !== 1) {
-      tr = addElement(attrs, state, tr, startPos, null);
+      tr = addElement(attrs, state, tr, startPos, null, nextLevel);
     }
   }
 
@@ -692,7 +692,7 @@ function createEmptyElement(
   return tr;
 }
 
-function insertParagraph(nodeAttrs, startPos, tr, index,state) {
+function insertParagraph(nodeAttrs, startPos, tr, index, state) {
   const paragraph = state.schema.nodes[PARAGRAPH];
   // [FS] IRAD-1202 2021-02-15
   // Handle Numbering case for None styles.
@@ -705,7 +705,7 @@ function insertParagraph(nodeAttrs, startPos, tr, index,state) {
 
 function adjustElementAfter(attrs, state, tr, endPos, nodesAfterSelection) {}
 
-function addElementEx(nodeAttrs, state, tr, startPos, after,previousLevel) {
+function addElementEx(nodeAttrs, state, tr, startPos, after, previousLevel, nextLevel) {
   const styleLevel = getStyleLevel(nodeAttrs.styleName);
   let level = 0;
   let counter = 0;
@@ -719,17 +719,23 @@ function addElementEx(nodeAttrs, state, tr, startPos, after,previousLevel) {
   }
 
   for (let index = level; index > counter; index--) {
-    tr = insertParagraph(nodeAttrs, startPos, tr, index,state);
+    tr = insertParagraph(nodeAttrs, startPos, tr, index, state);
   }
   return {tr, level, counter};
 }
 
-function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
-  return addElementEx(nodeAttrs, state, tr, startPos, false,previousLevel).tr;
+function addElement(nodeAttrs, state, tr, startPos, previousLevel, nextLevel) {
+  return addElementEx(nodeAttrs, state, tr, startPos, false, previousLevel, nextLevel).tr;
 }
 
 function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
-  let {trx, level, counter} = addElementEx(nodeAttrs, state, tr, startPos, true);
+  let {trx, level, counter} = addElementEx(
+    nodeAttrs,
+    state,
+    tr,
+    startPos,
+    true
+  );
 
   if (level === counter) {
     trx = insertParagraph(nodeAttrs, startPos, trx, 1);

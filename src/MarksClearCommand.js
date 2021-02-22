@@ -7,6 +7,7 @@ import { EditorView } from 'prosemirror-view';
 
 import { clearMarks, clearHeading } from './clearMarks';
 import UICommand from './ui/UICommand';
+import { getNode, getMarkByStyleName } from './CustomStyleCommand';
 
 class MarksClearCommand extends UICommand {
   isActive = (state: EditorState): boolean => {
@@ -27,9 +28,22 @@ class MarksClearCommand extends UICommand {
     view: ?EditorView
   ): boolean => {
     let tr = clearMarks(state.tr.setSelection(state.selection), state.schema);
-    // [FS] IRAD-948 2020-05-22
+    // [FS] IRAD-948 2021-02-22
+    // Issue fix: after apply clear format on custom style applied paragrapgh, the custom style is not continuing
+    const startPos = state.selection.$from.before(1);
+    const endPos = state.selection.$to.after(1);
+    const node = getNode(state, startPos, endPos, state.tr);
+    const storedmarks = getMarkByStyleName(
+      node.attrs.styleName,
+      state.schema
+    );
+
+    // [FS] IRAD-948 2021-02-22
     // Clear Header formatting
     tr = clearHeading(tr, state.schema);
+    // [FS] IRAD-948 2020-05-22
+    // Issue fix: after apply clear format on custom style applied paragrapgh, the custom style is not continuing
+    tr.storedMarks = storedmarks;
     if (dispatch && tr.docChanged) {
       dispatch(tr);
       return true;
