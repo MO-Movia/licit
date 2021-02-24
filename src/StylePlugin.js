@@ -237,7 +237,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
         required = true;
       }
       if (required) {
-        const newattrs = Object.assign({}, node.attrs);
+        let newattrs = Object.assign({}, node.attrs);
         const nextNodePos = pos + node.nodeSize;
         const nextNode = nextState.doc.nodeAt(nextNodePos);
         let IsActiveNode = false;
@@ -255,7 +255,9 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
         ) {
           const style = getCustomStyleByName(newattrs.styleName);
           if (null !== style) {
-            newattrs.styleName = style.styles.nextLineStyleName;
+            // [FS] IRAD-1217 2021-02-24
+            // Select style for next line not working continuously for more that 2 paragraphs
+            newattrs = setNodeAttrs(style.styles.nextLineStyleName, newattrs);
             tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
             // [FS] IRAD-1201 2021-02-18
             // get the nextLine Style from the current style object.
@@ -283,6 +285,18 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
   }
 
   return modified ? tr : null;
+}
+
+// [FS] IRAD-1217 2021-02-24
+// get the style object using the nextlineStyleName and set the attribute values to the node.
+function setNodeAttrs(nextLineStyleName, newattrs) {
+  const nextLineStyle = getCustomStyleByName(nextLineStyleName);
+  if (nextLineStyle) {
+    newattrs.styleName = nextLineStyleName;
+    newattrs.indent = nextLineStyle.styles.indent;
+    newattrs.lineSpacing = nextLineStyle.lineHeight;
+  }
+  return newattrs;
 }
 
 function isNewParagraph(prevState, nextState, view) {
