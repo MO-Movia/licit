@@ -2,48 +2,46 @@
 // Command button to handle different type of list types
 // Need to add Icons instead of label
 import * as React from 'react';
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
-import ListToggleCommand from '../ListToggleCommand';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
+import {ListToggleCommand, hasCustomNumberedList} from '../ListToggleCommand';
 import ListTypeButton from './ListTypeButton';
 
 const LIST_TYPE_NAMES = [
   {
     name: 'decimal',
-    label: '1.'
+    label: '1.',
   },
   {
     name: 'x.x.x',
-    label: '1.1.1'
+    label: '1.1.1',
   },
   {
     name: 'num_bracket',
-    label: '1)'
+    label: '1)',
   },
   {
     name: 'num_bracket_closed',
-    label: '(1)'
+    label: '(1)',
   },
   {
     name: 'upper_alpha_bracket',
-    label: 'A)'
+    label: 'A)',
   },
   {
     name: 'lower_alpha_bracket',
-    label: 'a)'
+    label: 'a)',
   },
   {
     name: 'lower_alpha_bracket_closed',
-    label: '(a)'
-  }
-
+    label: '(a)',
+  },
 ];
 const LIST_TYPE_COMMANDS: Object = {
-  ['decimal']: new ListToggleCommand(true, 'decimal')
-
+  ['decimal']: new ListToggleCommand(true, 'decimal'),
 };
-LIST_TYPE_NAMES.forEach(obj => {
+LIST_TYPE_NAMES.forEach((obj) => {
   LIST_TYPE_COMMANDS[obj.name] = new ListToggleCommand(true, obj.name);
   LIST_TYPE_COMMANDS[obj.name].label = obj.label;
 });
@@ -51,7 +49,6 @@ LIST_TYPE_NAMES.forEach(obj => {
 const COMMAND_GROUPS = [LIST_TYPE_COMMANDS];
 
 class ListTypeCommandButton extends React.PureComponent<any, any> {
-
   props: {
     dispatch: (tr: Transform) => void,
     editorState: EditorState,
@@ -59,12 +56,17 @@ class ListTypeCommandButton extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const { dispatch, editorState, editorView } = this.props;
+    const {dispatch, editorState, editorView} = this.props;
+    let disabled = false;
+    if (editorState && editorView) {
+      disabled = hasCustomNumberedList(editorState);
+      disabled = editorView.disabled || disabled ? true : false;
+    }
     return (
       <ListTypeButton
         className="width-50 czi-icon format_list_numbered"
         commandGroups={COMMAND_GROUPS}
-        disabled={editorView && editorView.disabled ? true : false}
+        disabled={disabled}
         dispatch={dispatch}
         editorState={editorState}
         editorView={editorView}
@@ -72,7 +74,6 @@ class ListTypeCommandButton extends React.PureComponent<any, any> {
       />
     );
   }
-
 }
 
 export default ListTypeCommandButton;

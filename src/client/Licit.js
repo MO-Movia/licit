@@ -322,8 +322,17 @@ class Licit extends React.Component<any, any> {
         this.setCounterFlags(transaction, false);
       }
       this.state.onChangeCB(docJson, isEmpty);
+ this.closeOpenedPopupModels();
     }
   };
+  // [FS] IRAD-1173 2021-02-25
+  // Bug fix: Transaction mismatch error when a doalog is opened and keep typing.
+  closeOpenedPopupModels() {
+    const element = document.getElementsByClassName('czi-pop-up-element')[0];
+    if (element && element.parentElement) {
+      element.parentElement.removeChild(element);
+    }
+  }
 
   _onReady = (editorView: EditorView): void => {
     // [FS][06-APR-2020][IRAD-922]

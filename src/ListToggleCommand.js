@@ -9,8 +9,9 @@ import {BULLET_LIST, ORDERED_LIST, PARAGRAPH} from './NodeNames';
 import noop from './noop';
 import toggleList from './toggleList';
 import UICommand from './ui/UICommand';
+import {getCustomStyleByName} from './customStyle';
 
-class ListToggleCommand extends UICommand {
+export class ListToggleCommand extends UICommand {
   _ordered: boolean;
   _orderedListType: string;
 
@@ -32,7 +33,7 @@ class ListToggleCommand extends UICommand {
 
   isEnabled = (state: EditorState, view: ?EditorView): boolean => {
     let bOK = false;
-    bOK = this.hasCustomNumberedList(state);
+    bOK = hasCustomNumberedList(state);
     return !bOK;
   };
 
@@ -64,20 +65,6 @@ class ListToggleCommand extends UICommand {
     const findList = list ? findParentNodeOfType(list) : noop;
     return findList(state.selection);
   }
-  // [FS] IRAD-1216 2020-02-24
-  // Disable the List when menu when the cursor is in custom numbered style
-  hasCustomNumberedList(state: EditorState) {
-    let isNumberedList = false;
-    const {selection, schema} = state;
-    const text = schema.nodes[PARAGRAPH];
-    const result = findParentNodeOfType(text)(selection);
-    if (result && result.node.attrs) {
-      if (result.node.attrs.styleName) {
-        isNumberedList = true;
-      }
-    }
-    return isNumberedList;
-  }
 
   // [FS] IRAD-1087 2020-11-11
   // New method to execute new styling implementation for List
@@ -99,4 +86,19 @@ class ListToggleCommand extends UICommand {
   };
 }
 
-export default ListToggleCommand;
+// [FS] IRAD-1216 2020-02-24
+// Disable the List when menu when the cursor is in custom numbered style
+export function hasCustomNumberedList(state: EditorState) {
+  let isNumberedList = false;
+  const {selection, schema} = state;
+  const text = schema.nodes[PARAGRAPH];
+  const result = findParentNodeOfType(text)(selection);
+  if (result && result.node.attrs) {
+    if (result.node.attrs.styleName && 'None' !== result.node.attrs.styleName) {
+      const style = getCustomStyleByName(result.node.attrs.styleName);
+      if (style && style.styles.styleLevel && style.styles.hasNumbering)
+        isNumberedList = true;
+    }
+  }
+  return isNumberedList;
+}

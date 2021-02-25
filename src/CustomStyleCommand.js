@@ -368,8 +368,6 @@ class CustomStyleCommand extends UICommand {
                   dispatch(tr);
                 });
               }
-             
-              // view.focus();
             }
           }
         },
