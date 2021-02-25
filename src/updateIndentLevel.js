@@ -199,12 +199,13 @@ function setNodeIndentMarkup(
   );
   const styleLevel = getStyleLevel(node.attrs.styleName);
   if (styleLevel) {
-    const nextLevel = styleLevel + delta;
+    //FIX:  Normal Indent is not working along with custom style numbering
+    const nextLevel = parseInt(styleLevel) + delta;
     const startPos = tr.selection.$from.before(1);
     const endPos = tr.selection.$to.after(1);
     const style = getCustomStyleByLevel(nextLevel);
     if (style) {
-      tr = applyLatestStyle(style.stylename, state, tr, node, startPos, endPos);
+      tr = applyLatestStyle(style.styleName, state, tr, node, startPos, endPos);
     }
     return tr;
   }

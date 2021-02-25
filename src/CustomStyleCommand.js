@@ -360,12 +360,15 @@ class CustomStyleCommand extends UICommand {
                 typeof view.runtime.saveStyle === 'function'
               ) {
                 delete val.editorView;
-                view.runtime.saveStyle(val).then((result) => {});
+                view.runtime.saveStyle(val).then((result) => {
+                  // Issue fix: Created custom style Numbering not applied to paragraph.
+                  tr = tr.setSelection(TextSelection.create(doc, 0, 0));
+                  // Apply created styles to document
+                  tr = applyStyle(val, val.styleName, state, tr);
+                  dispatch(tr);
+                });
               }
-              tr = tr.setSelection(TextSelection.create(doc, 0, 0));
-              // Apply created styles to document
-              tr = applyStyle(val, val.styleName, state, tr);
-              dispatch(tr);
+             
               // view.focus();
             }
           }
@@ -647,7 +650,7 @@ function applyStyleEx(
 }
 
 // [FS] IRAD-1213 2020-02-23
-// Looop the whole document
+// Loop the whole document
 // if  any heirachy misses return true and keep the object in a global object
 function hasMismatchHeirarchy(
   state: EditorState,

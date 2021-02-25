@@ -441,8 +441,15 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     const mp3 = document.getElementsByClassName('panel3')[0];
     mp3.style.maxHeight = mp3.scrollHeight + 'px';
 
-    // const ac = document.getElementById('accordion1');
-    // ac.classList.toggle('accactive');
+    // [FS] IRAD-1153 2021-02-25
+    // Numbering level not showing in Preview text when modify style
+    if (
+      1 == this.props.mode &&
+      this.state.styles.styleLevel &&
+      this.state.styles.hasNumbering
+    ) {
+      this.buildStyle();
+    }
   }
 
   render(): React.Element<any> {
@@ -470,7 +477,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   -- select a style --{' '}
                 </option>
                 {customStyles.map((style) => (
-                  <option key={style.styleName} value={style.style}>
+                  <option key={style.styleName} value={style.styleName}>
                     {style.styleName}
                   </option>
                 ))}
@@ -987,6 +994,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       <input
                         checked={this.state.styles.boldNumbering}
                         className="chkboldnumbering"
+                        disabled={this.state.styles.hasNumbering ? false : true}
                         onChange={this.handleBoldNumbering.bind(this)}
                         type="checkbox"
                       />
