@@ -9,7 +9,6 @@ import * as React from 'react';
 import convertFromJSON from '../convertFromJSON';
 import RichTextEditor from '../ui/RichTextEditor';
 import uuid from '../uuid';
-import LicitRuntime from './LicitRuntime';
 import SimpleConnector from './SimpleConnector';
 import CollabConnector from './CollabConnector';
 import {EMPTY_DOC_JSON} from '../createEmptyEditorState';
@@ -73,7 +72,7 @@ class Licit extends React.Component<any, any> {
     const embedded = props.embedded || false; // [FS] IRAD-996 2020-06-30
     // [FS] 2020-07-03
     // Handle Image Upload from Angular App
-    const runtime = props.runtime ? props.runtime : new LicitRuntime();
+    const runtime = props.runtime || null;
     //const runtime = null;
     const plugins = props.plugins || null;
     let editorState = convertFromJSON(data, null, plugins);

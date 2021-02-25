@@ -1,7 +1,7 @@
 // [FS] IRAD-1052 2020-10-30
 // Plugin to handle custom style on load
 import {Plugin, PluginKey} from 'prosemirror-state';
-import {Node, Fragment} from 'prosemirror-model';
+import {Node} from 'prosemirror-model';
 import {
   updateOverrideFlag,
   applyLatestStyle,
@@ -21,11 +21,8 @@ import {
   MARK_TEXT_HIGHLIGHT,
   MARK_UNDERLINE,
 } from './MarkNames';
-import {getCustomStyleByName} from './customStyle';
-import {
-  RESERVED_STYLE_NONE,
-  RESERVED_STYLE_NONE_NUMBERING,
-} from './ParagraphNodeSpec';
+import {getCustomStyleByName, getCustomStyleByLevel} from './customStyle';
+import {RESERVED_STYLE_NONE} from './ParagraphNodeSpec';
 const ALLOWED_MARKS = [
   MARK_STRONG,
   MARK_EM,
@@ -164,9 +161,18 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
       nextNodes.forEach((element) => {
         const styleLevel = getStyleLevel(element.node.attrs.styleName);
         if (styleLevel - prevLevel > 1 && null === nodes) {
-          prevLevel = styleLevel;
           nodes = element;
-          prevN = nextNodes[index - 1];
+          if (2 === nextNodes.length) {
+            prevN = nextNodes[index];
+          } else {
+            prevN = nextNodes[index];
+          }
+
+          const style = getCustomStyleByLevel(Number(styleLevel) - 1);
+          const newattrs = Object.assign({}, prevN.attrs);
+          newattrs.styleName = style.styleName;
+          tr = setNodeAttribute(nextState, tr, prevN.pos, newattrs);
+          prevLevel = styleLevel;
         } else {
           if (prevLevel < 1) {
             prevLevel = styleLevel;
@@ -174,36 +180,16 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
         }
         index++;
       });
-      if (nodes && prevN) {
-        if (!tr) {
-          tr = nextState.tr;
-        }
-        const newattrs = Object.assign({}, prevN.node.attrs);
-        tr = addElementAfter(
-          newattrs,
-          nextState,
-          tr,
-          prevN.pos + prevN.node.nodeSize,
-          prevLevel
-        );
-      }
     }
   }
   return tr;
 }
-function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
-  const styleLevel = getStyleLevel(nodeAttrs.styleName);
-  const counter = styleLevel ? styleLevel : 1;
-  const level = nextLevel ? nextLevel - 1 : 0;
 
-  const paragraph = state.schema.nodes['paragraph'];
-
-  for (let index = level; index > counter; index--) {
-    nodeAttrs.styleName = RESERVED_STYLE_NONE_NUMBERING + index;
-    const paragraphNode = paragraph.create(nodeAttrs, null, null);
-    tr = tr.insert(startPos, Fragment.from(paragraphNode));
+function setNodeAttribute(state, tr, startPos, newattrs) {
+  if (!tr) {
+    tr = state.tr;
   }
-
+  tr = tr.setNodeMarkup(startPos, undefined, newattrs);
   return tr;
 }
 
@@ -211,7 +197,7 @@ function nodeAssignment(state) {
   const nodes = [];
   state.doc.descendants((node, pos) => {
     if (requiredAddAttr(node)) {
-    const styleLevel = getStyleLevel(node.attrs.styleName);
+      const styleLevel = getStyleLevel(node.attrs.styleName);
       if (styleLevel) {
         nodes.push({
           node,
