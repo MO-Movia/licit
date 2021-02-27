@@ -146,50 +146,52 @@ function applyStyles(state, tr) {
 }
 // [FS] IRAD-1130 2021-01-07
 // Handle heirarchy on delete
+
 function manageHierarchyOnDelete(prevState, nextState, tr, view) {
   let nodes = null;
-  let prevN = null;
-  let index = 0;
-
+  const nodesAfterSelection = [];
+  const nodesBeforeSelection = [];
+  const selectedPos = nextState.selection.from;
   if (prevState.doc !== nextState.doc) {
     if (
       view &&
       (DELKEYCODE === view.lastKeyCode || BACKSPACEKEYCODE === view.lastKeyCode)
     ) {
       const nextNodes = nodeAssignment(nextState);
-      let prevLevel = 1;
       nextNodes.forEach((element) => {
         const styleLevel = getStyleLevel(element.node.attrs.styleName);
-        if (styleLevel - prevLevel > 1 && null === nodes) {
-          nodes = element;
-          if (2 === nextNodes.length) {
-            prevN = nextNodes[index];
+        if (styleLevel) {
+          if (element.pos >= selectedPos) {
+            nodesAfterSelection.push({pos: element.pos, node: element.node});
           } else {
-            prevN = nextNodes[index];
-          }
-
-          const style = getCustomStyleByLevel(Number(styleLevel) - 1);
-          const newattrs = Object.assign({}, prevN.attrs);
-          newattrs.styleName = style.styleName;
-          tr = setNodeAttribute(nextState, tr, prevN.pos, newattrs);
-          prevLevel = styleLevel;
-        } else {
-          if (prevLevel < 1) {
-            prevLevel = styleLevel;
+            nodesBeforeSelection.push({pos: element.pos, node: element.node});
           }
         }
-        index++;
       });
+      if (nodesBeforeSelection && nodesAfterSelection) {
+        if (!tr) {
+          tr = nextState.tr;
+        }
+        nodes = nodesBeforeSelection[nodesBeforeSelection.length - 1];
+        let prevLevel = getStyleLevel(nodes.node.attrs.styleName);
+        let subsequantLevel = 0;
+        nodesAfterSelection.forEach((item) => {
+          subsequantLevel = getStyleLevel(item.node.attrs.styleName);
+          if (
+            Number(prevLevel) !== Number(subsequantLevel) &&
+            Number(subsequantLevel) - Number(prevLevel) > 1
+          ) {
+            subsequantLevel = Number(subsequantLevel) - 1;
+            const style = getCustomStyleByLevel(subsequantLevel);
+            const newattrs = Object.assign({}, item.node.attrs);
+            newattrs.styleName = style.styleName;
+            tr = tr.setNodeMarkup(item.pos, undefined, newattrs);
+            prevLevel = subsequantLevel;
+          }
+        });
+      }
     }
   }
-  return tr;
-}
-
-function setNodeAttribute(state, tr, startPos, newattrs) {
-  if (!tr) {
-    tr = state.tr;
-  }
-  tr = tr.setNodeMarkup(startPos, undefined, newattrs);
   return tr;
 }
 

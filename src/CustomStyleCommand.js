@@ -61,7 +61,7 @@ export const LEVELBASEDINDENT = 'isLevelbased';
 export const LEVEL = 'styleLevel';
 export const BOLDPARTIAL = 'boldPartial';
 const MISSED_HEIRACHY_ELEMENT = {};
-
+const nodesAfterSelection = [];
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
 export function getCustomStyleCommands(customStyle: any) {
@@ -254,7 +254,12 @@ class CustomStyleCommand extends UICommand {
     ) {
       tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
       tr = removeTextAlignAndLineSpacing(tr, state.schema);
+      hasMismatchHeirarchy(state, tr, node, startPos, endPos);
       tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
+      const currentNodeAttrs = Object.assign({}, newattrs);
+      currentNodeAttrs.styleName = 'None';
+      currentNodeAttrs.id = 0;
+      tr = tr.setNodeMarkup(startPos, undefined, currentNodeAttrs);
       if (dispatch && tr.docChanged) {
         dispatch(tr);
         return true;
@@ -294,7 +299,9 @@ class CustomStyleCommand extends UICommand {
       }
     } else {
       // TODO: need to show alert with popup UI
-      window.alert('No levels are available;');
+      window.alert(
+        'This Numberings breaks heirarchy, Previous levels are missing '
+      );
     }
 
     return false;
@@ -364,8 +371,27 @@ class CustomStyleCommand extends UICommand {
                   // Issue fix: Created custom style Numbering not applied to paragraph.
                   tr = tr.setSelection(TextSelection.create(doc, 0, 0));
                   // Apply created styles to document
-                  tr = applyStyle(val, val.styleName, state, tr);
-                  dispatch(tr);
+                  const {selection} = state;
+                  const startPos = selection.$from.before(1);
+                  const endPos = selection.$to.after(1);
+                  const node = getNode(state, startPos, endPos, tr);
+                  if (
+                    !hasMismatchHeirarchy(
+                      state,
+                      tr,
+                      node,
+                      startPos,
+                      endPos,
+                      val.styleName
+                    )
+                  ) {
+                    tr = applyStyle(val, val.styleName, state, tr);
+                    dispatch(tr);
+                  } else {
+                    window.alert(
+                      'This Numberings breaks heirarchy, Previous levels are missing '
+                    );
+                  }
                 });
               }
             }
@@ -596,8 +622,7 @@ function applyStyleEx(
   // alignment to style with left alignment
   newattrs['align'] = null;
   newattrs['lineSpacing'] = null;
-  newattrs['paragraphSpacingAfter'] = null;
-  newattrs['paragraphSpacingBefore'] = null;
+
   // [FS] IRAD-1131 2021-01-12
   // Indent overriding not working on a paragraph where custom style is applied
   newattrs['indent'] = null;
@@ -668,7 +693,7 @@ function hasMismatchHeirarchy(
   let levelDiff = 0;
   let nextLevel = null;
   const nodesBeforeSelection = [];
-  const nodesAfterSelection = [];
+
   let hasHeirarchyBroken = false;
   // Manage heirachy for nodes of previous  position
   if (startPos !== 0) {
@@ -679,10 +704,10 @@ function hasMismatchHeirarchy(
       if (isAllowedNode(node)) {
         if (pos < startPos) {
           nodesBeforeSelection.push({pos, node});
-        } else if (pos > endPos) {
+        } else if (pos >= endPos) {
           const nodeStyleLevel = getStyleLevel(node.attrs.styleName);
           if (nodeStyleLevel) {
-            nodesAfterSelection.push(node);
+            nodesAfterSelection.push({pos, node});
           }
         }
       }
@@ -698,7 +723,7 @@ function hasMismatchHeirarchy(
     if (null === previousLevel && null == currentLevel) {
       // No levels established before.
       if (styleLevel !== 1) {
-        setNewElementObject(attrs, startPos, null);
+        setNewElementObject(attrs, startPos, null, false);
         hasHeirarchyBroken = true;
       }
     } else {
@@ -707,33 +732,46 @@ function hasMismatchHeirarchy(
 
       if (1 < levelDiff || 0 > levelDiff) {
         // If NOT applying (same level OR adjacent level)
-        setNewElementObject(attrs, startPos, previousLevel);
+        setNewElementObject(attrs, startPos, previousLevel, false);
         hasHeirarchyBroken = true;
       }
     }
   } else {
     if (styleLevel !== 1) {
-      setNewElementObject(attrs, startPos, null);
-      hasHeirarchyBroken = true;
+      for (let index = 1; index < Number(styleLevel); index++) {
+        if (null === getCustomStyleByLevel(index)) {
+          hasHeirarchyBroken = true;
+          index = Number(styleLevel) + 1;
+        }
+      }
+      setNewElementObject(attrs, startPos, null, false);
     } else {
-      setNewElementObject(attrs, startPos, previousLevel);
+      setNewElementObject(attrs, startPos, previousLevel, false);
     }
   }
 
   if (0 < nodesAfterSelection.length) {
     const selectedLevel = styleLevel;
-    nextLevel = getStyleLevel(nodesAfterSelection[0].attrs.styleName);
-    levelDiff = nextLevel - selectedLevel;
-    if (nextLevel === styleLevel || levelDiff === 1) {
-      // do nothing
-    } else if (0 == styleLevel) {
-      // No level style
-      adjustElementAfter(attrs, endPos, nodesAfterSelection);
-      // hasHeirarchyBroken = true;
-    } else {
-      setNewElementObject(attrs, endPos, nextLevel);
-      hasHeirarchyBroken = true;
-    }
+    let currentLevel = 0;
+    nodesAfterSelection.every((item) => {
+      nextLevel = getStyleLevel(item.node.attrs.styleName);
+      levelDiff = nextLevel - selectedLevel;
+      if (nextLevel === styleLevel || levelDiff === 1) {
+        // do nothing
+      } else if (0 == styleLevel) {
+        // No level style
+        // adjustElementAfter(attrs, endPos, nodesAfterSelection, nextLevel);
+        currentLevel = nextLevel - 1;
+        const style = getCustomStyleByLevel(currentLevel);
+        const newattrs = Object.assign({}, item.node.attrs);
+        newattrs.styleName = style.styleName;
+        setNewElementObject(newattrs, item.pos, 0, true);
+        hasHeirarchyBroken = false;
+      } else {
+        // setNewElementObject(attrs, endPos, nextLevel);
+        // hasHeirarchyBroken = true;
+      }
+    });
   }
   // return tr;
   return hasHeirarchyBroken;
@@ -752,16 +790,45 @@ function createEmptyElement(
     null !== MISSED_HEIRACHY_ELEMENT &&
     undefined !== MISSED_HEIRACHY_ELEMENT.attrs
   ) {
-    tr = addElement(
-      MISSED_HEIRACHY_ELEMENT.attrs,
-      state,
-      tr,
-      startPos,
-      MISSED_HEIRACHY_ELEMENT.previousLevel
-    );
+    if (!MISSED_HEIRACHY_ELEMENT.isAfter) {
+      tr = addElement(
+        MISSED_HEIRACHY_ELEMENT.attrs,
+        state,
+        tr,
+        startPos,
+        MISSED_HEIRACHY_ELEMENT.previousLevel
+      );
+    } else {
+      let nextLevel = getStyleLevel(MISSED_HEIRACHY_ELEMENT.attrs.styleName);
+      let subsequantLevel = 0;
+      let counter = 0;
+      nodesAfterSelection.forEach((item) => {
+        if (0 === counter) {
+          delete MISSED_HEIRACHY_ELEMENT.attrs.styleLevel;
+          tr = setNodeMarkup(
+            tr,
+            MISSED_HEIRACHY_ELEMENT.startPos,
+            MISSED_HEIRACHY_ELEMENT.attrs
+          );
+        } else {
+          subsequantLevel = getStyleLevel(item.node.attrs.styleName);
+          if (nextLevel !== subsequantLevel) {
+            subsequantLevel = Number(subsequantLevel) - 1;
+            const style = getCustomStyleByLevel(subsequantLevel);
+            const newattrs = Object.assign({}, item.node.attrs);
+            newattrs.styleName = style.styleName;
+            tr = setNodeMarkup(tr, item.pos, newattrs);
+            nextLevel = subsequantLevel;
+          }
+        }
+        counter++;
+      });
+    }
   } else {
     tr = addElement(attrs, state, tr, startPos, 0);
   }
+  nodesAfterSelection.splice(0);
+  setNewElementObject(undefined, 0, null, false);
   return tr;
 }
 
@@ -782,12 +849,17 @@ function checkLevlsAvailable() {
   return isAvailable;
 }
 // keep the position and node details in a global variable
-function setNewElementObject(attrs, startPos, previousLevel) {
+function setNewElementObject(attrs, startPos, previousLevel, isAfter) {
+  MISSED_HEIRACHY_ELEMENT.isAfter = isAfter;
   MISSED_HEIRACHY_ELEMENT.attrs = attrs;
   MISSED_HEIRACHY_ELEMENT.startPos = startPos;
   MISSED_HEIRACHY_ELEMENT.previousLevel = previousLevel;
 }
 
+function setNodeMarkup(tr, pos, attrs): Transform {
+  tr = tr.setNodeMarkup(pos, undefined, attrs);
+  return tr;
+}
 function insertParagraph(nodeAttrs, startPos, tr, index, state) {
   const paragraph = state.schema.nodes[PARAGRAPH];
   // [FS] IRAD-1202 2021-02-15
@@ -798,8 +870,6 @@ function insertParagraph(nodeAttrs, startPos, tr, index, state) {
   tr = tr.insert(startPos, Fragment.from(paragraphNode));
   return tr;
 }
-
-function adjustElementAfter(attrs, state, tr, endPos, nodesAfterSelection) {}
 
 function addElementEx(nodeAttrs, state, tr, startPos, after, previousLevel) {
   const styleLevel = nodeAttrs.styleLevel;

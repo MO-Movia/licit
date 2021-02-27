@@ -60,7 +60,11 @@ export function getCustomStyleByLevel(level: Number) {
   let style = null;
   if (customStyles.length > 0) {
     for (const obj of customStyles) {
-      if (obj.styles.styleLevel && level === Number(obj.styles.styleLevel)) {
+      if (
+        obj.styles.hasNumbering &&
+        obj.styles.styleLevel &&
+        level === Number(obj.styles.styleLevel)
+      ) {
         if (null === style) {
           style = obj;
         }
