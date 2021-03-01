@@ -11,7 +11,11 @@ import CustomStyleItem from './CustomStyleItem';
 import createPopUp from './createPopUp';
 import CustomStyleSubMenu from './CustomStyleSubMenu';
 import CustomStyleEditor from './CustomStyleEditor';
-import {applyLatestStyle, updateDocument} from '../CustomStyleCommand';
+import {
+  applyLatestStyle,
+  updateDocument,
+  isCustomStyleAlreadyApplied,
+} from '../CustomStyleCommand';
 import {atViewportCenter} from './PopUpPosition';
 import {setTextAlign} from '../TextAlignCommand';
 import {setTextLineSpacing} from '../TextLineSpacingCommand';
@@ -165,17 +169,27 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             if (undefined !== val && val.command._customStyle) {
               // do edit,remove,rename code here
               if ('remove' === val.type) {
-                this.props.editorView.runtime.removeStyle(
-                  val.command._customStyleName
-                );
-
-                // [FS] IRAD-1099 2020-11-17
-                // Issue fix: Even the applied style is removed the style name is showing in the editor
-                this.removeCustomStyleName(
-                  this.props.editorState,
-                  val.command._customStyleName,
-                  this.props.editorView.dispatch
-                );
+                // [FS] IRAD-1223 2021-03-01
+                // Not allow user to remove already in used custom style with numbering, which shall break the heirarchy. 
+                if (
+                  !isCustomStyleAlreadyApplied(val.command._customStyleName,this.props.editorState,)
+                ) {
+                  this.props.editorView.runtime.removeStyle(
+                    val.command._customStyleName
+                  );
+                  // [FS] IRAD-1099 2020-11-17
+                  // Issue fix: Even the applied style is removed the style name is showing in the editor
+                  this.removeCustomStyleName(
+                    this.props.editorState,
+                    val.command._customStyleName,
+                    this.props.editorView.dispatch
+                  );
+                } else {
+                  // TODO: need to show this alert message in a popup.
+                  window.alert(
+                    'This custom style already in use, by removing this style breaks the heirarchy '
+                  );
+                }
               } else if ('rename' === val.type) {
                 this.showStyleWindow(command, event, 2);
               } else {
@@ -297,8 +311,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
               if (1 === mode) {
                 // update
                 delete val.editorView;
-                customStyles = runtime.saveStyle(val).then((result) => {
-                });
+                customStyles = runtime.saveStyle(val).then((result) => {});
               } else {
                 // rename
                 customStyles = runtime.renameStyle(

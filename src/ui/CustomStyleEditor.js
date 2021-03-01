@@ -44,6 +44,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     this.state = {
       ...props,
       otherStyleSelected,
+      customStyles
     };
     // set default values for text alignment and boldNumbering checkbox.
     if (!this.state.styles.align) {
@@ -60,6 +61,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     ) {
       props.editorView.runtime.getStylesAsync().then((result) => {
         customStyles = result;
+        // [FS] IRAD-1222 2021-03-01
+        // Issue fix: In edit all, the style list not showing the first time.
+        this.setState({
+          customStyles: result,
+        });
       });
     }
   }
@@ -383,10 +389,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     this.setState({styles: {...this.state.styles, align: val}});
   }
 
-  handleNumbering(val: any) {
+  handleNumbering(val: any) {    
     // if user select numbering, then always set nextLineStyle as continues this style.
+    // [FS] IRAD-1221 2021-03-01
+    // Issue fix: The next line style not switch back to 'None' when disable the numbering.
     this.setState({
-      styles: {...this.state.styles, hasNumbering: val.target.checked , nextLineStyleName: this.state.styleName},
+      styles: {...this.state.styles, hasNumbering: val.target.checked , nextLineStyleName: val.target.checked ? this.state.styleName: RESERVED_STYLE_NONE },
     });
   }
 
@@ -439,7 +447,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     const mp2 = document.getElementsByClassName('panel2')[0];
     mp2.style.maxHeight = mp2.scrollHeight + 'px';
     const mp3 = document.getElementsByClassName('panel3')[0];
-    mp3.style.maxHeight = mp3.scrollHeight + 'px';
+    mp3.style.maxHeight = mp3.scrollHeight + 'px'; 
 
     // [FS] IRAD-1153 2021-02-25
     // Numbering level not showing in Preview text when modify style
@@ -476,7 +484,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   {' '}
                   -- select a style --{' '}
                 </option>
-                {customStyles.map((style) => (
+                {this.state.customStyles.map((style) => (
                   <option key={style.styleName} value={style.styleName}>
                     {style.styleName}
                   </option>
@@ -1182,6 +1190,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
   _save = (): void => {
     delete this.state.otherStyleSelected;
+    delete this.state.customStyles;
     // [FS] IRAD-1137 2021-01-15
     // FIX: able to save a custom style name with already exist style name
     if (0 === this.state.mode && isCustomStyleExists(this.state.styleName)) {

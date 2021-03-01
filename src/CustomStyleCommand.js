@@ -1125,6 +1125,22 @@ export function updateDocument(state, tr, styleName, style) {
   return tr;
 }
 
+ // [FS] IRAD-1223 2021-03-01
+ // To check if the custom style have numbering and also used in the document
+export function isCustomStyleAlreadyApplied(styleName, editorState) {
+  let found = false;
+  const {doc} = editorState;
+  doc.nodesBetween(0, doc.nodeSize - 2, (node, pos) => {
+    if (node.content && node.content.content && node.content.content.length) {
+      const styleLevel = getStyleLevel(styleName);
+      if (!found && 0 < styleLevel && node.attrs.styleName === styleName) {
+        found = true;
+      }
+    }
+  });
+  return found;
+}
+
 function haveEligibleChildren(node, contentLen, styleName) {
   return (
     node.type.name === 'paragraph' &&
