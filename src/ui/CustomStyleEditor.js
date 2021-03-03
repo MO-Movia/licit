@@ -10,12 +10,11 @@ import {FONT_PT_SIZES} from './FontSizeCommandMenuButton';
 import {FONT_TYPE_NAMES} from '../FontTypeMarkSpec';
 import {getLineSpacingValue} from './toCSSLineSpacing';
 import {isCustomStyleExists} from '../customStyle';
-import {updateDocument} from '../CustomStyleCommand';
 import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
 
 let customStyles = [];
 const otherStyleSelected = false;
-let editedStyles = [];
+const editedStyles = [];
 
 // Values to show in Linespacing drop-down
 const LINE_SPACE = ['Single', '1.15', '1.5', 'Double'];
@@ -56,7 +55,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       this.state.styles.boldSentence = true;
       this.state.styles.nextLineStyleName = RESERVED_STYLE_NONE;
     }
-    this.getCustomStyles(props.editorView.runtime);    
+    this.getCustomStyles(props.editorView.runtime);
   }
 
   componentWillUnmount(): void {
@@ -453,6 +452,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     ) {
       this.buildStyle();
     }
+    this.setNextLineStyle(this.state.styles.nextLineStyleName);
   }
 
   render(): React.Element<any> {
@@ -1142,7 +1142,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     <span id="nextStyle" style={{display: 'none'}}>
                       <select
                         className="fontstyle stylenameinput"
-                        defaultValue={'DEFAULT'}
+                        // defaultValue={'DEFAULT'}
                         id="nextStyleValue"
                         onChange={this.onOtherStyleSelectionChanged.bind(this)}
                         style={{
@@ -1192,7 +1192,6 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
   _save = (): void => {
     delete this.state.otherStyleSelected;
-    
     // [FS] IRAD-1137 2021-01-15
     // FIX: able to save a custom style name with already exist style name
     if (0 === this.state.mode && isCustomStyleExists(this.state.styleName)) {
@@ -1202,7 +1201,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       // save the custom styles from Edit all option.
     } else if (3 === this.state.mode) {
       this.modifyCustomStyle(this.state);
-      editedStyles.push(this.state.styleName);       
+      editedStyles.push(this.state.styleName);
     } else {
       if ('' != this.state.styleName) {
         delete this.state.customStyles;
@@ -1217,17 +1216,13 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     const {runtime} = this.props.editorView;
     if (runtime && typeof runtime.saveStyle === 'function') {
       delete val.editorView;
-      runtime.saveStyle(val).then((result) => {        
-      });
+      runtime.saveStyle(val).then((result) => {});
     }
   }
 
   // To fetch the custom styles from server and set to the state.
-  getCustomStyles(runtime){
-    if (
-      runtime &&
-      typeof runtime.getStylesAsync === 'function'
-    ) {
+  getCustomStyles(runtime) {
+    if (runtime && typeof runtime.getStylesAsync === 'function') {
       runtime.getStylesAsync().then((result) => {
         customStyles = result;
         // [FS] IRAD-1222 2021-03-01
@@ -1236,6 +1231,23 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
           customStyles: result,
         });
       });
+    }
+  }
+
+  // [FS] IRAD-1231 2021-03-03
+  // Issue fix: Selected style for next line not retaining when modify.
+  setNextLineStyle(nextLineStyleName) {
+    if (0 < this.props.mode) {
+      const bOK = nextLineStyleName !== this.state.styleName ? true : false;
+      if (bOK) {
+        this.setState({
+          otherStyleSelected: true,
+        });
+        const hiddenDiv = document.getElementById('nextStyle');
+        hiddenDiv.style.display = 'block';
+        const selectedStyle = document.getElementById('nextStyleValue');
+        selectedStyle.value= nextLineStyleName;
+      }
     }
   }
 }

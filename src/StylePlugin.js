@@ -283,6 +283,12 @@ function setNodeAttrs(nextLineStyleName, newattrs) {
     newattrs.styleName = nextLineStyleName;
     newattrs.indent = nextLineStyle.styles.indent;
     newattrs.lineSpacing = nextLineStyle.lineHeight;
+  } else if (RESERVED_STYLE_NONE === nextLineStyleName) {
+    // [FS] IRAD-1229 2021-03-03
+    // Next line style None not applied
+    newattrs.styleName = nextLineStyleName;
+    newattrs.indent = null;
+    newattrs.lineSpacing = null;
   }
   return newattrs;
 }

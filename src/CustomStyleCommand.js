@@ -362,9 +362,10 @@ class CustomStyleCommand extends UICommand {
             if (undefined !== val) {
               // [FS] IRAD-1231 2021-03-02
               // Issue fix: The edited styles are not affected the document
-              if (3 === mode) { // edit All
-                val.forEach(style => {
-                  this.getCustomStyles(view.runtime,style,view);
+              if (3 === mode) {
+                // edit All
+                val.forEach((style) => {
+                  this.getCustomStyles(view.runtime, style, view);
                 });
               } else {
                 if (
@@ -444,7 +445,6 @@ class CustomStyleCommand extends UICommand {
   getCustomStyles(runtime, styleName, editorView) {
     if (runtime && typeof runtime.getStylesAsync === 'function') {
       runtime.getStylesAsync().then((result) => {
-        customStyles = result; 
         if (styleName) {
           const {dispatch, state} = editorView;
           let tr;
