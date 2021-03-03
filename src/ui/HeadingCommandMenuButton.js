@@ -111,6 +111,12 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
           customStyleName = RESERVED_STYLE_NONE;
         }
       }
+      // [FS] IRAD-1231 2021-03-02
+      // Show the custom style as None for paste paragrapgh from outside.
+      else{
+        node.attrs.styleName = RESERVED_STYLE_NONE;
+        customStyleName = RESERVED_STYLE_NONE;
+      }
     });
 
     return (

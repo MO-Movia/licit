@@ -168,7 +168,7 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
           }
         }
       });
-      if (nodesBeforeSelection && nodesAfterSelection) {
+      if (0 < nodesBeforeSelection.length && 0 < nodesAfterSelection.length) {
         if (!tr) {
           tr = nextState.tr;
         }

@@ -15,6 +15,7 @@ import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
 
 let customStyles = [];
 const otherStyleSelected = false;
+let editedStyles = [];
 
 // Values to show in Linespacing drop-down
 const LINE_SPACE = ['Single', '1.15', '1.5', 'Double'];
@@ -55,19 +56,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       this.state.styles.boldSentence = true;
       this.state.styles.nextLineStyleName = RESERVED_STYLE_NONE;
     }
-    if (
-      props.editorView.runtime &&
-      typeof props.editorView.runtime.getStylesAsync === 'function'
-    ) {
-      props.editorView.runtime.getStylesAsync().then((result) => {
-        customStyles = result;
-        // [FS] IRAD-1222 2021-03-01
-        // Issue fix: In edit all, the style list not showing the first time.
-        this.setState({
-          customStyles: result,
-        });
-      });
-    }
+    this.getCustomStyles(props.editorView.runtime);    
   }
 
   componentWillUnmount(): void {
@@ -389,12 +378,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     this.setState({styles: {...this.state.styles, align: val}});
   }
 
-  handleNumbering(val: any) {    
+  handleNumbering(val: any) {
     // if user select numbering, then always set nextLineStyle as continues this style.
     // [FS] IRAD-1221 2021-03-01
     // Issue fix: The next line style not switch back to 'None' when disable the numbering.
     this.setState({
-      styles: {...this.state.styles, hasNumbering: val.target.checked , nextLineStyleName: val.target.checked ? this.state.styleName: RESERVED_STYLE_NONE },
+      styles: {
+        ...this.state.styles,
+        hasNumbering: val.target.checked,
+        nextLineStyleName: val.target.checked
+          ? this.state.styleName
+          : RESERVED_STYLE_NONE,
+      },
     });
   }
 
@@ -447,7 +442,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     const mp2 = document.getElementsByClassName('panel2')[0];
     mp2.style.maxHeight = mp2.scrollHeight + 'px';
     const mp3 = document.getElementsByClassName('panel3')[0];
-    mp3.style.maxHeight = mp3.scrollHeight + 'px'; 
+    mp3.style.maxHeight = mp3.scrollHeight + 'px';
 
     // [FS] IRAD-1153 2021-02-25
     // Numbering level not showing in Preview text when modify style
@@ -1185,12 +1180,19 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   }
 
   _cancel = (): void => {
-    this.props.close();
+    // [FS] IRAD-1231 2021-03-02
+    // FIX: edited custom styles not applied to the document
+    if (3 === this.state.mode) {
+      delete this.state.customStyles;
+      this.props.close(editedStyles);
+    } else {
+      this.props.close();
+    }
   };
 
   _save = (): void => {
     delete this.state.otherStyleSelected;
-    delete this.state.customStyles;
+    
     // [FS] IRAD-1137 2021-01-15
     // FIX: able to save a custom style name with already exist style name
     if (0 === this.state.mode && isCustomStyleExists(this.state.styleName)) {
@@ -1200,8 +1202,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       // save the custom styles from Edit all option.
     } else if (3 === this.state.mode) {
       this.modifyCustomStyle(this.state);
+      editedStyles.push(this.state.styleName);       
     } else {
       if ('' != this.state.styleName) {
+        delete this.state.customStyles;
         this.props.close(this.state);
       }
     }
@@ -1210,29 +1214,26 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // [FS] IRAD-1176 2021-02-08
   // save the custom styles from Edit all option.
   modifyCustomStyle(val) {
-    const {dispatch, runtime} = this.props.editorView;
-    let customStyles;
+    const {runtime} = this.props.editorView;
     if (runtime && typeof runtime.saveStyle === 'function') {
       delete val.editorView;
-      runtime.saveStyle(val).then((result) => {
+      runtime.saveStyle(val).then((result) => {        
+      });
+    }
+  }
+
+  // To fetch the custom styles from server and set to the state.
+  getCustomStyles(runtime){
+    if (
+      runtime &&
+      typeof runtime.getStylesAsync === 'function'
+    ) {
+      runtime.getStylesAsync().then((result) => {
         customStyles = result;
-        customStyles.then((result) => {
-          if (null != result) {
-            let tr;
-            result.forEach((obj) => {
-              if (val.styleName === obj.styleName) {
-                tr = updateDocument(
-                  this.props.editorState,
-                  this.props.editorState.tr,
-                  val.styleName,
-                  obj.styles
-                );
-              }
-            });
-            if (tr) {
-              dispatch(tr);
-            }
-          }
+        // [FS] IRAD-1222 2021-03-01
+        // Issue fix: In edit all, the style list not showing the first time.
+        this.setState({
+          customStyles: result,
         });
       });
     }

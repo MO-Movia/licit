@@ -170,7 +170,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
               // do edit,remove,rename code here
               if ('remove' === val.type) {
                 // [FS] IRAD-1223 2021-03-01
-                // Not allow user to remove already in used custom style with numbering, which shall break the heirarchy. 
+                // Not allow user to remove already in used custom style with numbering, which shall break the heirarchy.
                 if (
                   !isCustomStyleAlreadyApplied(val.command._customStyleName,this.props.editorState,)
                 ) {

@@ -282,8 +282,6 @@ class CustomStyleCommand extends UICommand {
       )
     ) {
       isValidated = checkLevlsAvailable();
-    } else {
-      isValidated = true;
     }
     if (isValidated) {
       tr = applyStyle(
@@ -362,6 +360,46 @@ class CustomStyleCommand extends UICommand {
             this._popUp = null;
             //handle save style object part here
             if (undefined !== val) {
+              // [FS] IRAD-1231 2021-03-02
+              // Issue fix: The edited styles are not affected the document
+              if (3 === mode) { // edit All
+                val.forEach(style => {
+                  this.getCustomStyles(view.runtime,style,view);
+                });
+              } else {
+                if (
+                  view.runtime &&
+                  typeof view.runtime.saveStyle === 'function'
+                ) {
+                  delete val.editorView;
+                  view.runtime.saveStyle(val).then((result) => {
+                    // Issue fix: Created custom style Numbering not applied to paragraph.
+                    tr = tr.setSelection(TextSelection.create(doc, 0, 0));
+                    // Apply created styles to document
+                    const {selection} = state;
+                    const startPos = selection.$from.before(1);
+                    const endPos = selection.$to.after(1);
+                    const node = getNode(state, startPos, endPos, tr);
+                    if (
+                      !hasMismatchHeirarchy(
+                        state,
+                        tr,
+                        node,
+                        startPos,
+                        endPos,
+                        val.styleName
+                      )
+                    ) {
+                      tr = applyStyle(val, val.styleName, state, tr);
+                      dispatch(tr);
+                    } else {
+                      window.alert(
+                        'This Numberings breaks heirarchy, Previous levels are missing '
+                      );
+                    }
+                  });
+                }
+              }
               if (
                 view.runtime &&
                 typeof view.runtime.saveStyle === 'function'
@@ -399,6 +437,28 @@ class CustomStyleCommand extends UICommand {
         },
       }
     );
+  }
+
+  // [FS] IRAD-1231 2021-03-02
+  // update the document with the edited styles list.
+  getCustomStyles(runtime, styleName, editorView) {
+    if (runtime && typeof runtime.getStylesAsync === 'function') {
+      runtime.getStylesAsync().then((result) => {
+        customStyles = result; 
+        if (styleName) {
+          const {dispatch, state} = editorView;
+          let tr;
+          result.forEach((obj) => {
+            if (styleName === obj.styleName) {
+              tr = updateDocument(state, state.tr, styleName, obj.styles);
+            }
+          });
+          if (tr) {
+            dispatch(tr);
+          }
+        }
+      });
+    }
   }
 
   // creates a sample style object
@@ -877,7 +937,7 @@ function addElementEx(nodeAttrs, state, tr, startPos, after, previousLevel) {
   let counter = 0;
   const nextLevel = 0;
   if (after) {
-    level = nextLevel ? nextLevel - 1 : 0;
+    // level = nextLevel ? nextLevel - 1 : 0;
     counter = styleLevel ? styleLevel : 1;
     //TODO: Need to check this code it wont work
     addElementAfter(nodeAttrs, state, tr, startPos, nextLevel);
@@ -915,7 +975,7 @@ function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
 
 export function getStyleLevel(styleName) {
   let styleLevel = 0;
-  if (undefined !== styleName) {
+  if (undefined !== styleName && styleName) {
     const styleProp = getCustomStyleByName(styleName);
     if (
       null !== styleProp &&
@@ -1125,8 +1185,8 @@ export function updateDocument(state, tr, styleName, style) {
   return tr;
 }
 
- // [FS] IRAD-1223 2021-03-01
- // To check if the custom style have numbering and also used in the document
+// [FS] IRAD-1223 2021-03-01
+// To check if the custom style have numbering and also used in the document
 export function isCustomStyleAlreadyApplied(styleName, editorState) {
   let found = false;
   const {doc} = editorState;
