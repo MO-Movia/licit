@@ -23,6 +23,7 @@ import {
 } from './MarkNames';
 import {getCustomStyleByName, getCustomStyleByLevel} from './customStyle';
 import {RESERVED_STYLE_NONE} from './ParagraphNodeSpec';
+import {getLineSpacingValue} from './ui/toCSSLineSpacing';
 const ALLOWED_MARKS = [
   MARK_STRONG,
   MARK_EM,
@@ -282,14 +283,23 @@ function setNodeAttrs(nextLineStyleName, newattrs) {
   if (nextLineStyle) {
     newattrs.styleName = nextLineStyleName;
     newattrs.indent = nextLineStyle.styles.indent;
-    newattrs.lineSpacing = nextLineStyle.lineHeight;
+    newattrs.align = nextLineStyle.styles.align;
+    // [FS] IRAD-1223 2021-03-04
+    // Line spacing not working for next line style
+    newattrs.lineSpacing = getLineSpacingValue(nextLineStyle.styles.lineHeight);
   } else if (RESERVED_STYLE_NONE === nextLineStyleName) {
     // [FS] IRAD-1229 2021-03-03
     // Next line style None not applied
-    newattrs.styleName = nextLineStyleName;
-    newattrs.indent = null;
-    newattrs.lineSpacing = null;
+    newattrs = resetNodeAttrs(newattrs,nextLineStyleName); 
   }
+  return newattrs;
+}
+
+function resetNodeAttrs(newattrs,nextLineStyleName) {
+  newattrs.styleName = nextLineStyleName;
+  newattrs.indent = null;
+  newattrs.lineSpacing = null;
+  newattrs.align = 'left';
   return newattrs;
 }
 

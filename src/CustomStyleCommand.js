@@ -256,10 +256,10 @@ class CustomStyleCommand extends UICommand {
       tr = removeTextAlignAndLineSpacing(tr, state.schema);
       hasMismatchHeirarchy(state, tr, node, startPos, endPos);
       tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
-      const currentNodeAttrs = Object.assign({}, newattrs);
-      currentNodeAttrs.styleName = 'None';
-      currentNodeAttrs.id = 0;
-      tr = tr.setNodeMarkup(startPos, undefined, currentNodeAttrs);
+      // const currentNodeAttrs = Object.assign({}, newattrs);
+      // currentNodeAttrs.styleName = 'None';
+      // currentNodeAttrs.id = 0;
+      // tr = tr.setNodeMarkup(startPos, undefined, currentNodeAttrs);
       if (dispatch && tr.docChanged) {
         dispatch(tr);
         return true;

@@ -1237,17 +1237,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // [FS] IRAD-1231 2021-03-03
   // Issue fix: Selected style for next line not retaining when modify.
   setNextLineStyle(nextLineStyleName) {
-    if (0 < this.props.mode) {
-      const bOK = nextLineStyleName !== this.state.styleName ? true : false;
-      if (bOK) {
+    if (0 < this.props.mode && nextLineStyleName !== this.state.styleName) {     
         this.setState({
           otherStyleSelected: true,
         });
         const hiddenDiv = document.getElementById('nextStyle');
         hiddenDiv.style.display = 'block';
         const selectedStyle = document.getElementById('nextStyleValue');
-        selectedStyle.value= nextLineStyleName;
-      }
+        selectedStyle.value= nextLineStyleName;      
     }
   }
 }
