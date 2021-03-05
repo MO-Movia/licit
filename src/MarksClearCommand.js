@@ -29,7 +29,7 @@ class MarksClearCommand extends UICommand {
   ): boolean => {
     let tr = clearMarks(state.tr.setSelection(state.selection), state.schema);
     // [FS] IRAD-948 2021-02-22
-    // Issue fix: after apply clear format on custom style applied paragrapgh, the custom style is not continuing
+    // Issue fix: after apply clear format on custom style applied paragraph, the custom style is not continuing
     const startPos = state.selection.$from.before(1);
     const endPos = state.selection.$to.after(1);
     const node = getNode(state, startPos, endPos, state.tr);
@@ -42,7 +42,7 @@ class MarksClearCommand extends UICommand {
     // Clear Header formatting
     tr = clearHeading(tr, state.schema);
     // [FS] IRAD-948 2020-05-22
-    // Issue fix: after apply clear format on custom style applied paragrapgh, the custom style is not continuing
+    // Issue fix: after apply clear format on custom style applied paragraph, the custom style is not continuing
     tr.storedMarks = storedmarks;
     if (dispatch && tr.docChanged) {
       dispatch(tr);

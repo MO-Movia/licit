@@ -179,16 +179,16 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
     if (this.state.styles.lineHeight) {
       // [FS] IRAD-1104 2020-11-13
-      // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
+      // Issue fix : Linespacing Double and Single not applied in the sample text paragraph
       style.lineHeight = getLineSpacingValue(this.state.styles.lineHeight);
     }
     // [FS] IRAD-1111 2020-12-10
-    // Issue fix : Paragrapgh space before is not applied in the sample text.
+    // Issue fix : Paragraph space before is not applied in the sample text.
     if (this.state.styles.paragraphSpacingBefore) {
       style.marginTop = `${this.state.styles.paragraphSpacingBefore}px`;
     }
     // [FS] IRAD-1111 2020-12-10
-    // Issue fix : Paragrapgh space after is not applied in the sample text.
+    // Issue fix : Paragraph space after is not applied in the sample text.
     if (this.state.styles.paragraphSpacingAfter) {
       style.marginBottom = `${this.state.styles.paragraphSpacingAfter}px`;
     }
@@ -333,7 +333,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // to populate the selected custom styles.
   onSelectCustomStyle(e: any) {
     if (null !== customStyles) {
-      const value = customStyles.find((u) => u.styleName === e.target.value);
+      const value = this.state.customStyles.find((u) => u.styleName === e.target.value);
       // FIX: not able to modify and save the populated style
       value.mode = 3;
       this.state = {
@@ -1239,14 +1239,14 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // [FS] IRAD-1231 2021-03-03
   // Issue fix: Selected style for next line not retaining when modify.
   setNextLineStyle(nextLineStyleName) {
-    if (0 < this.props.mode && nextLineStyleName !== this.state.styleName) {
-      this.setState({
-        otherStyleSelected: true,
-      });
-      const hiddenDiv = document.getElementById('nextStyle');
-      hiddenDiv.style.display = 'block';
-      const selectedStyle = document.getElementById('nextStyleValue');
-      selectedStyle.value = nextLineStyleName;
+    if (0 < this.props.mode && nextLineStyleName !== this.state.styleName) {     
+        this.setState({
+          otherStyleSelected: true,
+        });
+        const hiddenDiv = document.getElementById('nextStyle');
+        hiddenDiv.style.display = 'block';
+        const selectedStyle = document.getElementById('nextStyleValue');
+        selectedStyle.value= nextLineStyleName;      
     }
   }
 }

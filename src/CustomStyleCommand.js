@@ -80,7 +80,7 @@ export function getCustomStyleCommands(customStyle: any) {
       case EM:
         // [FS] IRAD-1043 2020-10-23
         // Issue fix : unselect a style when creating a new style
-        // and that unselected styles also applied in selected paragrapgh
+        // and that unselected styles also applied in selected paragraph
         if (customStyle[property]) commands.push(new MarkToggleCommand('em'));
         break;
 
@@ -99,7 +99,7 @@ export function getCustomStyleCommands(customStyle: any) {
       case STRIKE:
         // [FS] IRAD-1043 2020-10-23
         // Issue fix : unselect a style when creating a new style
-        // and that unselected styles also applied in selected paragrapgh
+        // and that unselected styles also applied in selected paragraph
         if (customStyle[property])
           commands.push(new MarkToggleCommand('strike'));
         break;
@@ -283,8 +283,6 @@ class CustomStyleCommand extends UICommand {
       )
     ) {
       isValidated = checkLevlsAvailable();
-    } else {
-      isValidated = true;
     }
     if (isValidated) {
       tr = applyStyle(
@@ -309,7 +307,7 @@ class CustomStyleCommand extends UICommand {
   };
 
   // [FS] IRAD-1053 2020-12-17
-  // to clear the custom styles in the selected paragrapgh
+  // to clear the custom styles in the selected paragraph
   clearCustomStyles(tr, editorState: EditorState) {
     const {selection, doc} = editorState;
     const {from, to} = selection;
@@ -666,7 +664,7 @@ function applyStyleEx(
       // to set the node attribute for line-height
     } else if (element instanceof TextLineSpacingCommand) {
       // [FS] IRAD-1104 2020-11-13
-      // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
+      // Issue fix : Linespacing Double and Single not applied in the sample text paragraph
       newattrs['lineSpacing'] = getLineSpacingValue(
         styleProp.styles.lineHeight
       );

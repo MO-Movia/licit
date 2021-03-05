@@ -85,7 +85,7 @@ export function clearMarks(tr: Transform, schema: Schema): Transform {
   tasks.forEach((job) => {
     const {mark} = job;
     // [FS] IRAD-1043 2020-10-27
-    // Issue fix on when clear the format of a selected word, the entire paragrapghs style removed
+    // Issue fix on when clear the format of a selected word, the entire paragraphs style removed
     tr = tr.removeMark(from, to, mark.type);
   });
 

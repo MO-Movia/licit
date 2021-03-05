@@ -92,30 +92,35 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     // [FS] IRAD-1088 2020-10-05
     // get the custom style name from node attribute
     doc.nodesBetween(from, to, (node, pos) => {
-      if (node.attrs.styleName && this.isAllowedNode(node)) {
-        // [FS] IRAD-1043 2020-10-27
-        // Show blank as style name when select paragrapghs with multiple custom styles applied
-        selectedStyleCount++;
-        // [FS] IRAD-1100 2020-10-30
-        // Issue fix: style name shows blank when select multiple paragraph with same custom style applied
-        if (
-          1 === selectedStyleCount ||
-          (1 < selectedStyleCount && node.attrs.styleName === customStyleName)
-        ) {
-          customStyleName = node.attrs.styleName.includes(
-            RESERVED_STYLE_NONE_NUMBERING
-          )
-            ? RESERVED_STYLE_NONE
-            : node.attrs.styleName;
-        } else {
+      // [FS] IRAD-1231 2021-03-05
+      // Issue fix : Applied custom style name shows only when click start and end position of paragraph,
+      // otherwise shows 'None'.
+      if (this.isAllowedNode(node)) {
+        if (node.attrs.styleName) {
+          // [FS] IRAD-1043 2020-10-27
+          // Show blank as style name when select paragraphs with multiple custom styles applied
+          selectedStyleCount++;
+          // [FS] IRAD-1100 2020-10-30
+          // Issue fix: style name shows blank when select multiple paragraph with same custom style applied
+          if (
+            1 === selectedStyleCount ||
+            (1 < selectedStyleCount && node.attrs.styleName === customStyleName)
+          ) {
+            customStyleName = node.attrs.styleName.includes(
+              RESERVED_STYLE_NONE_NUMBERING
+            )
+              ? RESERVED_STYLE_NONE
+              : node.attrs.styleName;
+          } else {
+            customStyleName = RESERVED_STYLE_NONE;
+          }
+        }
+        // [FS] IRAD-1231 2021-03-02
+        // Show the custom style as None for paste paragraph from outside.
+        else {
+          node.attrs.styleName = RESERVED_STYLE_NONE;
           customStyleName = RESERVED_STYLE_NONE;
         }
-      }
-      // [FS] IRAD-1231 2021-03-02
-      // Show the custom style as None for paste paragrapgh from outside.
-      else{
-        node.attrs.styleName = RESERVED_STYLE_NONE;
-        customStyleName = RESERVED_STYLE_NONE;
       }
     });
 
