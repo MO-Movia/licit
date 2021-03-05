@@ -298,9 +298,11 @@ class Licit extends React.Component<any, any> {
 
     if (!isSameState) {
       this._connector._editorState = this._editorView.state;
+      // [FS] IRAD-1236 2020-03-05
+      // Only need to call if there is any difference.
+      this._connector.onEdit(transaction, this._editorView);
     }
 
-    this._connector.onEdit(transaction);
     if (transaction.docChanged) {
       const docJson = transaction.doc.toJSON();
       let setCFlags = true;

@@ -3,6 +3,7 @@
 import {EditorState} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {Schema} from 'prosemirror-model';
+import {EditorView} from 'prosemirror-view';
 import ReactDOM from 'react-dom';
 
 export type SetStateCall = (
@@ -19,9 +20,15 @@ class SimpleConnector {
     this._setState = setState;
   }
 
-  onEdit = (transaction: Transform): void => {
+  onEdit = (transaction: Transform, view: EditorView): void => {
     ReactDOM.unstable_batchedUpdates(() => {
       const editorState = this._editorState.apply(transaction);
+      // [FS] IRAD-1236 2020-03-05
+      // The state property should not be directly mutated. Use the updateState method.
+      if(view) {
+        view.updateState(editorState);
+      }
+
       const state = {
         editorState,
         data: transaction.doc.toJSON(),
