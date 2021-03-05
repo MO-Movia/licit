@@ -62,6 +62,7 @@ export const LEVEL = 'styleLevel';
 export const BOLDPARTIAL = 'boldPartial';
 const MISSED_HEIRACHY_ELEMENT = {};
 const nodesAfterSelection = [];
+const nodesBeforeSelection = [];
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
 export function getCustomStyleCommands(customStyle: any) {
@@ -234,7 +235,7 @@ class CustomStyleCommand extends UICommand {
     let {tr} = state;
     const {selection} = state;
     const startPos = selection.$from.before(1);
-    const endPos = selection.$to.after(1);
+    const endPos = selection.$to.after(1) - 1;
     const node = getNode(state, startPos, endPos, tr);
     const newattrs = Object.assign({}, node.attrs);
     let isValidated = true;
@@ -282,6 +283,8 @@ class CustomStyleCommand extends UICommand {
       )
     ) {
       isValidated = checkLevlsAvailable();
+    } else {
+      isValidated = true;
     }
     if (isValidated) {
       tr = applyStyle(
@@ -400,38 +403,6 @@ class CustomStyleCommand extends UICommand {
                     }
                   });
                 }
-              }
-              if (
-                view.runtime &&
-                typeof view.runtime.saveStyle === 'function'
-              ) {
-                delete val.editorView;
-                view.runtime.saveStyle(val).then((result) => {
-                  // Issue fix: Created custom style Numbering not applied to paragraph.
-                  tr = tr.setSelection(TextSelection.create(doc, 0, 0));
-                  // Apply created styles to document
-                  const {selection} = state;
-                  const startPos = selection.$from.before(1);
-                  const endPos = selection.$to.after(1);
-                  const node = getNode(state, startPos, endPos, tr);
-                  if (
-                    !hasMismatchHeirarchy(
-                      state,
-                      tr,
-                      node,
-                      startPos,
-                      endPos,
-                      val.styleName
-                    )
-                  ) {
-                    tr = applyStyle(val, val.styleName, state, tr);
-                    dispatch(tr);
-                  } else {
-                    window.alert(
-                      'This Numberings breaks heirarchy, Previous levels are missing '
-                    );
-                  }
-                });
               }
             }
           }
@@ -722,8 +693,6 @@ function applyStyleEx(
     }
   });
 
-  // to set custom styleName attribute for node
-  newattrs['styleName'] = styleName;
   tr = applyLineStyle(node, styleProp.styles, state, tr, startPos, endPos);
   const storedmarks = getMarkByStyleName(styleName, state.schema);
   tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
@@ -745,67 +714,56 @@ function hasMismatchHeirarchy(
 ) {
   const styleLevel = getStyleLevel(styleName);
   const currentLevel = getStyleLevel(node.attrs.styleName);
-
+  nodesBeforeSelection.splice(0);
   const attrs = Object.assign({}, node.attrs);
   attrs['styleLevel'] = Number(styleLevel);
-
+  attrs['styleName'] = styleName;
   let previousLevel = null;
   let levelDiff = 0;
   let nextLevel = null;
-  const nodesBeforeSelection = [];
 
   let hasHeirarchyBroken = false;
   // Manage heirachy for nodes of previous  position
-  if (startPos !== 0) {
-    // Fix: document Load Error- Instead of state doc here give transaction doc,because when we apply changes
-    // dynamically through transactions the node position  get affected,
-    // so depending on state doc nodes' positions is incorrect.
-    tr.doc.descendants((node, pos) => {
-      if (isAllowedNode(node)) {
-        if (pos < startPos) {
-          nodesBeforeSelection.push({pos, node});
-        } else if (pos >= endPos) {
-          const nodeStyleLevel = getStyleLevel(node.attrs.styleName);
-          if (nodeStyleLevel) {
-            nodesAfterSelection.push({pos, node});
-          }
+  // if (startPos !== 0) {
+  // Fix: document Load Error- Instead of state doc here give transaction doc,because when we apply changes
+  // dynamically through transactions the node position  get affected,
+  // so depending on state doc nodes' positions is incorrect.
+  tr.doc.descendants((node, pos) => {
+    if (isAllowedNode(node)) {
+      if (pos < startPos || 0 === startPos) {
+        nodesBeforeSelection.push({pos, node});
+      } else if (pos >= endPos) {
+        const nodeStyleLevel = getStyleLevel(node.attrs.styleName);
+        if (nodeStyleLevel) {
+          nodesAfterSelection.push({pos, node});
         }
-      }
-      return true;
-    });
-
-    nodesBeforeSelection.reverse();
-    nodesBeforeSelection.every((item) => {
-      previousLevel = getStyleLevel(item.node.attrs.styleName);
-      return previousLevel === 0 ? true : false;
-    });
-
-    if (null === previousLevel && null == currentLevel) {
-      // No levels established before.
-      if (styleLevel !== 1) {
-        setNewElementObject(attrs, startPos, null, false);
-        hasHeirarchyBroken = true;
-      }
-    } else {
-      //	If this is the first level, identify the level difference with previous level.
-      levelDiff = previousLevel ? styleLevel - previousLevel : styleLevel;
-
-      if (1 < levelDiff || 0 > levelDiff) {
-        // If NOT applying (same level OR adjacent level)
-        setNewElementObject(attrs, startPos, previousLevel, false);
-        hasHeirarchyBroken = true;
       }
     }
-  } else {
+    return true;
+  });
+
+  nodesBeforeSelection.reverse();
+  nodesBeforeSelection.every((item) => {
+    previousLevel = getStyleLevel(item.node.attrs.styleName);
+    return previousLevel === 0 ? true : false;
+  });
+
+  if (null === previousLevel && null == currentLevel) {
+    // No levels established before.
     if (styleLevel !== 1) {
-      for (let index = 1; index < Number(styleLevel); index++) {
-        if (null === getCustomStyleByLevel(index)) {
-          hasHeirarchyBroken = true;
-          index = Number(styleLevel) + 1;
-        }
-      }
       setNewElementObject(attrs, startPos, null, false);
-    } else {
+      hasHeirarchyBroken = true;
+    }
+  } else {
+    //	If this is the first level, identify the level difference with previous level.
+    levelDiff = previousLevel ? styleLevel - previousLevel : styleLevel;
+
+    if (1 < levelDiff || 0 > levelDiff) {
+      // If NOT applying (same level OR adjacent level)
+      setNewElementObject(attrs, startPos, previousLevel, false);
+      hasHeirarchyBroken = true;
+    }
+    if (levelDiff == 1) {
       setNewElementObject(attrs, startPos, previousLevel, false);
     }
   }
@@ -814,14 +772,15 @@ function hasMismatchHeirarchy(
     const selectedLevel = styleLevel;
     let currentLevel = 0;
     nodesAfterSelection.every((item) => {
-      nextLevel = getStyleLevel(item.node.attrs.styleName);
+      nextLevel = Number(getStyleLevel(item.node.attrs.styleName));
       levelDiff = nextLevel - selectedLevel;
       if (nextLevel === styleLevel || levelDiff === 1) {
         // do nothing
       } else if (0 == styleLevel) {
         // No level style
         // adjustElementAfter(attrs, endPos, nodesAfterSelection, nextLevel);
-        currentLevel = nextLevel - 1;
+        // currentLevel = nextLevel - 1;
+        currentLevel = nextLevel;
         const style = getCustomStyleByLevel(currentLevel);
         const newattrs = Object.assign({}, item.node.attrs);
         newattrs.styleName = style.styleName;
@@ -851,41 +810,146 @@ function createEmptyElement(
     undefined !== MISSED_HEIRACHY_ELEMENT.attrs
   ) {
     if (!MISSED_HEIRACHY_ELEMENT.isAfter) {
-      tr = addElement(
-        MISSED_HEIRACHY_ELEMENT.attrs,
-        state,
-        tr,
-        startPos,
-        MISSED_HEIRACHY_ELEMENT.previousLevel
+      // tr = addElement(
+      //   MISSED_HEIRACHY_ELEMENT.attrs,
+      //   state,
+      //   tr,
+      //   startPos,
+      //   MISSED_HEIRACHY_ELEMENT.previousLevel
+      // );
+      const appliedLevel = Number(
+        getStyleLevel(MISSED_HEIRACHY_ELEMENT.attrs.styleName)
       );
+      let hasFoundLevel = false;
+      let subsequantLevel = 0;
+      const posArray = [];
+      let counter = 0;
+      let newattrs = null;
+      // nodesBeforeSelection.reverse();
+      nodesBeforeSelection.forEach((item) => {
+        // if ('None' !== item.node.attrs.styleName) {
+        subsequantLevel = Number(getStyleLevel(item.node.attrs.styleName));
+        if (0 === startPos && 0 === counter) {
+          if (0 === subsequantLevel && 1 === appliedLevel) {
+            // needEmptyElement = false;
+          } else {
+            if (subsequantLevel !== appliedLevel && !hasFoundLevel) {
+              hasFoundLevel = true;
+              newattrs = Object.assign({}, item.node.attrs);
+              posArray.push({
+                pos: startPos,
+                appliedLevel: appliedLevel,
+                currentLevel: subsequantLevel,
+              });
+            }
+          }
+        } else {
+          if (startPos !== 0 && 'None' !== item.node.attrs.styleName) {
+            if (appliedLevel - subsequantLevel > 1 && !hasFoundLevel) {
+              newattrs = Object.assign({}, item.node.attrs);
+              // posArray = [];
+              posArray.push({
+                pos: startPos,
+                appliedLevel: appliedLevel,
+                currentLevel: subsequantLevel,
+              });
+              hasFoundLevel = true;
+            } else {
+              // posArray = [];
+              hasFoundLevel = true;
+            }
+          }
+        }
+        counter++;
+        // }
+      });
+
+      if (posArray.length > 0) {
+        tr = addElement(
+          newattrs,
+          state,
+          tr,
+          posArray[0].pos,
+          false,
+          posArray[0].appliedLevel,
+          posArray[0].currentLevel
+        );
+
+        // tr = addElementEx(
+        //   newattrs,
+        //   state,
+        //   tr,
+        //   posArray[0].pos,
+        //   false,
+        //   posArray[0].Levldiff,
+        //   posArray[0].currentLevel
+        // );
+      }
     } else {
       let nextLevel = getStyleLevel(MISSED_HEIRACHY_ELEMENT.attrs.styleName);
       let subsequantLevel = 0;
       let counter = 0;
       nodesAfterSelection.forEach((item) => {
         if (0 === counter) {
-          delete MISSED_HEIRACHY_ELEMENT.attrs.styleLevel;
-          tr = setNodeMarkup(
-            tr,
-            MISSED_HEIRACHY_ELEMENT.startPos,
-            MISSED_HEIRACHY_ELEMENT.attrs
-          );
+          if (
+            nodesAfterSelection.length > 0 &&
+            nodesBeforeSelection.length > 0
+          ) {
+            if (
+              nodesAfterSelection[0].node.attrs.styleName ===
+              MISSED_HEIRACHY_ELEMENT.attrs.styleName
+            ) {
+              nodesBeforeSelection.reverse();
+              const prev = getStyleLevel(
+                nodesBeforeSelection[nodesBeforeSelection.length - 1].node.attrs
+                  .styleName
+              );
+              const nLevelDiff = Number(nextLevel) - Number(prev);
+              if (nLevelDiff > 1) {
+                subsequantLevel = Number(nextLevel) - 1;
+                const style = getCustomStyleByLevel(subsequantLevel);
+                if (style) {
+                  const newattrs = Object.assign(
+                    {},
+                    MISSED_HEIRACHY_ELEMENT.attrs
+                  );
+                  newattrs.styleName = style.styleName;
+                  tr = setNodeMarkup(
+                    tr,
+                    MISSED_HEIRACHY_ELEMENT.startPos,
+                    newattrs
+                  );
+                  nextLevel = subsequantLevel;
+                }
+              }
+            }
+          } else {
+            delete MISSED_HEIRACHY_ELEMENT.attrs.styleLevel;
+            tr = setNodeMarkup(
+              tr,
+              MISSED_HEIRACHY_ELEMENT.startPos,
+              MISSED_HEIRACHY_ELEMENT.attrs
+            );
+          }
         } else {
-          subsequantLevel = getStyleLevel(item.node.attrs.styleName);
-          if (nextLevel !== subsequantLevel) {
+          subsequantLevel = Number(getStyleLevel(item.node.attrs.styleName));
+          if (
+            Number(nextLevel) !== subsequantLevel &&
+            1 !== subsequantLevel - Number(nextLevel)
+          ) {
             subsequantLevel = Number(subsequantLevel) - 1;
             const style = getCustomStyleByLevel(subsequantLevel);
             const newattrs = Object.assign({}, item.node.attrs);
             newattrs.styleName = style.styleName;
             tr = setNodeMarkup(tr, item.pos, newattrs);
-            nextLevel = subsequantLevel;
           }
+          nextLevel = subsequantLevel;
         }
         counter++;
       });
     }
   } else {
-    tr = addElement(attrs, state, tr, startPos, 0);
+    //  tr = addElement(attrs, state, tr, startPos, 0);
   }
   nodesAfterSelection.splice(0);
   setNewElementObject(undefined, 0, null, false);
@@ -931,19 +995,39 @@ function insertParagraph(nodeAttrs, startPos, tr, index, state) {
   return tr;
 }
 
-function addElementEx(nodeAttrs, state, tr, startPos, after, previousLevel) {
-  const styleLevel = nodeAttrs.styleLevel;
+// function adjustElementAfter(
+//   attrs,
+//   state,
+//   tr,
+//   endPos,
+//   nodesAfterSelection,
+//   nextLevel
+// ) {
+//   nodesBeforeSelection.every((item) => {});
+// }
+
+function addElementEx(
+  nodeAttrs,
+  state,
+  tr,
+  startPos,
+  after,
+  previousLevel,
+  currentLevel
+) {
+  // const styleLevel = getStyleLevel(nodeAttrs.styleName);
   let level = 0;
   let counter = 0;
   const nextLevel = 0;
   if (after) {
-    // level = nextLevel ? nextLevel - 1 : 0;
-    counter = styleLevel ? styleLevel : 1;
+    level = nextLevel ? nextLevel - 1 : 0;
+    // counter = styleLevel ? Number(styleLevel) : 1;
     //TODO: Need to check this code it wont work
     addElementAfter(nodeAttrs, state, tr, startPos, nextLevel);
   } else {
-    level = styleLevel ? styleLevel - 1 : 0;
-    counter = previousLevel ? previousLevel : 0;
+    level = previousLevel ? previousLevel - 1 : 0;
+    //counter = currentLevel ? Number(styleLevel) - 1 : 0;
+    counter = currentLevel ? currentLevel : 0;
   }
 
   for (let index = level; index > counter; index--) {
@@ -952,8 +1036,24 @@ function addElementEx(nodeAttrs, state, tr, startPos, after, previousLevel) {
   return {tr, level, counter};
 }
 
-function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
-  return addElementEx(nodeAttrs, state, tr, startPos, false, previousLevel).tr;
+function addElement(
+  nodeAttrs,
+  state,
+  tr,
+  startPos,
+  isAfter,
+  appliedLevel,
+  currentLevel
+) {
+  return addElementEx(
+    nodeAttrs,
+    state,
+    tr,
+    startPos,
+    isAfter,
+    appliedLevel,
+    currentLevel
+  ).tr;
 }
 
 function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
@@ -1125,7 +1225,7 @@ export function applyStyle(
 ) {
   const {selection} = state;
   const startPos = selection.$from.before(1);
-  const endPos = selection.$to.after(1);
+  const endPos = selection.$to.after(1) - 1;
   return applyStyleToEachNode(state, startPos, endPos, tr, style, styleName);
 }
 

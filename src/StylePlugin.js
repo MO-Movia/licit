@@ -147,11 +147,11 @@ function applyStyles(state, tr) {
 }
 // [FS] IRAD-1130 2021-01-07
 // Handle heirarchy on delete
-
 function manageHierarchyOnDelete(prevState, nextState, tr, view) {
   let nodes = null;
   const nodesAfterSelection = [];
   const nodesBeforeSelection = [];
+  let isLast = false;
   const selectedPos = nextState.selection.from;
   if (prevState.doc !== nextState.doc) {
     if (
@@ -169,13 +169,18 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
           }
         }
       });
-      if (0 < nodesBeforeSelection.length && 0 < nodesAfterSelection.length) {
+
+      if (nodesBeforeSelection.length > 0 || nodesAfterSelection.length > 0) {
         if (!tr) {
           tr = nextState.tr;
         }
-        nodes = nodesBeforeSelection[nodesBeforeSelection.length - 1];
-        let prevLevel = getStyleLevel(nodes.node.attrs.styleName);
+        let prevLevel = 0;
         let subsequantLevel = 0;
+        let counter = 0;
+        if (nodesBeforeSelection.length > 0) {
+          nodes = nodesBeforeSelection[nodesBeforeSelection.length - 1];
+          prevLevel = getStyleLevel(nodes.node.attrs.styleName);
+        }
         nodesAfterSelection.forEach((item) => {
           subsequantLevel = getStyleLevel(item.node.attrs.styleName);
           if (
@@ -188,13 +193,101 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
             newattrs.styleName = style.styleName;
             tr = tr.setNodeMarkup(item.pos, undefined, newattrs);
             prevLevel = subsequantLevel;
+          } else {
+            if (
+              1 === selectedPos &&
+              nodesBeforeSelection.length === 1 &&
+              nodesBeforeSelection[0].pos === 0 &&
+              Number(prevLevel) === 2 &&
+              counter === 0
+            ) {
+              prevLevel = Number(prevLevel);
+              const style = getCustomStyleByLevel(prevLevel - 1);
+              const styleLevel2 = getCustomStyleByLevel(2);
+              const newattrs = Object.assign({}, item.node.attrs);
+              newattrs.styleName = style.styleName;
+              if (counter === 0) {
+                tr = tr.setNodeMarkup(0, undefined, newattrs);
+
+                if (Number(subsequantLevel) === 3) {
+                  isLast = true;
+                  if (styleLevel2) {
+                    newattrs.styleName = styleLevel2.styleName;
+                    tr = tr.setNodeMarkup(item.pos, undefined, newattrs);
+                  }
+                }
+              } else {
+                // if (styleLevel2) {
+                //   newattrs.styleName = styleLevel2.styleName;
+                //   tr = tr.setNodeMarkup(item.pos, undefined, newattrs);
+                // }
+              }
+            } else {
+              if (isLast) {
+                const styleLevel2 = getCustomStyleByLevel(2);
+                const newattrs = Object.assign({}, item.node.attrs);
+                if (styleLevel2) {
+                  newattrs.styleName = styleLevel2.styleName;
+                  tr = tr.setNodeMarkup(item.pos, undefined, newattrs);
+                }
+              }
+            }
+            if (!isLast)
+              if (Number(subsequantLevel) - Number(prevLevel) === 1) {
+                prevLevel = subsequantLevel;
+              }
           }
+          counter++;
         });
+        if (
+          nodesBeforeSelection.length === 1 &&
+          nodesAfterSelection.length === 0
+        ) {
+          subsequantLevel = Number(prevLevel) - 1;
+          const style = getCustomStyleByLevel(subsequantLevel);
+          if (style) {
+            const newattrs = Object.assign(
+              {},
+              nodesBeforeSelection[0].node.attrs
+            );
+            newattrs.styleName = style.styleName;
+            tr = tr.setNodeMarkup(
+              nodesBeforeSelection[0].pos,
+              undefined,
+              newattrs
+            );
+          }
+        }
       }
     }
   }
   return tr;
 }
+
+// function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
+//   const counter = nodeAttrs.styleLevel ? nodeAttrs.styleLevel : 1;
+//   const level = nextLevel ? nextLevel - 1 : 0;
+
+//   const paragraph = state.schema.nodes['paragraph'];
+
+//   for (let index = level; index > counter; index--) {
+//     nodeAttrs.styleLevel = index;
+//     nodeAttrs.styleName = 'None';
+//     nodeAttrs.customStyle = null;
+//     const paragraphNode = paragraph.create(nodeAttrs, null, null);
+//     tr = tr.insert(startPos, Fragment.from(paragraphNode));
+//   }
+
+//   return tr;
+// }
+
+// function setNodeAttribute(state, tr, startPos, newattrs) {
+//   if (!tr) {
+//     tr = state.tr;
+//   }
+//   tr = tr.setNodeMarkup(startPos, undefined, newattrs);
+//   return tr;
+// }
 
 function nodeAssignment(state) {
   const nodes = [];
@@ -290,12 +383,12 @@ function setNodeAttrs(nextLineStyleName, newattrs) {
   } else if (RESERVED_STYLE_NONE === nextLineStyleName) {
     // [FS] IRAD-1229 2021-03-03
     // Next line style None not applied
-    newattrs = resetNodeAttrs(newattrs,nextLineStyleName); 
+    newattrs = resetNodeAttrs(newattrs, nextLineStyleName);
   }
   return newattrs;
 }
 
-function resetNodeAttrs(newattrs,nextLineStyleName) {
+function resetNodeAttrs(newattrs, nextLineStyleName) {
   newattrs.styleName = nextLineStyleName;
   newattrs.indent = null;
   newattrs.lineSpacing = null;

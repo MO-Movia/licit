@@ -321,8 +321,11 @@ class Licit extends React.Component<any, any> {
       if (setCFlags) {
         this.setCounterFlags(transaction, false);
       }
-      this.state.onChangeCB(docJson, isEmpty);
- this.closeOpenedPopupModels();
+      this.state.onChangeCB(docJson, {
+        isEmpty: isEmpty,
+        view: this._editorView,
+      });
+      this.closeOpenedPopupModels();
     }
   };
   // [FS] IRAD-1173 2021-02-25
