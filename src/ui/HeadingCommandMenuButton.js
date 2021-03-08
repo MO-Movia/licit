@@ -8,7 +8,10 @@ import {EditorState} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
 import {Transform} from 'prosemirror-transform';
 import {Node} from 'prosemirror-model';
-import {RESERVED_STYLE_NONE, RESERVED_STYLE_NONE_NUMBERING} from '../ParagraphNodeSpec';
+import {
+  RESERVED_STYLE_NONE,
+  RESERVED_STYLE_NONE_NUMBERING,
+} from '../ParagraphNodeSpec';
 
 // [FS] IRAD-1042 2020-09-09
 // To include custom styles in the toolbar
@@ -42,21 +45,22 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
       this.props.editorView.runtime &&
       typeof this.props.editorView.runtime.getStylesAsync === 'function'
     ) {
-      const customStyles = this.props.editorView.runtime.getStylesAsync();
       let HEADING_NAMES = null;
-      customStyles.then((result) => {
-        HEADING_NAMES = result;
-
-        if (null != HEADING_NAMES) {
-          HEADING_NAMES.forEach((obj) => {
-            HEADING_COMMANDS[obj.styleName] = new CustomStyleCommand(
-              obj,
-              obj.styleName
-            );
-          });
+      this.props.editorView.runtime.getStylesAsync().then((result) => {
+        if (result) {
+          HEADING_NAMES = result;
+          if (null != HEADING_NAMES) {
+            HEADING_NAMES.forEach((obj) => {
+              HEADING_COMMANDS[obj.styleName] = new CustomStyleCommand(
+                obj,
+                obj.styleName
+              );
+            });
+          }
         }
         return [HEADING_COMMANDS];
       });
+       
       this.hasRuntime = true;
     } else {
       this.hasRuntime = false;
@@ -69,10 +73,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     };
     // [FS] IRAD-1176 2021-02-08
     // Added a menu "Edit All" for Edit All custom styles
-    MENU_COMMANDS['editall'] = new CustomStyleCommand(
-      'editall',
-      'Edit All'
-    );
+    MENU_COMMANDS['editall'] = new CustomStyleCommand('editall', 'Edit All');
     MENU_COMMANDS['clearstyle'] = new CustomStyleCommand(
       'clearstyle',
       'Clear Style'

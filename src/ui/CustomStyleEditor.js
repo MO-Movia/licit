@@ -289,7 +289,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // [FS] IRAD-1201 2021-02-18
   // set the nextLineStyle to JSON on style selection changed
   onOtherStyleSelectionChanged(e: any) {
-    if (this.selectStyleCheckboxState()) {
+    if (this.state.otherStyleSelected) {
       this.setState({
         styles: {...this.state.styles, nextLineStyleName: e.target.value},
       });
@@ -333,13 +333,16 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // to populate the selected custom styles.
   onSelectCustomStyle(e: any) {
     if (null !== customStyles) {
-      const value = this.state.customStyles.find((u) => u.styleName === e.target.value);
+      const value = this.state.customStyles.find(
+        (u) => u.styleName === e.target.value
+      );
       // FIX: not able to modify and save the populated style
       value.mode = 3;
       this.state = {
         ...value,
       };
       this.setState(this.state);
+      this.setNextLineStyle(this.state.styles.nextLineStyleName);
     }
   }
 
@@ -443,6 +446,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     const mp3 = document.getElementsByClassName('panel3')[0];
     mp3.style.maxHeight = mp3.scrollHeight + 'px';
 
+    this.setNextLineStyle(this.state.styles.nextLineStyleName);
     // [FS] IRAD-1153 2021-02-25
     // Numbering level not showing in Preview text when modify style
     if (
@@ -452,7 +456,6 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     ) {
       this.buildStyle();
     }
-    this.setNextLineStyle(this.state.styles.nextLineStyleName);
   }
 
   render(): React.Element<any> {
@@ -1152,6 +1155,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                           marginLeft: '7px',
                           width: '97px',
                         }}
+                        value={this.state.styles.nextLineStyleName}
                       >
                         {customStyles.map((style) => (
                           <option key={style.styleName} value={style.style}>
@@ -1239,14 +1243,26 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // [FS] IRAD-1231 2021-03-03
   // Issue fix: Selected style for next line not retaining when modify.
   setNextLineStyle(nextLineStyleName) {
-    if (0 < this.props.mode && nextLineStyleName !== this.state.styleName) {     
-        this.setState({
-          otherStyleSelected: true,
-        });
-        const hiddenDiv = document.getElementById('nextStyle');
-        hiddenDiv.style.display = 'block';
-        const selectedStyle = document.getElementById('nextStyleValue');
-        selectedStyle.value= nextLineStyleName;      
+   // [FS] IRAD-1241 2021-03-05
+   // The selcted Style in the Next line setting not retaing in Edit All and modify
+    const hiddenDiv = document.getElementById('nextStyle');
+    if (
+      0 < this.props.mode &&
+      nextLineStyleName &&
+      RESERVED_STYLE_NONE !== nextLineStyleName &&
+      nextLineStyleName !== this.state.styleName
+    ) {
+      this.setState({
+        otherStyleSelected: true,
+      });      
+      hiddenDiv.style.display = 'block';
+      const selectedStyle = document.getElementById('nextStyleValue');
+      selectedStyle.value = nextLineStyleName;
+    } else {
+      this.setState({
+        otherStyleSelected: false,
+      });
+      hiddenDiv.style.display = 'none';
     }
   }
 }

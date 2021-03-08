@@ -172,7 +172,10 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                 // [FS] IRAD-1223 2021-03-01
                 // Not allow user to remove already in used custom style with numbering, which shall break the heirarchy.
                 if (
-                  !isCustomStyleAlreadyApplied(val.command._customStyleName,this.props.editorState,)
+                  !isCustomStyleAlreadyApplied(
+                    val.command._customStyleName,
+                    this.props.editorState
+                  )
                 ) {
                   this.props.editorView.runtime.removeStyle(
                     val.command._customStyleName
@@ -311,7 +314,27 @@ class CustomMenuUI extends React.PureComponent<any, any> {
               if (1 === mode) {
                 // update
                 delete val.editorView;
-                customStyles = runtime.saveStyle(val).then((result) => {});
+                runtime.saveStyle(val).then((result) => {
+                  if (result) {
+                    result.forEach((obj) => {
+                      if (val.styleName === obj.styleName) {
+                        tr = updateDocument(
+                          this.props.editorState,
+                          this.props.editorState.tr,
+                          val.styleName,
+                          obj.styles
+                        );
+                      }
+                    });
+                    if (tr) {
+                      dispatch(tr);
+                    }
+                  }
+
+                  this.props.editorView.focus();
+                  this._stylePopup.close();
+                  this._stylePopup = null;
+                });
               } else {
                 // rename
                 customStyles = runtime.renameStyle(
@@ -321,39 +344,41 @@ class CustomMenuUI extends React.PureComponent<any, any> {
               }
               // [FS] IRAD-1133 2021-01-06
               // Issue fix: After modify a custom style, the modified style not applied to the paragraph.
-              customStyles.then((result) => {
-                if (null != result) {
-                  let tr;
-                  result.forEach((obj) => {
-                    if (1 === mode) {
-                      if (val.styleName === obj.styleName) {
-                        tr = updateDocument(
-                          this.props.editorState,
-                          this.props.editorState.tr,
-                          val.styleName,
-                          obj.styles
-                        );
+              if (customStyles) {
+                customStyles.then((result) => {
+                  if (null != result) {
+                    let tr;
+                    result.forEach((obj) => {
+                      if (1 === mode) {
+                        // if (val.styleName === obj.styleName) {
+                        //   tr = updateDocument(
+                        //     this.props.editorState,
+                        //     this.props.editorState.tr,
+                        //     val.styleName,
+                        //     obj.styles
+                        //   );
+                        // }
+                      } else {
+                        if (val.styleName === obj.styleName) {
+                          tr = this.renameStyleInDocument(
+                            this.props.editorState,
+                            this.props.editorState.tr,
+                            this._styleName,
+                            val.styleName,
+                            obj.styles
+                          );
+                        }
                       }
-                    } else {
-                      if (val.styleName === obj.styleName) {
-                        tr = this.renameStyleInDocument(
-                          this.props.editorState,
-                          this.props.editorState.tr,
-                          this._styleName,
-                          val.styleName,
-                          obj.styles
-                        );
-                      }
+                    });
+                    if (tr) {
+                      dispatch(tr);
                     }
-                  });
-                  if (tr) {
-                    dispatch(tr);
+                    this.props.editorView.focus();
+                    this._stylePopup.close();
+                    this._stylePopup = null;
                   }
-                  this.props.editorView.focus();
-                  this._stylePopup.close();
-                  this._stylePopup = null;
-                }
-              });
+                });
+              }
             }
           }
         },

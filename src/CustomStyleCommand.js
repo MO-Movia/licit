@@ -283,7 +283,7 @@ class CustomStyleCommand extends UICommand {
       )
     ) {
       isValidated = checkLevlsAvailable();
-    }
+    }   
     if (isValidated) {
       tr = applyStyle(
         this._customStyle,
@@ -419,7 +419,7 @@ class CustomStyleCommand extends UICommand {
           let tr;
           result.forEach((obj) => {
             if (styleName === obj.styleName) {
-              tr = updateDocument(state, state.tr, styleName, obj.styles);
+              tr = updateDocument(state, state.tr, styleName, obj);
             }
           });
           if (tr) {
@@ -1018,7 +1018,7 @@ function addElementEx(
   let counter = 0;
   const nextLevel = 0;
   if (after) {
-    level = nextLevel ? nextLevel - 1 : 0;
+    // level = nextLevel ? nextLevel - 1 : 0;
     // counter = styleLevel ? Number(styleLevel) : 1;
     //TODO: Need to check this code it wont work
     addElementAfter(nodeAttrs, state, tr, startPos, nextLevel);
