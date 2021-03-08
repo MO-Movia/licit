@@ -91,6 +91,8 @@ class CustomLicitRuntime {
         (err) => {}
       );
     });
+
+    return this.styleProps;
   }
 
   /**
@@ -133,6 +135,8 @@ class CustomLicitRuntime {
         }
       );
     });
+
+    return this.styleProps;
   }
 
   /**
@@ -157,6 +161,8 @@ class CustomLicitRuntime {
         (err) => {}
       );
     });
+
+    return this.styleProps;
   }
 
   fetchStyles(): Promise<StyleProps[]> {
