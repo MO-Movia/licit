@@ -77,12 +77,20 @@ class CustomLicitRuntime {
     const url = this.buildRoute('styles');
     await new Promise((resolve, reject) => {
       POST(url, JSON.stringify(style), 'application/json; charset=utf-8').then(
-        (data) => {},
+        (data) => {
+          // Refresh from server after save
+          this.fetchStyles().then(
+            (result) => {
+              this.styleProps = result;
+              resolve(this.styleProps);
+            },
+            (error) => {
+              reject(this.styleProps);
+            }
+          );
+        },
         (err) => {}
       );
-      // Refresh from server after save
-      this.styleProps = this.fetchStyles();
-      resolve(this.styleProps);
     });
   }
 
@@ -91,7 +99,12 @@ class CustomLicitRuntime {
    */
   async getStylesAsync(): Promise<StyleProps[]> {
     if (!this.styleProps) {
-      this.styleProps = this.fetchStyles();
+      this.fetchStyles().then(
+        (result) => {
+          this.styleProps = result;
+        },
+        (error) => {}
+      );
     }
     return this.styleProps;
   }
@@ -112,8 +125,15 @@ class CustomLicitRuntime {
       PATCH(url, JSON.stringify(obj), 'application/json; charset=utf-8').then(
         (data) => {
           // Refresh from server after rename
-          this.styleProps = this.fetchStyles();
-          resolve(this.styleProps);
+          this.fetchStyles().then(
+            (result) => {
+              this.styleProps = result;
+              resolve(this.styleProps);
+            },
+            (error) => {
+              reject(null);
+            }
+          );
         },
         (err) => {
           reject(null);
@@ -130,12 +150,20 @@ class CustomLicitRuntime {
     const url = this.buildRoute('styles', encodeURIComponent(styleName));
     await new Promise((resolve, reject) => {
       DELETE(url, 'text/plain').then(
-        (data) => {},
+        (data) => {
+          // Refresh from server after remove
+          this.fetchStyles().then(
+            (result) => {
+              this.styleProps = result;
+              resolve(this.styleProps);
+            },
+            (error) => {
+              reject(null);
+            }
+          );
+        },
         (err) => {}
       );
-      // Refresh from server after remove
-      this.styleProps = this.fetchStyles();
-      resolve(this.styleProps);
     });
   }
 
