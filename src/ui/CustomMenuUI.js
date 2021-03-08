@@ -177,16 +177,17 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                     this.props.editorState
                   )
                 ) {
-                  this.props.editorView.runtime.removeStyle(
-                    val.command._customStyleName
-                  );
-                  // [FS] IRAD-1099 2020-11-17
-                  // Issue fix: Even the applied style is removed the style name is showing in the editor
-                  this.removeCustomStyleName(
-                    this.props.editorState,
-                    val.command._customStyleName,
-                    this.props.editorView.dispatch
-                  );
+                  this.props.editorView.runtime
+                    .removeStyle(val.command._customStyleName)
+                    .then((success) => {
+                      // [FS] IRAD-1099 2020-11-17
+                      // Issue fix: Even the applied style is removed the style name is showing in the editor
+                      this.removeCustomStyleName(
+                        this.props.editorState,
+                        val.command._customStyleName,
+                        this.props.editorView.dispatch
+                      );
+                    });
                 } else {
                   // TODO: need to show this alert message in a popup.
                   window.alert(
