@@ -81,8 +81,7 @@ class CustomLicitRuntime {
           // Refresh from server after save
           this.fetchStyles().then(
             (result) => {
-              this.styleProps = result;
-              resolve(this.styleProps);
+              resolve(result);
             },
             (error) => {
               reject(this.styleProps);
@@ -99,12 +98,7 @@ class CustomLicitRuntime {
    */
   async getStylesAsync(): Promise<StyleProps[]> {
     if (!this.styleProps) {
-      this.fetchStyles().then(
-        (result) => {
-          this.styleProps = result;
-        },
-        (error) => {}
-      );
+      this.fetchStyles();
     }
     return this.styleProps;
   }
@@ -127,8 +121,7 @@ class CustomLicitRuntime {
           // Refresh from server after rename
           this.fetchStyles().then(
             (result) => {
-              this.styleProps = result;
-              resolve(this.styleProps);
+              resolve(result);
             },
             (error) => {
               reject(null);
@@ -154,8 +147,7 @@ class CustomLicitRuntime {
           // Refresh from server after remove
           this.fetchStyles().then(
             (result) => {
-              this.styleProps = result;
-              resolve(this.styleProps);
+              resolve(result);
             },
             (error) => {
               reject(null);
@@ -177,7 +169,7 @@ class CustomLicitRuntime {
       GET(url).then(
         (data) => {
           const styles = JSON.parse(data);
-          this.customStyles = styles;
+          this.styleProps = styles;
           setStyles(styles);
           resolve(styles);
         },
