@@ -1254,7 +1254,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     ) {
       this.setState({
         otherStyleSelected: true,
-      });      
+      });
       hiddenDiv.style.display = 'block';
       const selectedStyle = document.getElementById('nextStyleValue');
       selectedStyle.value = nextLineStyleName;

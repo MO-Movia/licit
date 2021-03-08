@@ -283,7 +283,7 @@ class CustomStyleCommand extends UICommand {
       )
     ) {
       isValidated = checkLevlsAvailable();
-    }   
+    }
     if (isValidated) {
       tr = applyStyle(
         this._customStyle,

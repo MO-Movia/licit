@@ -60,7 +60,6 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
         }
         return [HEADING_COMMANDS];
       });
-       
       this.hasRuntime = true;
     } else {
       this.hasRuntime = false;

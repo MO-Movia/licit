@@ -314,6 +314,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
               if (1 === mode) {
                 // update
                 delete val.editorView;
+                let tr;
                 runtime.saveStyle(val).then((result) => {
                   if (result) {
                     result.forEach((obj) => {
