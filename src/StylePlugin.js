@@ -179,13 +179,20 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
         let counter = 0;
         if (nodesBeforeSelection.length > 0) {
           nodes = nodesBeforeSelection[nodesBeforeSelection.length - 1];
-          prevLevel = getStyleLevel(nodes.node.attrs.styleName);
+          prevLevel = Number(getStyleLevel(nodes.node.attrs.styleName));
+          if (prevLevel && prevLevel !== 1) {
+            const style = getCustomStyleByLevel(prevLevel - 1);
+            const newattrs = Object.assign({}, nodes.attrs);
+            newattrs.styleName = style.styleName;
+            tr = tr.setNodeMarkup(nodes.pos, undefined, newattrs);
+          }
         }
         nodesAfterSelection.forEach((item) => {
           subsequantLevel = getStyleLevel(item.node.attrs.styleName);
           if (
-            Number(prevLevel) !== Number(subsequantLevel) &&
-            Number(subsequantLevel) - Number(prevLevel) > 1
+            Number(prevLevel) !== Number(subsequantLevel)
+            //&&
+            // Number(subsequantLevel) - Number(prevLevel) > 1
           ) {
             subsequantLevel = Number(subsequantLevel) - 1;
             const style = getCustomStyleByLevel(subsequantLevel);

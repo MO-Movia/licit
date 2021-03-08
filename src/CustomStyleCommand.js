@@ -383,7 +383,7 @@ class CustomStyleCommand extends UICommand {
                     const endPos = selection.$to.after(1);
                     const node = getNode(state, startPos, endPos, tr);
                     // [FS] IRAD-1238 2021-03-08
-                    // Fix: Shows alert message 'This Numberings breaks hierarchy, Previous levels are missing' on create styles 
+                    // Fix: Shows alert message 'This Numberings breaks hierarchy, Previous levels are missing' on create styles
                     // if a numbering applied in editor.
                     if (
                       !styleHasNumbering(val) ||
@@ -704,7 +704,7 @@ function applyStyleEx(
 }
 
 // [FS] IRAD-1238 2021-03-08
-// Fix: Shows alert message 'This Numberings breaks hierarchy, Previous levels are missing' on create styles 
+// Fix: Shows alert message 'This Numberings breaks hierarchy, Previous levels are missing' on create styles
 // if a numbering applied in editor.
 function styleHasNumbering(style) {
   let hasNumbering = false;
@@ -823,13 +823,6 @@ function createEmptyElement(
     undefined !== MISSED_HEIRACHY_ELEMENT.attrs
   ) {
     if (!MISSED_HEIRACHY_ELEMENT.isAfter) {
-      // tr = addElement(
-      //   MISSED_HEIRACHY_ELEMENT.attrs,
-      //   state,
-      //   tr,
-      //   startPos,
-      //   MISSED_HEIRACHY_ELEMENT.previousLevel
-      // );
       const appliedLevel = Number(
         getStyleLevel(MISSED_HEIRACHY_ELEMENT.attrs.styleName)
       );
@@ -857,19 +850,36 @@ function createEmptyElement(
             }
           }
         } else {
-          if (startPos !== 0 && 'None' !== item.node.attrs.styleName) {
-            if (appliedLevel - subsequantLevel > 1 && !hasFoundLevel) {
-              newattrs = Object.assign({}, item.node.attrs);
-              // posArray = [];
-              posArray.push({
-                pos: startPos,
-                appliedLevel: appliedLevel,
-                currentLevel: subsequantLevel,
-              });
-              hasFoundLevel = true;
+          if (startPos >= item.pos) {
+            if (
+              startPos !== 0 &&
+              'None' !== item.node.attrs.styleName &&
+              Number(getStyleLevel(item.node.attrs.styleName)) > 0
+            ) {
+              if (appliedLevel - subsequantLevel > 1 && !hasFoundLevel) {
+                newattrs = Object.assign({}, item.node.attrs);
+                // posArray = [];
+                posArray.push({
+                  pos: startPos,
+                  appliedLevel: appliedLevel,
+                  currentLevel: subsequantLevel,
+                });
+                hasFoundLevel = true;
+              } else {
+                // posArray = [];
+                hasFoundLevel = true;
+              }
             } else {
-              // posArray = [];
-              hasFoundLevel = true;
+              if (startPos !== 0 && 'None' == item.node.attrs.styleName) {
+                newattrs = Object.assign({}, item.node.attrs);
+                // posArray = [];
+                posArray.push({
+                  pos: startPos,
+                  appliedLevel: appliedLevel,
+                  currentLevel: subsequantLevel,
+                });
+                hasFoundLevel = true;
+              }
             }
           }
         }
@@ -887,16 +897,6 @@ function createEmptyElement(
           posArray[0].appliedLevel,
           posArray[0].currentLevel
         );
-
-        // tr = addElementEx(
-        //   newattrs,
-        //   state,
-        //   tr,
-        //   posArray[0].pos,
-        //   false,
-        //   posArray[0].Levldiff,
-        //   posArray[0].currentLevel
-        // );
       }
     } else {
       let nextLevel = getStyleLevel(MISSED_HEIRACHY_ELEMENT.attrs.styleName);
