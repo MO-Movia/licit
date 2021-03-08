@@ -382,7 +382,11 @@ class CustomStyleCommand extends UICommand {
                     const startPos = selection.$from.before(1);
                     const endPos = selection.$to.after(1);
                     const node = getNode(state, startPos, endPos, tr);
+                    // [FS] IRAD-1238 2021-03-08
+                    // Fix: Shows alert message 'This Numberings breaks hierarchy, Previous levels are missing' on create styles 
+                    // if a numbering applied in editor.
                     if (
+                      !styleHasNumbering(val) ||
                       !hasMismatchHeirarchy(
                         state,
                         tr,
@@ -697,6 +701,17 @@ function applyStyleEx(
   tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
   tr.storedMarks = storedmarks;
   return tr;
+}
+
+// [FS] IRAD-1238 2021-03-08
+// Fix: Shows alert message 'This Numberings breaks hierarchy, Previous levels are missing' on create styles 
+// if a numbering applied in editor.
+function styleHasNumbering(style) {
+  let hasNumbering = false;
+  hasNumbering = style.styles.hasNumbering
+    ? style.styles.hasNumbering
+    : false;
+    return hasNumbering;
 }
 
 // [FS] IRAD-1213 2020-02-23
