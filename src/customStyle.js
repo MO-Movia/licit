@@ -74,6 +74,17 @@ export function getCustomStyleByLevel(level: Number) {
   return style;
 }
 
+// [FS] IRAD-1238 2021-03-08
+// To find the custom style exists with the given  level.
+export function isPreviousLevelExists(previousLevel) {
+  let isLevelExists = true;
+  if (customStyles.length > 0) {
+    const value = customStyles.find((u) => u.styles.styleLevel === previousLevel);
+    isLevelExists = value ? true : false;
+  }
+  return isLevelExists;
+}
+
 // [FS] IRAD-1046 2020-09-24
 // To create a style object from the customstyles to show the styles in the example piece.
 export function getCustomStyle(customStyle: any) {

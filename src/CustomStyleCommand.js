@@ -21,7 +21,11 @@ import {
   removeTextAlignAndLineSpacing,
   clearCustomStyleAttribute,
 } from './clearCustomStyleMarks';
-import {getCustomStyleByName, getCustomStyleByLevel} from './customStyle';
+import {
+  getCustomStyleByName,
+  getCustomStyleByLevel,
+  isPreviousLevelExists,
+} from './customStyle';
 import type {StyleProps} from './Types';
 import {
   MARK_STRONG,
@@ -387,15 +391,10 @@ class CustomStyleCommand extends UICommand {
                     // if a numbering applied in editor.
                     if (
                       !styleHasNumbering(val) ||
-                      !hasMismatchHeirarchy(
-                        state,
-                        tr,
-                        node,
-                        startPos,
-                        endPos,
-                        val.styleName
-                      )
+                      isValidHeirarchy(val.styleName)
                     ) {
+                      // to add previous heirarchy levels
+                      hasMismatchHeirarchy(state, tr, node, startPos, endPos,val.styleName);
                       tr = applyStyle(val, val.styleName, state, tr);
                       dispatch(tr);
                     } else {
@@ -708,15 +707,22 @@ function applyStyleEx(
 // if a numbering applied in editor.
 function styleHasNumbering(style) {
   let hasNumbering = false;
-  hasNumbering = style.styles.hasNumbering
-    ? style.styles.hasNumbering
-    : false;
-    return hasNumbering;
+  hasNumbering = style.styles.hasNumbering ? style.styles.hasNumbering : false;
+  return hasNumbering;
+}
+
+ // [FS] IRAD-1238 2021-03-08
+ // Check for the style with previous numbering level exists
+function isValidHeirarchy(styleName /* New style to be applied */) {
+  const styleLevel = getStyleLevel(styleName);
+  // to find if the previous level of this level present
+  const previousLevel = Number(styleLevel) - 1;
+  return isPreviousLevelExists(String(previousLevel));
 }
 
 // [FS] IRAD-1213 2020-02-23
 // Loop the whole document
-// if  any heirachy misses return true and keep the object in a global object
+// if any heirachy misses return true and keep the object in a global object
 function hasMismatchHeirarchy(
   state: EditorState,
   tr: Transform,

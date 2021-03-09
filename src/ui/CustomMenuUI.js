@@ -310,7 +310,6 @@ class CustomMenuUI extends React.PureComponent<any, any> {
               const {dispatch, runtime} = this.props.editorView;
               // [FS] IRAD-1112 2020-12-14
               // Issue fix: Duplicate style created while modified the style name.
-              let customStyles;
               delete val.runtime;
               if (1 === mode) {
                 // update

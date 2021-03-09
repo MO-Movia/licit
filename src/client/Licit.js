@@ -305,8 +305,7 @@ class Licit extends React.Component<any, any> {
         invokeOnEdit = true;
       }
     }
-	
-    if(invokeOnEdit) {	
+    if(invokeOnEdit) {
       // [FS] IRAD-1236 2020-03-05
       // Only need to call if there is any difference in collab mode OR always in non-collab mode.
       this._connector.onEdit(transaction, this._editorView);
