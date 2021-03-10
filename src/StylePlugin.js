@@ -148,10 +148,8 @@ function applyStyles(state, tr) {
 // [FS] IRAD-1130 2021-01-07
 // Handle heirarchy on delete
 function manageHierarchyOnDelete(prevState, nextState, tr, view) {
-  let nodes = null;
   const nodesAfterSelection = [];
   const nodesBeforeSelection = [];
-  let isLast = false;
   const selectedPos = nextState.selection.from;
   if (prevState.doc !== nextState.doc) {
     if (
@@ -160,109 +158,94 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
     ) {
       const nextNodes = nodeAssignment(nextState);
       nextNodes.forEach((element) => {
-        const styleLevel = getStyleLevel(element.node.attrs.styleName);
-        if (styleLevel) {
-          if (element.pos >= selectedPos) {
-            nodesAfterSelection.push({pos: element.pos, node: element.node});
-          } else {
-            nodesBeforeSelection.push({pos: element.pos, node: element.node});
-          }
+        if (element.pos >= selectedPos) {
+          nodesAfterSelection.push({pos: element.pos, node: element.node});
+        } else {
+          nodesBeforeSelection.push({pos: element.pos, node: element.node});
         }
       });
-
-      if (nodesBeforeSelection.length > 0 || nodesAfterSelection.length > 0) {
-        if (!tr) {
-          tr = nextState.tr;
-        }
-        let prevLevel = 0;
-        let subsequantLevel = 0;
-        let counter = 0;
-        if (nodesBeforeSelection.length > 0) {
-          nodes = nodesBeforeSelection[nodesBeforeSelection.length - 1];
-          prevLevel = Number(getStyleLevel(nodes.node.attrs.styleName));
-          if (prevLevel && prevLevel !== 1) {
-            const style = getCustomStyleByLevel(prevLevel - 1);
-            const newattrs = Object.assign({}, nodes.attrs);
-            newattrs.styleName = style.styleName;
-            tr = tr.setNodeMarkup(nodes.pos, undefined, newattrs);
+      selectedPos =
+        DELKEYCODE === view.lastKeyCode ? selectedPos - 1 : selectedPos + 1;
+      const selectedNode = prevState.doc.nodeAt(selectedPos);
+      const removedLevel = Number(getStyleLevel(selectedNode.attrs.styleName));
+      if (selectedNode.attrs.styleName !== 'None' && 0 !== removedLevel) {
+        if (nodesBeforeSelection.length > 0 || nodesAfterSelection.length > 0) {
+          if (!tr) {
+            tr = nextState.tr;
           }
-        }
-        nodesAfterSelection.forEach((item) => {
-          subsequantLevel = getStyleLevel(item.node.attrs.styleName);
-          if (
-            Number(prevLevel) !== Number(subsequantLevel)
-            //&&
-            // Number(subsequantLevel) - Number(prevLevel) > 1
-          ) {
-            subsequantLevel = Number(subsequantLevel) - 1;
-            const style = getCustomStyleByLevel(subsequantLevel);
-            const newattrs = Object.assign({}, item.node.attrs);
-            newattrs.styleName = style.styleName;
-            tr = tr.setNodeMarkup(item.pos, undefined, newattrs);
-            prevLevel = subsequantLevel;
-          } else {
-            if (
-              1 === selectedPos &&
-              nodesBeforeSelection.length === 1 &&
-              nodesBeforeSelection[0].pos === 0 &&
-              Number(prevLevel) === 2 &&
-              counter === 0
-            ) {
-              prevLevel = Number(prevLevel);
-              const style = getCustomStyleByLevel(prevLevel - 1);
-              const styleLevel2 = getCustomStyleByLevel(2);
-              const newattrs = Object.assign({}, item.node.attrs);
-              newattrs.styleName = style.styleName;
-              if (counter === 0) {
-                tr = tr.setNodeMarkup(0, undefined, newattrs);
 
-                if (Number(subsequantLevel) === 3) {
-                  isLast = true;
-                  if (styleLevel2) {
-                    newattrs.styleName = styleLevel2.styleName;
+          let subsequantLevel = 0;
+          let levelCounter = 0;
+          let prevNode = null;
+          let prevNodeLevel = 0;
+
+          if (nodesBeforeSelection.length > 0) {
+            prevNode = nodesBeforeSelection[nodesBeforeSelection.length - 1];
+            prevNodeLevel = Number(
+              getStyleLevel(prevNode.node.attrs.styleName)
+            );
+          }
+
+          if (nodesBeforeSelection.length > 0 && 0 !== prevNodeLevel) {
+            for (
+              let indexbefore = 0;
+              indexbefore < nodesBeforeSelection.length;
+              indexbefore++
+            ) {
+              const beforeitem = nodesBeforeSelection[indexbefore];
+              subsequantLevel = Number(
+                getStyleLevel(beforeitem.node.attrs.styleName)
+              );
+              if (subsequantLevel !== 0) {
+                if (subsequantLevel > 1 && subsequantLevel - levelCounter > 1) {
+                  subsequantLevel = subsequantLevel - 1;
+                  const style = getCustomStyleByLevel(subsequantLevel);
+                  const newattrs = Object.assign({}, beforeitem.node.attrs);
+                  newattrs.styleName = style.styleName;
+                  tr = tr.setNodeMarkup(beforeitem.pos, undefined, newattrs);
+                }
+                levelCounter = subsequantLevel;
+              }
+            }
+          }
+
+          for (let index = 0; index < nodesAfterSelection.length; index++) {
+            const item = nodesAfterSelection[index];
+            subsequantLevel = Number(getStyleLevel(item.node.attrs.styleName));
+
+            if (subsequantLevel !== 0) {
+              if (levelCounter !== subsequantLevel) {
+                if (subsequantLevel - levelCounter > 1) {
+                  subsequantLevel = Number(subsequantLevel) - 1;
+                  if (subsequantLevel > 0) {
+                    const style = getCustomStyleByLevel(subsequantLevel);
+                    const newattrs = Object.assign({}, item.node.attrs);
+                    newattrs.styleName = style.styleName;
                     tr = tr.setNodeMarkup(item.pos, undefined, newattrs);
                   }
                 }
-              } else {
-                // if (styleLevel2) {
-                //   newattrs.styleName = styleLevel2.styleName;
-                //   tr = tr.setNodeMarkup(item.pos, undefined, newattrs);
-                // }
               }
-            } else {
-              if (isLast) {
-                const styleLevel2 = getCustomStyleByLevel(2);
-                const newattrs = Object.assign({}, item.node.attrs);
-                if (styleLevel2) {
-                  newattrs.styleName = styleLevel2.styleName;
-                  tr = tr.setNodeMarkup(item.pos, undefined, newattrs);
-                }
-              }
+              levelCounter = subsequantLevel;
             }
-            if (!isLast)
-              if (Number(subsequantLevel) - Number(prevLevel) === 1) {
-                prevLevel = subsequantLevel;
-              }
           }
-          counter++;
-        });
-        if (
-          nodesBeforeSelection.length === 1 &&
-          nodesAfterSelection.length === 0
-        ) {
-          subsequantLevel = Number(prevLevel) - 1;
-          const style = getCustomStyleByLevel(subsequantLevel);
-          if (style) {
-            const newattrs = Object.assign(
-              {},
-              nodesBeforeSelection[0].node.attrs
-            );
-            newattrs.styleName = style.styleName;
-            tr = tr.setNodeMarkup(
-              nodesBeforeSelection[0].pos,
-              undefined,
-              newattrs
-            );
+          if (
+            nodesBeforeSelection.length === 1 &&
+            nodesAfterSelection.length === 1
+          ) {
+            subsequantLevel = Number(prevNodeLevel) - 1;
+            const style = getCustomStyleByLevel(subsequantLevel);
+            if (style) {
+              const newattrs = Object.assign(
+                {},
+                nodesBeforeSelection[0].node.attrs
+              );
+              newattrs.styleName = style.styleName;
+              tr = tr.setNodeMarkup(
+                nodesBeforeSelection[0].pos,
+                undefined,
+                newattrs
+              );
+            }
           }
         }
       }
@@ -271,45 +254,16 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
   return tr;
 }
 
-// function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
-//   const counter = nodeAttrs.styleLevel ? nodeAttrs.styleLevel : 1;
-//   const level = nextLevel ? nextLevel - 1 : 0;
-
-//   const paragraph = state.schema.nodes['paragraph'];
-
-//   for (let index = level; index > counter; index--) {
-//     nodeAttrs.styleLevel = index;
-//     nodeAttrs.styleName = 'None';
-//     nodeAttrs.customStyle = null;
-//     const paragraphNode = paragraph.create(nodeAttrs, null, null);
-//     tr = tr.insert(startPos, Fragment.from(paragraphNode));
-//   }
-
-//   return tr;
-// }
-
-// function setNodeAttribute(state, tr, startPos, newattrs) {
-//   if (!tr) {
-//     tr = state.tr;
-//   }
-//   tr = tr.setNodeMarkup(startPos, undefined, newattrs);
-//   return tr;
-// }
-
 function nodeAssignment(state) {
   const nodes = [];
   state.doc.descendants((node, pos) => {
     if (requiredAddAttr(node)) {
-      const styleLevel = getStyleLevel(node.attrs.styleName);
-      if (styleLevel) {
-        nodes.push({
-          node,
-          pos,
-        });
-      }
+      nodes.push({
+        node,
+        pos,
+      });
     }
   });
-
   return nodes;
 }
 
