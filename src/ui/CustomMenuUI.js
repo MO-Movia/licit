@@ -347,16 +347,6 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                     if (null != result) {
                       let tr;
                       result.forEach((obj) => {
-                        if (1 === mode) {
-                          // if (val.styleName === obj.styleName) {
-                          //   tr = updateDocument(
-                          //     this.props.editorState,
-                          //     this.props.editorState.tr,
-                          //     val.styleName,
-                          //     obj.styles
-                          //   );
-                          // }
-                        } else {
                           if (val.styleName === obj.styleName) {
                             tr = this.renameStyleInDocument(
                               this.props.editorState,
@@ -366,7 +356,6 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                               obj.styles
                             );
                           }
-                        }
                       });
                       if (tr) {
                         dispatch(tr);

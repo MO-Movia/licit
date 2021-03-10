@@ -78,8 +78,10 @@ export function getCustomStyleByLevel(level: Number) {
 // To find the custom style exists with the given  level.
 export function isPreviousLevelExists(previousLevel) {
   let isLevelExists = true;
-  if (customStyles.length > 0) {
-    const value = customStyles.find((u) => u.styles.styleLevel === previousLevel);
+  if (customStyles.length > 0 && 0 < previousLevel) {
+    const value = customStyles.find(
+      (u) => u.styles.styleLevel === previousLevel
+    );
     isLevelExists = value ? true : false;
   }
   return isLevelExists;
