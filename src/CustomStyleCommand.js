@@ -67,6 +67,7 @@ export const BOLDPARTIAL = 'boldPartial';
 const MISSED_HEIRACHY_ELEMENT = {};
 const nodesAfterSelection = [];
 const nodesBeforeSelection = [];
+const selectedNodes = [];
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
 export function getCustomStyleCommands(customStyle: any) {
@@ -243,7 +244,7 @@ class CustomStyleCommand extends UICommand {
     const node = getNode(state, startPos, endPos, tr);
     const newattrs = Object.assign({}, node.attrs);
     let isValidated = true;
-
+    view.lastKeyCode = null;
     if ('newstyle' === this._customStyle) {
       this.editWindow(state, view, 0);
       return false;
@@ -260,9 +261,12 @@ class CustomStyleCommand extends UICommand {
       tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
       tr = removeTextAlignAndLineSpacing(tr, state.schema);
       hasMismatchHeirarchy(state, tr, node, startPos, endPos);
-      newattrs.styleName = 'None';
+
+      // const newattrs = Object.assign({}, node.attrs);
+      newattrs['styleName'] = 'None';
+      newattrs['id'] = '';
       tr = tr.setNodeMarkup(startPos, undefined, newattrs);
-      tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
+      tr = createEmptyElement(state, tr, node, startPos, endPos, node.attrs);
       if (dispatch && tr.docChanged) {
         dispatch(tr);
         return true;
@@ -746,6 +750,7 @@ function hasMismatchHeirarchy(
   let isAfter = false;
 
   let hasHeirarchyBroken = false;
+
   // Manage heirachy for nodes of previous  position
   // if (startPos !== 0) {
   // Fix: document Load Error- Instead of state doc here give transaction doc,because when we apply changes
@@ -768,12 +773,14 @@ function hasMismatchHeirarchy(
     setNewElementObject(attrs, startPos, 0, false);
     hasHeirarchyBroken = true;
   }
+  // if (nodesBeforeSelection.length !== 0 && nodesAfterSelection.length === 0) {
+  //   nodesBeforeSelection.reverse();
+  // }
 
-  nodesBeforeSelection.reverse();
   nodesBeforeSelection.forEach((item) => {
-    if (null === previousLevel) {
-      previousLevel = Number(getStyleLevel(item.node.attrs.styleName));
-    }
+    // if (null === previousLevel) {
+    previousLevel = Number(getStyleLevel(item.node.attrs.styleName));
+    // }
   });
 
   if (null === previousLevel && null == currentLevel) {
@@ -786,16 +793,29 @@ function hasMismatchHeirarchy(
     //	If this is the first level, identify the level difference with previous level.
     levelDiff = previousLevel ? styleLevel - previousLevel : styleLevel;
 
-    if (1 < levelDiff || 0 > levelDiff) {
+    if (0 > levelDiff) {
       // If NOT applying (same level OR adjacent level)
 
       if (nodesAfterSelection.length === 0) {
         isAfter = true;
+        previousLevel = Number(
+          getStyleLevel(
+            nodesBeforeSelection[nodesBeforeSelection.length - 1].node.attrs
+              .styleName
+          )
+        );
       }
       setNewElementObject(attrs, startPos, previousLevel, isAfter);
       hasHeirarchyBroken = true;
     }
-    if (levelDiff == 1) {
+    if (levelDiff > 0) {
+      if (selectedNodes.length === 1) {
+        nodesBeforeSelection.reverse();
+      } else {
+        previousLevel = Number(
+          getStyleLevel(selectedNodes[0].node.attrs.styleName)
+        );
+      }
       setNewElementObject(attrs, startPos, previousLevel, false);
     }
   }
@@ -859,7 +879,9 @@ function createEmptyElement(
       const posArray = [];
       let counter = 0;
       let newattrs = null;
+      // nodesBeforeSelection.reverse();
 
+      // if (appliedLevel - MISSED_HEIRACHY_ELEMENT.previousLevel > 1) {
       if (nodesBeforeSelection.length > 0) {
         nodesBeforeSelection.forEach((item) => {
           subsequantLevel = Number(getStyleLevel(item.node.attrs.styleName));
@@ -923,7 +945,7 @@ function createEmptyElement(
           }
         });
       }
-
+      // }
       if (
         nodesBeforeSelection.length === 0 &&
         nodesAfterSelection.length === 0
@@ -948,10 +970,10 @@ function createEmptyElement(
         );
       }
     } else {
-      manageElementsAfterSelection(
+      tr = manageElementsAfterSelection(
         nodesAfterSelection.length > 0
           ? nodesAfterSelection
-          : nodesBeforeSelection.reverse(),
+          : nodesBeforeSelection,
         state,
         tr
       );
@@ -978,11 +1000,9 @@ function manageElementsAfterSelection(nodeArray, state, tr) {
         subsequantLevel = subsequantLevel - 1;
         const style = getCustomStyleByLevel(subsequantLevel);
         if (style) {
-          tr = tr.setNodeMarkup(
-            item.pos,
-            undefined,
-            setStyleAttribute(item.node.attrs, style.styleName)
-          );
+          const newattrs = Object.assign({}, item.node.attrs);
+          newattrs.styleName = style.styleName;
+          tr = tr.setNodeMarkup(item.pos, undefined, newattrs);
           selectedLevel = subsequantLevel;
         }
         counter++;
@@ -990,18 +1010,12 @@ function manageElementsAfterSelection(nodeArray, state, tr) {
         index = nodeArray.length + 1;
       }
     } else {
-      if (subsequantLevel !== 0 && counter === 0) {
+      if (subsequantLevel !== 0 && counter === 0 && nodeArray.length === 0) {
         const style = getCustomStyleByLevel(1);
         if (style) {
-          tr = addElement(
-            setStyleAttribute(item.node.attrs, style.styleName),
-            state,
-            tr,
-            item.pos,
-            false,
-            2,
-            0
-          );
+          const newattrs = Object.assign({}, item.node.attrs);
+          newattrs.styleName = style.styleName;
+          tr = addElement(newattrs, state, tr, item.pos, false, 2, 0);
         }
       }
     }
@@ -1032,12 +1046,6 @@ function setNewElementObject(attrs, startPos, previousLevel, isAfter) {
   MISSED_HEIRACHY_ELEMENT.previousLevel = previousLevel;
 }
 
-// sets the corresponding styleName attribute for Node
-function setStyleAttribute(attrs, styleName) {
-  const newattrs = Object.assign({}, attrs);
-  newattrs.styleName = styleName;
-  return newattrs;
-}
 function insertParagraph(nodeAttrs, startPos, tr, index, state) {
   const paragraph = state.schema.nodes[PARAGRAPH];
   // [FS] IRAD-1202 2021-02-15
@@ -1302,9 +1310,13 @@ export function getNode(
   tr: Transform
 ) {
   let selectedNode = null;
+  selectedNodes.splice(0);
   tr.doc.nodesBetween(from, to, (node, startPos) => {
     if (node.type.name === 'paragraph') {
-      selectedNode = node;
+      if (null == selectedNode) {
+        selectedNode = node;
+      }
+      selectedNodes.push({pos: startPos, node});
     }
   });
   return selectedNode;

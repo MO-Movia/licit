@@ -150,13 +150,14 @@ function applyStyles(state, tr) {
 function manageHierarchyOnDelete(prevState, nextState, tr, view) {
   const nodesAfterSelection = [];
   const nodesBeforeSelection = [];
-  const selectedPos = nextState.selection.from;
+  let selectedPos = nextState.selection.from;
   if (prevState.doc !== nextState.doc) {
     if (
       view &&
       (DELKEYCODE === view.lastKeyCode || BACKSPACEKEYCODE === view.lastKeyCode)
     ) {
       const nextNodes = nodeAssignment(nextState);
+      // seperating  the nodes to two arrays, ie selection before and after
       nextNodes.forEach((element) => {
         if (element.pos >= selectedPos) {
           nodesAfterSelection.push({pos: element.pos, node: element.node});
@@ -164,12 +165,16 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
           nodesBeforeSelection.push({pos: element.pos, node: element.node});
         }
       });
+      // for backspace and delete to get the correct node position
       selectedPos =
         DELKEYCODE === view.lastKeyCode ? selectedPos - 1 : selectedPos + 1;
       const selectedNode = prevState.doc.nodeAt(selectedPos);
-      const removedLevel = Number(getStyleLevel(selectedNode.attrs.styleName));
-      if (selectedNode.attrs.styleName !== 'None' && 0 !== removedLevel) {
+      if (
+        selectedNode.attrs.styleName !== 'None' &&
+        0 !== Number(getStyleLevel(selectedNode.attrs.styleName))
+      ) {
         if (nodesBeforeSelection.length > 0 || nodesAfterSelection.length > 0) {
+          // assigning transaction if tr is null
           if (!tr) {
             tr = nextState.tr;
           }
@@ -228,25 +233,13 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
               levelCounter = subsequantLevel;
             }
           }
-          if (
-            nodesBeforeSelection.length === 1 &&
-            nodesAfterSelection.length === 1
-          ) {
-            subsequantLevel = Number(prevNodeLevel) - 1;
-            const style = getCustomStyleByLevel(subsequantLevel);
-            if (style) {
-              const newattrs = Object.assign(
-                {},
-                nodesBeforeSelection[0].node.attrs
-              );
-              newattrs.styleName = style.styleName;
-              tr = tr.setNodeMarkup(
-                nodesBeforeSelection[0].pos,
-                undefined,
-                newattrs
-              );
-            }
-          }
+
+          tr = removeLastLevelHeirarchy(
+            tr,
+            prevNodeLevel,
+            nodesBeforeSelection,
+            nodesAfterSelection
+          );
         }
       }
     }
@@ -254,6 +247,26 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
   return tr;
 }
 
+// to manage the heirachy only two levels are available
+function removeLastLevelHeirarchy(
+  tr,
+  prevNodeLevel,
+  nodesBeforeSelection,
+  nodesAfterSelection
+) {
+  let subsequantLevel = 0;
+  subsequantLevel = Number(prevNodeLevel) - 1;
+
+  const style = getCustomStyleByLevel(subsequantLevel);
+
+  if (style) {
+    const newattrs = Object.assign({}, nodesBeforeSelection[0].node.attrs);
+    newattrs.styleName = style.styleName;
+    tr = tr.setNodeMarkup(nodesBeforeSelection[0].pos, undefined, newattrs);
+  }
+  return tr;
+}
+// get all the nodes having styleName attribute
 function nodeAssignment(state) {
   const nodes = [];
   state.doc.descendants((node, pos) => {
