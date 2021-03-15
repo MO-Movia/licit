@@ -1,14 +1,5 @@
 html {
-  counter-reset: czi-cust-style-counter-1;
-  counter-reset: czi-cust-style-counter-2;
-  counter-reset: czi-cust-style-counter-3;
-  counter-reset: czi-cust-style-counter-4;
-  counter-reset: czi-cust-style-counter-5;
-  counter-reset: czi-cust-style-counter-6;
-  counter-reset: czi-cust-style-counter-7;
-  counter-reset: czi-cust-style-counter-8;
-  counter-reset: czi-cust-style-counter-9;
-  counter-reset: czi-cust-style-counter-10;
+  counter-reset: czi-cust-style-counter-1 czi-cust-style-counter-2 czi-cust-style-counter-3 czi-cust-style-counter-4 czi-cust-style-counter-5 czi-cust-style-counter-6 czi-cust-style-counter-7 czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 
   --czi-counter-bold: 100;
 }
@@ -17,92 +8,56 @@ html {
   counter-increment: czi-cust-style-counter-1;
 
   /* Reset all other variables under the current one. */
-  counter-reset: czi-cust-style-counter-2;
-  counter-reset: czi-cust-style-counter-3;
-  counter-reset: czi-cust-style-counter-4;
-  counter-reset: czi-cust-style-counter-5;
-  counter-reset: czi-cust-style-counter-6;
-  counter-reset: czi-cust-style-counter-7;
-  counter-reset: czi-cust-style-counter-8;
-  counter-reset: czi-cust-style-counter-9;
-  counter-reset: czi-cust-style-counter-10;
+  counter-reset: czi-cust-style-counter-2 czi-cust-style-counter-3 czi-cust-style-counter-4 czi-cust-style-counter-5 czi-cust-style-counter-6 czi-cust-style-counter-7 czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
 .ProseMirror p[data-style-level='2'] {
   counter-increment: czi-cust-style-counter-2;
 
   /* Reset all other variables under the current one. */
-  counter-reset: czi-cust-style-counter-3;
-  counter-reset: czi-cust-style-counter-4;
-  counter-reset: czi-cust-style-counter-5;
-  counter-reset: czi-cust-style-counter-6;
-  counter-reset: czi-cust-style-counter-7;
-  counter-reset: czi-cust-style-counter-8;
-  counter-reset: czi-cust-style-counter-9;
-  counter-reset: czi-cust-style-counter-10;
+  counter-reset: czi-cust-style-counter-3 czi-cust-style-counter-4 czi-cust-style-counter-5 czi-cust-style-counter-6 czi-cust-style-counter-7 czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
 .ProseMirror p[data-style-level='3'] {
   counter-increment: czi-cust-style-counter-3;
 
   /* Reset all other variables under the current one. */
-  counter-reset: czi-cust-style-counter-4;
-  counter-reset: czi-cust-style-counter-5;
-  counter-reset: czi-cust-style-counter-6;
-  counter-reset: czi-cust-style-counter-7;
-  counter-reset: czi-cust-style-counter-8;
-  counter-reset: czi-cust-style-counter-9;
-  counter-reset: czi-cust-style-counter-10;
+  counter-reset: czi-cust-style-counter-4 czi-cust-style-counter-5 czi-cust-style-counter-6 czi-cust-style-counter-7 czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
 .ProseMirror p[data-style-level='4'] {
   counter-increment: czi-cust-style-counter-4;
 
   /* Reset all other variables under the current one. */
-  counter-reset: czi-cust-style-counter-5;
-  counter-reset: czi-cust-style-counter-6;
-  counter-reset: czi-cust-style-counter-7;
-  counter-reset: czi-cust-style-counter-8;
-  counter-reset: czi-cust-style-counter-9;
-  counter-reset: czi-cust-style-counter-10;
+  counter-reset: czi-cust-style-counter-5 czi-cust-style-counter-6 czi-cust-style-counter-7 czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
 .ProseMirror p[data-style-level='5'] {
   counter-increment: czi-cust-style-counter-5;
 
   /* Reset all other variables under the current one. */
-  counter-reset: czi-cust-style-counter-6;
-  counter-reset: czi-cust-style-counter-7;
-  counter-reset: czi-cust-style-counter-8;
-  counter-reset: czi-cust-style-counter-9;
-  counter-reset: czi-cust-style-counter-10;
+  counter-reset: czi-cust-style-counter-6 czi-cust-style-counter-7 czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
 .ProseMirror p[data-style-level='6'] {
   counter-increment: czi-cust-style-counter-6;
 
   /* Reset all other variables under the current one. */
-  counter-reset: czi-cust-style-counter-7;
-  counter-reset: czi-cust-style-counter-8;
-  counter-reset: czi-cust-style-counter-9;
-  counter-reset: czi-cust-style-counter-10;
+  counter-reset: czi-cust-style-counter-7 czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
 .ProseMirror p[data-style-level='7'] {
   counter-increment: czi-cust-style-counter-7;
 
   /* Reset all other variables under the current one. */
-  counter-reset: czi-cust-style-counter-8;
-  counter-reset: czi-cust-style-counter-9;
-  counter-reset: czi-cust-style-counter-10;
+  counter-reset: czi-cust-style-counter-8 czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
 .ProseMirror p[data-style-level='8'] {
   counter-increment: czi-cust-style-counter-8;
 
   /* Reset all other variables under the current one. */
-  counter-reset: czi-cust-style-counter-9;
-  counter-reset: czi-cust-style-counter-10;
+  counter-reset: czi-cust-style-counter-9 czi-cust-style-counter-10;
 }
 
 .ProseMirror p[data-style-level='9'] {

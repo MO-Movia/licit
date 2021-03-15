@@ -211,10 +211,6 @@ function toDOM(node: Node): Array<any> {
     attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
   }
 
-  if (styleLevel) {
-    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
-  }
-
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);
   }
