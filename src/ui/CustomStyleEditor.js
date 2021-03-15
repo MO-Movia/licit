@@ -11,7 +11,6 @@ import {FONT_TYPE_NAMES} from '../FontTypeMarkSpec';
 import {getLineSpacingValue} from './toCSSLineSpacing';
 import {isCustomStyleExists} from '../customStyle';
 import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
-
 let customStyles = [];
 const otherStyleSelected = false;
 const editedStyles = [];

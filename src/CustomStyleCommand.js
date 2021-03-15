@@ -702,7 +702,6 @@ function applyStyleEx(
       tr = element.executeCustom(state, tr, startPos, endPos);
     }
   });
-
   tr = applyLineStyle(node, styleProp.styles, state, tr, startPos, endPos);
   const storedmarks = getMarkByStyleName(styleName, state.schema);
   tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
@@ -782,7 +781,6 @@ function hasMismatchHeirarchy(
     previousLevel = Number(getStyleLevel(item.node.attrs.styleName));
     // }
   });
-
   if (null === previousLevel && null == currentLevel) {
     // No levels established before.
     if (styleLevel !== 1) {
@@ -1295,7 +1293,6 @@ function applyStyleToEachNode(
       _node = node;
     }
   });
-
   const newattrs = Object.assign({}, _node.attrs);
   newattrs['styleName'] = styleName;
   tr = createEmptyElement(state, tr, _node, from, to, newattrs);

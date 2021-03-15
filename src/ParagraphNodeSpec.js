@@ -88,7 +88,6 @@ function getAttrs(dom: HTMLElement): Object {
 
   const id = dom.getAttribute('id') || '';
   const styleName = dom.getAttribute('styleName') || null;
-
   return {
     align,
     indent,
@@ -113,7 +112,6 @@ function getStyle(attrs) {
 function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
   let style = '';
   let styleLevel = 0;
-
   if (align && align !== 'left') {
     style += `text-align: ${align};`;
   }
@@ -209,6 +207,9 @@ function toDOM(node: Node): Array<any> {
   const {style, styleLevel} = getStyle(node.attrs);
 
   style && (attrs.style = style);
+  if (styleLevel) {
+    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
+  }
 
   if (styleLevel) {
     attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);

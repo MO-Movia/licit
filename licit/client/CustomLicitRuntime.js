@@ -90,6 +90,9 @@ class CustomLicitRuntime {
         },
         (err) => {}
       );
+      // Refresh from server after save
+      this.styleProps = this.fetchStyles();
+      resolve(this.styleProps);
     });
 
     return this.styleProps;
@@ -161,7 +164,6 @@ class CustomLicitRuntime {
         (err) => {}
       );
     });
-
     return this.styleProps;
   }
 

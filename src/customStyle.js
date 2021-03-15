@@ -67,6 +67,7 @@ export function getCustomStyleByLevel(level: Number) {
       ) {
         if (null === style) {
           style = obj;
+          return style;
         }
       }
     }
