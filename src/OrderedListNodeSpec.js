@@ -7,6 +7,7 @@ import { LIST_ITEM } from './NodeNames';
 import { ATTRIBUTE_INDENT, MIN_INDENT_LEVEL } from './ParagraphNodeSpec';
 
 import type { NodeSpec } from './Types';
+import {RESERVED_STYLE_NONE} from './ParagraphNodeSpec';
 
 export const ATTRIBUTE_COUNTER_RESET = 'data-counter-reset';
 export const ATTRIBUTE_FOLLOWING = 'data-following';
@@ -22,7 +23,7 @@ const OrderedListNodeSpec: NodeSpec = {
     name: { default: null },
     start: { default: 1 },
     type: { default: 'decimal' },
-    styleName: { default: 'None' },
+    styleName: { default: RESERVED_STYLE_NONE },
   },
   group: 'block',
   content: LIST_ITEM + '+',
@@ -101,7 +102,7 @@ const OrderedListNodeSpec: NodeSpec = {
 
     const cssCounterName = `czi-counter-${indent}`;
     if ('x.x.x' === type) {
-      if ('None' !== node.attrs.styleName) {
+      if (RESERVED_STYLE_NONE !== node.attrs.styleName) {
         attrs.style = buildStyleClass(indent, node.attrs.start);
       }
       else {

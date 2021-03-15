@@ -1,5 +1,4 @@
 // @flow
-
 import clamp from './ui/clamp';
 import convertToCSSPTValue from './convertToCSSPTValue';
 import toCSSLineSpacing from './ui/toCSSLineSpacing';
@@ -14,6 +13,8 @@ export const MIN_INDENT_LEVEL = 0;
 export const MAX_INDENT_LEVEL = 7;
 export const ATTRIBUTE_INDENT = 'data-indent';
 export const ATTRIBUTE_STYLE_LEVEL = 'data-style-level';
+export const RESERVED_STYLE_NONE = 'None';
+export const RESERVED_STYLE_NONE_NUMBERING = RESERVED_STYLE_NONE + '-@#$-';
 const cssVal = new Set<string>(['', '0%', '0pt', '0px']);
 
 export const EMPTY_CSS_VALUE = cssVal;
@@ -25,21 +26,41 @@ const ALIGN_PATTERN = /(left|right|center|justify)/;
 // as a `<p>` element.
 const ParagraphNodeSpec: NodeSpec = {
   attrs: {
-    align: {default: null},
-    color: {default: null},
-    id: {default: null},
-    indent: {default: null},
-    lineSpacing: {default: null},
+    align: {
+      default: null,
+    },
+    color: {
+      default: null,
+    },
+    id: {
+      default: null,
+    },
+    indent: {
+      default: null,
+    },
+    lineSpacing: {
+      default: null,
+    },
     // TODO: Add UI to let user edit / clear padding.
-    paddingBottom: {default: null},
+    paddingBottom: {
+      default: null,
+    },
     // TODO: Add UI to let user edit / clear padding.
-    paddingTop: {default: null},
-    styleName: {default: 'None'},
-    styleLevel: {default: null},
+    paddingTop: {
+      default: null,
+    },
+    styleName: {
+      default: RESERVED_STYLE_NONE,
+    },
   },
   content: 'inline*',
   group: 'block',
-  parseDOM: [{tag: 'p', getAttrs}],
+  parseDOM: [
+    {
+      tag: 'p',
+      getAttrs,
+    },
+  ],
   toDOM,
 };
 
@@ -67,9 +88,6 @@ function getAttrs(dom: HTMLElement): Object {
 
   const id = dom.getAttribute('id') || '';
   const styleName = dom.getAttribute('styleName') || null;
-  const styleLevel = parseInt(dom.getAttribute(ATTRIBUTE_STYLE_LEVEL), 10);
-  // TODO: customStyle
-
   return {
     align,
     indent,
@@ -78,7 +96,6 @@ function getAttrs(dom: HTMLElement): Object {
     paddingBottom,
     id,
     styleName,
-    styleLevel,
   };
 }
 
@@ -88,21 +105,13 @@ function getStyle(attrs) {
     attrs.lineSpacing,
     attrs.paddingTop,
     attrs.paddingBottom,
-    attrs.styleName,
-    attrs.styleLevel
+    attrs.styleName
   );
 }
 
-function getStyleEx(
-  align,
-  lineSpacing,
-  paddingTop,
-  paddingBottom,
-  styleName,
-  styleLevel
-) {
+function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
   let style = '';
-
+  let styleLevel = 0;
   if (align && align !== 'left') {
     style += `text-align: ${align};`;
   }
@@ -127,7 +136,7 @@ function getStyleEx(
     if (styleProps.styles.paragraphSpacingBefore) {
       style += `margin-top: ${styleProps.styles.paragraphSpacingBefore}pt !important;`;
     }
-    if (styleLevel) {
+    if (styleProps.styles.styleLevel) {
       if (styleProps.styles.strong) {
         style += 'font-weight: bold;';
       }
@@ -146,6 +155,16 @@ function getStyleEx(
       if (styleProps.styles.fontName) {
         style += `font-family: ${styleProps.styles.fontName};`;
       }
+      styleLevel = parseInt(styleProps.styles.styleLevel);
+      style += refreshCounters(styleLevel);
+    }
+  } else if (styleName && styleName.includes(RESERVED_STYLE_NONE_NUMBERING)) {
+    const indices = styleName.split(RESERVED_STYLE_NONE_NUMBERING);
+    if (indices && 2 == indices.length) {
+      styleLevel = parseInt(indices[1]);
+    }
+    if (styleLevel) {
+      style += refreshCounters(styleLevel);
     }
   }
 
@@ -155,13 +174,37 @@ function getStyleEx(
   if (paddingBottom && !EMPTY_CSS_VALUE.has(paddingBottom)) {
     style += `padding-bottom: ${paddingBottom};`;
   }
-  return style;
+  return {style, styleLevel};
+}
+
+// [FS] IRAD-1202 2021-02-15
+function refreshCounters(styleLevel) {
+  let latestCounters = '';
+  let cssCounterReset = '';
+  let setCounterReset = false;
+
+  // set style counters in window variables,
+  // so that it is remapped later to add to document attribute via transaction.
+  for (let index = 1; index <= styleLevel; index++) {
+    const counterVar = 'set-cust-style-counter-' + index;
+    const setCounterVal = window[counterVar];
+    if (!setCounterVal) {
+      cssCounterReset += `czi-cust-style-counter-${index} `;
+      setCounterReset = true;
+    }
+    window[counterVar] = true;
+  }
+
+  if (setCounterReset) {
+    latestCounters = `counter-increment: ${cssCounterReset};`;
+  }
+  return latestCounters;
 }
 
 function toDOM(node: Node): Array<any> {
-  const {indent, id, styleName, styleLevel} = node.attrs;
+  const {indent, id, styleName} = node.attrs;
   const attrs = {};
-  const style = getStyle(node.attrs);
+  const {style, styleLevel} = getStyle(node.attrs);
 
   style && (attrs.style = style);
   if (styleLevel) {

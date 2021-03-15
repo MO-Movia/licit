@@ -1,5 +1,4 @@
 // @flow
-
 import applyDevTools from 'prosemirror-dev-tools';
 import {EditorState, TextSelection} from 'prosemirror-state';
 import {Node} from 'prosemirror-model';
@@ -10,7 +9,6 @@ import * as React from 'react';
 import convertFromJSON from '../convertFromJSON';
 import RichTextEditor from '../ui/RichTextEditor';
 import uuid from '../uuid';
-import LicitRuntime from './LicitRuntime';
 import SimpleConnector from './SimpleConnector';
 import CollabConnector from './CollabConnector';
 import {EMPTY_DOC_JSON} from '../createEmptyEditorState';
@@ -47,13 +45,6 @@ class Licit extends React.Component<any, any> {
 
   _popUp = null;
 
-  /**
-   * Provides access to prosemirror view.
-   */
-  get editorView(): EditorView {
-    return this._editorView;
-  }
-
   constructor(props: any, context: any) {
     super(props, context);
 
@@ -81,7 +72,7 @@ class Licit extends React.Component<any, any> {
     const embedded = props.embedded || false; // [FS] IRAD-996 2020-06-30
     // [FS] 2020-07-03
     // Handle Image Upload from Angular App
-    const runtime = props.runtime ? props.runtime : new LicitRuntime();
+    const runtime = props.runtime || null;
     //const runtime = null;
     const plugins = props.plugins || null;
     let editorState = convertFromJSON(data, null, plugins);
@@ -94,7 +85,9 @@ class Licit extends React.Component<any, any> {
 
     const setState = this.setState.bind(this);
     this._connector = collaborative
-      ? new CollabConnector(editorState, setState, {docID})
+      ? new CollabConnector(editorState, setState, {
+          docID,
+        })
       : new SimpleConnector(editorState, setState);
 
     // FS IRAD-989 2020-18-06
@@ -133,6 +126,60 @@ class Licit extends React.Component<any, any> {
         }
       },
     });
+  }
+
+  resetCounters(transaction) {
+    for (let index = 1; index <= 10; index++) {
+      const counterVar = 'set-cust-style-counter-' + index;
+      const setCounterVal = window[counterVar];
+      if (setCounterVal) {
+        delete window[counterVar];
+      }
+    }
+    this.setCounterFlags(transaction, true);
+  }
+
+  setCounterFlags(transaction, reset) {
+    let modified = false;
+    let counterFlags = null;
+    const existingCFlags = transaction.doc.attrs.counterFlags;
+    if (reset && !existingCFlags) {
+      return;
+    }
+
+    for (let index = 1; index <= 10; index++) {
+      const counterVar = 'set-cust-style-counter-' + index;
+
+      const setCounterVal = window[counterVar];
+      if (setCounterVal) {
+        if (!counterFlags) {
+          counterFlags = {};
+        }
+        counterFlags[counterVar] = true;
+
+        if (!existingCFlags) {
+          modified = true;
+        }
+      }
+      if (!modified) {
+        if (existingCFlags) {
+          if (setCounterVal) {
+            modified = undefined == existingCFlags[counterVar];
+          } else {
+            modified = undefined != existingCFlags[counterVar];
+          }
+        } else {
+          modified = setCounterVal;
+        }
+      }
+    }
+
+    if (modified) {
+      const tr = this._editorView.state.tr.step(
+        new SetDocAttrStep('counterFlags', counterFlags)
+      );
+      this._editorView.dispatch(tr);
+    }
   }
 
   getDeletedArtifactIds() {
@@ -201,7 +248,9 @@ class Licit extends React.Component<any, any> {
         const docID = nextState.docID || 1;
         // create new connector
         this._connector = collabEditing
-          ? new CollabConnector(editorState, setState, {docID})
+          ? new CollabConnector(editorState, setState, {
+              docID,
+            })
           : new SimpleConnector(editorState, setState);
       }
     }
@@ -246,26 +295,57 @@ class Licit extends React.Component<any, any> {
      ** To resolve check and update the connector's state to keep in sync.
      */
     const isSameState = this._connector._editorState == this._editorView.state;
+    let invokeOnEdit = false;
 
     if (!isSameState) {
       this._connector._editorState = this._editorView.state;
+      invokeOnEdit = true;
+    } else {
+      if(this._connector instanceof SimpleConnector) {
+        invokeOnEdit = true;
+      }
+    }
+    if(invokeOnEdit) {
+      // [FS] IRAD-1236 2020-03-05
+      // Only need to call if there is any difference in collab mode OR always in non-collab mode.
+      this._connector.onEdit(transaction, this._editorView);
     }
 
-    this._connector.onEdit(transaction);
     if (transaction.docChanged) {
       const docJson = transaction.doc.toJSON();
+      let setCFlags = true;
+
       if (docJson.content && docJson.content.length === 1) {
         if (
-          docJson.content[0].content &&
-          docJson.content[0].content[0].text &&
-          '' === docJson.content[0].content[0].text.trim()
+          undefined === docJson.content[0]['content'] ||
+          (docJson.content[0].content &&
+            docJson.content[0].content[0].text &&
+            '' === docJson.content[0].content[0].text.trim())
         ) {
           isEmpty = true;
+          this.resetCounters(transaction);
+          setCFlags = false;
         }
       }
-      this.state.onChangeCB(docJson, isEmpty);
+
+      if (setCFlags) {
+        this.setCounterFlags(transaction, false);
+      }
+      this.state.onChangeCB(docJson, {
+        isEmpty: isEmpty,
+        view: this._editorView,
+      });
+      this.closeOpenedPopupModels();
     }
   };
+  // [FS] IRAD-1173 2021-02-25
+  // Bug fix: Transaction mismatch error when a doalog is opened and keep typing.
+  closeOpenedPopupModels() {
+    const element = document.getElementsByClassName('czi-pop-up-element')[0];
+    if (element && element.parentElement) {
+      element.parentElement.removeChild(element);
+    }
+  }
 
   _onReady = (editorView: EditorView): void => {
     // [FS][06-APR-2020][IRAD-922]

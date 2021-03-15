@@ -6,15 +6,18 @@ import CustomStyleCommand from '../CustomStyleCommand';
 import * as React from 'react';
 import {EditorState} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
-import {HEADING_NAME_DEFAULT} from './findActiveHeading';
 import {Transform} from 'prosemirror-transform';
 import {Node} from 'prosemirror-model';
+import {
+  RESERVED_STYLE_NONE,
+  RESERVED_STYLE_NONE_NUMBERING,
+} from '../ParagraphNodeSpec';
 
 // [FS] IRAD-1042 2020-09-09
 // To include custom styles in the toolbar
 
 let HEADING_COMMANDS: Object = {
-  [HEADING_NAME_DEFAULT]: new HeadingCommand(0),
+  [RESERVED_STYLE_NONE]: new HeadingCommand(0),
 };
 
 class HeadingCommandMenuButton extends React.PureComponent<any, any> {
@@ -30,7 +33,10 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     HEADING_COMMANDS = {
       // [FS] IRAD-1074 2020-12-09
       // When apply 'None' from style menu, not clearing the applied custom style.
-      [HEADING_NAME_DEFAULT]: new CustomStyleCommand('None', 'None'),
+      [RESERVED_STYLE_NONE]: new CustomStyleCommand(
+        RESERVED_STYLE_NONE,
+        RESERVED_STYLE_NONE
+      ),
     };
     // Check runtime is avilable in editorview
     // Get styles form server configured in runtime
@@ -39,18 +45,18 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
       this.props.editorView.runtime &&
       typeof this.props.editorView.runtime.getStylesAsync === 'function'
     ) {
-      const customStyles = this.props.editorView.runtime.getStylesAsync();
       let HEADING_NAMES = null;
-      customStyles.then((result) => {
-        HEADING_NAMES = result;
-
-        if (null != HEADING_NAMES) {
-          HEADING_NAMES.forEach((obj) => {
-            HEADING_COMMANDS[obj.styleName] = new CustomStyleCommand(
-              obj,
-              obj.styleName
-            );
-          });
+      this.props.editorView.runtime.getStylesAsync().then((result) => {
+        if (result) {
+          HEADING_NAMES = result;
+          if (null != HEADING_NAMES) {
+            HEADING_NAMES.forEach((obj) => {
+              HEADING_COMMANDS[obj.styleName] = new CustomStyleCommand(
+                obj,
+                obj.styleName
+              );
+            });
+          }
         }
         return [HEADING_COMMANDS];
       });
@@ -66,10 +72,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     };
     // [FS] IRAD-1176 2021-02-08
     // Added a menu "Edit All" for Edit All custom styles
-    MENU_COMMANDS['editall'] = new CustomStyleCommand(
-      'editall',
-      'Edit All'
-    );
+    MENU_COMMANDS['editall'] = new CustomStyleCommand('editall', 'Edit All');
     MENU_COMMANDS['clearstyle'] = new CustomStyleCommand(
       'clearstyle',
       'Clear Style'
@@ -79,6 +82,7 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
   isAllowedNode(node: Node) {
     return node.type.name === 'paragraph' || node.type.name === 'ordered_list';
   }
+
   render(): React.Element<any> {
     const {dispatch, editorState, editorView} = this.props;
     const {selection, doc} = editorState;
@@ -88,19 +92,34 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
     // [FS] IRAD-1088 2020-10-05
     // get the custom style name from node attribute
     doc.nodesBetween(from, to, (node, pos) => {
-      if (node.attrs.styleName && this.isAllowedNode(node)) {
-        // [FS] IRAD-1043 2020-10-27
-        // Show blank as style name when select paragrapghs with multiple custom styles applied
-        selectedStyleCount++;
-        // [FS] IRAD-1100 2020-10-30
-        // Issue fix: style name shows blank when select multiple paragraph with same custom style applied
-        if (
-          1 === selectedStyleCount ||
-          (1 < selectedStyleCount && node.attrs.styleName === customStyleName)
-        ) {
-          customStyleName = node.attrs.styleName;
-        } else {
-          customStyleName = 'None';
+      // [FS] IRAD-1231 2021-03-05
+      // Issue fix : Applied custom style name shows only when click start and end position of paragraph,
+      // otherwise shows 'None'.
+      if (this.isAllowedNode(node)) {
+        if (node.attrs.styleName) {
+          // [FS] IRAD-1043 2020-10-27
+          // Show blank as style name when select paragraphs with multiple custom styles applied
+          selectedStyleCount++;
+          // [FS] IRAD-1100 2020-10-30
+          // Issue fix: style name shows blank when select multiple paragraph with same custom style applied
+          if (
+            1 === selectedStyleCount ||
+            (1 < selectedStyleCount && node.attrs.styleName === customStyleName)
+          ) {
+            customStyleName = node.attrs.styleName.includes(
+              RESERVED_STYLE_NONE_NUMBERING
+            )
+              ? RESERVED_STYLE_NONE
+              : node.attrs.styleName;
+          } else {
+            customStyleName = RESERVED_STYLE_NONE;
+          }
+        }
+        // [FS] IRAD-1231 2021-03-02
+        // Show the custom style as None for paste paragraph from outside.
+        else {
+          node.attrs.styleName = RESERVED_STYLE_NONE;
+          customStyleName = RESERVED_STYLE_NONE;
         }
       }
     });

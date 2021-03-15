@@ -10,6 +10,7 @@ import { HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
 import { HAIR_SPACE_CHAR, SPACER_SIZE_TAB } from './SpacerMarkSpec';
 import applyMark from './applyMark';
 import UICommand from './ui/UICommand';
+import { getStyleLevel } from './CustomStyleCommand';
 
 function insertTabSpace(state: EditorState, tr: Transform, schema: Schema): Transform {
   const { selection } = tr;
@@ -35,14 +36,14 @@ function insertTabSpace(state: EditorState, tr: Transform, schema: Schema): Tran
   }
 
   const { from, to } = selection;
-
-  if (found.node.type === listItem && found.pos === from - 2 && !found.node.attrs.styleLevel) {
+  const styleLevel = getStyleLevel(found.node.attrs.styleName);
+  if (found.node.type === listItem && found.pos === from - 2 && !styleLevel) {
     // Cursur is at the begin of the list-item, let the default indentation
     // behavior happen.
     return tr;
   }
 
-  if (found.node.type === paragraph && found.pos === from - 1 && found.node.attrs.styleLevel) {
+  if (found.node.type === paragraph && found.pos === from - 1 && styleLevel) {
      return tr;
   }
   const textNode = schema.text(HAIR_SPACE_CHAR);

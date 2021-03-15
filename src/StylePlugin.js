@@ -1,13 +1,13 @@
 // [FS] IRAD-1052 2020-10-30
 // Plugin to handle custom style on load
 import {Plugin, PluginKey} from 'prosemirror-state';
-import {Node, Fragment} from 'prosemirror-model';
+import {Node} from 'prosemirror-model';
 import {
   updateOverrideFlag,
   applyLatestStyle,
   getMarkByStyleName,
   ATTR_OVERRIDDEN,
-  NONE,
+  getStyleLevel,
 } from './CustomStyleCommand';
 import {findParentNodeClosestToPos} from 'prosemirror-utils';
 import {
@@ -21,7 +21,9 @@ import {
   MARK_TEXT_HIGHLIGHT,
   MARK_UNDERLINE,
 } from './MarkNames';
-import {getCustomStyleByName} from './customStyle';
+import {getCustomStyleByName, getCustomStyleByLevel} from './customStyle';
+import {RESERVED_STYLE_NONE} from './ParagraphNodeSpec';
+import {getLineSpacingValue} from './ui/toCSSLineSpacing';
 const ALLOWED_MARKS = [
   MARK_STRONG,
   MARK_EM,
@@ -59,7 +61,10 @@ export default class StylePlugin extends Plugin {
           this.loaded = false;
           this.firstTime = true;
         },
-        apply(tr, value, oldState, newState) {},
+        apply(tr, value, oldState, newState) {
+          // [FS] IRAD-1202 2021-02-15
+          remapCounterFlags(tr);
+        },
       },
       props: {
         handleDOMEvents: {
@@ -105,6 +110,18 @@ export default class StylePlugin extends Plugin {
   }
 }
 
+// [FS] IRAD-1202 2021-02-15
+function remapCounterFlags(tr) {
+  // Depending on the window variables,
+  // set counters for numbering.
+  const cFlags = tr.doc.attrs.counterFlags;
+  for (const key in cFlags) {
+    if (cFlags.hasOwnProperty(key)) {
+      window[key] = true;
+    }
+  }
+}
+
 function applyStyles(state, tr) {
   if (!tr) {
     tr = state.tr;
@@ -131,76 +148,135 @@ function applyStyles(state, tr) {
 // [FS] IRAD-1130 2021-01-07
 // Handle heirarchy on delete
 function manageHierarchyOnDelete(prevState, nextState, tr, view) {
-  let nodes = null;
-  let prevN = null;
-  let index = 0;
-
+  const nodesAfterSelection = [];
+  const nodesBeforeSelection = [];
+  let selectedPos = nextState.selection.from;
   if (prevState.doc !== nextState.doc) {
     if (
       view &&
       (DELKEYCODE === view.lastKeyCode || BACKSPACEKEYCODE === view.lastKeyCode)
     ) {
       const nextNodes = nodeAssignment(nextState);
-      let prevLevel = 1;
+      // seperating  the nodes to two arrays, ie selection before and after
       nextNodes.forEach((element) => {
-        if (element.node.attrs.styleLevel - prevLevel > 1 && null === nodes) {
-          prevLevel = element.node.attrs.styleLevel;
-          nodes = element;
-          prevN = nextNodes[index - 1];
+        if (element.pos >= selectedPos) {
+          nodesAfterSelection.push({pos: element.pos, node: element.node});
         } else {
-          if (prevLevel < 1) {
-            prevLevel = element.node.attrs.styleLevel;
-          }
+          nodesBeforeSelection.push({pos: element.pos, node: element.node});
         }
-        index++;
       });
-      if (nodes && prevN) {
-        if (!tr) {
-          tr = nextState.tr;
+      // for backspace and delete to get the correct node position
+      selectedPos =
+        DELKEYCODE === view.lastKeyCode ? selectedPos - 1 : selectedPos + 1;
+      const selectedNode = prevState.doc.nodeAt(selectedPos);
+      if (
+        selectedNode.attrs.styleName !== 'None' &&
+        0 !== Number(getStyleLevel(selectedNode.attrs.styleName))
+      ) {
+        if (nodesBeforeSelection.length > 0 || nodesAfterSelection.length > 0) {
+          // assigning transaction if tr is null
+          if (!tr) {
+            tr = nextState.tr;
+          }
+
+          let subsequantLevel = 0;
+          let levelCounter = 0;
+          let prevNode = null;
+          let prevNodeLevel = 0;
+
+          if (nodesBeforeSelection.length > 0) {
+            prevNode = nodesBeforeSelection[nodesBeforeSelection.length - 1];
+            prevNodeLevel = Number(
+              getStyleLevel(prevNode.node.attrs.styleName)
+            );
+          }
+
+          if (nodesBeforeSelection.length > 0 && 0 !== prevNodeLevel) {
+            for (
+              let indexbefore = 0;
+              indexbefore < nodesBeforeSelection.length;
+              indexbefore++
+            ) {
+              const beforeitem = nodesBeforeSelection[indexbefore];
+              subsequantLevel = Number(
+                getStyleLevel(beforeitem.node.attrs.styleName)
+              );
+              if (subsequantLevel !== 0) {
+                if (subsequantLevel > 1 && subsequantLevel - levelCounter > 1) {
+                  subsequantLevel = subsequantLevel - 1;
+                  const style = getCustomStyleByLevel(subsequantLevel);
+                  const newattrs = Object.assign({}, beforeitem.node.attrs);
+                  newattrs.styleName = style.styleName;
+                  tr = tr.setNodeMarkup(beforeitem.pos, undefined, newattrs);
+                }
+                levelCounter = subsequantLevel;
+              }
+            }
+          }
+
+          for (let index = 0; index < nodesAfterSelection.length; index++) {
+            const item = nodesAfterSelection[index];
+            subsequantLevel = Number(getStyleLevel(item.node.attrs.styleName));
+
+            if (subsequantLevel !== 0) {
+              if (levelCounter !== subsequantLevel) {
+                if (subsequantLevel - levelCounter > 1) {
+                  subsequantLevel = Number(subsequantLevel) - 1;
+                  if (subsequantLevel > 0) {
+                    const style = getCustomStyleByLevel(subsequantLevel);
+                    const newattrs = Object.assign({}, item.node.attrs);
+                    newattrs.styleName = style.styleName;
+                    tr = tr.setNodeMarkup(item.pos, undefined, newattrs);
+                  }
+                }
+              }
+              levelCounter = subsequantLevel;
+            }
+          }
+
+          tr = removeLastLevelHeirarchy(
+            tr,
+            prevNodeLevel,
+            nodesBeforeSelection,
+            nodesAfterSelection
+          );
         }
-        const newattrs = Object.assign({}, prevN.node.attrs);
-        tr = addElementAfter(
-          newattrs,
-          nextState,
-          tr,
-          prevN.pos + prevN.node.nodeSize,
-          prevLevel
-        );
       }
     }
   }
   return tr;
 }
-function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
-  const counter = nodeAttrs.styleLevel ? nodeAttrs.styleLevel : 1;
-  const level = nextLevel ? nextLevel - 1 : 0;
 
-  const paragraph = state.schema.nodes['paragraph'];
+// to manage the heirachy only two levels are available
+function removeLastLevelHeirarchy(
+  tr,
+  prevNodeLevel,
+  nodesBeforeSelection,
+  nodesAfterSelection
+) {
+  let subsequantLevel = 0;
+  subsequantLevel = Number(prevNodeLevel) - 1;
 
-  for (let index = level; index > counter; index--) {
-    nodeAttrs.styleLevel = index;
-    nodeAttrs.styleName = 'None';
-    nodeAttrs.customStyle = null;
-    const paragraphNode = paragraph.create(nodeAttrs, null, null);
-    tr = tr.insert(startPos, Fragment.from(paragraphNode));
+  const style = getCustomStyleByLevel(subsequantLevel);
+
+  if (style) {
+    const newattrs = Object.assign({}, nodesBeforeSelection[0].node.attrs);
+    newattrs.styleName = style.styleName;
+    tr = tr.setNodeMarkup(nodesBeforeSelection[0].pos, undefined, newattrs);
   }
-
   return tr;
 }
-
+// get all the nodes having styleName attribute
 function nodeAssignment(state) {
   const nodes = [];
   state.doc.descendants((node, pos) => {
     if (requiredAddAttr(node)) {
-      if (node.attrs.styleLevel) {
-        nodes.push({
-          node,
-          pos,
-        });
-      }
+      nodes.push({
+        node,
+        pos,
+      });
     }
   });
-
   return nodes;
 }
 
@@ -217,7 +293,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
         required = true;
       }
       if (required) {
-        const newattrs = Object.assign({}, node.attrs);
+        let newattrs = Object.assign({}, node.attrs);
         const nextNodePos = pos + node.nodeSize;
         const nextNode = nextState.doc.nodeAt(nextNodePos);
         let IsActiveNode = false;
@@ -235,9 +311,14 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
         ) {
           const style = getCustomStyleByName(newattrs.styleName);
           if (null !== style) {
+            // [FS] IRAD-1217 2021-02-24
+            // Select style for next line not working continuously for more that 2 paragraphs
+            newattrs = setNodeAttrs(style.styles.nextLineStyleName, newattrs);
             tr = tr.setNodeMarkup(nextNodePos, undefined, newattrs);
+            // [FS] IRAD-1201 2021-02-18
+            // get the nextLine Style from the current style object.
             const marks = getMarkByStyleName(
-              node.attrs[ATTR_STYLE_NAME],
+              style.styles.nextLineStyleName,
               nextState.schema
             );
             node.descendants((child, pos) => {
@@ -260,6 +341,33 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
   }
 
   return modified ? tr : null;
+}
+
+// [FS] IRAD-1217 2021-02-24
+// get the style object using the nextlineStyleName and set the attribute values to the node.
+function setNodeAttrs(nextLineStyleName, newattrs) {
+  const nextLineStyle = getCustomStyleByName(nextLineStyleName);
+  if (nextLineStyle) {
+    newattrs.styleName = nextLineStyleName;
+    newattrs.indent = nextLineStyle.styles.indent;
+    newattrs.align = nextLineStyle.styles.align;
+    // [FS] IRAD-1223 2021-03-04
+    // Line spacing not working for next line style
+    newattrs.lineSpacing = getLineSpacingValue(nextLineStyle.styles.lineHeight);
+  } else if (RESERVED_STYLE_NONE === nextLineStyleName) {
+    // [FS] IRAD-1229 2021-03-03
+    // Next line style None not applied
+    newattrs = resetNodeAttrs(newattrs, nextLineStyleName);
+  }
+  return newattrs;
+}
+
+function resetNodeAttrs(newattrs, nextLineStyleName) {
+  newattrs.styleName = nextLineStyleName;
+  newattrs.indent = null;
+  newattrs.lineSpacing = null;
+  newattrs.align = 'left';
+  return newattrs;
 }
 
 function isNewParagraph(prevState, nextState, view) {
@@ -307,7 +415,7 @@ function haveEligibleChildren(node, contentLen) {
     node instanceof Node &&
     0 < contentLen &&
     node.type.name === 'paragraph' &&
-    NONE !== node.attrs.styleName
+    RESERVED_STYLE_NONE !== node.attrs.styleName
   );
 }
 

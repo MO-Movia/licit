@@ -11,11 +11,16 @@ import CustomStyleItem from './CustomStyleItem';
 import createPopUp from './createPopUp';
 import CustomStyleSubMenu from './CustomStyleSubMenu';
 import CustomStyleEditor from './CustomStyleEditor';
-import {applyLatestStyle, updateDocument} from '../CustomStyleCommand';
+import {
+  applyLatestStyle,
+  updateDocument,
+  isCustomStyleAlreadyApplied,
+} from '../CustomStyleCommand';
 import {atViewportCenter} from './PopUpPosition';
 import {setTextAlign} from '../TextAlignCommand';
 import {setTextLineSpacing} from '../TextLineSpacingCommand';
 import {setParagraphSpacing} from '../ParagraphSpacingCommand';
+import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
 
 // [FS] IRAD-1039 2020-09-24
 // UI to show the list buttons
@@ -68,7 +73,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     commandGroups.forEach((group, ii) => {
       Object.keys(group).forEach((label) => {
         const command = group[label];
-        const hasText = 'None' !== label;
+        const hasText = RESERVED_STYLE_NONE !== label;
         children.push(
           <CustomStyleItem
             command={command}
@@ -164,17 +169,31 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             if (undefined !== val && val.command._customStyle) {
               // do edit,remove,rename code here
               if ('remove' === val.type) {
-                this.props.editorView.runtime.removeStyle(
-                  val.command._customStyleName
-                );
-
-                // [FS] IRAD-1099 2020-11-17
-                // Issue fix: Even the applied style is removed the style name is showing in the editor
-                this.removeCustomStyleName(
-                  this.props.editorState,
-                  val.command._customStyleName,
-                  this.props.editorView.dispatch
-                );
+                // [FS] IRAD-1223 2021-03-01
+                // Not allow user to remove already in used custom style with numbering, which shall break the heirarchy.
+                if (
+                  !isCustomStyleAlreadyApplied(
+                    val.command._customStyleName,
+                    this.props.editorState
+                  )
+                ) {
+                  this.props.editorView.runtime
+                    .removeStyle(val.command._customStyleName)
+                    .then((success) => {
+                      // [FS] IRAD-1099 2020-11-17
+                      // Issue fix: Even the applied style is removed the style name is showing in the editor
+                      this.removeCustomStyleName(
+                        this.props.editorState,
+                        val.command._customStyleName,
+                        this.props.editorView.dispatch
+                      );
+                    });
+                } else {
+                  // TODO: need to show this alert message in a popup.
+                  window.alert(
+                    'This custom style already in use, by removing this style breaks the heirarchy '
+                  );
+                }
               } else if ('rename' === val.type) {
                 this.showStyleWindow(command, event, 2);
               } else {
@@ -199,7 +218,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     }
 
     let tr = editorState.tr;
-    const customStyleName = 'None';
+    const customStyleName = RESERVED_STYLE_NONE;
     const tasks = [];
     const textAlignNode = [];
 
@@ -291,27 +310,14 @@ class CustomMenuUI extends React.PureComponent<any, any> {
               const {dispatch, runtime} = this.props.editorView;
               // [FS] IRAD-1112 2020-12-14
               // Issue fix: Duplicate style created while modified the style name.
-              let customStyles;
               delete val.runtime;
               if (1 === mode) {
                 // update
                 delete val.editorView;
-                customStyles = runtime.saveStyle(val).then((result) => {
-                });
-              } else {
-                // rename
-                customStyles = runtime.renameStyle(
-                  this._styleName,
-                  val.styleName
-                );
-              }
-              // [FS] IRAD-1133 2021-01-06
-              // Issue fix: After modify a custom style, the modified style not applied to the paragraph.
-              customStyles.then((result) => {
-                if (null != result) {
-                  let tr;
-                  result.forEach((obj) => {
-                    if (1 === mode) {
+                let tr;
+                runtime.saveStyle(val).then((result) => {
+                  if (result) {
+                    result.forEach((obj) => {
                       if (val.styleName === obj.styleName) {
                         tr = updateDocument(
                           this.props.editorState,
@@ -320,26 +326,46 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                           obj.styles
                         );
                       }
-                    } else {
-                      if (val.styleName === obj.styleName) {
-                        tr = this.renameStyleInDocument(
-                          this.props.editorState,
-                          this.props.editorState.tr,
-                          this._styleName,
-                          val.styleName,
-                          obj.styles
-                        );
-                      }
+                    });
+                    if (tr) {
+                      dispatch(tr);
                     }
-                  });
-                  if (tr) {
-                    dispatch(tr);
                   }
+
                   this.props.editorView.focus();
                   this._stylePopup.close();
                   this._stylePopup = null;
-                }
-              });
+                });
+              } else {
+                // rename
+                runtime
+                  .renameStyle(this._styleName, val.styleName)
+                  .then((result) => {
+                    // [FS] IRAD-1133 2021-01-06
+                    // Issue fix: After modify a custom style, the modified style not applied to the paragraph.
+
+                    if (null != result) {
+                      let tr;
+                      result.forEach((obj) => {
+                          if (val.styleName === obj.styleName) {
+                            tr = this.renameStyleInDocument(
+                              this.props.editorState,
+                              this.props.editorState.tr,
+                              this._styleName,
+                              val.styleName,
+                              obj.styles
+                            );
+                          }
+                      });
+                      if (tr) {
+                        dispatch(tr);
+                      }
+                      this.props.editorView.focus();
+                      this._stylePopup.close();
+                      this._stylePopup = null;
+                    }
+                  });
+              }
             }
           }
         },

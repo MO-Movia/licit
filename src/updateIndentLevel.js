@@ -4,13 +4,13 @@ import compareNumber from './compareNumber';
 import consolidateListNodes from './consolidateListNodes';
 import isListNode from './isListNode';
 import transformAndPreserveTextSelection from './transformAndPreserveTextSelection';
-import { EditorState, AllSelection, TextSelection } from 'prosemirror-state';
-import { BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
-import { Fragment, Schema } from 'prosemirror-model';
-import { MAX_INDENT_LEVEL, MIN_INDENT_LEVEL } from './ParagraphNodeSpec';
-import { Transform } from 'prosemirror-transform';
-import { getCustomStyleByLevel } from './customStyle';
-import { applyLatestStyle } from './CustomStyleCommand';
+import {EditorState, AllSelection, TextSelection} from 'prosemirror-state';
+import {BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH} from './NodeNames';
+import {Fragment, Schema} from 'prosemirror-model';
+import {MAX_INDENT_LEVEL, MIN_INDENT_LEVEL} from './ParagraphNodeSpec';
+import {Transform} from 'prosemirror-transform';
+import {getCustomStyleByLevel} from './customStyle';
+import { getStyleLevel} from './CustomStyleCommand';
 
 export default function updateIndentLevel(
   state: EditorState,
@@ -18,7 +18,7 @@ export default function updateIndentLevel(
   schema: Schema,
   delta: number
 ): Transform {
-  const { doc, selection } = tr;
+  const {doc, selection} = tr;
   if (!doc || !selection) {
     return tr;
   }
@@ -29,8 +29,8 @@ export default function updateIndentLevel(
     return tr;
   }
 
-  const { nodes } = schema;
-  const { from, to } = selection;
+  const {nodes} = schema;
+  const {from, to} = selection;
   const listNodePoses = [];
 
   const blockquote = nodes[BLOCKQUOTE];
@@ -58,13 +58,13 @@ export default function updateIndentLevel(
     return tr;
   }
 
-  tr = transformAndPreserveTextSelection(tr, schema, memo => {
-    const { schema } = memo;
+  tr = transformAndPreserveTextSelection(tr, schema, (memo) => {
+    const {schema} = memo;
     let tr2 = memo.tr;
     listNodePoses
       .sort(compareNumber)
       .reverse()
-      .forEach(pos => {
+      .forEach((pos) => {
         tr2 = setListNodeIndent(state, tr2, schema, pos, delta);
       });
     tr2 = consolidateListNodes(tr2);
@@ -86,7 +86,7 @@ function setListNodeIndent(
     return tr;
   }
 
-  const { doc, selection } = tr;
+  const {doc, selection} = tr;
   if (!doc) {
     return tr;
   }
@@ -105,7 +105,7 @@ function setListNodeIndent(
     return tr;
   }
 
-  const { from, to } = selection;
+  const {from, to} = selection;
 
   // [FS] IRAD-947 2020-05-19
   // Fix for Multi-level lists lose multi-levels when indenting/de-indenting
@@ -197,14 +197,15 @@ function setNodeIndentMarkup(
     (node.attrs.indent || 0) + delta,
     MAX_INDENT_LEVEL
   );
-
-  if (node.attrs.styleLevel) {
-    const nextLevel = node.attrs.styleLevel + delta;
-    const startPos = tr.selection.$from.before(1);
-    const endPos = tr.selection.$to.after(1);
+  const styleLevel = getStyleLevel(node.attrs.styleName);
+  if (styleLevel) {
+    //FIX:  Normal Indent is not working along with custom style numbering
+    const nextLevel = parseInt(styleLevel) + delta;
+    // const startPos = tr.selection.$from.before(1);
+    // const endPos = tr.selection.$to.after(1);
     const style = getCustomStyleByLevel(nextLevel);
     if (style) {
-      tr = applyLatestStyle(style.stylename, state, tr, node, startPos, endPos);
+      // tr = applyLatestStyle(style.styleName, state, tr, node, startPos, endPos);
     }
     return tr;
   }

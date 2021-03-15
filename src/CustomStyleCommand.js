@@ -21,7 +21,11 @@ import {
   removeTextAlignAndLineSpacing,
   clearCustomStyleAttribute,
 } from './clearCustomStyleMarks';
-import {getCustomStyleByName} from './customStyle';
+import {
+  getCustomStyleByName,
+  getCustomStyleByLevel,
+  isPreviousLevelExists,
+} from './customStyle';
 import type {StyleProps} from './Types';
 import {
   MARK_STRONG,
@@ -36,6 +40,10 @@ import {
 } from './MarkNames';
 import {PARAGRAPH} from './NodeNames';
 import {getLineSpacingValue} from './ui/toCSSLineSpacing';
+import {
+  RESERVED_STYLE_NONE,
+  RESERVED_STYLE_NONE_NUMBERING,
+} from './ParagraphNodeSpec';
 
 export const STRONG = 'strong';
 export const EM = 'em';
@@ -48,7 +56,6 @@ export const TEXTHL = 'textHighlight';
 export const UNDERLINE = 'underline';
 export const ALIGN = 'align';
 export const LHEIGHT = 'lineHeight';
-export const NONE = 'None';
 export const SAFTER = 'paragraphSpacingAfter';
 export const SBEFORE = 'paragraphSpacingBefore';
 export const ATTR_OVERRIDDEN = 'overridden';
@@ -57,7 +64,10 @@ export const NUMBERING = 'hasNumbering';
 export const LEVELBASEDINDENT = 'isLevelbased';
 export const LEVEL = 'styleLevel';
 export const BOLDPARTIAL = 'boldPartial';
-
+const MISSED_HEIRACHY_ELEMENT = {};
+const nodesAfterSelection = [];
+const nodesBeforeSelection = [];
+const selectedNodes = [];
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
 export function getCustomStyleCommands(customStyle: any) {
@@ -75,7 +85,7 @@ export function getCustomStyleCommands(customStyle: any) {
       case EM:
         // [FS] IRAD-1043 2020-10-23
         // Issue fix : unselect a style when creating a new style
-        // and that unselected styles also applied in selected paragrapgh
+        // and that unselected styles also applied in selected paragraph
         if (customStyle[property]) commands.push(new MarkToggleCommand('em'));
         break;
 
@@ -94,7 +104,7 @@ export function getCustomStyleCommands(customStyle: any) {
       case STRIKE:
         // [FS] IRAD-1043 2020-10-23
         // Issue fix : unselect a style when creating a new style
-        // and that unselected styles also applied in selected paragrapgh
+        // and that unselected styles also applied in selected paragraph
         if (customStyle[property])
           commands.push(new MarkToggleCommand('strike'));
         break;
@@ -203,7 +213,8 @@ class CustomStyleCommand extends UICommand {
     // [FS] IRAD-1053 2020-10-22
     // Disable the Clear style menu when no styles applied to a paragraph
     return !(
-      'clearstyle' == menuTitle && NONE == this.isCustomStyleApplied(state)
+      'clearstyle' == menuTitle &&
+      RESERVED_STYLE_NONE == this.isCustomStyleApplied(state)
     );
   };
 
@@ -212,7 +223,7 @@ class CustomStyleCommand extends UICommand {
   isCustomStyleApplied(editorState: EditorState) {
     const {selection, doc} = editorState;
     const {from, to} = selection;
-    let customStyleName = NONE;
+    let customStyleName = RESERVED_STYLE_NONE;
     doc.nodesBetween(from, to, (node, pos) => {
       if (node.attrs.styleName) {
         customStyleName = node.attrs.styleName;
@@ -228,7 +239,12 @@ class CustomStyleCommand extends UICommand {
   ): boolean => {
     let {tr} = state;
     const {selection} = state;
-
+    const startPos = selection.$from.before(1);
+    const endPos = selection.$to.after(1) - 1;
+    const node = getNode(state, startPos, endPos, tr);
+    const newattrs = Object.assign({}, node.attrs);
+    let isValidated = true;
+    view.lastKeyCode = null;
     if ('newstyle' === this._customStyle) {
       this.editWindow(state, view, 0);
       return false;
@@ -240,15 +256,17 @@ class CustomStyleCommand extends UICommand {
     // to remove the custom styles applied in the selected paragraph
     else if (
       'clearstyle' === this._customStyle ||
-      'None' === this._customStyle
+      RESERVED_STYLE_NONE === this._customStyle
     ) {
       tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
       tr = removeTextAlignAndLineSpacing(tr, state.schema);
-      const startPos = selection.$from.before(1);
-      const endPos = selection.$to.after(1);
-      const node = getNode(state, startPos, endPos, tr);
-      const newattrs = Object.assign({}, node.attrs);
-      tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
+      hasMismatchHeirarchy(state, tr, node, startPos, endPos);
+
+      // const newattrs = Object.assign({}, node.attrs);
+      newattrs['styleName'] = 'None';
+      newattrs['id'] = '';
+      tr = tr.setNodeMarkup(startPos, undefined, newattrs);
+      tr = createEmptyElement(state, tr, node, startPos, endPos, node.attrs);
       if (dispatch && tr.docChanged) {
         dispatch(tr);
         return true;
@@ -256,22 +274,50 @@ class CustomStyleCommand extends UICommand {
       return false;
     }
 
-    tr = applyStyle(this._customStyle, this._customStyle.styleName, state, tr);
-
-    if (tr.docChanged || tr.storedMarksSet) {
-      // view.focus();
-      dispatch && dispatch(tr);
-      return true;
+    // [FS] IRAD-1213 2020-02-23
+    // validating the appropariate styles with corresponding levels are defined
+    // if no levels are defined no operation
+    //
+    if (
+      hasMismatchHeirarchy(
+        state,
+        tr,
+        node,
+        startPos,
+        endPos,
+        this._customStyle.styleName
+      )
+    ) {
+      isValidated = checkLevlsAvailable();
     }
+    if (isValidated) {
+      tr = applyStyle(
+        this._customStyle,
+        this._customStyle.styleName,
+        state,
+        tr
+      );
+      if (tr.docChanged || tr.storedMarksSet) {
+        // view.focus();
+        dispatch && dispatch(tr);
+        return true;
+      }
+    } else {
+      // TODO: need to show alert with popup UI
+      window.alert(
+        'This Numberings breaks heirarchy, Previous levels are missing '
+      );
+    }
+
     return false;
   };
 
   // [FS] IRAD-1053 2020-12-17
-  // to clear the custom styles in the selected paragrapgh
+  // to clear the custom styles in the selected paragraph
   clearCustomStyles(tr, editorState: EditorState) {
     const {selection, doc} = editorState;
     const {from, to} = selection;
-    let customStyleName = NONE;
+    let customStyleName = RESERVED_STYLE_NONE;
     doc.nodesBetween(from, to, (node, pos) => {
       if (node.attrs.styleName) {
         customStyleName = node.attrs.styleName;
@@ -321,24 +367,79 @@ class CustomStyleCommand extends UICommand {
             this._popUp = null;
             //handle save style object part here
             if (undefined !== val) {
-              if (
-                view.runtime &&
-                typeof view.runtime.saveStyle === 'function'
-              ) {
-                delete val.editorView;
-                view.runtime.saveStyle(val).then((result) => {
+              // [FS] IRAD-1231 2021-03-02
+              // Issue fix: The edited styles are not affected the document
+              if (3 === mode) {
+                // edit All
+                val.forEach((style) => {
+                  this.getCustomStyles(view.runtime, style, view);
                 });
+              } else {
+                if (
+                  view.runtime &&
+                  typeof view.runtime.saveStyle === 'function'
+                ) {
+                  delete val.editorView;
+                  view.runtime.saveStyle(val).then((result) => {
+                    // Issue fix: Created custom style Numbering not applied to paragraph.
+                    tr = tr.setSelection(TextSelection.create(doc, 0, 0));
+                    // Apply created styles to document
+                    const {selection} = state;
+                    const startPos = selection.$from.before(1);
+                    const endPos = selection.$to.after(1);
+                    const node = getNode(state, startPos, endPos, tr);
+                    // [FS] IRAD-1238 2021-03-08
+                    // Fix: Shows alert message 'This Numberings breaks hierarchy, Previous levels are missing' on create styles
+                    // if a numbering applied in editor.
+                    if (
+                      !styleHasNumbering(val) ||
+                      isValidHeirarchy(val.styleName)
+                    ) {
+                      // to add previous heirarchy levels
+                      hasMismatchHeirarchy(
+                        state,
+                        tr,
+                        node,
+                        startPos,
+                        endPos,
+                        val.styleName
+                      );
+                      tr = applyStyle(val, val.styleName, state, tr);
+                      dispatch(tr);
+                    } else {
+                      window.alert(
+                        'This Numberings breaks heirarchy, Previous levels are missing '
+                      );
+                    }
+                  });
+                }
               }
-              tr = tr.setSelection(TextSelection.create(doc, 0, 0));
-              // Apply created styles to document
-              tr = applyStyle(val, val.styleName, state, tr);
-              dispatch(tr);
-              // view.focus();
             }
           }
         },
       }
     );
+  }
+
+  // [FS] IRAD-1231 2021-03-02
+  // update the document with the edited styles list.
+  getCustomStyles(runtime, styleName, editorView) {
+    if (runtime && typeof runtime.getStylesAsync === 'function') {
+      runtime.getStylesAsync().then((result) => {
+        if (styleName) {
+          const {dispatch, state} = editorView;
+          let tr;
+          result.forEach((obj) => {
+            if (styleName === obj.styleName) {
+              tr = updateDocument(state, state.tr, styleName, obj);
+            }
+          });
+          if (tr) {
+            dispatch(tr);
+          }
+        }
+      });
+    }
   }
 
   // creates a sample style object
@@ -562,8 +663,7 @@ function applyStyleEx(
   // alignment to style with left alignment
   newattrs['align'] = null;
   newattrs['lineSpacing'] = null;
-  newattrs['paragraphSpacingAfter'] = null;
-  newattrs['paragraphSpacingBefore'] = null;
+
   // [FS] IRAD-1131 2021-01-12
   // Indent overriding not working on a paragraph where custom style is applied
   newattrs['indent'] = null;
@@ -576,7 +676,7 @@ function applyStyleEx(
       // to set the node attribute for line-height
     } else if (element instanceof TextLineSpacingCommand) {
       // [FS] IRAD-1104 2020-11-13
-      // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
+      // Issue fix : Linespacing Double and Single not applied in the sample text paragraph
       newattrs['lineSpacing'] = getLineSpacingValue(
         styleProp.styles.lineHeight
       );
@@ -602,197 +702,467 @@ function applyStyleEx(
       tr = element.executeCustom(state, tr, startPos, endPos);
     }
   });
-
-  if (styleProp.styles && styleProp.styles.hasNumbering) {
-    newattrs['styleLevel'] = Number(styleProp.styles.styleLevel);
-    // newattrs['customStyle'] = {
-    //   strong: style[STRONG],
-    //   em: style[EM],
-    //   color: style[COLOR],
-    //   fontSize: style[FONTSIZE],
-    //   fontName: style[FONTNAME],
-    //   strike: style[STRIKE],
-    //   underline: style[UNDERLINE],
-    //   boldNumbering: style['boldNumbering'],
-    // };
-  } else {
-    newattrs['styleLevel'] = null;
-  }
-  // to set custom styleName attribute for node
-  newattrs['styleName'] = styleName;
   tr = applyLineStyle(node, styleProp.styles, state, tr, startPos, endPos);
   const storedmarks = getMarkByStyleName(styleName, state.schema);
   tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
-  tr = createEmptyElement(state, tr, node, startPos, endPos, newattrs);
   tr.storedMarks = storedmarks;
   return tr;
 }
 
+// [FS] IRAD-1238 2021-03-08
+// Fix: Shows alert message 'This Numberings breaks hierarchy, Previous levels are missing' on create styles
+// if a numbering applied in editor.
+function styleHasNumbering(style) {
+  let hasNumbering = false;
+  hasNumbering = style.styles.hasNumbering ? style.styles.hasNumbering : false;
+  return hasNumbering;
+}
+
+// [FS] IRAD-1238 2021-03-08
+// Check for the style with previous numbering level exists
+function isValidHeirarchy(styleName /* New style to be applied */) {
+  const styleLevel = getStyleLevel(styleName);
+  // to find if the previous level of this level present
+  const previousLevel = Number(styleLevel) - 1;
+  return isPreviousLevelExists(String(previousLevel));
+}
+
+// [FS] IRAD-1213 2020-02-23
+// Loop the whole document
+// if any heirachy misses return true and keep the object in a global object
+function hasMismatchHeirarchy(
+  state: EditorState,
+  tr: Transform,
+  node: Node /* The current node */,
+  startPos: number,
+  endPos: number,
+  styleName /* New style to be applied */
+) {
+  const styleLevel = Number(getStyleLevel(styleName));
+  const currentLevel = getStyleLevel(node.attrs.styleName);
+  nodesBeforeSelection.splice(0);
+  nodesAfterSelection.splice(0);
+  const attrs = Object.assign({}, node.attrs);
+  attrs['styleName'] = styleName;
+  let previousLevel = null;
+  let levelDiff = 0;
+  let isAfter = false;
+
+  let hasHeirarchyBroken = false;
+
+  // Manage heirachy for nodes of previous  position
+  // if (startPos !== 0) {
+  // Fix: document Load Error- Instead of state doc here give transaction doc,because when we apply changes
+  // dynamically through transactions the node position  get affected,
+  // so depending on state doc nodes' positions is incorrect.
+  tr.doc.descendants((node, pos) => {
+    if (isAllowedNode(node)) {
+      const nodeStyleLevel = getStyleLevel(node.attrs.styleName);
+      if (nodeStyleLevel) {
+        if (pos < startPos || 0 === startPos) {
+          nodesBeforeSelection.push({pos, node});
+        } else if (pos >= endPos) {
+          nodesAfterSelection.push({pos, node});
+        }
+      }
+    }
+    return true;
+  });
+  if (nodesBeforeSelection.length === 0 && nodesAfterSelection.length === 0) {
+    setNewElementObject(attrs, startPos, 0, false);
+    hasHeirarchyBroken = true;
+  }
+  // if (nodesBeforeSelection.length !== 0 && nodesAfterSelection.length === 0) {
+  //   nodesBeforeSelection.reverse();
+  // }
+
+  nodesBeforeSelection.forEach((item) => {
+    // if (null === previousLevel) {
+    previousLevel = Number(getStyleLevel(item.node.attrs.styleName));
+    // }
+  });
+  if (null === previousLevel && null == currentLevel) {
+    // No levels established before.
+    if (styleLevel !== 1) {
+      setNewElementObject(attrs, startPos, null, false);
+      hasHeirarchyBroken = true;
+    }
+  } else {
+    //	If this is the first level, identify the level difference with previous level.
+    levelDiff = previousLevel ? styleLevel - previousLevel : styleLevel;
+
+    if (0 > levelDiff) {
+      // If NOT applying (same level OR adjacent level)
+
+      if (nodesAfterSelection.length === 0) {
+        isAfter = true;
+        previousLevel = Number(
+          getStyleLevel(
+            nodesBeforeSelection[nodesBeforeSelection.length - 1].node.attrs
+              .styleName
+          )
+        );
+      }
+      setNewElementObject(attrs, startPos, previousLevel, isAfter);
+      hasHeirarchyBroken = true;
+    }
+    if (levelDiff > 0) {
+      if (selectedNodes.length === 1) {
+        nodesBeforeSelection.reverse();
+      } else {
+        previousLevel = Number(
+          getStyleLevel(selectedNodes[0].node.attrs.styleName)
+        );
+      }
+      setNewElementObject(attrs, startPos, previousLevel, false);
+    }
+  }
+
+  if (0 < nodesAfterSelection.length) {
+    const selectedLevel = styleLevel;
+    let currentLevel = 0;
+    let found = false;
+    nodesAfterSelection.every((item) => {
+      if (!found) {
+        currentLevel = Number(getStyleLevel(item.node.attrs.styleName));
+        levelDiff = selectedLevel - currentLevel;
+
+        if (styleLevel > 1 && levelDiff >= 0) {
+          if (
+            nodesBeforeSelection.length > 0 &&
+            nodesBeforeSelection[nodesBeforeSelection.length - 1].node.attrs
+              .styleName !== 'None'
+          ) {
+            // do nothing
+          } else {
+            setNewElementObject(attrs, item.pos, 0, false);
+            found = true;
+            hasHeirarchyBroken = false;
+          }
+
+          // do nothing
+        } else if (0 == styleLevel) {
+          setNewElementObject(attrs, endPos, previousLevel, true);
+          hasHeirarchyBroken = false;
+        } else {
+          if (levelDiff < 0) {
+            setNewElementObject(attrs, endPos, selectedLevel, true);
+            found = true;
+          }
+          hasHeirarchyBroken = true;
+        }
+      }
+    });
+  }
+  return hasHeirarchyBroken;
+}
+
+// add new blank element and apply curresponding styles
 function createEmptyElement(
   state: EditorState,
   tr: Transform,
-  node: Node,
+  node: Node /* The current node */,
   startPos: number,
   endPos: number,
-  attrs
+  attrs /* New style to be applied */
 ) {
-  const currentLevel = node.attrs.styleLevel;
-  let previousLevel = null;
-  let levelDiff = 0;
-  let nextLevel = null;
-  const nodesBeforeSelection = [];
-  let nodesAfterSelection = null;
-  const docSize = tr.doc.nodeSize - 2;
-  // Manage heirachy for nodes of previous  position
-  if (startPos !== 0) {
-    // Fix: document Load Error- Instead of state doc here give transaction doc,because when we apply changes
-    // dynamically through transactions the node position  get affected,
-    // so depending on state doc nodes' positions is incorrect.
-    tr.doc.descendants((node, pos) => {
-      if (isAllowedNode(node)) {
-        if (pos >= startPos) {
-          return false;
+  /* Validate the missed heirachy object details are availale */
+  if (undefined !== MISSED_HEIRACHY_ELEMENT.attrs) {
+    if (!MISSED_HEIRACHY_ELEMENT.isAfter) {
+      const appliedLevel = Number(
+        getStyleLevel(MISSED_HEIRACHY_ELEMENT.attrs.styleName)
+      );
+      let hasFoundLevel = false;
+      let subsequantLevel = 0;
+      const posArray = [];
+      let counter = 0;
+      let newattrs = null;
+      // nodesBeforeSelection.reverse();
+
+      // if (appliedLevel - MISSED_HEIRACHY_ELEMENT.previousLevel > 1) {
+      if (nodesBeforeSelection.length > 0) {
+        nodesBeforeSelection.forEach((item) => {
+          subsequantLevel = Number(getStyleLevel(item.node.attrs.styleName));
+          if (0 === startPos && 0 === counter) {
+            if (0 === subsequantLevel && 1 === appliedLevel) {
+              // needEmptyElement = false;
+            } else {
+              if (subsequantLevel !== appliedLevel && !hasFoundLevel) {
+                hasFoundLevel = true;
+                newattrs = Object.assign({}, item.node.attrs);
+                posArray.push({
+                  pos: startPos,
+                  appliedLevel: appliedLevel,
+                  currentLevel: subsequantLevel,
+                });
+              }
+            }
+          } else {
+            if (startPos >= item.pos) {
+              if (
+                startPos !== 0 &&
+                'None' !== item.node.attrs.styleName &&
+                Number(getStyleLevel(item.node.attrs.styleName)) > 0
+              ) {
+                if (appliedLevel - subsequantLevel > 1 && !hasFoundLevel) {
+                  newattrs = Object.assign({}, item.node.attrs);
+                  posArray.push({
+                    pos: startPos,
+                    appliedLevel: appliedLevel,
+                    currentLevel: subsequantLevel,
+                  });
+                  hasFoundLevel = true;
+                } else {
+                  hasFoundLevel = true;
+                }
+              } else {
+                if (startPos !== 0 && 'None' == item.node.attrs.styleName) {
+                  newattrs = Object.assign({}, item.node.attrs);
+                  posArray.push({
+                    pos: startPos,
+                    appliedLevel: appliedLevel,
+                    currentLevel: subsequantLevel,
+                  });
+                  hasFoundLevel = true;
+                }
+              }
+            }
+          }
+          counter++;
+        });
+      }
+      if (nodesAfterSelection.length > 0) {
+        nodesAfterSelection.forEach((item) => {
+          if (startPos === item.pos) {
+            newattrs = MISSED_HEIRACHY_ELEMENT.attrs;
+            posArray.push({
+              pos: startPos,
+              appliedLevel: appliedLevel,
+              currentLevel: 0,
+            });
+          }
+        });
+      }
+      // }
+      if (
+        nodesBeforeSelection.length === 0 &&
+        nodesAfterSelection.length === 0
+      ) {
+        newattrs = MISSED_HEIRACHY_ELEMENT.attrs;
+        posArray.push({
+          pos: startPos,
+          appliedLevel: appliedLevel,
+          currentLevel: 0,
+        });
+      }
+
+      if (posArray.length > 0) {
+        tr = addElement(
+          newattrs,
+          state,
+          tr,
+          posArray[0].pos,
+          false,
+          posArray[0].appliedLevel,
+          posArray[0].currentLevel
+        );
+      }
+    } else {
+      tr = manageElementsAfterSelection(
+        nodesAfterSelection.length > 0
+          ? nodesAfterSelection
+          : nodesBeforeSelection,
+        state,
+        tr
+      );
+    }
+  }
+
+  nodesAfterSelection.splice(0);
+  nodesBeforeSelection.splice(0);
+  setNewElementObject(undefined, 0, null, false);
+  return tr;
+}
+
+// Mange heirarchy for the elements after selection
+function manageElementsAfterSelection(nodeArray, state, tr) {
+  let selectedLevel = Number(MISSED_HEIRACHY_ELEMENT.previousLevel);
+  let subsequantLevel = 0;
+  let counter = 0;
+
+  for (let index = 0; index < nodeArray.length; index++) {
+    const item = nodeArray[index];
+    subsequantLevel = Number(getStyleLevel(item.node.attrs.styleName));
+    if (subsequantLevel !== 0 && selectedLevel !== subsequantLevel) {
+      if (subsequantLevel - selectedLevel > 1) {
+        subsequantLevel = subsequantLevel - 1;
+        const style = getCustomStyleByLevel(subsequantLevel);
+        if (style) {
+          const newattrs = Object.assign({}, item.node.attrs);
+          newattrs.styleName = style.styleName;
+          tr = tr.setNodeMarkup(item.pos, undefined, newattrs);
+          selectedLevel = subsequantLevel;
         }
-        nodesBeforeSelection.push({pos, node});
-      }
-      return true;
-    });
-
-    nodesBeforeSelection.reverse();
-    nodesBeforeSelection.every((item) => {
-      const styleProp = getCustomStyleByName(item.node.attrs.styleName);
-      if (
-        styleProp &&
-        styleProp.styles.styleLevel &&
-        styleProp.styles.hasNumbering
-      ) {
-        previousLevel = styleProp.styles.styleLevel;
-        return false;
-      }
-      return true;
-    });
-
-    if (null === previousLevel && null == currentLevel) {
-      if (attrs.styleLevel !== 1) {
-        tr = addElement(attrs, state, tr, startPos, null);
+        counter++;
+      } else {
+        index = nodeArray.length + 1;
       }
     } else {
-      levelDiff = previousLevel
-        ? attrs.styleLevel - previousLevel
-        : attrs.styleLevel;
-
-      if (levelDiff > 1) {
-        tr = addElement(attrs, state, tr, startPos, previousLevel);
+      if (subsequantLevel !== 0 && counter === 0 && nodeArray.length === 0) {
+        const style = getCustomStyleByLevel(1);
+        if (style) {
+          const newattrs = Object.assign({}, item.node.attrs);
+          newattrs.styleName = style.styleName;
+          tr = addElement(newattrs, state, tr, item.pos, false, 2, 0);
+        }
       }
-      if (levelDiff < 0) {
-        tr = addElement(attrs, state, tr, startPos, previousLevel);
-      }
-    }
-  } else {
-    if (attrs.styleLevel !== 1) {
-      tr = addElement(attrs, state, tr, startPos, null);
-    }
-  }
-  // Manage heirachy for nodes of next position
-  if (docSize > endPos) {
-    // Fix: document Load Error -Instead of state doc here give transaction doc,because when we apply changes
-    // dynamically through transactions the node position  get affected,
-    // so depending on state doc nodes' positions is incorrect.
-    tr.doc.nodesBetween(endPos, docSize, (node, pos) => {
-      if (
-        isAllowedNode(node) &&
-        node.attrs.styleLevel &&
-        null === nodesAfterSelection
-      ) {
-        nodesAfterSelection = node;
-        return false;
-      }
-      return true;
-    });
-  }
-  if (null !== nodesAfterSelection) {
-    const selectedLevel = attrs.styleLevel ? attrs.styleLevel : 0;
-    nextLevel = nodesAfterSelection.attrs.styleLevel;
-    levelDiff = nextLevel - selectedLevel;
-    if (nextLevel === attrs.styleLevel || levelDiff === 1) {
-      return tr;
-    } else {
-      tr = addElementAfter(attrs, state, tr, endPos, nextLevel);
     }
   }
   return tr;
 }
-
-function addElement(nodeAttrs, state, tr, startPos, previousLevel) {
-  const level = nodeAttrs.styleLevel ? nodeAttrs.styleLevel - 1 : 0;
-  const counter = previousLevel ? previousLevel : 0;
-
-  const paragraph = state.schema.nodes[PARAGRAPH];
-  for (let index = level; index > counter; index--) {
-    nodeAttrs.styleLevel = index;
-    nodeAttrs.styleName = 'None';
-    nodeAttrs.customStyle = null;
-    const paragraphNode = paragraph.create(nodeAttrs, null, null);
-    tr = tr.insert(startPos, Fragment.from(paragraphNode));
+// check the styles with specified levels are defined
+function checkLevlsAvailable() {
+  let isAvailable = true;
+  for (
+    let index = 1;
+    index < MISSED_HEIRACHY_ELEMENT.attrs.styleLevel;
+    index++
+  ) {
+    const styleLevel = getCustomStyleByLevel(index);
+    if (!styleLevel) {
+      isAvailable = false;
+      index = 11;
+    }
   }
+  return isAvailable;
+}
+// keep the position and node details in a global variable
+function setNewElementObject(attrs, startPos, previousLevel, isAfter) {
+  MISSED_HEIRACHY_ELEMENT.isAfter = isAfter;
+  MISSED_HEIRACHY_ELEMENT.attrs = attrs;
+  MISSED_HEIRACHY_ELEMENT.startPos = startPos;
+  MISSED_HEIRACHY_ELEMENT.previousLevel = previousLevel;
+}
+
+function insertParagraph(nodeAttrs, startPos, tr, index, state) {
+  const paragraph = state.schema.nodes[PARAGRAPH];
+  // [FS] IRAD-1202 2021-02-15
+  // Handle Numbering case for None styles.
+  // Use the styleName to hold the style level.
+  nodeAttrs.styleName = getCustomStyleByLevel(index).styleName;
+  const paragraphNode = paragraph.create(nodeAttrs, null, null);
+  tr = tr.insert(startPos, Fragment.from(paragraphNode));
   return tr;
+}
+
+function addElementEx(
+  nodeAttrs,
+  state,
+  tr,
+  startPos,
+  after,
+  previousLevel,
+  currentLevel
+) {
+  let level = 0;
+  let counter = 0;
+  const nextLevel = 0;
+  if (after) {
+    level = nextLevel ? nextLevel - 1 : 0;
+    //TODO: Need to check this code it wont work
+    addElementAfter(nodeAttrs, state, tr, startPos, nextLevel);
+  } else {
+    level = previousLevel ? previousLevel - 1 : 0;
+    counter = currentLevel ? currentLevel - 1 : 0;
+  }
+
+  for (let index = level; index > counter; index--) {
+    tr = insertParagraph(nodeAttrs, startPos, tr, index, state);
+  }
+  return {tr, level, counter};
+}
+
+function addElement(
+  nodeAttrs,
+  state,
+  tr,
+  startPos,
+  isAfter,
+  appliedLevel,
+  currentLevel
+) {
+  return addElementEx(
+    nodeAttrs,
+    state,
+    tr,
+    startPos,
+    isAfter,
+    appliedLevel,
+    currentLevel
+  ).tr;
 }
 
 function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
-  const counter = nodeAttrs.styleLevel ? nodeAttrs.styleLevel : 1;
-  const level = nextLevel ? nextLevel - 1 : 0;
-
-  const paragraph = state.schema.nodes[PARAGRAPH];
-  for (let index = level; index > counter; index--) {
-    nodeAttrs.styleLevel = index;
-    nodeAttrs.styleName = 'None';
-    nodeAttrs.customStyle = null;
-    const paragraphNode = paragraph.create(nodeAttrs, null, null);
-    tr = tr.insert(startPos, Fragment.from(paragraphNode));
-  }
+  const {element} = addElementEx(
+    nodeAttrs,
+    state,
+    tr,
+    startPos,
+    true,
+    nextLevel
+  );
+  let {trx} = element;
+  const {counter, level} = element;
   if (level === counter) {
-    nodeAttrs.styleLevel = 1;
-    nodeAttrs.styleName = 'None';
-    nodeAttrs.customStyle = null;
-    const paragraphNode = paragraph.create(nodeAttrs, null, null);
-    tr = tr.insert(startPos, Fragment.from(paragraphNode));
+    trx = insertParagraph(nodeAttrs, startPos, trx, 1);
   }
-  return tr;
+  return trx;
+}
+
+export function getStyleLevel(styleName) {
+  let styleLevel = 0;
+  if (undefined !== styleName && styleName) {
+    const styleProp = getCustomStyleByName(styleName);
+    if (
+      null !== styleProp &&
+      styleProp.styles.styleLevel &&
+      styleProp.styles.hasNumbering
+    ) {
+      styleLevel = styleProp.styles.styleLevel;
+    } else {
+      if (styleName.includes(RESERVED_STYLE_NONE_NUMBERING)) {
+        const indices = styleName.split(RESERVED_STYLE_NONE_NUMBERING);
+
+        if (indices && 2 == indices.length) {
+          styleLevel = parseInt(indices[1]);
+        }
+      }
+    }
+  }
+  return styleLevel;
 }
 
 function applyLineStyle(node, style, state, tr, startPos, endPos) {
   if (style && style.boldPartial) {
     let textContent = '';
+    let separator = '';
     const markType = state.schema.marks[MARK_STRONG];
-    if (style.boldSentence) {
-      // [FS] IRAD-1181 2021-02-09
-      // Issue fix: Multi-selecting several paragraphs and applying a style is only partially successfull
-      tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
-        if ('text' === node.type.name) {
-          textContent = `${textContent}${node.text}`;
-          textContent = textContent.split('.')[0];
-          tr = tr.addMark(
-            pos,
-            pos + textContent.length + 1,
-            markType.create(null)
-          );
-          textContent = '';
-        }
-      });
-    } else {
-      tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
-        if ('text' === node.type.name) {
-          textContent = `${textContent}${node.text}`;
-          textContent = textContent.split(' ')[0];
-          tr = tr.addMark(
-            pos,
-            pos + textContent.length + 1,
-            markType.create(null)
-          );
-          textContent = '';
-        }
-      });
-    }
+    separator = style.boldSentence ? '.' : ' ';
+
+    // [FS] IRAD-1181 2021-02-09
+    // Issue fix: Multi-selecting several paragraphs and applying a style is only partially successfull
+    tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
+      if ('text' === node.type.name) {
+        textContent = `${textContent}${node.text}`;
+        textContent = textContent.split(separator)[0];
+        tr = tr.addMark(
+          pos,
+          pos + textContent.length + 1,
+          markType.create(null)
+        );
+        textContent = '';
+      }
+    });
   }
   return tr;
 }
@@ -901,7 +1271,7 @@ export function applyStyle(
 ) {
   const {selection} = state;
   const startPos = selection.$from.before(1);
-  const endPos = selection.$to.after(1);
+  const endPos = selection.$to.after(1) - 1;
   return applyStyleToEachNode(state, startPos, endPos, tr, style, styleName);
 }
 
@@ -914,13 +1284,18 @@ function applyStyleToEachNode(
   style: StyleProps,
   styleName: string
 ) {
+  let _node = null;
   tr.doc.nodesBetween(from, to, (node, startPos) => {
     if (node.type.name === 'paragraph') {
       // [FS] IRAD-1182 2021-02-11
       // Issue fix: When style applied to multiple paragraphs, some of the paragraph's objectId found in deletedObjectId's
       tr = applyStyleEx(style, styleName, state, tr, node, startPos, to);
+      _node = node;
     }
   });
+  const newattrs = Object.assign({}, _node.attrs);
+  newattrs['styleName'] = styleName;
+  tr = createEmptyElement(state, tr, _node, from, to, newattrs);
   return tr;
 }
 
@@ -932,9 +1307,13 @@ export function getNode(
   tr: Transform
 ) {
   let selectedNode = null;
+  selectedNodes.splice(0);
   tr.doc.nodesBetween(from, to, (node, startPos) => {
     if (node.type.name === 'paragraph') {
-      selectedNode = node;
+      if (null == selectedNode) {
+        selectedNode = node;
+      }
+      selectedNodes.push({pos: startPos, node});
     }
   });
   return selectedNode;
@@ -959,6 +1338,22 @@ export function updateDocument(state, tr, styleName, style) {
     }
   });
   return tr;
+}
+
+// [FS] IRAD-1223 2021-03-01
+// To check if the custom style have numbering and also used in the document
+export function isCustomStyleAlreadyApplied(styleName, editorState) {
+  let found = false;
+  const {doc} = editorState;
+  doc.nodesBetween(0, doc.nodeSize - 2, (node, pos) => {
+    if (node.content && node.content.content && node.content.content.length) {
+      const styleLevel = getStyleLevel(styleName);
+      if (!found && 0 < styleLevel && node.attrs.styleName === styleName) {
+        found = true;
+      }
+    }
+  });
+  return found;
 }
 
 function haveEligibleChildren(node, contentLen, styleName) {

@@ -4,7 +4,7 @@ const cors = require('cors');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const app = express();
-const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT || 3000;
 
 //allow OPTIONS on all resources
 app.options('*', cors());
@@ -12,7 +12,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 
-const JSONFILE = '../customstyles/customstyles.json';
+const JSONFILE = '../customstyles/styles.json';
 /** styles as map for fast lookup */
 const allStyles = readStyles();
 /** styles as sorted array for results */
@@ -75,14 +75,14 @@ function sortStyles() {
 
 // [FS] IRAD-1128 2020-12-24
 // read the custom style json file to return all styles.
-app.get('/getcustomstyles/', function (req, res) {
+app.get('/styles/', function (req, res) {
   // Send the memory cache
   res.json(sortedStyles);
 });
 
 // [FS] IRAD-1128 2020-12-24
 // save the custom style to the json file.
-app.post('/savecustomstyle/', function (req, res) {
+app.post('/styles/', function (req, res) {
   const name = req.body.styleName.toUpperCase();
   // Attach new or overwite existing style
   allStyles[name] = req.body;
@@ -95,7 +95,7 @@ app.post('/savecustomstyle/', function (req, res) {
 
 // [FS] IRAD-1128 2020-12-24
 // save the custom style to the json file.
-app.post('/renamecustomstyle/', function (req, res) {
+app.post('/styles/rename/', function (req, res) {
   const oldName = req.body.styleName.toUpperCase();
   const style = allStyles[oldName];
   if (style) {
@@ -114,8 +114,8 @@ app.post('/renamecustomstyle/', function (req, res) {
 
 // [FS] IRAD-1128 2020-12-30
 // to remove the selected custom style from the json file.
-app.post('/removecustomstyle/', function (req, res) {
-  const name = req.body.toUpperCase();
+app.delete('/styles/:styleName', function (req, res) {
+  const name = req.params.styleName.toUpperCase();
 
   if (allStyles.hasOwnProperty(name)) {
     delete allStyles[name];

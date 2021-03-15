@@ -10,9 +10,10 @@ import {FONT_PT_SIZES} from './FontSizeCommandMenuButton';
 import {FONT_TYPE_NAMES} from '../FontTypeMarkSpec';
 import {getLineSpacingValue} from './toCSSLineSpacing';
 import {isCustomStyleExists} from '../customStyle';
-import {updateDocument} from '../CustomStyleCommand';
-
+import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
 let customStyles = [];
+const otherStyleSelected = false;
+const editedStyles = [];
 
 // Values to show in Linespacing drop-down
 const LINE_SPACE = ['Single', '1.15', '1.5', 'Double'];
@@ -41,6 +42,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     super(props);
     this.state = {
       ...props,
+      otherStyleSelected,
+      customStyles,
     };
     // set default values for text alignment and boldNumbering checkbox.
     if (!this.state.styles.align) {
@@ -49,15 +52,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     if (0 === this.state.mode) {
       this.state.styles.boldNumbering = true;
       this.state.styles.boldSentence = true;
+      this.state.styles.nextLineStyleName = RESERVED_STYLE_NONE;
     }
-    if (
-      props.editorView.runtime &&
-      typeof props.editorView.runtime.getStylesAsync === 'function'
-    ) {
-      props.editorView.runtime.getStylesAsync().then((result) => {
-        customStyles = result;
-      });
-    }
+    this.getCustomStyles(props.editorView.runtime);
   }
 
   componentWillUnmount(): void {
@@ -181,16 +178,16 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
     if (this.state.styles.lineHeight) {
       // [FS] IRAD-1104 2020-11-13
-      // Issue fix : Linespacing Double and Single not applied in the sample text paragrapgh
+      // Issue fix : Linespacing Double and Single not applied in the sample text paragraph
       style.lineHeight = getLineSpacingValue(this.state.styles.lineHeight);
     }
     // [FS] IRAD-1111 2020-12-10
-    // Issue fix : Paragrapgh space before is not applied in the sample text.
+    // Issue fix : Paragraph space before is not applied in the sample text.
     if (this.state.styles.paragraphSpacingBefore) {
       style.marginTop = `${this.state.styles.paragraphSpacingBefore}px`;
     }
     // [FS] IRAD-1111 2020-12-10
-    // Issue fix : Paragrapgh space after is not applied in the sample text.
+    // Issue fix : Paragraph space after is not applied in the sample text.
     if (this.state.styles.paragraphSpacingAfter) {
       style.marginBottom = `${this.state.styles.paragraphSpacingAfter}px`;
     }
@@ -274,7 +271,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   }
   // handles Level drop down change
   onLevelChange(e: any) {
-    const val = 'None' === e.target.value ? null : e.target.value;
+    const val = RESERVED_STYLE_NONE === e.target.value ? null : e.target.value;
     this.setState({styles: {...this.state.styles, styleLevel: val}});
   }
 
@@ -287,17 +284,64 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       },
     });
   }
+
+  // [FS] IRAD-1201 2021-02-18
+  // set the nextLineStyle to JSON on style selection changed
+  onOtherStyleSelectionChanged(e: any) {
+    if (this.state.otherStyleSelected) {
+      this.setState({
+        styles: {...this.state.styles, nextLineStyleName: e.target.value},
+      });
+    }
+  }
+
+  // [FS] IRAD-1201 2021-02-18
+  // set the nextLineStyle to JSON according to the selected option
+  onNextLineStyleSelected(selectedOption, e) {
+    const hiddenDiv = document.getElementById('nextStyle');
+    hiddenDiv.style.display = 'none';
+    if (0 === selectedOption) {
+      this.setState({
+        otherStyleSelected: false,
+      });
+      this.setState({
+        styles: {...this.state.styles, nextLineStyleName: 'None'},
+      });
+    } else if (1 === selectedOption) {
+      this.setState({
+        otherStyleSelected: false,
+      });
+      this.setState({
+        styles: {...this.state.styles, nextLineStyleName: this.state.styleName},
+      });
+    } else {
+      hiddenDiv.style.display = 'block';
+      const selectedStyle = document.getElementById('nextStyleValue');
+      this.setState({
+        otherStyleSelected: true,
+        styles: {
+          ...this.state.styles,
+          nextLineStyleName:
+            selectedStyle.options[selectedStyle.selectedIndex].text,
+        },
+      });
+    }
+  }
+
   // [FS] IRAD-1127 2020-12-31
   // to populate the selected custom styles.
   onSelectCustomStyle(e: any) {
     if (null !== customStyles) {
-      const value = customStyles.find((u) => u.styleName === e.target.value);
+      const value = this.state.customStyles.find(
+        (u) => u.styleName === e.target.value
+      );
       // FIX: not able to modify and save the populated style
       value.mode = 3;
       this.state = {
         ...value,
       };
       this.setState(this.state);
+      this.setNextLineStyle(this.state.styles.nextLineStyleName);
     }
   }
 
@@ -336,8 +380,17 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   }
 
   handleNumbering(val: any) {
+    // if user select numbering, then always set nextLineStyle as continues this style.
+    // [FS] IRAD-1221 2021-03-01
+    // Issue fix: The next line style not switch back to 'None' when disable the numbering.
     this.setState({
-      styles: {...this.state.styles, hasNumbering: val.target.checked},
+      styles: {
+        ...this.state.styles,
+        hasNumbering: val.target.checked,
+        nextLineStyleName: val.target.checked
+          ? this.state.styleName
+          : RESERVED_STYLE_NONE,
+      },
     });
   }
 
@@ -354,6 +407,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       styles: {...this.state.styles, boldPartial: val.target.checked},
     });
     // this.setState({ styles: { ...this.state.styles, boldSentence: val.target.checked ? true : false } });
+  }
+
+  // [FS] IRAD-1201 2021-02-17
+  // to check if the "select style" option selected by user
+  selectStyleCheckboxState() {
+    let chceked = false;
+    if (this.state.styles.nextLineStyleName) {
+      chceked =
+        this.state.styles.nextLineStyleName !== 'None' &&
+        this.state.styles.nextLineStyleName !== this.state.styleName;
+    }
+    return chceked;
   }
 
   componentDidMount() {
@@ -377,9 +442,19 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     mp1.style.maxHeight = mp1.scrollHeight + 'px';
     const mp2 = document.getElementsByClassName('panel2')[0];
     mp2.style.maxHeight = mp2.scrollHeight + 'px';
+    const mp3 = document.getElementsByClassName('panel3')[0];
+    mp3.style.maxHeight = mp3.scrollHeight + 'px';
 
-    // const ac = document.getElementById('accordion1');
-    // ac.classList.toggle('accactive');
+    this.setNextLineStyle(this.state.styles.nextLineStyleName);
+    // [FS] IRAD-1153 2021-02-25
+    // Numbering level not showing in Preview text when modify style
+    if (
+      1 == this.props.mode &&
+      this.state.styles.styleLevel &&
+      this.state.styles.hasNumbering
+    ) {
+      this.buildStyle();
+    }
   }
 
   render(): React.Element<any> {
@@ -406,8 +481,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   {' '}
                   -- select a style --{' '}
                 </option>
-                {customStyles.map((style) => (
-                  <option key={style.styleName} value={style.style}>
+                {this.state.customStyles.map((style) => (
+                  <option key={style.styleName} value={style.styleName}>
                     {style.styleName}
                   </option>
                 ))}
@@ -424,11 +499,13 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             <span>
               <input
                 className="stylenameinput fontstyle"
-                disabled={this.state.mode == 1 ? true : false}
+                disabled={
+                  this.state.mode == 1 || this.state.mode == 3 ? true : false
+                }
                 key="name"
                 onChange={this.onStyleClick.bind(this, 'name')}
                 type="text"
-                value={this.state.styleName|| ''}
+                value={this.state.styleName || ''}
               />
             </span>
             <p className="formp">Description:</p>
@@ -530,7 +607,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <select
                     className="fontsize fontstyle"
                     onChange={this.onFontSizeChange.bind(this)}
-                    value={this.state.styles.fontSize  || ''}
+                    value={this.state.styles.fontSize || ''}
                   >
                     {FONT_PT_SIZES.map((value) => (
                       <option key={value} value={value}>
@@ -705,7 +782,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       disabled={this.state.styles.boldPartial ? false : true}
                       name="boldscentence"
                       onChange={this.onScentenceRadioChanged.bind(this)}
-                      style={{marginLeft: '81px'}}
+                      style={{marginLeft: '20px'}}
                       type="radio"
                       value="1"
                     />
@@ -924,6 +1001,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                       <input
                         checked={this.state.styles.boldNumbering}
                         className="chkboldnumbering"
+                        disabled={this.state.styles.hasNumbering ? false : true}
                         onChange={this.handleBoldNumbering.bind(this)}
                         type="checkbox"
                       />
@@ -973,11 +1051,114 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         className="leveltype specifiedindent fontstyle"
                         onChange={this.onIndentChange.bind(this)}
                         style={{width: '99px !important'}}
-                        value={this.state.styles.indent  || ''}
+                        value={this.state.styles.indent || ''}
                       >
                         {LEVEL_VALUES.map((value) => (
                           <option key={value} value={value}>
                             {value}
+                          </option>
+                        ))}
+                      </select>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <button className="licit-accordion accactive">
+                <div className="indentdiv">
+                  <label
+                    style={{
+                      marginLeft: '-7px',
+                      marginTop: '2px',
+                      color: '#444',
+                    }}
+                  >
+                    Style Settings
+                  </label>
+                </div>
+              </button>
+
+              <div className="panel3 formp">
+                <p className="formp">Select style for next line:</p>
+                <div className="hierarchydiv">
+                  <div className="settingsdiv">
+                    <input
+                      checked={
+                        this.state.styles.nextLineStyleName ===
+                          this.state.styleName && !this.state.otherStyleSelected
+                      }
+                      name="nextlinestyle"
+                      onChange={this.onNextLineStyleSelected.bind(this, 1)}
+                      type="radio"
+                      value="1"
+                    />
+                    <label
+                      style={{
+                        marginLeft: '4px',
+                        marginTop: '3px',
+                        marginBottom: '0',
+                      }}
+                    >
+                      Continue this style
+                    </label>
+                  </div>
+                  <div className="settingsdiv">
+                    <input
+                      checked={this.state.styles.nextLineStyleName === 'None'}
+                      disabled={this.state.styles.hasNumbering ? true : false}
+                      name="nextlinestyle"
+                      onChange={this.onNextLineStyleSelected.bind(this, 0)}
+                      style={{
+                        marginLeft: '20px',
+                      }}
+                      type="radio"
+                      value="2"
+                    />
+                    <label
+                      style={{
+                        marginLeft: '4px',
+                        marginTop: '3px',
+                        marginBottom: '0',
+                      }}
+                    >
+                      None
+                    </label>
+                  </div>
+                  <div className="indentdiv">
+                    <input
+                      checked={this.state.otherStyleSelected}
+                      disabled={this.state.styles.hasNumbering ? true : false}
+                      name="nextlinestyle"
+                      onChange={this.onNextLineStyleSelected.bind(this, 2)}
+                      type="radio"
+                      value="0"
+                    />
+                    <label
+                      style={{
+                        marginLeft: '4px',
+                        marginTop: '3px',
+                        marginBottom: '0',
+                        width: '62px',
+                      }}
+                    >
+                      Select style
+                    </label>
+                    <span id="nextStyle" style={{display: 'none'}}>
+                      <select
+                        className="fontstyle stylenameinput"
+                        // defaultValue={'DEFAULT'}
+                        id="nextStyleValue"
+                        onChange={this.onOtherStyleSelectionChanged.bind(this)}
+                        style={{
+                          height: '20px',
+                          marginLeft: '7px',
+                          width: '97px',
+                        }}
+                        value={this.state.styles.nextLineStyleName}
+                      >
+                        {customStyles.map((style) => (
+                          <option key={style.styleName} value={style.style}>
+                            {style.styleName}
                           </option>
                         ))}
                       </select>
@@ -990,7 +1171,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         </div>
         <div className="btns">
           <button className="buttonstyle" onClick={this._cancel}>
-          {this.state.mode == 3 ? 'Close' : 'Cancel'}
+            {this.state.mode == 3 ? 'Close' : 'Cancel'}
           </button>
           <button
             className="btnsave buttonstyle"
@@ -1004,10 +1185,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   }
 
   _cancel = (): void => {
-    this.props.close();
+    // [FS] IRAD-1231 2021-03-02
+    // FIX: edited custom styles not applied to the document
+    if (3 === this.state.mode) {
+      delete this.state.customStyles;
+      this.props.close(editedStyles);
+    } else {
+      this.props.close();
+    }
   };
 
   _save = (): void => {
+    delete this.state.otherStyleSelected;
     // [FS] IRAD-1137 2021-01-15
     // FIX: able to save a custom style name with already exist style name
     if (0 === this.state.mode && isCustomStyleExists(this.state.styleName)) {
@@ -1017,8 +1206,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       // save the custom styles from Edit all option.
     } else if (3 === this.state.mode) {
       this.modifyCustomStyle(this.state);
+      editedStyles.push(this.state.styleName);
     } else {
       if ('' != this.state.styleName) {
+        delete this.state.customStyles;
         this.props.close(this.state);
       }
     }
@@ -1027,31 +1218,50 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // [FS] IRAD-1176 2021-02-08
   // save the custom styles from Edit all option.
   modifyCustomStyle(val) {
-    const {dispatch, runtime} = this.props.editorView;
-    let customStyles;
+    const {runtime} = this.props.editorView;
     if (runtime && typeof runtime.saveStyle === 'function') {
       delete val.editorView;
-      runtime.saveStyle(val).then((result) => {
+      runtime.saveStyle(val).then((result) => {});
+    }
+  }
+
+  // To fetch the custom styles from server and set to the state.
+  getCustomStyles(runtime) {
+    if (runtime && typeof runtime.getStylesAsync === 'function') {
+      runtime.getStylesAsync().then((result) => {
         customStyles = result;
-        customStyles.then((result) => {
-          if (null != result) {
-            let tr;
-            result.forEach((obj) => {
-              if (val.styleName === obj.styleName) {
-                tr = updateDocument(
-                  this.props.editorState,
-                  this.props.editorState.tr,
-                  val.styleName,
-                  obj.styles
-                );
-              }
-            });
-            if (tr) {
-              dispatch(tr);
-            }
-          }
+        // [FS] IRAD-1222 2021-03-01
+        // Issue fix: In edit all, the style list not showing the first time.
+        this.setState({
+          customStyles: result,
         });
       });
+    }
+  }
+
+  // [FS] IRAD-1231 2021-03-03
+  // Issue fix: Selected style for next line not retaining when modify.
+  setNextLineStyle(nextLineStyleName) {
+   // [FS] IRAD-1241 2021-03-05
+   // The selcted Style in the Next line setting not retaing in Edit All and modify
+    const hiddenDiv = document.getElementById('nextStyle');
+    if (
+      0 < this.props.mode &&
+      nextLineStyleName &&
+      RESERVED_STYLE_NONE !== nextLineStyleName &&
+      nextLineStyleName !== this.state.styleName
+    ) {
+      this.setState({
+        otherStyleSelected: true,
+      });
+      hiddenDiv.style.display = 'block';
+      const selectedStyle = document.getElementById('nextStyleValue');
+      selectedStyle.value = nextLineStyleName;
+    } else {
+      this.setState({
+        otherStyleSelected: false,
+      });
+      hiddenDiv.style.display = 'none';
     }
   }
 }
