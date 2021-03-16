@@ -233,13 +233,6 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
               levelCounter = subsequantLevel;
             }
           }
-
-          tr = removeLastLevelHeirarchy(
-            tr,
-            prevNodeLevel,
-            nodesBeforeSelection,
-            nodesAfterSelection
-          );
         }
       }
     }
@@ -247,25 +240,6 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
   return tr;
 }
 
-// to manage the heirachy only two levels are available
-function removeLastLevelHeirarchy(
-  tr,
-  prevNodeLevel,
-  nodesBeforeSelection,
-  nodesAfterSelection
-) {
-  let subsequantLevel = 0;
-  subsequantLevel = Number(prevNodeLevel) - 1;
-
-  const style = getCustomStyleByLevel(subsequantLevel);
-
-  if (style) {
-    const newattrs = Object.assign({}, nodesBeforeSelection[0].node.attrs);
-    newattrs.styleName = style.styleName;
-    tr = tr.setNodeMarkup(nodesBeforeSelection[0].pos, undefined, newattrs);
-  }
-  return tr;
-}
 // get all the nodes having styleName attribute
 function nodeAssignment(state) {
   const nodes = [];
