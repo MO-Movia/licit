@@ -288,7 +288,7 @@ class Licit extends React.Component<any, any> {
 
   _onChange = (data: {state: EditorState, transaction: Transform}): void => {
     const {transaction} = data;
-    let isEmpty = false;
+
     /*
      ** ProseMirror Debug Tool's Snapshot creates a new state and sets that to editor view's state.
      ** This results in the connector's state as an orphan and thus transaction mismatch error.
@@ -301,11 +301,11 @@ class Licit extends React.Component<any, any> {
       this._connector._editorState = this._editorView.state;
       invokeOnEdit = true;
     } else {
-      if(this._connector instanceof SimpleConnector) {
+      if (this._connector instanceof SimpleConnector) {
         invokeOnEdit = true;
       }
     }
-    if(invokeOnEdit) {
+    if (invokeOnEdit) {
       // [FS] IRAD-1236 2020-03-05
       // Only need to call if there is any difference in collab mode OR always in non-collab mode.
       this._connector.onEdit(transaction, this._editorView);
@@ -313,35 +313,36 @@ class Licit extends React.Component<any, any> {
 
     if (transaction.docChanged) {
       const docJson = transaction.doc.toJSON();
-      let setCFlags = true;
-
+      let isEmpty = false;
+      '';
       if (docJson.content && docJson.content.length === 1) {
         if (
-          undefined === docJson.content[0]['content'] ||
+          !docJson.content[0].content ||
           (docJson.content[0].content &&
             docJson.content[0].content[0].text &&
             '' === docJson.content[0].content[0].text.trim())
         ) {
           isEmpty = true;
-          this.resetCounters(transaction);
-          setCFlags = false;
         }
       }
 
-      if (setCFlags) {
+      // setCFlags is/was always the opposite of isEmpty.
+      if (isEmpty) {
+        this.resetCounters(transaction);
+      } else {
         this.setCounterFlags(transaction, false);
       }
 
       // Changing 2nd parameter from boolean to object was not in any way
-      // backwards compatible. Reverting that change, then adding view as
-      // a 3rd parameter
+      // backwards compatible. Any conditional logic placed on isEmpty was
+      // broken. Reverting that change, then adding view as a 3rd parameter.
       this.state.onChangeCB(docJson, isEmpty, this._editorView);
 
       this.closeOpenedPopupModels();
     }
   };
   // [FS] IRAD-1173 2021-02-25
-  // Bug fix: Transaction mismatch error when a doalog is opened and keep typing.
+  // Bug fix: Transaction mismatch error when a dialog is opened and keep typing.
   closeOpenedPopupModels() {
     const element = document.getElementsByClassName('czi-pop-up-element')[0];
     if (element && element.parentElement) {
