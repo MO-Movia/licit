@@ -331,10 +331,12 @@ class Licit extends React.Component<any, any> {
       if (setCFlags) {
         this.setCounterFlags(transaction, false);
       }
-      this.state.onChangeCB(docJson, {
-        isEmpty: isEmpty,
-        view: this._editorView,
-      });
+
+      // Changing 2nd parameter from boolean to object was not in any way
+      // backwards compatible. Reverting that change, then adding view as
+      // a 3rd parameter
+      this.state.onChangeCB(docJson, isEmpty, this._editorView);
+
       this.closeOpenedPopupModels();
     }
   };
