@@ -2,9 +2,9 @@
 
 // This implements the interface of `EditorRuntime`.
 // To  run  editor directly:
-import type {ImageLike, StyleProps} from '../../src/Types';
+import type {ImageLike, StyleProps, Citation} from '../../src/Types';
 import {POST, GET, DELETE, PATCH} from '../../src/client/http';
-import {setStyles} from '../../src/customStyle';
+import {setStyles, setCitations} from '../../src/customStyle';
 
 // When use it in a componet:
 
@@ -15,9 +15,12 @@ import {setStyles} from '../../src/customStyle';
  */
 
 const STYLES_URI = 'http://localhost:3000';
+const CITATION_URI = 'http://localhost:3006';
+
 class CustomLicitRuntime {
   // keep styles locally
   styleProps: StyleProps[] = null;
+  citations: Citation[] = null;
 
   // Image Proxy
   canProxyImageSrc(): boolean {
@@ -195,6 +198,91 @@ class CustomLicitRuntime {
    */
   buildRoute(...path: string) {
     return [STYLES_URI, ...path].join('/');
+  }
+
+  buildRouteForCitation(...path: string) {
+    return [CITATION_URI, ...path].join('/');
+  }
+
+  /**
+   * Save or update a citation on the service.
+   *
+   * @param citation Citation to update.
+   */
+  async saveCitation(citation: Citation): Promise<Citation[]> {
+    const url = this.buildRouteForCitation('citations');
+    await new Promise((resolve, reject) => {
+      POST(url, JSON.stringify(citation), 'application/json; charset=utf-8').then(
+        (data) => {
+          // Refresh from server after save
+          this.fetchCitations().then(
+            (result) => {
+              resolve(result);
+            },
+            (error) => {
+              reject(this.styleProps);
+            }
+          );
+        },
+        (err) => {}
+      );
+    });
+
+    return this.styleProps;
+  }
+
+  // to get all saved citations
+  fetchCitations(): Promise<Citation[]> {
+    const url = this.buildRouteForCitation('citations');
+    return new Promise((resolve, reject) => {      
+      GET(url).then(
+        (data) => {
+          const citations = JSON.parse(data);
+          this.citations = citations;
+          setCitations(citations);
+          resolve(citations);
+        },
+        (err) => {
+          reject(null);
+        }
+      );
+    });
+  }
+
+  /**
+   * Returns all the citations to editor
+   */
+  async getCitationsAsync(): Promise<Citation[]> {
+    if (!this.citations) {
+      this.fetchCitations();
+    }
+    return this.citations;
+  }
+
+  /**
+   * Delete an existing citation from the service
+   * @param referenceId of the citation to delete
+   */
+  async removeCitation(referenceId: string): Promise<Citation[]> {
+    const url = this.buildRouteForCitation('citations', encodeURIComponent(referenceId));
+    await new Promise((resolve, reject) => {
+      DELETE(url, 'text/plain').then(
+        (data) => {
+          // Refresh from server after remove
+          this.fetchCitations().then(
+            (result) => {
+              resolve(result);
+            },
+            (error) => {
+              reject(null);
+            }
+          );
+        },
+        (err) => {}
+      );
+    });
+
+    return this.citations;
   }
 }
 export default CustomLicitRuntime;

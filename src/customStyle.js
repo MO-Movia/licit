@@ -6,6 +6,7 @@ import {
   RESERVED_STYLE_NONE_NUMBERING,
 } from './ParagraphNodeSpec';
 let customStyles = [];
+let citations = [];
 
 // [FS] IRAD-1202 2021-02-15
 // None & None-@#$- have same effect of None.
@@ -55,6 +56,14 @@ export function getCustomStyleByName(name: string): StyleProps {
 export function setStyles(style) {
   customStyles = style;
 }
+
+// [FS] IRAD-1252 2021-03-12
+// store citations in cache
+export function setCitations(citation) {
+  citations = citation;
+}
+
+
 // get a style by Level
 export function getCustomStyleByLevel(level: Number) {
   let style = null;

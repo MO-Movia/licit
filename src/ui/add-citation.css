@@ -1,0 +1,34 @@
+.citation-label {
+ font-weight: bold;
+ font-size: 13px;
+ font-family: arial sans-serif;
+}
+
+button::selection
+{
+    background:olive;
+}
+
+select:focus
+{
+  outline: none;
+  box-shadow: none;
+}
+
+textarea:focus
+{
+  outline: none;
+  box-shadow: none;
+}
+
+.hr-width{
+  width: 100%;;
+}
+
+.div-display{
+  display: inline-block;
+}
+
+
+ 
+ 

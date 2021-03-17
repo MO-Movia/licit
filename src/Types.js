@@ -73,6 +73,20 @@ export type StyleProps = {
   },
 };
 
+// [FS] IRAD-1250 2021-03-08
+// citation object to save in the server
+export type Citation = {  
+  overallDocumentCapco: string;
+  author?: string;
+  referenceId?: string;
+  publishedDate?: string;
+  documentTitleCapco?: string;
+  documentTitle?: string;
+  hyperLink?: string;
+  dateAccessed?: string; 
+};
+
+
 export type EditorRuntime = {
   // Image Proxy
   canProxyImageSrc?: (src: string) => boolean,
@@ -110,6 +124,19 @@ export type EditorRuntime = {
    * @param name
    */
   removeStyle: (name: string) => Promise<StyleProps[]>,
+
+  // Save or update a citation on the service
+  saveCitation: (citation: Citation) => Promise<Citation[]>,
+  /**
+   * Gets array of citations from the service
+   */
+  getCitationsAsync: () => Promise<Citation[]>,
+  /**
+   * Delete an existing citation from the service.
+   * @param name
+   */
+  removeStyle: (referenceId: string) => Promise<Citation[]>,
+
 };
 
 export type EditorState = any;
