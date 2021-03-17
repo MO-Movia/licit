@@ -45,6 +45,13 @@ class Licit extends React.Component<any, any> {
 
   _popUp = null;
 
+  /**
+   * Provides access to prosemirror view.
+   */
+  get editorView(): EditorView {
+    return this._editorView;
+  }
+
   constructor(props: any, context: any) {
     super(props, context);
 
