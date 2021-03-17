@@ -44,7 +44,7 @@ module.exports = {
     'HTMLButtonElement': false,
     'HTMLLIElement': false,
     'Image': false,
-    "localStorage": false,
+    'localStorage': false,
     'Map': false,
     'DragEvent': false,
     'MouseEvent': false,
@@ -52,7 +52,7 @@ module.exports = {
     'MutationObserver': false,
     'Promise': false,
     'Set': false,
-    "Slice": false,
+    'Slice': false,
     'SyntheticEvent': false,
     'SyntheticInputEvent': false,
     'SyntheticMouseEvent': false,
@@ -66,5 +66,15 @@ module.exports = {
     'requestAnimationFrame': false,
     'setTimeout': false,
     'window': false
-  }
+  },
+  'overrides': [
+    {
+      // enable jest globals in test files
+      files: '*.test.js',
+      plugins: ['jest'],
+      env: {
+        'jest/globals': true
+      }
+    }
+  ]
 };
