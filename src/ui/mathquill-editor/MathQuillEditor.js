@@ -11,23 +11,14 @@ import cx from 'classnames';
 // [FS] IRAD-1061 2020-09-19
 // Now loaded locally, so that it work in closed network as well.
 import 'node-mathquill/build/mathquill.css';
-
-// MathQuill requires this to get JQuery exported as global.
-// eslint-disable-next-line no-unused-vars
-import jquery from 'jquery';
-
 import type { MathQuillEditorSymbol } from './MathQuillEditorSymbols';
+import { MathQuill } from './mathquill-import-kludge';
 
-// [FS] IRAD-1010 2020-07-24
-// With the latest to generate export default MathQuill these options need to be passed into exports loader
-// Moved this from webpack config to here, so that package could load fine with other application.
-const MQLoader = require('exports-loader?exports=default|MathQuill&type=module!node-mathquill/build/mathquill.js');
-const MathQuill = MQLoader.default;
-
-const MQ = MathQuill.getInterface(2);
 const CSS_CDN_URL =
   '//cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.css';
 const CSS_FONT = 'Symbola';
+
+const MQ = MathQuill.getInterface(2);
 
 (async function () {
   const fontSupported = await canUseCSSFont(CSS_FONT);

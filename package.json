@@ -141,7 +141,7 @@
     "*.css": [
       "stylelint --fix"
     ],
-    "*.js": [
+    "!(*test|*.setup).js": [
       "eslint --fix"
     ],
     "*.json": [
