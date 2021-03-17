@@ -10,7 +10,6 @@ import cx from 'classnames';
 
 // [FS] IRAD-1061 2020-09-19
 // Now loaded locally, so that it work in closed network as well.
-import 'node-mathquill/build/mathquill.css';
 import type { MathQuillEditorSymbol } from './MathQuillEditorSymbols';
 import { MathQuill } from './mathquill-import-kludge';
 

@@ -12,7 +12,7 @@ window.jQuery = window.jQuery || jquery;
 import mathquill from 'node-mathquill/build/mathquill';
 window.MathQuill = window.MathQuill || mathquill;
 
-import 'node-mathquill/buidl/mathquill.css';
+import 'node-mathquill/build/mathquill.css';
 
 export const MathQuill = window.MathQuill || mathquill;
 
