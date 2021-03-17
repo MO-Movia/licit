@@ -151,6 +151,7 @@
     ]
   },
   "jest": {
+    "rootDir": "src",
     "transform": {
       "^.+\\.jsx?$": "babel-jest"
     },
@@ -158,7 +159,7 @@
       "\\.(css|less|scss|sass)$": "identity-obj-proxy"
     },
     "setupFiles": [
-      "./jest.setup.js"
+      "../jest.setup.js"
     ]
   }
 }
