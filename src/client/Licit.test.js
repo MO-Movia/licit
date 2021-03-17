@@ -5,6 +5,9 @@ import Licit from './Licit';
 import RichTextEditor from '../ui/RichTextEditor';
 import noop from '../noop';
 
+/**
+ * Configure Jest to use react / enzyme
+ */
 configure({
   adapter: new Adapter(),
 });
@@ -27,6 +30,7 @@ describe('<Licit />', () => {
   };
 
   beforeEach(() => {
+    // provide an empty document just to shut up that warning
     const data = {
       type: 'doc',
       content: [
