@@ -13,16 +13,14 @@ describe('<Licit />', () => {
   let wrapper;
   let licit;
 
+  // Mocking the functions used in _onReady
   const fakeEditorView = {
     focus: noop,
     dispatch: noop,
     state: {
       doc: {
         content: {size: 10},
-        resolve: () => ({
-          min: () => 0,
-          max: () => 10,
-        }),
+        resolve: () => ({min: () => 0, max: () => 10}),
       },
       tr: {setSelection: noop},
     },
@@ -40,18 +38,20 @@ describe('<Licit />', () => {
     };
     wrapper = shallow(<Licit data={data} />);
     licit = wrapper.instance();
-    // Using shallow, the underlying RichTexEditor is never really created, and
-    // Licit's _onReady method is not called.
-    // Call it here with the fake view created above
-    licit._onReady(fakeEditorView);
   });
 
-  it('should render <RichTextEditor /> ', () => {
+  it('should render a <RichTextEditor /> ', () => {
     expect(wrapper.find(RichTextEditor)).toBeTruthy();
   });
 
   describe('editorView (getter)', () => {
     it('should return the prosemirror view', () => {
+      // Using shallow, the underlying RichTexEditor is never really created,
+      // and Licit's _onReady method is not called.  Call it here with the fake
+      // view created above
+      licit._onReady(fakeEditorView);
+
+      // Verify that getter now returns the underlying view.
       expect(licit.editorView).toBe(fakeEditorView);
     });
   });
