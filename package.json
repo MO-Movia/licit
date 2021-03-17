@@ -10,6 +10,7 @@
     "url": "git+https://github.com/MO-Movia/licit.git"
   },
   "scripts": {
+    "test": "jest",
     "build:bom": "cyclonedx-bom -o dist/bom.xml",
     "build:clean": "rm -rf dist/ && rm -f modusoperandi-licit-*.*.*.tgz",
     "build:css": "cp src/ui/*.css dist/ui && cp src/ui/mathquill-editor/*.css dist/ui/mathquill-editor && cp src/client/*.css dist/client && cp src/*.css dist",
@@ -153,8 +154,7 @@
       "^.+\\.jsx?$": "babel-jest"
     },
     "moduleNameMapper": {
-      "\\.(css|less|scss|sass)$": "identity-obj-proxy",
-      "exports-loader.*node-mathquill": "node-mathquill/build/mathquill"
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
     },
     "setupFiles": [
       "./jest.setup.js"

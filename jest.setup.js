@@ -1,5 +1,6 @@
-// setup for jest because jquery
+// setup for jest because jquery is needed by node-mathquill
 window.jQuery = require('jquery');
 
-global.document.execCommand =
-  global.document.execCommand || function execCommandMock() {};
+
+document.execCommand =
+  document.execCommand || function execCommandMock() {};
