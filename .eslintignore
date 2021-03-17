@@ -1,3 +1,7 @@
 /package.json
 /bin
 /dist
+
+# ignore tests (for now)
+*.test.js
+jest.setup.js
