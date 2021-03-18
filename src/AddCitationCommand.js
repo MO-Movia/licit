@@ -11,6 +11,9 @@ import {EditorState, TextSelection} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
 import {MARK_TEXT_COLOR} from './MarkNames';
 import {Transform} from 'prosemirror-transform';
+import {FOOTNOTE} from './NodeNames';
+import {Node, Fragment, Schema} from 'prosemirror-model';
+import './ui/add-citation.css';
 
 class AddCitationCommand extends UICommand {
   _popUp = null;
@@ -52,7 +55,7 @@ class AddCitationCommand extends UICommand {
       sourceText: '',
       mode: mode, //0 = new , 1- modify, 2- delete
       editorView: editorView,
-      isCitationObject:editorView.state.selection.empty, // if text not selected, then citationObject else citaionUseObject
+      isCitationObject: editorView.state.selection.empty, // if text not selected, then citationObject else citaionUseObject
     };
   }
 
@@ -64,7 +67,7 @@ class AddCitationCommand extends UICommand {
   ): Promise<any> => {
     if (this._popUp) {
       return Promise.resolve(undefined);
-    }
+    } 
     return new Promise((resolve) => {
       this._popUp = createPopUp(
         CitationDialog,
@@ -90,22 +93,45 @@ class AddCitationCommand extends UICommand {
     citation
   ): boolean => {
     if (dispatch) {
-      const {selection, schema} = state;
+      const {selection} = state;
       let {tr} = state;
-      // tr = view ? hideCursorPlaceholder(view.state) : tr;
       tr = tr.setSelection(selection);
       if (citation) {
         if (view.runtime && typeof view.runtime.saveCitation === 'function') {
-          view.runtime.saveCitation(citation).then((result) => {});
+          view.runtime.saveCitation(citation.citationObject).then((result) => {
+
+            tr = this.createFootNoteForCitation(view,state,tr,citation);
+            // TODO: // save the citation use object to node
+            dispatch(tr);
+          });
         }
       }
 
-      dispatch(tr);
       view && view.focus();
     }
 
     return false;
   };
+
+  createFootNoteForCitation(view,state,tr,citation){
+    if (!view.state.selection.empty) {
+      // let from = state.tr.selection.from;               
+      const textNode = state.schema.text(citation.sourceText);
+      textNode.content ='';
+      const footnote = state.schema.nodes[FOOTNOTE];
+      const newattrs = Object.assign({}, footnote.attrs);
+
+      newattrs['nodeSelection'] = state.tr.selection;
+      newattrs['citation'] = citation;
+      
+      const footnoteNode = footnote.create(null, textNode, null);
+      // tr = tr.setNodeMarkup(state.tr.selection.to, undefined, newattrs);
+      // tr = tr.insert(state.selection, Fragment.from(footnoteNode),state.selection);   
+      tr = tr.insert(state.selection.$to.after(1) - 1, Fragment.from(footnoteNode),state.selection);   
+
+    }
+    return tr;
+  }
 }
 
 export default AddCitationCommand;

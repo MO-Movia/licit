@@ -622,7 +622,7 @@ class CitationDialog extends React.PureComponent<any, any> {
   };
 
   _save = (): void => {    
-    this.props.close(this.state.citationObject);
+    this.props.close(this.state);
   };
 
   _onSearch() {

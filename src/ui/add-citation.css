@@ -29,6 +29,29 @@ textarea:focus
   display: inline-block;
 }
 
+.footnote-tooltip {
+  cursor: auto;
+  position: absolute;
+  left: -30px;
+  top: calc(100% + 10px);
+  background: silver;
+  padding: 3px;
+  border-radius: 2px;
+  width: 500px;
+}
+.footnote-tooltip::before {
+  border: 5px solid silver;
+  border-top-width: 0px;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  position: absolute;
+  top: -5px;
+  left: 27px;
+  content: " ";
+  height: 0;
+  width: 0;
+}
+
 
  
  
