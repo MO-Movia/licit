@@ -301,7 +301,9 @@ class Licit extends React.Component<any, any> {
       this._connector._editorState = this._editorView.state;
       invokeOnEdit = true;
     } else {
-      if(this._connector instanceof SimpleConnector) {
+      // [FS] IRAD-1264 2021-03-19
+      // check if in non-collab mode.
+      if (!(this._connector instanceof CollabConnector)) {
         invokeOnEdit = true;
       }
     }
