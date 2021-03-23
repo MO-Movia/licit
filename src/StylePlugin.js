@@ -170,6 +170,7 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
         DELKEYCODE === view.lastKeyCode ? selectedPos - 1 : selectedPos + 1;
       const selectedNode = prevState.doc.nodeAt(selectedPos);
       if (
+        selectedNode &&
         selectedNode.attrs.styleName !== 'None' &&
         0 !== Number(getStyleLevel(selectedNode.attrs.styleName))
       ) {
