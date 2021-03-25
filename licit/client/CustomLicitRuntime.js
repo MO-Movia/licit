@@ -234,7 +234,7 @@ class CustomLicitRuntime {
   // to get all saved citations
   fetchCitations(): Promise<Citation[]> {
     const url = this.buildRouteForCitation('citations');
-    return new Promise((resolve, reject) => {      
+    return new Promise((resolve, reject) => {
       GET(url).then(
         (data) => {
           const citations = JSON.parse(data);

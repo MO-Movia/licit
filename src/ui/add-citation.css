@@ -1,57 +1,53 @@
 .citation-label {
- font-weight: bold;
- font-size: 13px;
- font-family: arial sans-serif;
+  font-family: 'Arial', sans-serif;
+  font-size: 13px;
+  font-weight: bold;
 }
 
-button::selection
-{
-    background:olive;
+button::selection {
+  background: olive;
 }
 
-select:focus
-{
+select:focus {
   outline: none;
   box-shadow: none;
 }
 
-textarea:focus
-{
+textarea:focus {
   outline: none;
   box-shadow: none;
 }
 
-.hr-width{
-  width: 100%;;
+.hr-width {
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
-.div-display{
+.div-display {
   display: inline-block;
 }
 
-.footnote-tooltip {
+.citationnote-tooltip {
   cursor: auto;
   position: absolute;
   left: -30px;
   top: calc(100% + 10px);
-  background: silver;
+  background: transparent;
   padding: 3px;
   border-radius: 2px;
   width: 500px;
 }
-.footnote-tooltip::before {
-  border: 5px solid silver;
-  border-top-width: 0px;
+
+.citationnote-tooltip::before {
+  border: 5px solid transparent;
+  border-top-width: 0;
   border-left-color: transparent;
   border-right-color: transparent;
   position: absolute;
   top: -5px;
   left: 27px;
-  content: " ";
+  content: ' ';
   height: 0;
   width: 0;
 }
-
-
- 
- 

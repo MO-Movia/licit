@@ -2,17 +2,15 @@
 
 import CitationDialog from './ui/CitationDialog';
 import UICommand from './ui/UICommand';
-import applyMark from './applyMark';
 import createPopUp from './ui/createPopUp';
-import {atViewportCenter} from './ui/PopUpPosition';
 import isTextStyleMarkCommandEnabled from './isTextStyleMarkCommandEnabled';
-import nullthrows from 'nullthrows';
-import {EditorState, TextSelection} from 'prosemirror-state';
+import {EditorState} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
 import {MARK_TEXT_COLOR} from './MarkNames';
 import {Transform} from 'prosemirror-transform';
-import {FOOTNOTE} from './NodeNames';
-import {Node, Fragment, Schema} from 'prosemirror-model';
+import {CITATIONNOTE} from './NodeNames';
+import {Fragment} from 'prosemirror-model';
+import {getNode} from './CustomStyleCommand';
 import './ui/add-citation.css';
 
 class AddCitationCommand extends UICommand {
@@ -27,10 +25,11 @@ class AddCitationCommand extends UICommand {
     return isTextStyleMarkCommandEnabled(state, MARK_TEXT_COLOR);
   };
 
+  // [FS] IRAD-1251 2021-03-05
   // creates a sample style object
   createCitationObject(editorView, mode) {
     return {
-      citaionUseObject: {
+      citationUseObject: {
         overallCitationCAPCO: 'TBD',
         pageTitle: '',
         extractedInfoCAPCO: 'TBD',
@@ -47,7 +46,7 @@ class AddCitationCommand extends UICommand {
         referenceId: 'ref-1001',
         publishedDate: '',
         publishedDateTitle: '',
-        documentTitleCapco: 'TS',
+        documentTitleCapco: 'TBD',
         documentTitle: 'Document title',
         dateAccessed: '',
         hyperLink: '',
@@ -55,7 +54,7 @@ class AddCitationCommand extends UICommand {
       sourceText: '',
       mode: mode, //0 = new , 1- modify, 2- delete
       editorView: editorView,
-      isCitationObject: editorView.state.selection.empty, // if text not selected, then citationObject else citaionUseObject
+      isCitationObject: editorView.state.selection.empty, // if text not selected, then citationObject else citationUseObject
     };
   }
 
@@ -67,7 +66,7 @@ class AddCitationCommand extends UICommand {
   ): Promise<any> => {
     if (this._popUp) {
       return Promise.resolve(undefined);
-    } 
+    }
     return new Promise((resolve) => {
       this._popUp = createPopUp(
         CitationDialog,
@@ -97,11 +96,11 @@ class AddCitationCommand extends UICommand {
       let {tr} = state;
       tr = tr.setSelection(selection);
       if (citation) {
+        // save the citation use object to node
+        tr = this.saveCitationUseObject(state, selection, tr, citation);
         if (view.runtime && typeof view.runtime.saveCitation === 'function') {
           view.runtime.saveCitation(citation.citationObject).then((result) => {
-
-            tr = this.createFootNoteForCitation(view,state,tr,citation);
-            // TODO: // save the citation use object to node
+            tr = this.createFootNoteForCitation(view, state, tr, citation);
             dispatch(tr);
           });
         }
@@ -113,22 +112,42 @@ class AddCitationCommand extends UICommand {
     return false;
   };
 
-  createFootNoteForCitation(view,state,tr,citation){
+  createFootNoteForCitation(view, state, tr, citation) {
     if (!view.state.selection.empty) {
-      // let from = state.tr.selection.from;               
+      // let from = state.tr.selection.from;
       const textNode = state.schema.text(citation.sourceText);
-      textNode.content ='';
-      const footnote = state.schema.nodes[FOOTNOTE];
-      const newattrs = Object.assign({}, footnote.attrs);
+      textNode.content = '';
+      const citationNote = state.schema.nodes[CITATIONNOTE];
+      const newattrs = Object.assign({}, citationNote.attrs);       
+      newattrs['from'] = state.tr.selection.from;
+      newattrs['to'] = state.tr.selection.to;
+      newattrs['citationObject'] = citation.citationObject;
+      newattrs['citationUseObject'] = citation.citationUseObject;
 
-      newattrs['nodeSelection'] = state.tr.selection;
-      newattrs['citation'] = citation;
-      
-      const footnoteNode = footnote.create(null, textNode, null);
-      // tr = tr.setNodeMarkup(state.tr.selection.to, undefined, newattrs);
-      // tr = tr.insert(state.selection, Fragment.from(footnoteNode),state.selection);   
-      tr = tr.insert(state.selection.$to.after(1) - 1, Fragment.from(footnoteNode),state.selection);   
-
+      const citationNoteNode = citationNote.create(null, textNode, null);
+      tr = tr.insert(
+        state.selection.$to.after(1) - 1,
+        Fragment.from(citationNoteNode),
+        state.selection
+      );
+      tr = tr.setNodeMarkup(
+        state.selection.$to.after(1) - 1,
+        undefined,
+        newattrs
+      );
+    }
+    return tr;
+  }
+  // [FS] IRAD-1251 2021-03-23
+  // to save the citation use object in the node attribute
+  saveCitationUseObject(state, selection, tr, citation) {
+    if (!citation.isCitationObject) {
+      const from = selection.$from.before(1);
+      const to = selection.$to.after(1) - 1;
+      const node = getNode(state, from, to, tr);
+      const newattrs = Object.assign({}, node.attrs);
+      newattrs['citationUseObject'] = citation.citationUseObject;
+      tr = tr.setNodeMarkup(from, undefined, newattrs);
     }
     return tr;
   }

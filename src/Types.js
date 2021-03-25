@@ -75,7 +75,7 @@ export type StyleProps = {
 
 // [FS] IRAD-1250 2021-03-08
 // citation object to save in the server
-export type Citation = {  
+export type Citation = {
   overallDocumentCapco: string;
   author?: string;
   referenceId?: string;
@@ -83,7 +83,7 @@ export type Citation = {
   documentTitleCapco?: string;
   documentTitle?: string;
   hyperLink?: string;
-  dateAccessed?: string; 
+  dateAccessed?: string;
 };
 
 

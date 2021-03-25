@@ -29,9 +29,7 @@ class CitationSubMenu extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const {editorView} = this.props;
-    // [FS] IRAD-1013 2020-07-09
-    // Change button in "Apply Link" missing in LICIT.
+    const {href, onEdit, editorView} = this.props;
 
     return (
       <div className="czi-link-tooltip">
@@ -39,15 +37,15 @@ class CitationSubMenu extends React.PureComponent<any, any> {
           <div className="czi-link-tooltip-row">
           <CustomButton
               className="czi-link-tooltip-href"
-              label={'go to the link'}
-              // onClick={this._openLink}
+              label={href}
+              onClick={this._openLink}
               target="new"
-              title={'go to the link'}
-              // value={href}
+              title={href}
+              value={href}
             />
             <CustomButton
               label="Edit"
-              // onClick={onEdit}
+              onClick={onEdit}
               value={editorView}
             />
             <CustomButton

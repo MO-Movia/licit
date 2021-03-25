@@ -10,6 +10,22 @@ const DATES = ['Published', 'Issued', 'Posted'];
 const PORTIONS = ['Page', 'Paragraph'];
 const CAPCO = ['TBD', 'C', 'U', 'TS'];
 
+export function getCustomCapco() {
+  return localStorage.getItem('customCapcoList')
+    ? JSON.parse(localStorage.getItem('customCapcoList'))
+    : [];
+}
+
+export function getCapcoList() {
+  const CAPCOlist = [];
+  const customCapcoList = getCustomCapco();
+  CAPCOlist.push(CAPCO);
+  for (let j = 0; j < customCapcoList.length; j++) {
+    CAPCOlist.push(customCapcoList[j]);
+  }
+  return CAPCOlist;
+}
+
 class CitationDialog extends React.PureComponent<any, any> {
   _unmounted = false;
   _popUp = null;
@@ -26,8 +42,8 @@ class CitationDialog extends React.PureComponent<any, any> {
     this.setState({
       sourceText:
         '(' +
-        (this.state.citaionUseObject.overallCitationCAPCO
-          ? this.state.citaionUseObject.overallCitationCAPCO
+        (this.state.citationUseObject.overallCitationCAPCO
+          ? this.state.citationUseObject.overallCitationCAPCO
           : 'TBD') +
         ')' +
         ' ' +
@@ -37,23 +53,25 @@ class CitationDialog extends React.PureComponent<any, any> {
         ' Date ' +
         this.state.citationObject.publishedDateTitle +
         ' ' +
-        this.state.citationObject.publishedDate +
+        (this.state.citationObject.publishedDate
+          ? this.state.citationObject.publishedDate
+          : '') +
         ' ' +
         '(' +
-        (this.state.citationObject.documentTitleCapco
-          ? this.state.citaionUseObject.documentTitleCapco
+        (this.state.citationUseObject.documentTitleCapco
+          ? this.state.citationUseObject.documentTitleCapco
           : 'TBD') +
         ')' +
         ' ' +
         this.state.citationObject.documentTitle +
         ' pp. ' +
-        this.state.citaionUseObject.pageStart +
+        this.state.citationUseObject.pageStart +
         '-' +
-        this.state.citaionUseObject.pageEnd +
+        this.state.citationUseObject.pageEnd +
         ' Extracted information is ' +
         '(' +
-        (this.state.citaionUseObject.extractedInfoCAPCO
-          ? this.state.citaionUseObject.extractedInfoCAPCO
+        (this.state.citationUseObject.extractedInfoCAPCO
+          ? this.state.citationUseObject.extractedInfoCAPCO
           : 'TBD') +
         ')' +
         ' Overall document classification is ' +
@@ -82,18 +100,19 @@ class CitationDialog extends React.PureComponent<any, any> {
               className="citation-label"
               style={{
                 fontSize: '24px',
-                verticalAlign: 'middle',
+                // verticalAlign: 'middle',
                 margin: '10px 0',
                 fontWeight: 'bold',
               }}
             >
               {'(' +
-                (this.state.citaionUseObject.overallCitationCAPCO
-                  ? this.state.citaionUseObject.overallCitationCAPCO
+                (this.state.citationUseObject.overallCitationCAPCO
+                  ? this.state.citationUseObject.overallCitationCAPCO
                   : 'TBD') +
                 ')'}
             </label>
             <select
+              disabled={this.state.isCitationObject}
               onChange={this.onCitationCAPCOChanged.bind(this)}
               style={{
                 height: '27px',
@@ -105,8 +124,8 @@ class CitationDialog extends React.PureComponent<any, any> {
               value="Source Citation"
             >
               <option
-                style={{display: 'none', fontSize: '34px', fontWeight: 'bold'}}
                 selected
+                style={{fontSize: '34px', fontWeight: 'bold', display: 'none' }}
               >
                 Source Citation
               </option>
@@ -119,24 +138,27 @@ class CitationDialog extends React.PureComponent<any, any> {
             <div style={{float: 'right', marginTop: '-5px'}}>
               <button
                 className="btnsave buttonstyle"
-                onClick={this._onSearch.bind(this)}
+                // onClick={this._onSearch.bind(this)}
                 style={{height: '27px'}}
               >
                 Search
               </button>
-              <button style={{height: '27px'}} onClick={this._save.bind(this)}>
+              <button onClick={this._save.bind(this)} style={{height: '27px'}}>
                 Save
               </button>
               <button
-                style={{height: '27px'}}
                 className="btnsave buttonstyle"
                 onClick={this._cancel}
+                style={{height: '27px'}}
               >
                 Cancel
               </button>
             </div>
           </div>
-          <hr className="hr-width"></hr>
+          <hr
+            className="hr-width"
+            style={{marginBottom: '5px', marginTop: '5px'}}
+          ></hr>
           {/* First row */}
           <div>
             <div className="div-display">
@@ -156,7 +178,11 @@ class CitationDialog extends React.PureComponent<any, any> {
               </div>
               <input
                 onChange={this.onInputChanged.bind(this, 'author')}
-                style={{height: '26px', width: '220px'}}
+                style={{
+                  borderColor: 'lightgray',
+                  height: '26px',
+                  width: '220px',
+                }}
                 type="text"
                 value={this.state.citationObject.author}
               />
@@ -170,7 +196,12 @@ class CitationDialog extends React.PureComponent<any, any> {
               </label>
               <input
                 onChange={this.onInputChanged.bind(this, 'referenceId')}
-                style={{height: '26px', marginLeft: '10px', width: '220px'}}
+                style={{
+                  borderColor: 'lightgray',
+                  height: '26px',
+                  marginLeft: '10px',
+                  width: '220px',
+                }}
                 type="text"
                 value={this.state.citationObject.referenceId}
               />
@@ -209,8 +240,8 @@ class CitationDialog extends React.PureComponent<any, any> {
                     }}
                   >
                     {'(' +
-                      (this.state.citaionUseObject.documentTitleCapco
-                        ? this.state.citaionUseObject.documentTitleCapco
+                      (this.state.citationObject.documentTitleCapco
+                        ? this.state.citationObject.documentTitleCapco
                         : 'TBD') +
                       ')'}
                   </label>
@@ -224,12 +255,12 @@ class CitationDialog extends React.PureComponent<any, any> {
                     value="Source Citation"
                   >
                     <option
+                    selected
                       style={{
                         display: 'none',
                         fontSize: '34px',
                         fontWeight: 'bold',
                       }}
-                      selected
                     >
                       Document Title
                     </option>
@@ -242,7 +273,11 @@ class CitationDialog extends React.PureComponent<any, any> {
                 </div>
                 <input
                   onChange={this.onInputChanged.bind(this, 'documentTitle')}
-                  style={{height: '26px', width: '450px'}}
+                  style={{
+                    borderColor: 'lightgray',
+                    height: '26px',
+                    width: '450px',
+                  }}
                   type="text"
                   value={this.state.citationObject.documentTitle || ''}
                 />
@@ -251,9 +286,10 @@ class CitationDialog extends React.PureComponent<any, any> {
                 <div>
                   <select
                     className="citation-label"
+                    disabled={this.state.isCitationObject}
                     onChange={this.onPageTitleChanged.bind(this)}
                     style={{border: 'none', marginLeft: '6px'}}
-                    value={this.state.citaionUseObject.pageTitle}
+                    value={this.state.citationUseObject.pageTitle}
                   >
                     {PORTIONS.map((value) => (
                       <option key={value} value={value}>
@@ -264,16 +300,30 @@ class CitationDialog extends React.PureComponent<any, any> {
                 </div>
 
                 <input
+                  disabled={this.state.isCitationObject}
                   onChange={this.onInputChanged.bind(this, 'pagesStart')}
-                  style={{height: '26px', marginLeft: '10px', width: '115px'}}
+                  style={{
+                    borderColor: 'lightgray',
+                    height: '26px',
+                    marginLeft: '10px',
+                    width: '115px',
+                  }}
                   type="text"
+                  value={this.state.citationUseObject.pageStart || ''}
                 />
               </div>
               <div className="div-display">
                 <input
+                  disabled={this.state.isCitationObject}
                   onChange={this.onInputChanged.bind(this, 'pagesEnd')}
-                  style={{height: '26px', marginLeft: '10px', width: '115px'}}
+                  style={{
+                    borderColor: 'lightgray',
+                    height: '26px',
+                    marginLeft: '10px',
+                    width: '115px',
+                  }}
                   type="text"
+                  value={this.state.citationUseObject.pageEnd || ''}
                 />
               </div>
             </div>
@@ -281,18 +331,20 @@ class CitationDialog extends React.PureComponent<any, any> {
             <div>
               <label
                 className="citation-label"
+                disabled={this.state.isCitationObject}
                 style={{
                   verticalAlign: 'middle',
                   margin: '10px 0',
                 }}
               >
                 {'(' +
-                  (this.state.citaionUseObject.extractedInfoCAPCO
-                    ? this.state.citaionUseObject.extractedInfoCAPCO
+                  (this.state.citationUseObject.extractedInfoCAPCO
+                    ? this.state.citationUseObject.extractedInfoCAPCO
                     : 'TBD') +
                   ')'}
               </label>
               <select
+                disabled={this.state.isCitationObject}
                 onChange={this.onExtractedInfoCAPCOChanged.bind(this)}
                 style={{
                   border: 'none',
@@ -301,11 +353,11 @@ class CitationDialog extends React.PureComponent<any, any> {
                 value="Extracted information classification"
               >
                 <option
+                selected
                   style={{
                     display: 'none',
                     fontSize: '34px',
                   }}
-                  selected
                 >
                   Extracted information classification
                 </option>
@@ -338,12 +390,12 @@ class CitationDialog extends React.PureComponent<any, any> {
                 value="Overall document classification"
               >
                 <option
+                 selected
                   style={{
                     display: 'none',
                     fontSize: '34px',
                     fontWeight: 'bold',
                   }}
-                  selected
                 >
                   Overall document classification
                 </option>
@@ -359,19 +411,21 @@ class CitationDialog extends React.PureComponent<any, any> {
             <div>
               <label
                 className="citation-label"
+                disabled={this.state.isCitationObject}
                 style={{
                   verticalAlign: 'middle',
                   margin: '10px 0',
                 }}
               >
                 {'(' +
-                  (this.state.citaionUseObject.descriptionCAPCO
-                    ? this.state.citaionUseObject.descriptionCAPCO
+                  (this.state.citationUseObject.descriptionCAPCO
+                    ? this.state.citationUseObject.descriptionCAPCO
                     : 'N/A') +
                   ')'}
               </label>
               <select
                 className="citation-label"
+                disabled={this.state.isCitationObject}
                 onChange={this.onDescriptionCAPCOChanged.bind(this)}
                 style={{
                   border: 'none',
@@ -380,11 +434,11 @@ class CitationDialog extends React.PureComponent<any, any> {
                 value="Description"
               >
                 <option
+                selected
                   style={{
                     display: 'none',
                     fontSize: '34px',
                   }}
-                  selected
                 >
                   Description
                 </option>
@@ -396,9 +450,11 @@ class CitationDialog extends React.PureComponent<any, any> {
               </select>
             </div>
             <input
+              disabled={this.state.isCitationObject}
               onChange={this.onInputChanged.bind(this, 'description')}
-              style={{height: '80px', width: '706px'}}
+              style={{borderColor: 'lightgray', height: '80px', width: '706px'}}
               type="text"
+              value={this.state.citationUseObject.description || ''}
             />
           </div>
           {/* fOURTH ROW */}
@@ -418,8 +474,13 @@ class CitationDialog extends React.PureComponent<any, any> {
               </div>
               <input
                 onChange={this.onInputChanged.bind(this, 'hyperLink')}
-                style={{height: '26px', width: '450px'}}
+                style={{
+                  borderColor: 'lightgray',
+                  height: '26px',
+                  width: '450px',
+                }}
                 type="text"
+                value={this.state.citationObject.hyperLink || ''}
               />
             </div>
             <div className="div-display">
@@ -436,15 +497,19 @@ class CitationDialog extends React.PureComponent<any, any> {
                 value={this.state.citationObject.dateAccessed}
               />
             </div>
-            <hr style={{width: '100%'}}></hr>
+            <hr
+              style={{width: '100%'}}
+              style={{marginBottom: '5px', marginTop: '5px'}}
+            ></hr>
             <textarea
-              rows="4"
               cols="50"
               name="sourceText"
+              rows="4"
               style={{
                 border: 'none',
                 fontFamily: 'arial sans-serif',
-                fontSize: '16px',
+                fontSize: '14px',
+                height: '68px',
                 width: '700px',
               }}
               value={this.state.sourceText}
@@ -460,8 +525,8 @@ class CitationDialog extends React.PureComponent<any, any> {
   // handles Citation capco change
   onCitationCAPCOChanged(e: any) {
     this.setState({
-      citaionUseObject: {
-        ...this.state.citaionUseObject,
+      citationUseObject: {
+        ...this.state.citationUseObject,
         overallCitationCAPCO: e.target.value,
       },
     });
@@ -482,7 +547,10 @@ class CitationDialog extends React.PureComponent<any, any> {
   // handles author title change
   onAuthorTitleChanged(e: any) {
     this.setState({
-      citationObject: {...this.state.citationObject, authorTitle: e.target.value},
+      citationObject: {
+        ...this.state.citationObject,
+        authorTitle: e.target.value,
+      },
     });
     this.setSourceText();
   }
@@ -501,8 +569,8 @@ class CitationDialog extends React.PureComponent<any, any> {
   // handles extracted information capco change
   onExtractedInfoCAPCOChanged(e: any) {
     this.setState({
-      citaionUseObject: {
-        ...this.state.citaionUseObject,
+      citationUseObject: {
+        ...this.state.citationUseObject,
         extractedInfoCAPCO: e.target.value,
       },
     });
@@ -523,8 +591,8 @@ class CitationDialog extends React.PureComponent<any, any> {
   // handles description capco change
   onDescriptionCAPCOChanged(e: any) {
     this.setState({
-      citaionUseObject: {
-        ...this.state.citaionUseObject,
+      citationUseObject: {
+        ...this.state.citationUseObject,
         descriptionCAPCO: e.target.value,
       },
     });
@@ -534,8 +602,8 @@ class CitationDialog extends React.PureComponent<any, any> {
   // handles page title change
   onPageTitleChanged(e: any) {
     this.setState({
-      citaionUseObject: {
-        ...this.state.citaionUseObject,
+      citationUseObject: {
+        ...this.state.citationUseObject,
         pageTitle: e.target.value,
       },
     });
@@ -545,8 +613,11 @@ class CitationDialog extends React.PureComponent<any, any> {
   onInputChanged(fieldName: string, e: any) {
     switch (fieldName) {
       case 'author':
-        this.setState({          
-          citationObject: {...this.state.citationObject, author: e.target.value},
+        this.setState({
+          citationObject: {
+            ...this.state.citationObject,
+            author: e.target.value,
+          },
         });
         break;
       case 'referenceId':
@@ -554,6 +625,11 @@ class CitationDialog extends React.PureComponent<any, any> {
           citationObject: {
             ...this.state.citationObject,
             referenceId: e.target.value,
+          },
+          // to keep the referenceId as citation object's reference id in citation use object
+          citationUseObject: {
+            ...this.state.citationUseObject,
+            citationObjectRefId: e.target.value,
           },
         });
         break;
@@ -567,24 +643,24 @@ class CitationDialog extends React.PureComponent<any, any> {
         break;
       case 'pagesStart':
         this.setState({
-          citaionUseObject: {
-            ...this.state.citaionUseObject,
+          citationUseObject: {
+            ...this.state.citationUseObject,
             pageStart: e.target.value,
           },
         });
         break;
       case 'pagesEnd':
         this.setState({
-          citaionUseObject: {
-            ...this.state.citaionUseObject,
+          citationUseObject: {
+            ...this.state.citationUseObject,
             pageEnd: e.target.value,
           },
         });
         break;
       case 'description':
         this.setState({
-          citaionUseObject: {
-            ...this.state.citaionUseObject,
+          citationUseObject: {
+            ...this.state.citationUseObject,
             description: e.target.value,
           },
         });
@@ -621,14 +697,14 @@ class CitationDialog extends React.PureComponent<any, any> {
     this.props.close();
   };
 
-  _save = (): void => {    
+  _save = (): void => {
     this.props.close(this.state);
   };
 
   _onSearch() {
     this.props.editorView.runtime.getCitationsAsync().then((result) => {
       if (result) {
-        let lstcitation = result;
+        const lstcitation = result;
         console.log('The saved citations are:', lstcitation);
       }
     });
