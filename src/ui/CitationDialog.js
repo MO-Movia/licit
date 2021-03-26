@@ -453,6 +453,7 @@ class CitationDialog extends React.PureComponent<any, any> {
               cols="50"
               disabled={this.state.isCitationObject}
               name="description"
+              onChange={this.onInputChanged.bind(this, 'description')}
               rows="4"
               style={{
                 border: '1px solid lightgrey',
