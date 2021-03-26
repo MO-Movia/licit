@@ -1,0 +1,126 @@
+.citation-label {
+  font-family: 'Arial', sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+button::selection {
+  background: olive;
+}
+
+select:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+textarea:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.hr-width {
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.div-display {
+  display: inline-block;
+}
+
+.citationnote-tooltip {
+  cursor: auto;
+  position: absolute;
+  left: -30px;
+  top: calc(100% + 10px);
+  background: transparent;
+  padding: 3px;
+  border-radius: 2px;
+  width: 500px;
+}
+
+.citationnote-tooltip::before {
+  border: 5px solid transparent;
+  border-top-width: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  position: absolute;
+  top: -5px;
+  left: 27px;
+  content: ' ';
+  height: 0;
+  width: 0;
+}
+
+.citation-submenu {
+  display: flex;
+  justify-content: center;
+  left: -194px;
+  pointer-events: none;
+  position: absolute;
+  top: -52px;
+  width: 400px;
+}
+
+.citation-submenu .czi-custom-button {
+  margin: 0 3px;
+}
+
+.citation-submenu-href {
+  border: none;
+  color: var(--czi-link-color);
+  display: inline-block;
+  flex: 1;
+  margin: 0 6px 0 0;
+  max-width: 200px;
+  overflow: hidden;
+  padding: 6px 0;
+  position: relative;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.citation-submenu-row {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  z-index: 2;
+}
+
+.citation-submenu-body {
+  background: #fff;
+  border-radius: var(--czi-overlay-radius);
+  box-shadow: var(--czi-overlay-shadow);
+  box-sizing: border-box;
+  display: inline-block;
+  font-family: var(--czi-font-family);
+  font-size: var(--czi-font-size);
+  max-width: 95px;
+  padding: 10px;
+  pointer-events: auto;
+}
+
+.citation-submenu-body::after {
+  background-color: #fff;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.26);
+  content: '';
+  height: 20px;
+  left: 48%;
+  position: absolute;
+  top: 33px;
+  transform: rotate(45deg);
+  width: 14px;
+  z-index: 1;
+}
+
+.button.selected{
+  background-color: blue;
+}
+
+.button:focus{
+  color:blue;
+  background-color: blue;
+  outline: blue auto 5px; 
+}
