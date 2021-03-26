@@ -3,7 +3,7 @@
 // [FS] IRAD-1251 2021-03-10
 // UI for Citation dialog
 import * as React from 'react';
-import './add-citation.css';
+import './citation-note.css';
 
 const AUTHORS = ['Author', 'Publisher', 'Originator'];
 const DATES = ['Published', 'Issued', 'Posted'];
@@ -125,7 +125,7 @@ class CitationDialog extends React.PureComponent<any, any> {
             >
               <option
                 selected
-                style={{fontSize: '34px', fontWeight: 'bold', display: 'none' }}
+                style={{fontSize: '34px', fontWeight: 'bold', display: 'none'}}
               >
                 Source Citation
               </option>
@@ -139,7 +139,7 @@ class CitationDialog extends React.PureComponent<any, any> {
               <button
                 className="btnsave buttonstyle"
                 // onClick={this._onSearch.bind(this)}
-                style={{height: '27px'}}
+                style={{display: 'none', height: '27px'}}
               >
                 Search
               </button>
@@ -255,7 +255,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                     value="Source Citation"
                   >
                     <option
-                    selected
+                      selected
                       style={{
                         display: 'none',
                         fontSize: '34px',
@@ -353,7 +353,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                 value="Extracted information classification"
               >
                 <option
-                selected
+                  selected
                   style={{
                     display: 'none',
                     fontSize: '34px',
@@ -390,7 +390,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                 value="Overall document classification"
               >
                 <option
-                 selected
+                  selected
                   style={{
                     display: 'none',
                     fontSize: '34px',
@@ -434,7 +434,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                 value="Description"
               >
                 <option
-                selected
+                  selected
                   style={{
                     display: 'none',
                     fontSize: '34px',
@@ -449,13 +449,21 @@ class CitationDialog extends React.PureComponent<any, any> {
                 ))}
               </select>
             </div>
-            <input
+            <textarea
+              cols="50"
               disabled={this.state.isCitationObject}
-              onChange={this.onInputChanged.bind(this, 'description')}
-              style={{borderColor: 'lightgray', height: '80px', width: '706px'}}
-              type="text"
+              name="description"
+              rows="4"
+              style={{
+                border: '1px solid lightgrey',
+                fontFamily: 'arial sans-serif',
+                height: '68px',
+                width: '700px',
+              }}
               value={this.state.citationUseObject.description || ''}
-            />
+            >
+              {this.state.citationUseObject.description || ''}
+            </textarea>            
           </div>
           {/* fOURTH ROW */}
           <div>
@@ -613,49 +621,74 @@ class CitationDialog extends React.PureComponent<any, any> {
   onInputChanged(fieldName: string, e: any) {
     switch (fieldName) {
       case 'author':
-        this.setState({
-          citationObject: {
-            ...this.state.citationObject,
-            author: e.target.value,
+        this.setState(
+          {
+            citationObject: {
+              ...this.state.citationObject,
+              author: e.target.value,
+            },
           },
-        });
+          () => {
+            this.setSourceText();
+          }
+        );
         break;
       case 'referenceId':
-        this.setState({
-          citationObject: {
-            ...this.state.citationObject,
-            referenceId: e.target.value,
+        this.setState(
+          {
+            citationObject: {
+              ...this.state.citationObject,
+              referenceId: e.target.value,
+            },
+            // to keep the referenceId as citation object's reference id in citation use object
+            citationUseObject: {
+              ...this.state.citationUseObject,
+              citationObjectRefId: e.target.value,
+            },
           },
-          // to keep the referenceId as citation object's reference id in citation use object
-          citationUseObject: {
-            ...this.state.citationUseObject,
-            citationObjectRefId: e.target.value,
-          },
-        });
+          () => {
+            this.setSourceText();
+          }
+        );
         break;
       case 'documentTitle':
-        this.setState({
-          citationObject: {
-            ...this.state.citationObject,
-            documentTitle: e.target.value,
+        this.setState(
+          {
+            citationObject: {
+              ...this.state.citationObject,
+              documentTitle: e.target.value,
+            },
           },
-        });
+          () => {
+            this.setSourceText();
+          }
+        );
         break;
       case 'pagesStart':
-        this.setState({
-          citationUseObject: {
-            ...this.state.citationUseObject,
-            pageStart: e.target.value,
+        this.setState(
+          {
+            citationUseObject: {
+              ...this.state.citationUseObject,
+              pageStart: e.target.value,
+            },
           },
-        });
+          () => {
+            this.setSourceText();
+          }
+        );
         break;
       case 'pagesEnd':
-        this.setState({
-          citationUseObject: {
-            ...this.state.citationUseObject,
-            pageEnd: e.target.value,
+        this.setState(
+          {
+            citationUseObject: {
+              ...this.state.citationUseObject,
+              pageEnd: e.target.value,
+            },
           },
-        });
+          () => {
+            this.setSourceText();
+          }
+        );
         break;
       case 'description':
         this.setState({
@@ -666,31 +699,45 @@ class CitationDialog extends React.PureComponent<any, any> {
         });
         break;
       case 'hyperLink':
-        this.setState({
-          citationObject: {
-            ...this.state.citationObject,
-            hyperLink: e.target.value,
+        this.setState(
+          {
+            citationObject: {
+              ...this.state.citationObject,
+              hyperLink: e.target.value,
+            },
           },
-        });
+          () => {
+            this.setSourceText();
+          }
+        );
         break;
       case 'dateAccessed':
-        this.setState({
-          citationObject: {
-            ...this.state.citationObject,
-            dateAccessed: e.target.value,
+        this.setState(
+          {
+            citationObject: {
+              ...this.state.citationObject,
+              dateAccessed: e.target.value,
+            },
           },
-        });
+          () => {
+            this.setSourceText();
+          }
+        );
         break;
       case 'publishedDate':
-        this.setState({
-          citationObject: {
-            ...this.state.citationObject,
-            publishedDate: e.target.value,
+        this.setState(
+          {
+            citationObject: {
+              ...this.state.citationObject,
+              publishedDate: e.target.value,
+            },
           },
-        });
+          () => {
+            this.setSourceText();
+          }
+        );
         break;
     }
-    this.setSourceText();
   }
 
   _cancel = (): void => {

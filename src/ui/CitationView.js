@@ -10,7 +10,8 @@ import {atAnchorTopCenter} from './PopUpPosition';
 import createPopUp from './createPopUp';
 import {MARK_UNDERLINE, MARK_TEXT_HIGHLIGHT} from '../MarkNames';
 import CitationDialog from './CitationDialog';
-import './add-citation.css';
+import {getNode} from '../CustomStyleCommand';
+import './citation-note.css';
 
 class CitationView {
   constructor(node, view, getPos, nodeSelection) {
@@ -44,6 +45,7 @@ class CitationView {
       if (!this.innerView) this.open();
       // [FS] IRAD-1251 2021-03-23
       // to underline and highlight the selected text for citation on hover
+      this.outerView.lastKeyCode = null;
       this.outerView.state.tr.doc.nodesBetween(
         this.node.attrs.from,
         this.node.attrs.to,
@@ -125,7 +127,7 @@ class CitationView {
       href: this.node.attrs.citationObject.hyperLink,
       onCancel: this.onCancel,
       onEdit: this.onEditCitation,
-      // onRemove: this._onRemove,
+      onRemove: this.onRemoveCitation,
     };
     if (popup && anchorEl === this._anchorEl) {
       popup.update(viewPops);
@@ -171,12 +173,79 @@ class CitationView {
         onClose: (val) => {
           if (this._popUp) {
             this._popUp = null;
-            // resolve(val);
+            this.updateCitation(view, val);
           }
         },
       }
     );
   };
+
+  // [FS] IRAD-1253 2021-03-25
+  // delete citation from a paragraph
+  onRemoveCitation = (view: EditorView): void => {
+    const {state} = view;
+    let {tr} = state;
+    const {selection} = tr;
+
+    if ('citationnote' === selection.node.type.name) {
+      tr = tr.delete(selection.from, selection.to);
+      const parentPos = selection.$head.pos - selection.$head.parentOffset - 1;
+      const parentNode = tr.doc.nodeAt(parentPos);
+      if (parentNode) {
+        const newattrs = Object.assign({}, parentNode.attrs);
+        newattrs.citationUseObject = null;
+        tr = tr.setNodeMarkup(parentPos, undefined, newattrs);
+      }
+      view.dispatch(tr);
+    }
+  };
+
+  // [FS] IRAD-1253 2021-03-25
+  // Edit citation from a paragraph
+  updateCitation(view, citation) {
+    if (view.dispatch) {
+      const {selection} = view.state;
+      let {tr} = view.state;
+      tr = tr.setSelection(selection);
+      if (citation) {
+        // save the citation use object to node
+        tr = this.updateCitationUseObject(view.state, selection, tr, citation);
+        if (view.runtime && typeof view.runtime.saveCitation === 'function') {
+          view.runtime.saveCitation(citation.citationObject).then((result) => {
+            tr = this.updateCitationObjectinCitationNote(
+              view,
+              view.state,
+              tr,
+              citation
+            );
+            view.dispatch(tr);
+          });
+        }
+      }
+    }
+  }
+
+  // [FS] IRAD-1251 2021-03-23
+  // to save the citation use object in the node attribute
+  updateCitationUseObject(state, selection, tr, citation) {
+    if (!citation.isCitationObject) {
+      const from = selection.$from.before(1);
+      const to = selection.$to.after(1) - 1;
+      const node = getNode(state, this.node.attrs.from, this.node.attrs.to, tr);
+      const newattrs = Object.assign({}, node.attrs);
+      newattrs['citationUseObject'] = citation.citationUseObject;
+      tr = tr.setNodeMarkup(from, undefined, newattrs);
+    }
+    return tr;
+  }
+
+  updateCitationObjectinCitationNote(view, state, tr, citation) {
+    const newattrs = Object.assign({}, this.node.attrs);
+    newattrs['citationObject'] = citation.citationObject;
+    newattrs['citationUseObject'] = citation.citationUseObject;
+    tr = tr.setNodeMarkup(this.getPos(), undefined, newattrs);
+    return tr;
+  }
 
   destroy() {
     this._popup && this._popup.close();
@@ -226,7 +295,10 @@ class CitationView {
     // style changes for the citation source text
     footNoteDiv.setProperty('font-size', '13px');
     footNoteDiv.setProperty('font-family', 'arial sans-serif');
-    // footNoteDiv.setProperty('--czi-content-body-background-color', 'transparent');
+    footNoteDiv.setProperty('padding-left', '10px');
+    footNoteDiv.setProperty('padding-top', '3px');
+    footNoteDiv.setProperty('padding-bottom', '3px');
+    footNoteDiv.setProperty('right', '250px');
   }
 
   close() {

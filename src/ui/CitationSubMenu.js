@@ -6,8 +6,8 @@ import scrollIntoView from 'smooth-scroll-into-view-if-needed';
 
 import sanitizeURL from '../sanitizeURL';
 import CustomButton from './CustomButton';
-
-import './czi-link-tooltip.css';
+import Icon from './Icon';
+import './citation-note.css';
 
 function isBookMarkHref(href: string): boolean {
   return !!href && href.indexOf('#') === 0 && href.length >= 2;
@@ -29,27 +29,31 @@ class CitationSubMenu extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const {href, onEdit, editorView} = this.props;
+    const {href, onEdit, onRemove, editorView} = this.props;
 
     return (
-      <div className="czi-link-tooltip">
-        <div className="czi-link-tooltip-body">
-          <div className="czi-link-tooltip-row">
+      <div className="citation-submenu">
+        <div className="citation-submenu-body">
+          <div className="citation-submenu-row">
           <CustomButton
-              className="czi-link-tooltip-href"
-              label={href}
+              className="citation-submenu-href link"
+              // label={href}
+              // icon={Icon.get('edit')}
+              icon={Icon.get('link')}
               onClick={this._openLink}
               target="new"
               title={href}
               value={href}
             />
             <CustomButton
-              label="Edit"
+              // label="Edit"
+              icon={Icon.get('edit')}
               onClick={onEdit}
               value={editorView}
             />
             <CustomButton
-              label="Delete"
+              // label="Delete"
+              icon={Icon.get('delete')}
               // onClick={onRemove}
               value={editorView}
             />

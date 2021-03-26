@@ -11,7 +11,7 @@ import {Transform} from 'prosemirror-transform';
 import {CITATIONNOTE} from './NodeNames';
 import {Fragment} from 'prosemirror-model';
 import {getNode} from './CustomStyleCommand';
-import './ui/add-citation.css';
+import './ui/citation-note.css';
 
 class AddCitationCommand extends UICommand {
   _popUp = null;
@@ -34,7 +34,7 @@ class AddCitationCommand extends UICommand {
         pageTitle: '',
         extractedInfoCAPCO: 'TBD',
         descriptionCAPCO: 'TBD',
-        description: 'sample description',
+        description: '',
         citationObjectRefId: '',
         pageStart: 0,
         pageEnd: 0,
@@ -42,12 +42,12 @@ class AddCitationCommand extends UICommand {
       citationObject: {
         overallDocumentCapco: 'TBD',
         author: '',
-        authorTitle: 'Title',
-        referenceId: 'ref-1001',
+        authorTitle: '',
+        referenceId: 'REF-1001',
         publishedDate: '',
         publishedDateTitle: '',
         documentTitleCapco: 'TBD',
-        documentTitle: 'Document title',
+        documentTitle: '',
         dateAccessed: '',
         hyperLink: '',
       },
