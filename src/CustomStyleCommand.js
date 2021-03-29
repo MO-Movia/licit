@@ -813,7 +813,7 @@ function hasMismatchHeirarchy(
     }
     if (levelDiff > 0) {
       if (selectedNodes.length === 1) {
-        nodesBeforeSelection.reverse();
+        // nodesBeforeSelection.reverse();
       } else {
         previousLevel = Number(
           getStyleLevel(selectedNodes[0].node.attrs.styleName)
@@ -940,6 +940,19 @@ function createEmptyElement(
         nodesAfterSelection.forEach((item) => {
           if (startPos === item.pos) {
             newattrs = MISSED_HEIRACHY_ELEMENT.attrs;
+            posArray.push({
+              pos: startPos,
+              appliedLevel: appliedLevel,
+              currentLevel: 0,
+            });
+          } else if (startPos < item.pos) {
+            newattrs = MISSED_HEIRACHY_ELEMENT.attrs;
+            posArray.push({
+              pos: startPos,
+              appliedLevel: appliedLevel,
+              currentLevel: 0,
+            });
+          } else if (startPos > item.pos) {
             posArray.push({
               pos: startPos,
               appliedLevel: appliedLevel,

@@ -175,7 +175,7 @@ ReactDOM.render(React.createElement(Licit, {docID:2}), document.getElementById("
 **To use Custom run time in your component :**
  ```
  Use the below imports for access the image and style API
- 
+
 import type {ImageLike, StyleProps} from '@modusoperandi/licit';
 import {POST, GET, DELETE, PATCH} from '@modusoperandi/licit';
 import {setStyles} from '@modusoperandi/licit';
@@ -199,7 +199,7 @@ Please refer *licit\client\index.js* for getting more detailed idea on passing p
 
 |Event Name| Description|Parameter|
 |--|--|--|
-|onChange | Fires after each significant change |<ul><li>data</li><li>isEmpty</li></ul>
+|onChange | Fires after each significant change |<ul><li>data: document JSON</li><li>isEmpty: true when empty</li><li>view: prosemirror view</li></ul>
 |onReady| Fires once when the editor is ready |licit reference
 
 
