@@ -311,7 +311,7 @@ class Licit extends React.Component<any, any> {
       // [FS] IRAD-1264 2021-03-19
       // check if in non-collab mode.
       if (!(this._connector instanceof CollabConnector)) {
-        invokeOnEdit = true;
+      invokeOnEdit = true;
       }
     }
     if (invokeOnEdit) {
@@ -351,7 +351,7 @@ class Licit extends React.Component<any, any> {
     }
   };
   // [FS] IRAD-1173 2021-02-25
-  // Bug fix: Transaction mismatch error when a doalog is opened and keep typing.
+  // Bug fix: Transaction mismatch error when a dialog is opened and keep typing.
   closeOpenedPopupModels() {
     const element = document.getElementsByClassName('czi-pop-up-element')[0];
     if (element && element.parentElement) {
