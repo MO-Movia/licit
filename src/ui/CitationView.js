@@ -124,7 +124,7 @@ class CitationView {
     const viewPops = {
       editorState: this.outerView.state,
       editorView: this.outerView,
-      href: this.node.attrs.citationObject.hyperLink,
+      href: this.node.attrs.citationObject ? this.node.attrs.citationObject.hyperLink : null,
       onCancel: this.onCancel,
       onEdit: this.onEditCitation,
       onRemove: this.onRemoveCitation,
