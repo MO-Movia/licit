@@ -219,7 +219,6 @@ class ImageViewBody extends React.PureComponent<any, any> {
         data-active={active ? 'true' : undefined}
         data-original-src={String(attrs.src)}
         id={this._id}
-        onKeyDown={this._onKeyDown}
         ref={this._onBodyRef}
         title={errorTitle}
       >
@@ -300,10 +299,6 @@ class ImageViewBody extends React.PureComponent<any, any> {
       originalSize.height = MIN_SIZE;
     }
     this.setState({originalSize});
-  };
-
-  _onKeyDown = (e: any): void => {
-    console.log(e.keyCode);
   };
 
   _onResizeEnd = (width: number, height: number): void => {

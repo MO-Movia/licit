@@ -118,6 +118,22 @@ class Licit extends React.Component<any, any> {
     if (this._connector.updateSchema) {
       this._connector.updateSchema(this.state.editorState.schema);
     }
+    // [FS] 2021-03-30
+    // FIX: Custom styles not loading on read only mode
+    if (this.state.readOnly) {
+      this.fetchCustomStyles();
+    }
+  }
+  // To cache custom styles from server in readOnly mode
+  // Normal mode it is handled on custom style menu load
+  // Readonly mode menus are disabled, so caching custom styles is not invoked
+  fetchCustomStyles() {
+    if (
+      this.state.runtime &&
+      typeof this.state.runtime.getStylesAsync === 'function'
+    ) {
+      this.state.runtime.getStylesAsync();
+    }
   }
 
   // [FS] IRAD-1067 2020-09-19
@@ -311,7 +327,7 @@ class Licit extends React.Component<any, any> {
       // [FS] IRAD-1264 2021-03-19
       // check if in non-collab mode.
       if (!(this._connector instanceof CollabConnector)) {
-      invokeOnEdit = true;
+        invokeOnEdit = true;
       }
     }
     if (invokeOnEdit) {

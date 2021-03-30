@@ -659,45 +659,38 @@ function applyStyleEx(
 
   if (styleProp && styleProp.styles) {
     const _commands = getCustomStyleCommands(styleProp.styles);
-
     const newattrs = Object.assign({}, node.attrs);
     // [FS] IRAD-1074 2020-10-22
     // Issue fix on not removing center alignment when switch style with center
     // alignment to style with left alignment
-    newattrs['align'] = null;
-    newattrs['lineSpacing'] = null;
+    newattrs.align = null;
+    newattrs.lineSpacing = null;
 
     // [FS] IRAD-1131 2021-01-12
     // Indent overriding not working on a paragraph where custom style is applied
-    newattrs['indent'] = null;
-    newattrs['styleName'] = styleName;
+    newattrs.indent = null;
+    newattrs.styleName = styleName;
 
     _commands.forEach((element) => {
       // to set the node attribute for text-align
       if (element instanceof TextAlignCommand) {
-        newattrs['align'] = styleProp.styles.align;
+        newattrs.align = styleProp.styles.align;
         // to set the node attribute for line-height
       } else if (element instanceof TextLineSpacingCommand) {
         // [FS] IRAD-1104 2020-11-13
         // Issue fix : Linespacing Double and Single not applied in the sample text paragraph
-        newattrs['lineSpacing'] = getLineSpacingValue(
-          styleProp.styles.lineHeight
-        );
+        newattrs.lineSpacing = getLineSpacingValue(styleProp.styles.lineHeight);
       } else if (element instanceof ParagraphSpacingCommand) {
         // [FS] IRAD-1100 2020-11-05
         // Add in leading and trailing spacing (before and after a paragraph)
-        newattrs['paragraphSpacingAfter'] = styleProp.styles
-          .paragraphSpacingAfter
-          ? styleProp.styles.paragraphSpacingAfter
-          : null;
-        newattrs['paragraphSpacingBefore'] = styleProp.styles
-          .paragraphSpacingBefore
-          ? styleProp.styles.paragraphSpacingBefore
-          : null;
+        newattrs.paragraphSpacingAfter =
+          styleProp.styles.paragraphSpacingAfter || null;
+        newattrs.paragraphSpacingBefore =
+          styleProp.styles.paragraphSpacingBefore || null;
       } else if (element instanceof IndentCommand) {
         // [FS] IRAD-1162 2021-1-25
         // Bug fix: indent not working along with level
-        newattrs['indent'] = styleProp.styles.isLevelbased
+        newattrs.indent = styleProp.styles.isLevelbased
           ? styleProp.styles.styleLevel
           : styleProp.styles.indent;
       }
@@ -812,9 +805,7 @@ function hasMismatchHeirarchy(
       hasHeirarchyBroken = true;
     }
     if (levelDiff > 0) {
-      if (selectedNodes.length === 1) {
-        // nodesBeforeSelection.reverse();
-      } else {
+      if (selectedNodes.length !== 1) {
         previousLevel = Number(
           getStyleLevel(selectedNodes[0].node.attrs.styleName)
         );
