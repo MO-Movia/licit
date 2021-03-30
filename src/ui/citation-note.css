@@ -2,6 +2,7 @@
   font-family: 'Arial', sans-serif;
   font-size: 13px;
   font-weight: bold;
+  display: unset !important;
 }
 
 button::selection {
@@ -26,6 +27,15 @@ textarea:focus {
 
 .div-display {
   display: inline-block;
+  /* display: inline-grid; */
+}
+
+.div-dateaccessed {
+  float: right;
+  /* margin-right: 39px;
+  margin-top: 2px; */
+  margin-right: 34px;
+  margin-top: 0;
 }
 
 .citationnote-tooltip {

@@ -137,9 +137,9 @@ class CitationDialog extends React.PureComponent<any, any> {
             </select>
             <div style={{float: 'right', marginTop: '-5px'}}>
               <button
-                className="btnsave buttonstyle"
+                className="btnsave"
                 // onClick={this._onSearch.bind(this)}
-                style={{display: 'none', height: '27px'}}
+                style={{height: '27px'}}
               >
                 Search
               </button>
@@ -147,7 +147,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                 Save
               </button>
               <button
-                className="btnsave buttonstyle"
+                className="btnsave"
                 onClick={this._cancel}
                 style={{height: '27px'}}
               >
@@ -190,7 +190,7 @@ class CitationDialog extends React.PureComponent<any, any> {
             <div className="div-display">
               <label
                 className="citation-label"
-                style={{display: 'block', marginLeft: '10px'}}
+                style={{marginLeft: '10px'}}
               >
                 Reference ID
               </label>
@@ -223,7 +223,7 @@ class CitationDialog extends React.PureComponent<any, any> {
               </div>
               <input
                 onChange={this.onInputChanged.bind(this, 'publishedDate')}
-                style={{height: '21px', marginLeft: '10px', width: '220px'}}
+                style={{height: '25px', marginLeft: '10px', width: '240px'}}
                 type="date"
                 value={this.state.citationObject.publishedDate}
               />
@@ -457,14 +457,15 @@ class CitationDialog extends React.PureComponent<any, any> {
               rows="4"
               style={{
                 border: '1px solid lightgrey',
-                fontFamily: 'arial sans-serif',
+                fontFamily: 'helvetica',
+                fontSize: '13px',
                 height: '68px',
                 width: '700px',
               }}
               value={this.state.citationUseObject.description || ''}
             >
               {this.state.citationUseObject.description || ''}
-            </textarea>            
+            </textarea>
           </div>
           {/* fOURTH ROW */}
           <div>
@@ -491,21 +492,24 @@ class CitationDialog extends React.PureComponent<any, any> {
                 type="text"
                 value={this.state.citationObject.hyperLink || ''}
               />
-            </div>
-            <div className="div-display">
+           </div>
+           <div className="div-dateaccessed">
+            <div>
               <label
                 className="citation-label"
-                style={{display: 'block', marginLeft: '10px'}}
+                style={{marginLeft: '10px'}}
               >
                 Date Accessed
               </label>
+              </div>
               <input
                 onChange={this.onInputChanged.bind(this, 'dateAccessed')}
-                style={{height: '21px', marginLeft: '10px', width: '230px'}}
+                style={{height: '25px', marginLeft: '10px', width: '240px'}}
                 type="date"
                 value={this.state.citationObject.dateAccessed}
               />
-            </div>
+              </div>           
+            
             <hr
               style={{width: '100%'}}
               style={{marginBottom: '5px', marginTop: '5px'}}
@@ -533,79 +537,107 @@ class CitationDialog extends React.PureComponent<any, any> {
 
   // handles Citation capco change
   onCitationCAPCOChanged(e: any) {
-    this.setState({
-      citationUseObject: {
-        ...this.state.citationUseObject,
-        overallCitationCAPCO: e.target.value,
+    this.setState(
+      {
+        citationUseObject: {
+          ...this.state.citationUseObject,
+          overallCitationCAPCO: e.target.value,
+        },
       },
-    });
-    this.setSourceText();
+      () => {
+        this.setSourceText();
+      }
+    );
   }
 
   // handles doc title capco change
   onDocumentTitleCAPCOChanged(e: any) {
-    this.setState({
-      citationObject: {
-        ...this.state.citationObject,
-        documentTitleCapco: e.target.value,
+    this.setState(
+      {
+        citationObject: {
+          ...this.state.citationObject,
+          documentTitleCapco: e.target.value,
+        },
       },
-    });
-    this.setSourceText();
+      () => {
+        this.setSourceText();
+      }
+    );
   }
 
   // handles author title change
   onAuthorTitleChanged(e: any) {
-    this.setState({
-      citationObject: {
-        ...this.state.citationObject,
-        authorTitle: e.target.value,
+    this.setState(
+      {
+        citationObject: {
+          ...this.state.citationObject,
+          authorTitle: e.target.value,
+        },
       },
-    });
-    this.setSourceText();
+      () => {
+        this.setSourceText();
+      }
+    );
   }
 
   // handles published title change
   onPublishDateTitleChanged(e: any) {
-    this.setState({
-      citationObject: {
-        ...this.state.citationObject,
-        publishedDateTitle: e.target.value,
+    this.setState(
+      {
+        citationObject: {
+          ...this.state.citationObject,
+          publishedDateTitle: e.target.value,
+        },
       },
-    });
-    this.setSourceText();
+      () => {
+        this.setSourceText();
+      }
+    );
   }
 
   // handles extracted information capco change
   onExtractedInfoCAPCOChanged(e: any) {
-    this.setState({
-      citationUseObject: {
-        ...this.state.citationUseObject,
-        extractedInfoCAPCO: e.target.value,
+    this.setState(
+      {
+        citationUseObject: {
+          ...this.state.citationUseObject,
+          extractedInfoCAPCO: e.target.value,
+        },
       },
-    });
-    this.setSourceText();
+      () => {
+        this.setSourceText();
+      }
+    );
   }
 
   // handles overall doc capco change
   onOverallDocCAPCOChanged(e: any) {
-    this.setState({
-      citationObject: {
-        ...this.state.citationObject,
-        overallDocumentCapco: e.target.value,
+    this.setState(
+      {
+        citationObject: {
+          ...this.state.citationObject,
+          overallDocumentCapco: e.target.value,
+        },
       },
-    });
-    this.setSourceText();
+      () => {
+        this.setSourceText();
+      }
+    );
   }
 
   // handles description capco change
   onDescriptionCAPCOChanged(e: any) {
-    this.setState({
-      citationUseObject: {
-        ...this.state.citationUseObject,
-        descriptionCAPCO: e.target.value,
+    this.setState(
+      {
+        citationUseObject: {
+          ...this.state.citationUseObject,
+          descriptionCAPCO: e.target.value,
+        },
       },
-    });
-    this.setSourceText();
+      () => {
+        this.setSourceText();
+      }
+    );
   }
 
   // handles page title change
