@@ -103,6 +103,15 @@ class CitationDialog extends React.PureComponent<any, any> {
     }
   }
 
+  // show ellipsis in label  for long advanced capco also
+  showElipsesForLongCAPCOLabel(capco) {
+    let capcoLabel = capco || 'TBD';
+    if (capco.length >= 15) {
+      capcoLabel = capco.slice(0, 15) + '...';
+    }
+    return capcoLabel;
+  }
+
   componentWillUnmount(): void {
     this._unmounted = true;
   }
@@ -124,11 +133,12 @@ class CitationDialog extends React.PureComponent<any, any> {
                 margin: '10px 0',
                 fontWeight: 'bold',
               }}
+              title={this.state.citationUseObject.overallCitationCAPCO || 'TBD'}
             >
               {'(' +
-                (this.state.citationUseObject.overallCitationCAPCO
-                  ? this.state.citationUseObject.overallCitationCAPCO
-                  : 'TBD') +
+                this.showElipsesForLongCAPCOLabel(
+                  this.state.citationUseObject.overallCitationCAPCO
+                ) +
                 ')'}
             </label>
             <select
@@ -255,11 +265,14 @@ class CitationDialog extends React.PureComponent<any, any> {
                       verticalAlign: 'middle',
                       margin: '10px 0',
                     }}
+                    title={
+                      this.state.citationObject.documentTitleCapco || 'TBD'
+                    }
                   >
                     {'(' +
-                      (this.state.citationObject.documentTitleCapco
-                        ? this.state.citationObject.documentTitleCapco
-                        : 'TBD') +
+                      this.showElipsesForLongCAPCOLabel(
+                        this.state.citationObject.documentTitleCapco
+                      ) +
                       ')'}
                   </label>
                   <select
@@ -353,12 +366,13 @@ class CitationDialog extends React.PureComponent<any, any> {
                   verticalAlign: 'middle',
                   margin: '10px 0',
                 }}
+                title={this.state.citationUseObject.extractedInfoCAPCO|| 'TBD'}
               >
-                {'(' +
-                  (this.state.citationUseObject.extractedInfoCAPCO
-                    ? this.state.citationUseObject.extractedInfoCAPCO
-                    : 'TBD') +
-                  ')'}
+                 {'(' +
+                      this.showElipsesForLongCAPCOLabel(
+                        this.state.citationUseObject.extractedInfoCAPCO
+                      ) +
+                      ')'}
               </label>
               <select
                 disabled={this.state.isCitationObject}
@@ -391,12 +405,12 @@ class CitationDialog extends React.PureComponent<any, any> {
                   verticalAlign: 'middle',
                   margin: '10px 0',
                 }}
+                title={this.state.citationObject.overallDocumentCapco|| 'TBD'}
               >
                 {'(' +
-                  (this.state.citationObject.overallDocumentCapco
-                    ? this.state.citationObject.overallDocumentCapco
-                    : 'TBD') +
-                  ')'}
+              this.showElipsesForLongCAPCOLabel(this.state.citationObject.overallDocumentCapco)
+                +
+                ')'}
               </label>
               <select
                 onChange={this.onOverallDocCAPCOChanged.bind(this)}
@@ -433,12 +447,12 @@ class CitationDialog extends React.PureComponent<any, any> {
                   verticalAlign: 'middle',
                   margin: '10px 0',
                 }}
+                title={this.state.citationUseObject.descriptionCAPCO|| 'TBD'}
               >
-                {'(' +
-                  (this.state.citationUseObject.descriptionCAPCO
-                    ? this.state.citationUseObject.descriptionCAPCO
-                    : 'N/A') +
-                  ')'}
+                 {'(' +
+              this.showElipsesForLongCAPCOLabel(this.state.citationUseObject.descriptionCAPCO)
+                +
+                ')'}
               </label>
               <select
                 className="citation-label"
