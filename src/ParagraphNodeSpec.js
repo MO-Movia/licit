@@ -194,7 +194,7 @@ function refreshCounters(styleLevel) {
     const counterVar = 'set-cust-style-counter-' + index;
     const setCounterVal = window[counterVar];
     if (!setCounterVal) {
-      cssCounterReset += `czi-cust-style-counter-${index} `;
+      cssCounterReset += `C${index} `;
       setCounterReset = true;
     }
     window[counterVar] = true;
