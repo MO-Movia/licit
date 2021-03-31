@@ -16,12 +16,30 @@ export function getCustomCapco() {
     : [];
 }
 
+// [FS] IRAD-1289 2021-03-30
+// Show ellipsis on Advanced lengthy Capco
+function addElipsesForLongCAPCO(capco) {
+  let advancedCapco = capco;
+  if (capco.length >= 25) {
+    advancedCapco = capco.slice(0, 15) + '...';
+  }
+  return advancedCapco;
+}
+
+// [FS] IRAD-1289 2021-03-30
+// to show both static and advanced capco in drop down
 export function getCapcoList() {
   const CAPCOlist = [];
   const customCapcoList = getCustomCapco();
-  CAPCOlist.push(CAPCO);
+  for (let i = 0; i < CAPCO.length; i++) {
+    CAPCOlist.push({label: CAPCO[i], value: CAPCO[i]});
+  }
+
   for (let j = 0; j < customCapcoList.length; j++) {
-    CAPCOlist.push(customCapcoList[j]);
+    CAPCOlist.push({
+      label: addElipsesForLongCAPCO(customCapcoList[j]),
+      value: customCapcoList[j],
+    });
   }
   return CAPCOlist;
 }
@@ -39,48 +57,50 @@ class CitationDialog extends React.PureComponent<any, any> {
   }
 
   setSourceText() {
-    this.setState({
-      sourceText:
-        '(' +
-        (this.state.citationUseObject.overallCitationCAPCO
-          ? this.state.citationUseObject.overallCitationCAPCO
-          : 'TBD') +
-        ')' +
-        ' ' +
-        this.state.citationObject.author +
-        ' ' +
-        this.state.citationObject.referenceId +
-        ' Date ' +
-        this.state.citationObject.publishedDateTitle +
-        ' ' +
-        (this.state.citationObject.publishedDate
-          ? this.state.citationObject.publishedDate
-          : '') +
-        ' ' +
-        '(' +
-        (this.state.citationUseObject.documentTitleCapco
-          ? this.state.citationUseObject.documentTitleCapco
-          : 'TBD') +
-        ')' +
-        ' ' +
-        this.state.citationObject.documentTitle +
-        ' pp. ' +
-        this.state.citationUseObject.pageStart +
-        '-' +
-        this.state.citationUseObject.pageEnd +
-        ' Extracted information is ' +
-        '(' +
-        (this.state.citationUseObject.extractedInfoCAPCO
-          ? this.state.citationUseObject.extractedInfoCAPCO
-          : 'TBD') +
-        ')' +
-        ' Overall document classification is ' +
-        '(' +
-        (this.state.citationObject.overallDocumentCapco
-          ? this.state.citationObject.overallDocumentCapco
-          : 'TBD') +
-        ')',
-    });
+    if (this.state.citationObject || this.state.citationUseObject) {
+      this.setState({
+        sourceText:
+          '(' +
+          (this.state.citationUseObject.overallCitationCAPCO
+            ? this.state.citationUseObject.overallCitationCAPCO
+            : 'TBD') +
+          ')' +
+          ' ' +
+          this.state.citationObject.author +
+          ' ' +
+          this.state.citationObject.referenceId +
+          ' Date ' +
+          this.state.citationObject.publishedDateTitle +
+          ' ' +
+          (this.state.citationObject.publishedDate
+            ? this.state.citationObject.publishedDate
+            : '') +
+          ' ' +
+          '(' +
+          (this.state.citationObject.documentTitleCapco
+            ? this.state.citationObject.documentTitleCapco
+            : 'TBD') +
+          ')' +
+          ' ' +
+          this.state.citationObject.documentTitle +
+          ' pp. ' +
+          this.state.citationUseObject.pageStart +
+          '-' +
+          this.state.citationUseObject.pageEnd +
+          ' Extracted information is ' +
+          '(' +
+          (this.state.citationUseObject.extractedInfoCAPCO
+            ? this.state.citationUseObject.extractedInfoCAPCO
+            : 'TBD') +
+          ')' +
+          ' Overall document classification is ' +
+          '(' +
+          (this.state.citationObject.overallDocumentCapco
+            ? this.state.citationObject.overallDocumentCapco
+            : 'TBD') +
+          ')',
+      });
+    }
   }
 
   componentWillUnmount(): void {
@@ -129,11 +149,11 @@ class CitationDialog extends React.PureComponent<any, any> {
               >
                 Source Citation
               </option>
-              {CAPCO.map((value) => (
-                <option key={value} value={value}>
-                  {value}
+              {getCapcoList().map(({label, value}) => (
+                <option key={value} title={value} value={value}>
+                  {label}
                 </option>
-              ))}
+              ))}             
             </select>
             <div style={{float: 'right', marginTop: '-5px'}}>
               <button
@@ -188,10 +208,7 @@ class CitationDialog extends React.PureComponent<any, any> {
               />
             </div>
             <div className="div-display">
-              <label
-                className="citation-label"
-                style={{marginLeft: '10px'}}
-              >
+              <label className="citation-label" style={{marginLeft: '10px'}}>
                 Reference ID
               </label>
               <input
@@ -264,9 +281,9 @@ class CitationDialog extends React.PureComponent<any, any> {
                     >
                       Document Title
                     </option>
-                    {CAPCO.map((value) => (
-                      <option key={value} value={value}>
-                        {value}
+                    {getCapcoList().map(({label, value}) => (
+                      <option key={value} title={value} value={value}>
+                        {label}
                       </option>
                     ))}
                   </select>
@@ -361,9 +378,9 @@ class CitationDialog extends React.PureComponent<any, any> {
                 >
                   Extracted information classification
                 </option>
-                {CAPCO.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
+                {getCapcoList().map(({label, value}) => (
+                  <option key={value} title={value} value={value}>
+                    {label}
                   </option>
                 ))}
               </select>
@@ -399,9 +416,9 @@ class CitationDialog extends React.PureComponent<any, any> {
                 >
                   Overall document classification
                 </option>
-                {CAPCO.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
+                {getCapcoList().map(({label, value}) => (
+                  <option key={value} title={value} value={value}>
+                    {label}
                   </option>
                 ))}
               </select>
@@ -442,9 +459,9 @@ class CitationDialog extends React.PureComponent<any, any> {
                 >
                   Description
                 </option>
-                {CAPCO.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
+                {getCapcoList().map(({label, value}) => (
+                  <option key={value} title={value} value={value}>
+                    {label}
                   </option>
                 ))}
               </select>
@@ -492,15 +509,12 @@ class CitationDialog extends React.PureComponent<any, any> {
                 type="text"
                 value={this.state.citationObject.hyperLink || ''}
               />
-           </div>
-           <div className="div-dateaccessed">
-            <div>
-              <label
-                className="citation-label"
-                style={{marginLeft: '10px'}}
-              >
-                Date Accessed
-              </label>
+            </div>
+            <div className="div-dateaccessed">
+              <div>
+                <label className="citation-label" style={{marginLeft: '10px'}}>
+                  Date Accessed
+                </label>
               </div>
               <input
                 onChange={this.onInputChanged.bind(this, 'dateAccessed')}
@@ -508,8 +522,8 @@ class CitationDialog extends React.PureComponent<any, any> {
                 type="date"
                 value={this.state.citationObject.dateAccessed}
               />
-              </div>           
-            
+            </div>
+
             <hr
               style={{width: '100%'}}
               style={{marginBottom: '5px', marginTop: '5px'}}

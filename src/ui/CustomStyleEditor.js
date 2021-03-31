@@ -101,7 +101,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
           const styleName = this.state.styleName;
           this.setState({
             styleName: event.target.value,
-            // [FS] IRAD-1285 2021-03-21
+            // [FS] IRAD-1285 2021-03-29
             // Issue fix : The selected Next Line style option removes when enter style name.
             styles: {
               ...this.state.styles,

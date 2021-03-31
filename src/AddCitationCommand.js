@@ -33,7 +33,7 @@ class AddCitationCommand extends UICommand {
         overallCitationCAPCO: 'TBD',
         pageTitle: '',
         extractedInfoCAPCO: 'TBD',
-        descriptionCAPCO: 'TBD',
+        descriptionCAPCO: 'N/A',
         description: '',
         citationObjectRefId: '',
         pageStart: 0,

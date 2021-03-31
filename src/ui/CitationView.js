@@ -212,7 +212,7 @@ class CitationView {
         tr = this.updateCitationUseObject(view.state, selection, tr, citation);
         if (view.runtime && typeof view.runtime.saveCitation === 'function') {
           view.runtime.saveCitation(citation.citationObject).then((result) => {
-            tr = this.updateCitationObjectinCitationNote(
+            tr = this.updateCitationObjectInCitationNote(
               view,
               view.state,
               tr,
@@ -239,11 +239,13 @@ class CitationView {
     return tr;
   }
 
-  updateCitationObjectinCitationNote(view, state, tr, citation) {
+  updateCitationObjectInCitationNote(view, state, tr, citation) {
     const newattrs = Object.assign({}, this.node.attrs);
     newattrs['citationObject'] = citation.citationObject;
     newattrs['citationUseObject'] = citation.citationUseObject;
     tr = tr.setNodeMarkup(this.getPos(), undefined, newattrs);
+    // reset the citation sourceText to the citationnote node.    
+    tr = tr.doc.nodeAt(this.getPos()).content.content[0].text= citation.sourceText;
     return tr;
   }
 

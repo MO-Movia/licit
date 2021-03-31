@@ -30,6 +30,7 @@ class CitationSubMenu extends React.PureComponent<any, any> {
 
   render(): React.Element<any> {
     const {href, onEdit, onRemove, editorView} = this.props;
+    let disabled = editorView.readOnly;
 
     return (
       <div className="citation-submenu">
@@ -37,8 +38,6 @@ class CitationSubMenu extends React.PureComponent<any, any> {
           <div className="citation-submenu-row">
           <CustomButton
               className="citation-submenu-href link"
-              // label={href}
-              // icon={Icon.get('edit')}
               icon={Icon.get('link')}
               onClick={this._openLink}
               target="new"
@@ -46,15 +45,15 @@ class CitationSubMenu extends React.PureComponent<any, any> {
               value={href}
             />
             <CustomButton
-              // label="Edit"
+              disabled={disabled}
               icon={Icon.get('edit')}
               onClick={onEdit}
               value={editorView}
             />
             <CustomButton
-              // label="Delete"
+              disabled={disabled}
               icon={Icon.get('delete')}
-              // onClick={onRemove}
+              onClick={onRemove}
               value={editorView}
             />
           </div>
