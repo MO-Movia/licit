@@ -30,7 +30,7 @@ class CitationSubMenu extends React.PureComponent<any, any> {
 
   render(): React.Element<any> {
     const {href, onEdit, onRemove, editorView} = this.props;
-    let disabled = editorView.readOnly;
+    const disabled = editorView.readOnly;
 
     return (
       <div className="citation-submenu">

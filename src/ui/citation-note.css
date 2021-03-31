@@ -27,13 +27,10 @@ textarea:focus {
 
 .div-display {
   display: inline-block;
-  /* display: inline-grid; */
 }
 
 .div-dateaccessed {
   float: right;
-  /* margin-right: 39px;
-  margin-top: 2px; */
   margin-right: 34px;
   margin-top: 0;
 }
@@ -125,12 +122,12 @@ textarea:focus {
   z-index: 1;
 }
 
-.button.selected{
+.button.selected {
   background-color: blue;
 }
 
-.button:focus{
-  color:blue;
+.button:focus {
+  color: blue;
   background-color: blue;
-  outline: blue auto 5px; 
+  outline: blue auto 5px;
 }

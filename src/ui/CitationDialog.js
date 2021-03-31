@@ -153,7 +153,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                 <option key={value} title={value} value={value}>
                   {label}
                 </option>
-              ))}             
+              ))}
             </select>
             <div style={{float: 'right', marginTop: '-5px'}}>
               <button

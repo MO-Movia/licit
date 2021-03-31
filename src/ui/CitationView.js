@@ -23,6 +23,7 @@ class CitationView {
 
     // The node's representation in the editor (empty, for now)
     this.dom = document.createElement('citationnote');
+    this.dom.className = 'citationnote';
     // [FS] IRAD-1251 2021-03-18
     // show citation source text on hover the citation numbering
     this.dom.addEventListener(
@@ -42,7 +43,7 @@ class CitationView {
   showSourceText(customEditorView, e) {
     if (this.dom.classList) {
       this.dom.classList.add('ProseMirror-selectednode');
-      if (!this.innerView) this.open();
+      if (!this.innerView) this.open(e);
       // [FS] IRAD-1251 2021-03-23
       // to underline and highlight the selected text for citation on hover
       this.outerView.lastKeyCode = null;
@@ -124,7 +125,9 @@ class CitationView {
     const viewPops = {
       editorState: this.outerView.state,
       editorView: this.outerView,
-      href: this.node.attrs.citationObject ? this.node.attrs.citationObject.hyperLink : null,
+      href: this.node.attrs.citationObject
+        ? this.node.attrs.citationObject.hyperLink
+        : null,
       onCancel: this.onCancel,
       onEdit: this.onEditCitation,
       onRemove: this.onRemoveCitation,
@@ -230,7 +233,6 @@ class CitationView {
   updateCitationUseObject(state, selection, tr, citation) {
     if (!citation.isCitationObject) {
       const from = selection.$from.before(1);
-      const to = selection.$to.after(1) - 1;
       const node = getNode(state, this.node.attrs.from, this.node.attrs.to, tr);
       const newattrs = Object.assign({}, node.attrs);
       newattrs['citationUseObject'] = citation.citationUseObject;
@@ -244,8 +246,9 @@ class CitationView {
     newattrs['citationObject'] = citation.citationObject;
     newattrs['citationUseObject'] = citation.citationUseObject;
     tr = tr.setNodeMarkup(this.getPos(), undefined, newattrs);
-    // reset the citation sourceText to the citationnote node.    
-    tr = tr.doc.nodeAt(this.getPos()).content.content[0].text= citation.sourceText;
+    // reset the citation sourceText to the citationnote node.
+    tr = tr.doc.nodeAt(this.getPos()).content.content[0].text =
+      citation.sourceText;
     return tr;
   }
 
@@ -260,8 +263,14 @@ class CitationView {
     if (this.innerView) this.close();
     this.hideSourceText(false, this.outerView);
   }
-  open() {
+  open(e) {
+    const MAX_CLIENT_WIDTH = 975;
+    const RIGHT_MARGIN_ADJ = 50;
+    const POSITION_ADJ = -110;
     // Append a tooltip to the outer node
+    const parent = document.getElementsByClassName(
+      'ProseMirror czi-prosemirror-editor'
+    )[0];
     const tooltip = this.dom.appendChild(document.createElement('div'));
     tooltip.className = 'citationnote-tooltip';
     // [FS] IRAD-1251 2021-03-22
@@ -300,7 +309,11 @@ class CitationView {
     footNoteDiv.setProperty('padding-left', '10px');
     footNoteDiv.setProperty('padding-top', '3px');
     footNoteDiv.setProperty('padding-bottom', '3px');
-    footNoteDiv.setProperty('right', '250px');
+    const width_diff = e.clientX - parent.clientWidth;
+    const counter = e.clientX > MAX_CLIENT_WIDTH ? RIGHT_MARGIN_ADJ : 0;
+    if (width_diff > POSITION_ADJ && width_diff < tooltip.clientWidth) {
+      footNoteDiv.setProperty('right', parent.offsetLeft + counter + 'px');
+    }
   }
 
   close() {

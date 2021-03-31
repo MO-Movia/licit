@@ -1,8 +1,8 @@
 // @flow
 
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 
 import * as EditorCommands from './EditorCommands';
 import * as EditorKeyMap from './EditorKeyMap';
@@ -32,6 +32,7 @@ const {
   KEY_TOGGLE_ITALIC,
   KEY_TOGGLE_UNDERLINE,
   KEY_UNDO,
+  KEY_CITATION,
 } = EditorKeyMap;
 
 const {
@@ -51,6 +52,7 @@ const {
   TEXT_INSERT_TAB_SPACE,
   STRONG,
   UNDERLINE,
+  ADD_CITATION,
 } = EditorCommands;
 
 function bindCommands(...commands: Array<UICommand>): UserKeyCommand {
@@ -59,7 +61,7 @@ function bindCommands(...commands: Array<UICommand>): UserKeyCommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean {
-    return commands.some(cmd => {
+    return commands.some((cmd) => {
       if (cmd.isEnabled(state, view)) {
         cmd.execute(state, dispatch, view);
         return true;
@@ -94,6 +96,7 @@ export default function createEditorKeyMap(): UserKeyMap {
     //   BLOCKQUOTE_INSERT_NEW_LINE.execute,
     [KEY_INSERT_NEW_LINE_IN_LIST_ITEM.common]:
       LIST_ITEM_INSERT_NEW_LINE.execute,
+    [KEY_CITATION.common]: ADD_CITATION.execute,
   };
 
   return result;

@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit",
-  "version": "0.0.22",
+  "version": "0.0.24",
   "subversion": "1",
   "description": "Rich text editor built with React and ProseMirror",
   "main": "dist/index.js",
@@ -10,6 +10,7 @@
     "url": "git+https://github.com/MO-Movia/licit.git"
   },
   "scripts": {
+    "test": "jest",
     "build:bom": "cyclonedx-bom -o dist/bom.xml",
     "build:clean": "rm -rf dist/ && rm -f modusoperandi-licit-*.*.*.tgz",
     "build:css": "cp src/ui/*.css dist/ui && cp src/ui/mathquill-editor/*.css dist/ui/mathquill-editor && cp src/client/*.css dist/client && cp src/*.css dist",
@@ -50,16 +51,21 @@
     "@babel/preset-react": "^7.10.4",
     "@cyclonedx/bom": "^2.0.1",
     "babel-eslint": "10.1.0",
+    "babel-jest": "^26.6.3",
     "babel-loader": "8.1.0",
     "babel-plugin-flow-react-proptypes": "26.0.0",
     "babel-plugin-transform-react-remove-prop-types": "0.4.24",
     "clean-webpack-plugin": "3.0.0",
     "copy-webpack-plugin": "6.0.3",
     "css-loader": "3.6.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
     "eslint": "7.4.0",
     "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-jest": "^24.3.2",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "7.20.3",
+    "exports-loader": "^1.1.0",
     "file-loader": "^6.1.0",
     "flow-bin": "0.128.0",
     "flow-copy-source": "2.0.9",
@@ -68,9 +74,12 @@
     "html-webpack-inline-source-plugin": "1.0.0-beta.2",
     "html-webpack-plugin": "^4.5.0",
     "husky": "^4.3.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^26.6.3",
     "lint-staged": "^10.4.0",
     "mkdirp": "^1.0.4",
     "prettier": "^2.1.2",
+    "react-test-renderer": "^17.0.1",
     "stylelint": "^13.7.2",
     "stylelint-config-standard": "^20.0.0",
     "terser-webpack-plugin": "^3.1.0",
@@ -85,7 +94,6 @@
     "classnames": "2.2.6",
     "color": "3.1.2",
     "cors": "^2.8.5",
-    "exports-loader": "1.1.0",
     "express": "^4.17.1",
     "flatted": "^3.1.0",
     "flow-typed": "^3.2.0",
@@ -135,11 +143,23 @@
     "*.css": [
       "stylelint --fix"
     ],
-    "*.js": [
+    "!(*test|*.setup).js": [
       "eslint --fix"
     ],
     "*.json": [
       "prettier --write"
+    ]
+  },
+  "jest": {
+    "rootDir": "src",
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+    },
+    "setupFiles": [
+      "../jest.setup.js"
     ]
   }
 }

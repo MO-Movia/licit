@@ -213,13 +213,13 @@
   line-height: var(--czi-content-line-height);
 }
 
-citationnote {
+.citationnote {
   display: inline-block;
   position: relative;
   cursor: pointer;
 }
 
-citationnote::after {
+.citationnote::after {
   content: '[' counter(prosemirror-citationnote) ']';
   font-size: 75%;
   counter-increment: prosemirror-citationnote;
@@ -236,7 +236,7 @@ citationnote::after {
   background: transparent !important;
   padding: 3px;
   border-radius: 2px;
-  width: 500px;
+  max-width: 400px;
 }
 
 .citationnote-tooltip::before {

@@ -29,12 +29,12 @@ export default class CitationUsePlugin extends Plugin {
         let tr = null;
         if (isDocChanged(transactions)) {
           if (prevState.doc !== nextState.doc) {
+            const startPos = prevState.tr.selection.from;
             if (
               this.view &&
               (DELKEYCODE === this.view.lastKeyCode ||
                 BACKSPACEKEYCODE === this.view.lastKeyCode)
             ) {
-              const startPos = prevState.tr.selection.from;
               const node = prevState.tr.doc.nodeAt(startPos);
               if (
                 node &&

@@ -118,7 +118,7 @@ class AddCitationCommand extends UICommand {
       const textNode = state.schema.text(citation.sourceText);
       textNode.content = '';
       const citationNote = state.schema.nodes[CITATIONNOTE];
-      const newattrs = Object.assign({}, citationNote.attrs);       
+      const newattrs = Object.assign({}, citationNote.attrs);
       newattrs['from'] = state.tr.selection.from;
       newattrs['to'] = state.tr.selection.to;
       newattrs['citationObject'] = citation.citationObject;

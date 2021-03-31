@@ -568,7 +568,7 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
   const marks = [];
   let markType = null;
   let attrs = null;
-  if (styleProp) {
+  if (styleProp && styleProp.styles) {
     for (const property in styleProp.styles) {
       switch (property) {
         case STRONG:
@@ -638,10 +638,6 @@ function applyStyleEx(
   endPos: number
 ) {
   const loading = !styleProp;
-  if (loading) {
-    styleProp = getCustomStyleByName(styleName);
-  }
-  const _commands = getCustomStyleCommands(styleProp.styles);
 
   if (loading) {
     tr = onLoadRemoveAllMarksExceptOverridden(
@@ -657,55 +653,64 @@ function applyStyleEx(
     tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema);
   }
 
-  const newattrs = Object.assign({}, node.attrs);
-  // [FS] IRAD-1074 2020-10-22
-  // Issue fix on not removing center alignment when switch style with center
-  // alignment to style with left alignment
-  newattrs['align'] = null;
-  newattrs['lineSpacing'] = null;
+  if (loading) {
+    styleProp = getCustomStyleByName(styleName);
+  }
 
-  // [FS] IRAD-1131 2021-01-12
-  // Indent overriding not working on a paragraph where custom style is applied
-  newattrs['indent'] = null;
-  newattrs['styleName'] = styleName;
+  if (styleProp && styleProp.styles) {
+    const _commands = getCustomStyleCommands(styleProp.styles);
 
-  _commands.forEach((element) => {
-    // to set the node attribute for text-align
-    if (element instanceof TextAlignCommand) {
-      newattrs['align'] = styleProp.styles.align;
-      // to set the node attribute for line-height
-    } else if (element instanceof TextLineSpacingCommand) {
-      // [FS] IRAD-1104 2020-11-13
-      // Issue fix : Linespacing Double and Single not applied in the sample text paragraph
-      newattrs['lineSpacing'] = getLineSpacingValue(
-        styleProp.styles.lineHeight
-      );
-    } else if (element instanceof ParagraphSpacingCommand) {
-      // [FS] IRAD-1100 2020-11-05
-      // Add in leading and trailing spacing (before and after a paragraph)
-      newattrs['paragraphSpacingAfter'] = styleProp.styles.paragraphSpacingAfter
-        ? styleProp.styles.paragraphSpacingAfter
-        : null;
-      newattrs['paragraphSpacingBefore'] = styleProp.styles
-        .paragraphSpacingBefore
-        ? styleProp.styles.paragraphSpacingBefore
-        : null;
-    } else if (element instanceof IndentCommand) {
-      // [FS] IRAD-1162 2021-1-25
-      // Bug fix: indent not working along with level
-      newattrs['indent'] = styleProp.styles.isLevelbased
-        ? styleProp.styles.styleLevel
-        : styleProp.styles.indent;
-    }
-    // to set the marks for the node
-    if (typeof element.executeCustom == 'function') {
-      tr = element.executeCustom(state, tr, startPos, endPos);
-    }
-  });
-  tr = applyLineStyle(node, styleProp.styles, state, tr, startPos, endPos);
-  const storedmarks = getMarkByStyleName(styleName, state.schema);
-  tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
-  tr.storedMarks = storedmarks;
+    const newattrs = Object.assign({}, node.attrs);
+    // [FS] IRAD-1074 2020-10-22
+    // Issue fix on not removing center alignment when switch style with center
+    // alignment to style with left alignment
+    newattrs['align'] = null;
+    newattrs['lineSpacing'] = null;
+
+    // [FS] IRAD-1131 2021-01-12
+    // Indent overriding not working on a paragraph where custom style is applied
+    newattrs['indent'] = null;
+    newattrs['styleName'] = styleName;
+
+    _commands.forEach((element) => {
+      // to set the node attribute for text-align
+      if (element instanceof TextAlignCommand) {
+        newattrs['align'] = styleProp.styles.align;
+        // to set the node attribute for line-height
+      } else if (element instanceof TextLineSpacingCommand) {
+        // [FS] IRAD-1104 2020-11-13
+        // Issue fix : Linespacing Double and Single not applied in the sample text paragraph
+        newattrs['lineSpacing'] = getLineSpacingValue(
+          styleProp.styles.lineHeight
+        );
+      } else if (element instanceof ParagraphSpacingCommand) {
+        // [FS] IRAD-1100 2020-11-05
+        // Add in leading and trailing spacing (before and after a paragraph)
+        newattrs['paragraphSpacingAfter'] = styleProp.styles
+          .paragraphSpacingAfter
+          ? styleProp.styles.paragraphSpacingAfter
+          : null;
+        newattrs['paragraphSpacingBefore'] = styleProp.styles
+          .paragraphSpacingBefore
+          ? styleProp.styles.paragraphSpacingBefore
+          : null;
+      } else if (element instanceof IndentCommand) {
+        // [FS] IRAD-1162 2021-1-25
+        // Bug fix: indent not working along with level
+        newattrs['indent'] = styleProp.styles.isLevelbased
+          ? styleProp.styles.styleLevel
+          : styleProp.styles.indent;
+      }
+      // to set the marks for the node
+      if (typeof element.executeCustom == 'function') {
+        tr = element.executeCustom(state, tr, startPos, endPos);
+      }
+    });
+    tr = applyLineStyle(node, styleProp.styles, state, tr, startPos, endPos);
+    const storedmarks = getMarkByStyleName(styleName, state.schema);
+    tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
+    tr.storedMarks = storedmarks;
+  }
   return tr;
 }
 
