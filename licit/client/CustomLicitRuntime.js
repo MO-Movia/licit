@@ -9,9 +9,9 @@ import {setStyles, setCitations} from '../../src/customStyle';
 // When use it in a componet:
 
 /*
- import type {ImageLike, StyleProps} from '@modusoperandi/licit';
+ import type {ImageLike, StyleProps, Citation} from '@modusoperandi/licit';
  import {POST, GET, DELETE, PATCH} from '@modusoperandi/licit';
- import {setStyles} from '@modusoperandi/licit';
+ import {setStyles, setCitations} from '@modusoperandi/licit';
  */
 
 const STYLES_URI = 'http://localhost:3000';
