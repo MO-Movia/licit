@@ -171,6 +171,7 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
       const selectedNode = prevState.doc.nodeAt(selectedPos);
       if (
         selectedNode &&
+        selectedNode.attrs &&
         selectedNode.attrs.styleName !== 'None' &&
         0 !== Number(getStyleLevel(selectedNode.attrs.styleName))
       ) {

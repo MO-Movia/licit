@@ -757,7 +757,7 @@ function hasMismatchHeirarchy(
     if (isAllowedNode(node)) {
       const nodeStyleLevel = getStyleLevel(node.attrs.styleName);
       if (nodeStyleLevel) {
-        if (pos < startPos || 0 === startPos) {
+        if (pos < startPos) {
           nodesBeforeSelection.push({pos, node});
         } else if (pos >= endPos) {
           nodesAfterSelection.push({pos, node});
@@ -868,9 +868,9 @@ function createEmptyElement(
       const appliedLevel = Number(
         getStyleLevel(MISSED_HEIRACHY_ELEMENT.attrs.styleName)
       );
-      let hasFoundLevel = false;
+      let hasNodeAfter = false;
       let subsequantLevel = 0;
-      const posArray = [];
+      let posArray = [];
       let counter = 0;
       let newattrs = null;
       // nodesBeforeSelection.reverse();
@@ -883,8 +883,7 @@ function createEmptyElement(
             if (0 === subsequantLevel && 1 === appliedLevel) {
               // needEmptyElement = false;
             } else {
-              if (subsequantLevel !== appliedLevel && !hasFoundLevel) {
-                hasFoundLevel = true;
+              if (subsequantLevel !== appliedLevel) {
                 newattrs = Object.assign({}, item.node.attrs);
                 posArray.push({
                   pos: startPos,
@@ -900,16 +899,17 @@ function createEmptyElement(
                 'None' !== item.node.attrs.styleName &&
                 Number(getStyleLevel(item.node.attrs.styleName)) > 0
               ) {
-                if (appliedLevel - subsequantLevel > 1 && !hasFoundLevel) {
+                if (appliedLevel - subsequantLevel > 1) {
                   newattrs = Object.assign({}, item.node.attrs);
+                  posArray = [];
                   posArray.push({
                     pos: startPos,
                     appliedLevel: appliedLevel,
                     currentLevel: subsequantLevel,
                   });
-                  hasFoundLevel = true;
-                } else {
-                  hasFoundLevel = true;
+                } else if (1 === appliedLevel - subsequantLevel) {
+                  posArray = [];
+                  hasNodeAfter = true;
                 }
               } else {
                 if (startPos !== 0 && 'None' == item.node.attrs.styleName) {
@@ -919,7 +919,6 @@ function createEmptyElement(
                     appliedLevel: appliedLevel,
                     currentLevel: subsequantLevel,
                   });
-                  hasFoundLevel = true;
                 }
               }
             }
@@ -927,7 +926,7 @@ function createEmptyElement(
           counter++;
         });
       }
-      if (nodesAfterSelection.length > 0) {
+      if (nodesAfterSelection.length > 0 && !hasNodeAfter) {
         nodesAfterSelection.forEach((item) => {
           if (startPos === item.pos) {
             newattrs = MISSED_HEIRACHY_ELEMENT.attrs;
@@ -1082,7 +1081,7 @@ function addElementEx(
     addElementAfter(nodeAttrs, state, tr, startPos, nextLevel);
   } else {
     level = previousLevel ? previousLevel - 1 : 0;
-    counter = currentLevel ? currentLevel - 1 : 0;
+    counter = currentLevel ? currentLevel : 0;
   }
 
   for (let index = level; index > counter; index--) {

@@ -98,8 +98,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         break;
       case 'name':
         if (undefined !== event) {
+          const styleName = this.state.styleName;
           this.setState({
             styleName: event.target.value,
+            // [FS] IRAD-1285 2021-03-29
+            // Issue fix : The selected Next Line style option removes when enter style name.
+            styles: {
+              ...this.state.styles,
+              nextLineStyleName:
+                this.state.styles.nextLineStyleName === styleName
+                  ? event.target.value
+                  : this.state.styles.nextLineStyleName,
+            },
           });
         }
         break;
@@ -1242,8 +1252,8 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   // [FS] IRAD-1231 2021-03-03
   // Issue fix: Selected style for next line not retaining when modify.
   setNextLineStyle(nextLineStyleName) {
-   // [FS] IRAD-1241 2021-03-05
-   // The selcted Style in the Next line setting not retaing in Edit All and modify
+    // [FS] IRAD-1241 2021-03-05
+    // The selcted Style in the Next line setting not retaing in Edit All and modify
     const hiddenDiv = document.getElementById('nextStyle');
     if (
       0 < this.props.mode &&
