@@ -18,6 +18,7 @@ const STYLES_URI = 'http://localhost:3000';
 class CustomLicitRuntime {
   // keep styles locally
   styleProps: StyleProps[] = [];
+  loaded: boolean = false;
 
   // Image Proxy
   canProxyImageSrc(): boolean {
@@ -102,8 +103,9 @@ class CustomLicitRuntime {
    * Returns styles to editor
    */
   async getStylesAsync(): Promise<StyleProps[]> {
-    if (!this.styleProps) {
+    if (!this.loaded) {
       this.fetchStyles();
+      this.loaded = true;
     }
     return this.styleProps;
   }
