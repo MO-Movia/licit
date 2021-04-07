@@ -151,7 +151,7 @@ class Licit extends React.Component<any, any> {
     });
   }
 
-  resetCounters(transaction) {
+  resetCounters(transaction: Transform) {
     for (let index = 1; index <= 10; index++) {
       const counterVar = 'set-cust-style-counter-' + index;
       const setCounterVal = window[counterVar];
@@ -162,7 +162,7 @@ class Licit extends React.Component<any, any> {
     this.setCounterFlags(transaction, true);
   }
 
-  setCounterFlags(transaction, reset) {
+  setCounterFlags(transaction: Transform, reset: boolean) {
     let modified = false;
     let counterFlags = null;
     const existingCFlags = transaction.doc.attrs.counterFlags;

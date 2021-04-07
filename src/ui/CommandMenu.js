@@ -59,7 +59,9 @@ class CommandMenu extends React.PureComponent<any, any> {
   _onUIEnter = (command: UICommand, event: SyntheticEvent<>): void => {
     // [FS] IRAD-1253 2021-04-01
     // Reset key code for style and citation plugin.
-    this.props.editorView.lastKeyCode = null;
+    if (this.props && this.props.editorView) {
+      this.props.editorView.lastKeyCode = null;
+    }
     if (command.shouldRespondToUIEvent(event)) {
       this._activeCommand && this._activeCommand.cancel();
       this._activeCommand = command;

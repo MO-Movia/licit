@@ -19,7 +19,7 @@
     "build:flow": "flow-copy-source -v -i '**/__tests__/**' src dist",
     "build:dist": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts && npm run build:bom",
     "build:licit": "node utils/build_bin.js",
-    "flow": "flow",
+    "flow": "flow --show-all-errors",
     "lint:css": "stylelint \"**/*.css\"",
     "lint:js": "eslint \"src/**/*.js\" \"licit/**/*.js\"",
     "start": "node scripts/webserver.js",

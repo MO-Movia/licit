@@ -26,6 +26,9 @@ export function exportJSON(id: ?string): Object {
   }
   const view = viewsRegistery.get(String(id));
   if (!view) {
+    if (!id) {
+      id = '';
+    }
     throw new Error(`view ${id} does not exist`);
   }
   return convertToJSON(view.state);

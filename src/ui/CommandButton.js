@@ -33,7 +33,7 @@ class CommandButton extends React.PureComponent<any, any> {
     } = this.props;
     let disabled = this.props.disabled;
     if (!!disabled === false) {
-      disabled = !editorView || !command.isEnabled(editorState, editorView);
+      disabled = !editorView || !command.isEnabled(editorState, editorView, '');
     }
     return (
       <CustomButton
@@ -56,7 +56,9 @@ class CommandButton extends React.PureComponent<any, any> {
   ): void => {
     // [FS] IRAD-1253 2021-04-01
     // Reset the key code for style and citation plugin.
-    this.props.editorView.lastKeyCode = null;
+    if (this.props && this.props.editorView) {
+      this.props.editorView.lastKeyCode = null;
+    }
     if (command.shouldRespondToUIEvent(event)) {
       this._execute(command, event);
     }

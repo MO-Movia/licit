@@ -66,7 +66,7 @@ export type StyleProps = {
     hasNumbering?: boolean,
     paragraphSpacingAfter?: string,
     paragraphSpacingBefore?: string,
-    styleLevel?: string,
+    styleLevel?: number,
     lineHeight?: string,
     isLevelbased?: boolean,
     indent?: string,

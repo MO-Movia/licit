@@ -31,7 +31,7 @@ class CustomStyleSubMenu extends React.PureComponent<any, any> {
     }
 
     //handles the option button click, close the popup with selected values
-    onButtonClick(val) {
+    onButtonClick(val: Object) {
         this.props.close(val);
     }
 }

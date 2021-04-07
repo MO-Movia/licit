@@ -17,7 +17,7 @@ export type EditorFramesetProps = {
 
 export const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';
 
-function toCSS(val: ?(number | string)): string {
+function toCSS(val: ?(number | string)): string | any {
   if (!val || val === 'auto') {
     // '', 0, null, false, 'auto' are all treated as undefined
     // instead of auto...

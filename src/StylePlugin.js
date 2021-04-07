@@ -286,7 +286,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
           nextNode.attrs.styleName === 'None'
         ) {
           const style = getCustomStyleByName(newattrs.styleName);
-          if (null !== style) {
+          if (null !== style && style.styles) {
             // [FS] IRAD-1217 2021-02-24
             // Select style for next line not working continuously for more that 2 paragraphs
             newattrs = setNodeAttrs(style.styles.nextLineStyleName, newattrs);
@@ -323,7 +323,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
 // get the style object using the nextlineStyleName and set the attribute values to the node.
 function setNodeAttrs(nextLineStyleName, newattrs) {
   const nextLineStyle = getCustomStyleByName(nextLineStyleName);
-  if (nextLineStyle) {
+  if (nextLineStyle && nextLineStyle.styles) {
     newattrs.styleName = nextLineStyleName;
     newattrs.indent = nextLineStyle.styles.indent;
     newattrs.align = nextLineStyle.styles.align;
@@ -512,7 +512,7 @@ function applyLineStyle(prevState, nextState, tr) {
     // Check styleName is available for node
     if (node.attrs && node.attrs.styleName) {
       const styleProp = getCustomStyleByName(node.attrs.styleName);
-      if (null !== styleProp && styleProp.styles.boldPartial) {
+      if (null !== styleProp && styleProp.styles && styleProp.styles.boldPartial) {
         if (!tr) {
           tr = nextState.tr;
         }

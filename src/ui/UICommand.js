@@ -49,7 +49,11 @@ class UICommand {
     return false;
   };
 
-  isEnabled = (state: EditorState, view: ?EditorView, menuTitle: string): boolean => {
+  isEnabled = (
+    state: EditorState,
+    view: ?EditorView,
+    menuTitle: string
+  ): boolean => {
     return this.dryRun(state, view);
   };
 
@@ -73,10 +77,10 @@ class UICommand {
     event: ?SyntheticEvent<>
   ): boolean => {
     this.waitForUserInput(state, dispatch, view, event)
-      .then(inputs => {
+      .then((inputs) => {
         this.executeWithUserInput(state, dispatch, view, inputs);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
     return false;
@@ -103,6 +107,15 @@ class UICommand {
   cancel(): void {
     // subclass should overwrite this.
   }
+
+  executeCustom = (
+    state: EditorState,
+    tr: Transform,
+    from: number,
+    to: number
+  ): boolean => {
+    return false;
+  };
 }
 
 export default UICommand;
