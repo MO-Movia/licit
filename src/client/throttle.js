@@ -3,10 +3,10 @@
 export default function throttle(
   fn: Function,
   threshhold: number,
-  context: any,
+  context: any
 ): Function {
   let last;
-  let deferTimer: TimeoutID;
+  let deferTimer: window.TimeoutID;
   const boundFn = fn.bind(context);
 
   return function () {
@@ -15,13 +15,10 @@ export default function throttle(
     if (last && now < last + threshhold) {
       // hold on to it
       clearTimeout(deferTimer);
-      deferTimer = setTimeout(
-        () => {
-          last = now;
-          boundFn.apply(null, args);
-        },
-        threshhold,
-      );
+      deferTimer = setTimeout(() => {
+        last = now;
+        boundFn.apply(null, args);
+      }, threshhold);
     } else {
       last = now;
       boundFn.apply(null, args);

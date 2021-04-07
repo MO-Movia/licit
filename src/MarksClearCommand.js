@@ -8,7 +8,6 @@ import {EditorView} from 'prosemirror-view';
 import {clearMarks, clearHeading} from './clearMarks';
 import UICommand from './ui/UICommand';
 import {getNode, getMarkByStyleName} from './CustomStyleCommand';
-import nodeAt from './nodeAt';
 
 class MarksClearCommand extends UICommand {
   isActive = (state: EditorState): boolean => {
