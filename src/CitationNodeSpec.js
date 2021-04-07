@@ -1,18 +1,7 @@
 // @flow
 
 import type {NodeSpec} from './Types';
-
-// This assumes that every 36pt maps to one indent level.
-export const INDENT_MARGIN_PT_SIZE = 36;
-export const MIN_INDENT_LEVEL = 0;
-export const MAX_INDENT_LEVEL = 7;
-export const ATTRIBUTE_INDENT = 'data-indent';
-export const ATTRIBUTE_STYLE_LEVEL = 'data-style-level';
-export const RESERVED_STYLE_NONE = 'None';
-export const RESERVED_STYLE_NONE_NUMBERING = RESERVED_STYLE_NONE + '-@#$-';
-const cssVal = new Set<string>(['', '0%', '0pt', '0px']);
-
-export const EMPTY_CSS_VALUE = cssVal;
+import {Node} from 'prosemirror-model';
 
 const CitationNodeSpec: NodeSpec = {
   group: 'inline',
@@ -22,15 +11,65 @@ const CitationNodeSpec: NodeSpec = {
   // [FS] IRAD-1251 2021-03-23
   // added new attributes to this spec.
   attrs: {
-    from:{default: ''},
-    to:{default: ''},
-    citationObject:  {default: null},
-    citationUseObject:  {default: null},
+    from: {default: null},
+    to: {default: null},
+    citationObject: {default: null},
+    citationUseObject: {default: null},
+    sourceText: {default: null},
   },
   // This makes the view treat the node as a leaf, even though it
   // technically has content
   atom: true,
-  toDOM: () => ['citationnote', 0],
-  parseDOM: [{tag: 'citationnote'}]
+  toDOM,
+  parseDOM: [
+    {
+      tag: 'citationnote',
+      getAttrs,
+    },
+  ],
 };
+ 
+function getAttrs(dom: HTMLElement): Object {
+  // [FS] IRAD-1251 2021-04-05
+  // FIX: Copy and paste CITATION applied paragraph and edit the CITATION not working
+  const from = dom.getAttribute('from') || null;
+  const to = dom.getAttribute('to') || null;
+  let citationObject = null;
+  let citationUseObject = null;
+  if (
+    dom.hasAttribute('citationObject') && undefined !== null !== dom.getAttribute('citationObject') &&
+    null !== dom.getAttribute('citationObject')
+  ) {
+    citationObject = JSON.parse(dom.getAttribute('citationObject')) || null;
+  }
+  if (
+    dom.hasAttribute('citationUseObject') &&
+    null !== dom.getAttribute('citationUseObject')
+  ) {
+    citationUseObject =
+      JSON.parse(dom.getAttribute('citationUseObject')) || null;
+  }
+  const sourceText = dom.getAttribute('sourceText') || null;
+
+  return {
+    from,
+    to,
+    citationObject,
+    citationUseObject,
+    sourceText,
+  };
+}
+
+function toDOM(node: Node): Array<any> {
+  // [FS] IRAD-1251 2021-04-05
+  // FIX: Copy and paste CITATION applied paragraph and edit the CITATION not working
+  const {from, to, citationObject, citationUseObject, sourceText} = node.attrs;
+  let attrs = {};
+  attrs.from = from;
+  attrs.to = to;
+  attrs.citationObject = JSON.stringify(citationObject);
+  attrs.citationUseObject = JSON.stringify(citationUseObject);
+  attrs.sourceText = sourceText;
+  return ['citationnote', attrs, 0];
+}
 export default CitationNodeSpec;

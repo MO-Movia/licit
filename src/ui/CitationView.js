@@ -8,6 +8,7 @@ import {EditorState} from 'prosemirror-state';
 import CitationSubMenu from './CitationSubMenu';
 import {atAnchorTopCenter} from './PopUpPosition';
 import createPopUp from './createPopUp';
+import { DOMSerializer } from "prosemirror-model";
 import {MARK_UNDERLINE, MARK_TEXT_HIGHLIGHT} from '../MarkNames';
 import CitationDialog from './CitationDialog';
 import {getNode} from '../CustomStyleCommand';
@@ -20,9 +21,13 @@ class CitationView {
     this.outerView = view;
     this.getPos = getPos;
     this.nodeSelection = nodeSelection;
-
-    // The node's representation in the editor (empty, for now)
-    this.dom = document.createElement('citationnote');
+    // [FS] IRAD-1251 2021-04-05
+    // Use PM DomSerializer to create element so that attributes including dataset are properly created.
+    const spec = DOMSerializer.renderSpec(
+      document,
+      this.node.type.spec.toDOM(this.node)
+    );
+    this.dom = spec.dom;    
     this.dom.className = 'citationnote';
     // [FS] IRAD-1251 2021-03-18
     // show citation source text on hover the citation numbering
@@ -157,8 +162,8 @@ class CitationView {
 
   createCitationObject(editorView, mode) {
     return {
-      citationUseObject: this.node.attrs.citationUseObject,
-      citationObject: this.node.attrs.citationObject,
+      citationUseObject: JSON.parse(this.node.attrs.citationUseObject),
+      citationObject: JSON.parse(this.node.attrs.citationObject),
       sourceText: '',
       mode: mode, //0 = new , 1- modify, 2- delete
       editorView: editorView,
@@ -235,7 +240,7 @@ class CitationView {
       const from = selection.$from.before(1);
       const node = getNode(state, this.node.attrs.from, this.node.attrs.to, tr);
       const newattrs = Object.assign({}, node.attrs);
-      newattrs['citationUseObject'] = citation.citationUseObject;
+      newattrs['citationUseObject'] = JSON.stringify(citation.citationUseObject);
       tr = tr.setNodeMarkup(from, undefined, newattrs);
     }
     return tr;
@@ -243,18 +248,17 @@ class CitationView {
 
   updateCitationObjectInCitationNote(view, state, tr, citation) {
     const newattrs = Object.assign({}, this.node.attrs);
-    newattrs['citationObject'] = citation.citationObject;
-    newattrs['citationUseObject'] = citation.citationUseObject;
+    newattrs['citationObject'] = JSON.stringify(citation.citationObject);
+    newattrs['citationUseObject'] = JSON.stringify(citation.citationUseObject);
+    newattrs['sourceText'] = citation.sourceText;
     tr = tr.setNodeMarkup(this.getPos(), undefined, newattrs);
     // reset the citation sourceText to the citationnote node.
-    tr = tr.doc.nodeAt(this.getPos()).content.content[0].text =
-      citation.sourceText;
+    this.node.content.content[0].text = citation.sourceText;
     return tr;
   }
 
   destroy() {
     this._popup && this._popup.close();
-    // this._editor && this._editor.close();
   }
 
   deselectNode() {
@@ -349,11 +353,11 @@ class CitationView {
           endA += overlap;
           endB += overlap;
         }
-        // this.innerView.dispatch(
-        //   state.tr
-        //     .replace(start, endB, node.slice(start, endA))
-        //     .setMeta('fromOutside', true)
-        // );
+        this.innerView.dispatch(
+          state.tr
+            .replace(start, endB, node.slice(start, endA))
+            .setMeta('fromOutside', true)
+        );
       }
     }
     return true;
