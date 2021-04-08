@@ -1082,7 +1082,7 @@ function addElementEx(
   let counter = 0;
   const nextLevel = 0;
   if (after) {
-    level = nextLevel ? nextLevel - 1 : 0;
+    level = 0;
     //TODO: Need to check this code it wont work
     addElementAfter(nodeAttrs, state, tr, startPos, nextLevel);
   } else {

@@ -213,7 +213,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     } else {
       const levelValue = document && document.getElementById('levelValue');
       if (
-        levelValue &&
+        // this covers null & undefined
         levelValue instanceof window.HTMLSelectElement &&
         levelValue.value
       ) {
@@ -337,7 +337,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         hiddenDiv.style.display = 'block';
       }
       const selectedStyle = document.getElementById('nextStyleValue');
-      if (selectedStyle && selectedStyle instanceof window.HTMLSelectElement) {
+      if (selectedStyle instanceof window.HTMLSelectElement) {
         this.setState({
           otherStyleSelected: true,
           styles: {
@@ -1283,7 +1283,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
       display = 'block';
       const selectedStyle = document.getElementById('nextStyleValue');
-      if (selectedStyle && selectedStyle instanceof window.HTMLSelectElement) {
+      if (selectedStyle instanceof window.HTMLSelectElement) {
         selectedStyle.value = nextLineStyleName;
       }
     } else {
