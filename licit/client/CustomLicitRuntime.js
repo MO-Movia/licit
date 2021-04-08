@@ -89,11 +89,10 @@ class CustomLicitRuntime {
             }
           );
         },
-        (err) => {}
+        (err) => {
+          reject(this.styleProps);
+        }
       );
-      // Refresh from server after save
-      this.fetchStyles();
-      resolve(this.styleProps);
     });
 
     return this.styleProps;
