@@ -36,6 +36,7 @@ textarea:focus {
 }
 
 .citationnote-tooltip {
+  box-sizing: border-box;
   cursor: auto;
   position: absolute;
   left: -30px;
@@ -130,4 +131,35 @@ textarea:focus {
   color: blue;
   background-color: blue;
   outline: blue auto 5px;
+}
+
+.tableCitations {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid lightgrey;
+}
+
+.citationcolumn,
+.citationsheader {
+  border: 1px solid #8e8e8e;
+  text-align: left;
+  padding: 8px;
+}
+
+.citationrow:hover {
+  background-color: gray;
+  cursor: pointer;
+}
+
+.textborder {
+  border: 1px solid lightgrey !important;
+}
+
+.rowselected {
+  background: #eaeaea;
+}
+
+.citationrow.selected {
+  background: #eaeaea;
 }

@@ -1115,7 +1115,6 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <div className="settingsdiv">
                     <input
                       checked={this.state.styles.nextLineStyleName === 'None'}
-                      disabled={this.state.styles.hasNumbering ? true : false}
                       name="nextlinestyle"
                       onChange={this.onNextLineStyleSelected.bind(this, 0)}
                       style={{
@@ -1137,7 +1136,6 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <div className="indentdiv">
                     <input
                       checked={this.state.otherStyleSelected}
-                      disabled={this.state.styles.hasNumbering ? true : false}
                       name="nextlinestyle"
                       onChange={this.onNextLineStyleSelected.bind(this, 2)}
                       type="radio"

@@ -28,7 +28,7 @@ const CitationNodeSpec: NodeSpec = {
     },
   ],
 };
- 
+
 function getAttrs(dom: HTMLElement): Object {
   // [FS] IRAD-1251 2021-04-05
   // FIX: Copy and paste CITATION applied paragraph and edit the CITATION not working
@@ -37,7 +37,8 @@ function getAttrs(dom: HTMLElement): Object {
   let citationObject = null;
   let citationUseObject = null;
   if (
-    dom.hasAttribute('citationObject') && undefined !== null !== dom.getAttribute('citationObject') &&
+    dom.hasAttribute('citationObject') &&
+    (undefined !== null) !== dom.getAttribute('citationObject') &&
     null !== dom.getAttribute('citationObject')
   ) {
     citationObject = JSON.parse(dom.getAttribute('citationObject')) || null;
@@ -64,7 +65,7 @@ function toDOM(node: Node): Array<any> {
   // [FS] IRAD-1251 2021-04-05
   // FIX: Copy and paste CITATION applied paragraph and edit the CITATION not working
   const {from, to, citationObject, citationUseObject, sourceText} = node.attrs;
-  let attrs = {};
+  const attrs = {};
   attrs.from = from;
   attrs.to = to;
   attrs.citationObject = JSON.stringify(citationObject);

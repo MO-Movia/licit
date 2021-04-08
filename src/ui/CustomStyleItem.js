@@ -30,8 +30,8 @@ class CustomStyleItem extends React.PureComponent<any, any> {
     const {icon, label, hasText, ...pointerProps} = this.props;
     let text = '';
     let customStyle;
-    text = this.sampleText();
     const styleProps = getCustomStyleByName(label);
+    text = this.sampleText(styleProps? styleProps.styles: null);
     const className = 'czi-custom-menu-item';
     if (styleProps && styleProps.styles) {
       customStyle = getCustomStyle(styleProps.styles);
@@ -41,7 +41,7 @@ class CustomStyleItem extends React.PureComponent<any, any> {
     });
     return (
       <div id="container1" tag={label}>
-        <div style={{width: '140px', height: 'auto'}}>
+        <div style={{width: '130px', height: 'auto'}}>
           <PointerSurface
             {...pointerProps}
             className={klass}
@@ -77,10 +77,18 @@ class CustomStyleItem extends React.PureComponent<any, any> {
   }
 
   // temp method to clear sample text for new and clear command menu item
-  sampleText(): string {
+  sampleText(styles): string {
     let text = 'AaBbCcDd';
     if (!this.props.hasText) {
       text = '';
+    }
+    if (this.props.hasText && styles && styles.hasNumbering && '' !== text) {
+      let level = '';
+      for (let i = 0; i < parseInt(styles.styleLevel); i++) {
+        level = level + '1.';
+      }
+      const sampletext = (parseInt(styles.styleLevel)<=4)?'AaBbCcDd':'AaBb';
+      text = level + '' + sampletext;
     }
     return text;
   }

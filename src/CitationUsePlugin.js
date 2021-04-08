@@ -40,9 +40,7 @@ export default class CitationUsePlugin extends Plugin {
                 node &&
                 'citationnote' === prevState.tr.doc.nodeAt(startPos).type.name
               ) {
-                if (!tr) {
-                  tr = nextState.tr;
-                }
+                tr = nextState.tr;
                 const parentPos =
                   nextState.tr.selection.$head.pos -
                   nextState.tr.selection.$head.parentOffset -

@@ -76,6 +76,7 @@ class AddCitationCommand extends UICommand {
         this.createCitationObject(view, 1),
         {
           modal: true,
+          IsChildDialog: false,
           autoDismiss: false,
           onClose: (val) => {
             if (this._popUp) {

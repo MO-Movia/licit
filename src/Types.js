@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import {EditorView} from 'prosemirror-view';
 
 export type NodeSpec = {
   attrs?: ?{[key: string]: any},
@@ -84,6 +85,43 @@ export type Citation = {
   documentTitle?: string;
   hyperLink?: string;
   dateAccessed?: string;
+};
+
+export type CitationProps = {
+  citationUseObject: {
+    align?: string,
+    boldNumbering?: boolean,
+    boldPartial?: boolean,
+    boldSentence?: boolean,
+    fontName?: string,
+    fontSize?: string,
+    strong?: boolean,
+    em?: boolean,
+    underline?: boolean,
+    color?: string,
+    textHighlight?: string,
+    hasNumbering?: boolean,
+    paragraphSpacingAfter?: string,
+    paragraphSpacingBefore?: string,
+    styleLevel?: string,
+    lineHeight?: string,
+    isLevelbased?: boolean,
+    indent?: string,
+  },
+  citationObject: {
+    overallDocumentCapco: string;
+    author?: string;
+    referenceId?: string;
+    publishedDate?: string;
+    documentTitleCapco?: string;
+    documentTitle?: string;
+    hyperLink?: string;
+    dateAccessed?: string;
+  },
+  sourceText: string;
+  mode: number;
+  editorView: EditorView;
+  isCitationObject: Boolean;
 };
 
 

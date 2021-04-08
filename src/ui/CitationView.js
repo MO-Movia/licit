@@ -8,7 +8,7 @@ import {EditorState} from 'prosemirror-state';
 import CitationSubMenu from './CitationSubMenu';
 import {atAnchorTopCenter} from './PopUpPosition';
 import createPopUp from './createPopUp';
-import { DOMSerializer } from "prosemirror-model";
+import { DOMSerializer } from 'prosemirror-model';
 import {MARK_UNDERLINE, MARK_TEXT_HIGHLIGHT} from '../MarkNames';
 import CitationDialog from './CitationDialog';
 import {getNode} from '../CustomStyleCommand';
@@ -27,7 +27,7 @@ class CitationView {
       document,
       this.node.type.spec.toDOM(this.node)
     );
-    this.dom = spec.dom;    
+    this.dom = spec.dom;
     this.dom.className = 'citationnote';
     // [FS] IRAD-1251 2021-03-18
     // show citation source text on hover the citation numbering

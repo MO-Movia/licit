@@ -3,6 +3,8 @@
 // [FS] IRAD-1251 2021-03-10
 // UI for Citation dialog
 import * as React from 'react';
+import createPopUp from './createPopUp';
+import SearchCitation from './SearchCitation';
 import './citation-note.css';
 
 const AUTHORS = ['Author', 'Publisher', 'Originator'];
@@ -125,51 +127,45 @@ class CitationDialog extends React.PureComponent<any, any> {
       <div style={{width: '780px'}}>
         <form className="czi-form">
           <div>
-            <label
-              className="citation-label"
-              style={{
-                fontSize: '24px',
-                // verticalAlign: 'middle',
-                margin: '10px 0',
-                fontWeight: 'bold',
-              }}
-              title={this.state.citationUseObject.overallCitationCAPCO || 'TBD'}
-            >
-              {'(' +
-                this.showElipsesForLongCAPCOLabel(
-                  this.state.citationUseObject.overallCitationCAPCO
-                ) +
-                ')'}
-            </label>
             <select
               disabled={this.state.isCitationObject}
+              id={'CitationCAPCO'}
               onChange={this.onCitationCAPCOChanged.bind(this)}
               style={{
-                height: '27px',
                 border: 'none',
                 fontSize: '22px',
                 fontWeight: 'bold',
+                height: '27px',
                 margin: '0 10px 3px 3px',
+                width: '74px',
               }}
-              value="Source Citation"
+              title={this.state.citationUseObject.overallCitationCAPCO || 'TBD'}
             >
-              <option
-                selected
-                style={{fontSize: '34px', fontWeight: 'bold', display: 'none'}}
-              >
-                Source Citation
-              </option>
               {getCapcoList().map(({label, value}) => (
                 <option key={value} title={value} value={value}>
                   {label}
                 </option>
               ))}
             </select>
+
+            <label
+              className="citation-label"
+              style={{
+                fontSize: '24px',
+                margin: '10px 0',
+                fontWeight: 'bold',
+              }}
+              title={this.state.citationUseObject.overallCitationCAPCO || 'TBD'}
+            >
+              {'Source Citation'}
+            </label>
+
             <div style={{float: 'right', marginTop: '-5px'}}>
               <button
                 className="btnsave"
-                // onClick={this._onSearch.bind(this)}
+                onClick={this._onSearch.bind(this)}
                 style={{height: '27px'}}
+                type="button"
               >
                 Search
               </button>
@@ -259,6 +255,24 @@ class CitationDialog extends React.PureComponent<any, any> {
             <div>
               <div className="div-display">
                 <div>
+                  <select
+                    className="citation-label"
+                    onChange={this.onDocumentTitleCAPCOChanged.bind(this)}
+                    style={{
+                      border: 'none',
+                      margin: '0 10px 3px 3px',
+                      width: '55px',
+                    }}
+                    title={
+                      this.state.citationObject.documentTitleCapco || 'TBD'
+                    }
+                  >
+                    {getCapcoList().map(({label, value}) => (
+                      <option key={value} title={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
                   <label
                     className="citation-label"
                     style={{
@@ -269,37 +283,8 @@ class CitationDialog extends React.PureComponent<any, any> {
                       this.state.citationObject.documentTitleCapco || 'TBD'
                     }
                   >
-                    {'(' +
-                      this.showElipsesForLongCAPCOLabel(
-                        this.state.citationObject.documentTitleCapco
-                      ) +
-                      ')'}
+                    {'Document Title'}
                   </label>
-                  <select
-                    className="citation-label"
-                    onChange={this.onDocumentTitleCAPCOChanged.bind(this)}
-                    style={{
-                      border: 'none',
-                      margin: '0 10px 3px 3px',
-                    }}
-                    value="Source Citation"
-                  >
-                    <option
-                      selected
-                      style={{
-                        display: 'none',
-                        fontSize: '34px',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      Document Title
-                    </option>
-                    {getCapcoList().map(({label, value}) => (
-                      <option key={value} title={value} value={value}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
                 </div>
                 <input
                   onChange={this.onInputChanged.bind(this, 'documentTitle')}
@@ -359,39 +344,16 @@ class CitationDialog extends React.PureComponent<any, any> {
             </div>
 
             <div>
-              <label
-                className="citation-label"
-                disabled={this.state.isCitationObject}
-                style={{
-                  verticalAlign: 'middle',
-                  margin: '10px 0',
-                }}
-                title={this.state.citationUseObject.extractedInfoCAPCO|| 'TBD'}
-              >
-                 {'(' +
-                      this.showElipsesForLongCAPCOLabel(
-                        this.state.citationUseObject.extractedInfoCAPCO
-                      ) +
-                      ')'}
-              </label>
               <select
                 disabled={this.state.isCitationObject}
                 onChange={this.onExtractedInfoCAPCOChanged.bind(this)}
                 style={{
                   border: 'none',
                   margin: '0 10px 3px 3px',
+                  width: '55px',
                 }}
-                value="Extracted information classification"
+                title={this.state.citationUseObject.extractedInfoCAPCO || 'TBD'}
               >
-                <option
-                  selected
-                  style={{
-                    display: 'none',
-                    fontSize: '34px',
-                  }}
-                >
-                  Extracted information classification
-                </option>
                 {getCapcoList().map(({label, value}) => (
                   <option key={value} title={value} value={value}>
                     {label}
@@ -399,47 +361,6 @@ class CitationDialog extends React.PureComponent<any, any> {
                 ))}
               </select>
 
-              <label
-                className="citation-label"
-                style={{
-                  verticalAlign: 'middle',
-                  margin: '10px 0',
-                }}
-                title={this.state.citationObject.overallDocumentCapco|| 'TBD'}
-              >
-                {'(' +
-              this.showElipsesForLongCAPCOLabel(this.state.citationObject.overallDocumentCapco)
-                +
-                ')'}
-              </label>
-              <select
-                onChange={this.onOverallDocCAPCOChanged.bind(this)}
-                style={{
-                  border: 'none',
-                  margin: '0 10px 3px 3px',
-                }}
-                value="Overall document classification"
-              >
-                <option
-                  selected
-                  style={{
-                    display: 'none',
-                    fontSize: '34px',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  Overall document classification
-                </option>
-                {getCapcoList().map(({label, value}) => (
-                  <option key={value} title={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Third row */}
-            <div>
               <label
                 className="citation-label"
                 disabled={this.state.isCitationObject}
@@ -447,13 +368,40 @@ class CitationDialog extends React.PureComponent<any, any> {
                   verticalAlign: 'middle',
                   margin: '10px 0',
                 }}
-                title={this.state.citationUseObject.descriptionCAPCO|| 'TBD'}
+                title={this.state.citationUseObject.extractedInfoCAPCO || 'TBD'}
               >
-                 {'(' +
-              this.showElipsesForLongCAPCOLabel(this.state.citationUseObject.descriptionCAPCO)
-                +
-                ')'}
+                {'Extracted information classification'}
               </label>
+              <select
+                onChange={this.onOverallDocCAPCOChanged.bind(this)}
+                style={{
+                  border: 'none',
+                  margin: '0 10px 3px 70px',
+                  width: '55px',
+                }}
+                title={this.state.citationObject.overallDocumentCapco || 'TBD'}
+              >
+                {getCapcoList().map(({label, value}) => (
+                  <option key={value} title={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+
+              <label
+                className="citation-label"
+                style={{
+                  verticalAlign: 'middle',
+                  margin: '10px 0',
+                }}
+                title={this.state.citationObject.overallDocumentCapco || 'TBD'}
+              >
+                {'Overall document classification'}
+              </label>
+            </div>
+
+            {/* Third row */}
+            <div>
               <select
                 className="citation-label"
                 disabled={this.state.isCitationObject}
@@ -461,8 +409,9 @@ class CitationDialog extends React.PureComponent<any, any> {
                 style={{
                   border: 'none',
                   margin: '0 10px 3px 3px',
+                  width: '55px',
                 }}
-                value="Description"
+                title={this.state.citationUseObject.descriptionCAPCO || 'TBD'}
               >
                 <option
                   selected
@@ -471,7 +420,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                     fontSize: '34px',
                   }}
                 >
-                  Description
+                  N/A
                 </option>
                 {getCapcoList().map(({label, value}) => (
                   <option key={value} title={value} value={value}>
@@ -479,6 +428,17 @@ class CitationDialog extends React.PureComponent<any, any> {
                   </option>
                 ))}
               </select>
+              <label
+                className="citation-label"
+                disabled={this.state.isCitationObject}
+                style={{
+                  verticalAlign: 'middle',
+                  margin: '10px 0',
+                }}
+                title={this.state.citationUseObject.descriptionCAPCO || 'TBD'}
+              >
+                {'Description'}
+              </label>
             </div>
             <textarea
               cols="50"
@@ -809,13 +769,40 @@ class CitationDialog extends React.PureComponent<any, any> {
     this.props.close(this.state);
   };
 
-  _onSearch() {
-    this.props.editorView.runtime.getCitationsAsync().then((result) => {
-      if (result) {
-        const lstcitation = result;
-        console.log('The saved citations are:', lstcitation);
+  createCitationObject(editorView, mode) {
+    return {
+      mode: mode, //0 = new , 1- modify, 2- delete
+      editorView: editorView,
+    };
+  }
+
+  _onSearch(event: SyntheticEvent<*>) {
+    this._popUp = createPopUp(
+      SearchCitation,
+      this.createCitationObject(this.props.editorView, 1),
+      {
+        modal: true,
+        autoDismiss: true,
+        IsChildDialog: true,
+        onClose: (val) => {
+          if (this._popUp) {
+            this._popUp = null;
+            if(val){
+              this.setState(
+                {
+                  citationUseObject: {
+                    ...val.citationUseObject,
+                  },
+                },
+                () => {
+                  this.setSourceText();
+                }
+              );
+            }
+          }
+        },
       }
-    });
+    );
   }
 }
 
