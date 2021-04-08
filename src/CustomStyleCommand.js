@@ -6,6 +6,7 @@ import {Node, Fragment, Schema} from 'prosemirror-model';
 import UICommand from './ui/UICommand';
 import {atViewportCenter} from './ui/PopUpPosition';
 import createPopUp from './ui/createPopUp';
+import AlertInfo from './ui/AlertInfo';
 import CustomStyleEditor from './ui/CustomStyleEditor';
 import MarkToggleCommand from './MarkToggleCommand';
 import TextColorCommand from './TextColorCommand';
@@ -296,14 +297,32 @@ class CustomStyleCommand extends UICommand {
         return true;
       }
     } else {
-      // TODO: need to show alert with popup UI
-      window.alert(
-        'This Numberings breaks heirarchy, Previous levels are missing '
-      );
+      this.showAlert();
     }
 
     return false;
   };
+
+  showAlert() {
+    const anchor = null;
+    this._popUp = createPopUp(
+      AlertInfo,
+      {
+        content:
+          'This Numberings breaks heirarchy, Previous levels are missing ',
+        title: 'Style Error!!!',
+      },
+      {
+        anchor,
+        position: atViewportCenter,
+        onClose: (val) => {
+          if (this._popUp) {
+            this._popUp = null;
+          }
+        },
+      }
+    );
+  }
 
   // [FS] IRAD-1053 2020-12-17
   // to clear the custom styles in the selected paragraph
@@ -400,9 +419,7 @@ class CustomStyleCommand extends UICommand {
                       tr = applyStyle(val, val.styleName, state, tr);
                       dispatch(tr);
                     } else {
-                      window.alert(
-                        'This Numberings breaks heirarchy, Previous levels are missing '
-                      );
+                      this.showAlert();
                     }
                   });
                 }
@@ -1331,7 +1348,12 @@ export function getNode(
 
 // [FS] IRAD-1176 2021-02-08
 // update the editor doc with the modified style changes.
-export function updateDocument(state: EditorState, tr: Transform, styleName: string, style: StyleProps) {
+export function updateDocument(
+  state: EditorState,
+  tr: Transform,
+  styleName: string,
+  style: StyleProps
+) {
   const {doc} = state;
   doc.descendants(function (child, pos) {
     const contentLen = child.content.size;
@@ -1352,13 +1374,16 @@ export function updateDocument(state: EditorState, tr: Transform, styleName: str
 
 // [FS] IRAD-1223 2021-03-01
 // To check if the custom style have numbering and also used in the document
-export function isCustomStyleAlreadyApplied(styleName: string, editorState: EditorState) {
+export function isCustomStyleAlreadyApplied(
+  styleName: string,
+  editorState: EditorState
+) {
   let found = false;
   const {doc} = editorState;
   doc.nodesBetween(0, doc.nodeSize - 2, (node, pos) => {
     if (node.content && node.content.content && node.content.content.length) {
       const styleLevel = getStyleLevel(styleName);
-      if (!found && (0 < styleLevel) && node.attrs.styleName === styleName) {
+      if (!found && 0 < styleLevel && node.attrs.styleName === styleName) {
         found = true;
       }
     }
@@ -1366,7 +1391,11 @@ export function isCustomStyleAlreadyApplied(styleName: string, editorState: Edit
   return found;
 }
 
-function haveEligibleChildren(node: Node, contentLen: number, styleName: string) {
+function haveEligibleChildren(
+  node: Node,
+  contentLen: number,
+  styleName: string
+) {
   return (
     node.type.name === 'paragraph' &&
     0 < contentLen &&

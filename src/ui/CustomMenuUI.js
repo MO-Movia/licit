@@ -8,7 +8,10 @@ import uuid from './uuid';
 import './listType.css';
 import CustomStyleItem from './CustomStyleItem';
 
+import {atViewportCenter} from './PopUpPosition';
 import createPopUp from './createPopUp';
+import AlertInfo from './AlertInfo';
+
 import CustomStyleSubMenu from './CustomStyleSubMenu';
 import CustomStyleEditor from './CustomStyleEditor';
 import {
@@ -16,7 +19,6 @@ import {
   updateDocument,
   isCustomStyleAlreadyApplied,
 } from '../CustomStyleCommand';
-import {atViewportCenter} from './PopUpPosition';
 import {setTextAlign} from '../TextAlignCommand';
 import {setTextLineSpacing} from '../TextLineSpacingCommand';
 import {setParagraphSpacing} from '../ParagraphSpacingCommand';
@@ -192,10 +194,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                       );
                     });
                 } else {
-                  // TODO: need to show this alert message in a popup.
-                  window.alert(
-                    'This custom style already in use, by removing this style breaks the heirarchy '
-                  );
+                  this.showAlert();
                 }
               } else if ('rename' === val.type) {
                 this.showStyleWindow(command, event, 2);
@@ -281,6 +280,27 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     tr = setParagraphSpacing(tr, schema, '0', true);
     tr = setParagraphSpacing(tr, schema, '0', false);
     return tr;
+  }
+
+  showAlert() {
+    const anchor = null;
+    this._popUp = createPopUp(
+      AlertInfo,
+      {
+        content:
+          'This custom style already in use, by removing this style breaks the heirarchy ',
+        title: 'Style Error!!!',
+      },
+      {
+        anchor,
+        position: atViewportCenter,
+        onClose: (val) => {
+          if (this._popUp) {
+            this._popUp = null;
+          }
+        },
+      }
+    );
   }
 
   //shows the alignment and line spacing option
