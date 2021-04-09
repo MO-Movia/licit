@@ -141,6 +141,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                 width: '84px',
               }}
               title={this.state.citationUseObject.overallCitationCAPCO || 'TBD'}
+              value={this.state.citationUseObject.overallCitationCAPCO || 'TBD'}
             >
               {getCapcoList().map(({label, value}) => (
                 <option key={value} title={value} value={value}>
@@ -268,6 +269,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                     title={
                       this.state.citationObject.documentTitleCapco || 'TBD'
                     }
+                    value={this.state.citationObject.documentTitleCapco || 'TBD'}
                   >
                     {getCapcoList().map(({label, value}) => (
                       <option key={value} title={value} value={value}>
@@ -284,6 +286,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                     title={
                       this.state.citationObject.documentTitleCapco || 'TBD'
                     }
+                    value={this.state.citationObject.documentTitleCapco || 'TBD'}
                   >
                     {'Document Title'}
                   </label>
@@ -356,6 +359,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                   width: '58px',
                 }}
                 title={this.state.citationUseObject.extractedInfoCAPCO || 'TBD'}
+                value={this.state.citationUseObject.extractedInfoCAPCO || 'TBD'}
               >
                 {getCapcoList().map(({label, value}) => (
                   <option key={value} title={value} value={value}>
@@ -384,6 +388,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                   width: '58px',
                 }}
                 title={this.state.citationObject.overallDocumentCapco || 'TBD'}
+                value={this.state.citationObject.overallDocumentCapco || 'TBD'}
               >
                 {getCapcoList().map(({label, value}) => (
                   <option key={value} title={value} value={value}>
@@ -416,6 +421,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                   width: '58px',
                 }}
                 title={this.state.citationUseObject.descriptionCAPCO || 'TBD'}
+                value={this.state.citationUseObject.descriptionCAPCO || 'TBD'}
               >
                 <option
                   selected

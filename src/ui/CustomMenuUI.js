@@ -323,7 +323,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                           this.props.editorState,
                           this.props.editorState.tr,
                           val.styleName,
-                          obj.styles
+                          obj
                         );
                       }
                     });

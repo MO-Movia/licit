@@ -147,7 +147,7 @@ textarea:focus {
   padding: 8px;
 }
 
-.citationrow:hover {
+.citationrow.hover {
   background-color: gray;
   cursor: pointer;
 }
@@ -166,8 +166,7 @@ textarea:focus {
 
 .searchDiv {
   height: 157px;
-  /* overflow-x: auto; */
+  border: 1px solid lightgrey;
   overflow-x: hidden;
   overflow-y: auto;
 }
-
