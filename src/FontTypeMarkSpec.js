@@ -35,6 +35,9 @@ export function preLoadFonts() {
   });
 }
 
+// resolve each font after it is loaded.
+const RESOLVED_FONT_NAMES = new Set([]);
+
 function loadAndCacheFont(name) {
   // Cache custom fonts
   RESOLVED_FONT_NAMES.add(name);
@@ -43,9 +46,6 @@ function loadAndCacheFont(name) {
   // Now loaded locally, so that it work in closed network as well.
   //WebFontLoader.load({google: {families: [name]}});
 }
-
-// resolve each font after it is loaded.
-const RESOLVED_FONT_NAMES = new Set([]);
 
 const FontTypeMarkSpec: MarkSpec = {
   attrs: {

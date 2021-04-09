@@ -23,29 +23,6 @@ export function tooltip(keymap: ?Keymap): ?string {
   return null;
 }
 
-export function findKeymapByDescription(description: string): ?Keymap {
-  const matches = ALL_KEYS.filter((keymap) => {
-    return keymap.description.toUpperCase() === description.toUpperCase();
-  });
-  return matches[0];
-}
-
-export function findShortcutByDescription(description: string): ?string {
-  const keymap = findKeymapByDescription(description);
-  if (keymap) {
-    return findShortcutByKeymap(keymap);
-  }
-  return null;
-}
-
-export function findShortcutByKeymap(keymap: Keymap): ?string {
-  if (browser.isMac()) {
-    return keymap.mac;
-  }
-
-  return keymap.windows;
-}
-
 function makeKeyMap(
   description: string,
   windows: string,
@@ -126,3 +103,26 @@ export const ALL_KEYS = [
   KEY_TOGGLE_UNDERLINE,
   KEY_UNDO,
 ];
+
+export function findKeymapByDescription(description: string): ?Keymap {
+  const matches = ALL_KEYS.filter((keymap) => {
+    return keymap.description.toUpperCase() === description.toUpperCase();
+  });
+  return matches[0];
+}
+
+export function findShortcutByDescription(description: string): ?string {
+  const keymap = findKeymapByDescription(description);
+  if (keymap) {
+    return findShortcutByKeymap(keymap);
+  }
+  return null;
+}
+
+export function findShortcutByKeymap(keymap: Keymap): ?string {
+  if (browser.isMac()) {
+    return keymap.mac;
+  }
+
+  return keymap.windows;
+}
