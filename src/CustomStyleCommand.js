@@ -713,7 +713,10 @@ function applyStyleEx(
       }
 
       // to set the marks for the node
-      if (element.executeCustom && typeof element.executeCustom == 'function') {
+      if (
+        element.executeCustom &&
+        typeof element.executeCustom === 'function'
+      ) {
         tr = element.executeCustom(state, tr, startPos, endPos);
       }
     });

@@ -113,8 +113,8 @@ class UICommand {
     tr: Transform,
     from: number,
     to: number
-  ): boolean => {
-    return false;
+  ): Transform => {
+    return tr;
   };
 }
 

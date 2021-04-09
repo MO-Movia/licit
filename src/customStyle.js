@@ -1,6 +1,6 @@
 // @flow
 // [FS] IRAD-1085 2020-10-09
-import type {StyleProps} from './Types';
+import type {StyleProps, Style} from './Types';
 import {
   RESERVED_STYLE_NONE,
   RESERVED_STYLE_NONE_NUMBERING,
@@ -96,20 +96,7 @@ export function isPreviousLevelExists(previousLevel: number) {
 // [FS] IRAD-1046 2020-09-24
 // To create a style object from the customstyles to show the styles in the example piece.
 export function getCustomStyle(customStyle: any) {
-  const style = {
-    float: 'right',
-    fontWeight: '',
-    fontStyle: '',
-    color: '',
-    backgroundColor: '',
-    fontSize: '',
-    fontName: '',
-    textDecorationLine: '',
-    verticalAlign: '',
-    textDecoration: '',
-    textAlign: '',
-    lineHeight: ''
-  };
+  const style: Style = {};
 
   for (const property in customStyle) {
     switch (property) {
