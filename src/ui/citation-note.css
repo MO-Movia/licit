@@ -163,3 +163,11 @@ textarea:focus {
 .citationrow.selected {
   background: #eaeaea;
 }
+
+.searchDiv {
+  height: 157px;
+  /* overflow-x: auto; */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+

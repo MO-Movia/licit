@@ -111,9 +111,9 @@ class SearchCitation extends React.PureComponent<any, any> {
 
   render(): React.Element<any> {
     return (
-      <div style={{width: '780px'}}>
-        <form className="czi-form" style={{height: '237px'}}>
-          <div>
+      <div style={{width: '780px' ,border: '1px solid lightgray', boxShadow: '1px 1px'}}>
+        <form className="czi-form" style={{height: '224px'}}>
+          <div className='searchDiv'>
             <div className="div-display" style={{display:'none'}}>
               <label
                 className="citation-label"
@@ -205,7 +205,13 @@ class SearchCitation extends React.PureComponent<any, any> {
               </button>
              
             </div>
-            <button
+          </div>
+          <hr
+            className="hr-width"
+            style={{marginBottom: '5px', marginTop: '1px'}}
+          ></hr>
+          <div style={{float: 'right'}}>
+          <button
                 className="btnsave"
                 onClick={this._save.bind(this)}
                 style={{height: '27px', width: '60px'}}

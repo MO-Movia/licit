@@ -781,27 +781,30 @@ class CitationDialog extends React.PureComponent<any, any> {
   }
 
   _onSearch(event: SyntheticEvent<*>) {
+    const anchor = event ? event.currentTarget : null;
     this._popUp = createPopUp(
       SearchCitation,
       this.createCitationObject(this.props.editorView, 1),
       {
-        modal: true,
-        autoDismiss: true,
+        anchor,
+        // modal:true,
+        autoDismiss: false,
         IsChildDialog: true,
+        position: atAnchorBottomCenter,
         onClose: (val) => {
           if (this._popUp) {
             this._popUp = null;
-            if(val){
+            if (undefined !== val) {
               this.setState(
-                {
-                  citationUseObject: {
-                    ...val.citationUseObject,
-                  },
-                },
-                () => {
-                  this.setSourceText();
-                }
-              );
+                              {
+                                citationObject: {
+                                  ...val.citationUseObject,
+                                },
+                              },
+                              () => {
+                                this.setSourceText();
+                              }
+                            );
             }
           }
         },
