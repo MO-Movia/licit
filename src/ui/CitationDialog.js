@@ -137,13 +137,13 @@ class CitationDialog extends React.PureComponent<any, any> {
                 fontWeight: 'bold',
                 height: '27px',
                 margin: '0 10px 3px 3px',
-                width: '74px',
+                width: '84px',
               }}
               title={this.state.citationUseObject.overallCitationCAPCO || 'TBD'}
             >
               {getCapcoList().map(({label, value}) => (
                 <option key={value} title={value} value={value}>
-                  {label}
+                  {'(' + label +')'}
                 </option>
               ))}
             </select>
@@ -260,8 +260,9 @@ class CitationDialog extends React.PureComponent<any, any> {
                     onChange={this.onDocumentTitleCAPCOChanged.bind(this)}
                     style={{
                       border: 'none',
-                      margin: '0 10px 3px 3px',
-                      width: '55px',
+                      fontWeight: 'bold',
+                      margin: '0 10px 3px -2px',
+                      width: '58px',
                     }}
                     title={
                       this.state.citationObject.documentTitleCapco || 'TBD'
@@ -269,7 +270,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                   >
                     {getCapcoList().map(({label, value}) => (
                       <option key={value} title={value} value={value}>
-                        {label}
+                        {'(' + label +')'}
                       </option>
                     ))}
                   </select>
@@ -349,14 +350,15 @@ class CitationDialog extends React.PureComponent<any, any> {
                 onChange={this.onExtractedInfoCAPCOChanged.bind(this)}
                 style={{
                   border: 'none',
-                  margin: '0 10px 3px 3px',
-                  width: '55px',
+                  fontWeight: 'bold',
+                  margin: '0 10px 3px -2px',
+                  width: '58px',
                 }}
                 title={this.state.citationUseObject.extractedInfoCAPCO || 'TBD'}
               >
                 {getCapcoList().map(({label, value}) => (
                   <option key={value} title={value} value={value}>
-                    {label}
+                   {'(' + label +')'}
                   </option>
                 ))}
               </select>
@@ -376,14 +378,15 @@ class CitationDialog extends React.PureComponent<any, any> {
                 onChange={this.onOverallDocCAPCOChanged.bind(this)}
                 style={{
                   border: 'none',
+                  fontWeight: 'bold',
                   margin: '0 10px 3px 70px',
-                  width: '55px',
+                  width: '58px',
                 }}
                 title={this.state.citationObject.overallDocumentCapco || 'TBD'}
               >
                 {getCapcoList().map(({label, value}) => (
                   <option key={value} title={value} value={value}>
-                    {label}
+                   {'(' + label +')'}
                   </option>
                 ))}
               </select>
@@ -408,8 +411,8 @@ class CitationDialog extends React.PureComponent<any, any> {
                 onChange={this.onDescriptionCAPCOChanged.bind(this)}
                 style={{
                   border: 'none',
-                  margin: '0 10px 3px 3px',
-                  width: '55px',
+                  margin: '0 10px 3px -2px',
+                  width: '58px',
                 }}
                 title={this.state.citationUseObject.descriptionCAPCO || 'TBD'}
               >
@@ -418,13 +421,14 @@ class CitationDialog extends React.PureComponent<any, any> {
                   style={{
                     display: 'none',
                     fontSize: '34px',
+                    fontWeight: 'bold',
                   }}
                 >
-                  N/A
+                  (N/A)
                 </option>
                 {getCapcoList().map(({label, value}) => (
                   <option key={value} title={value} value={value}>
-                    {label}
+                   {'(' + label +')'}
                   </option>
                 ))}
               </select>
