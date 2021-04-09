@@ -5,12 +5,13 @@
 import * as React from 'react';
 import createPopUp from './createPopUp';
 import SearchCitation from './SearchCitation';
+import {atAnchorBottomCenter} from './PopUpPosition';
 import './citation-note.css';
 
 const AUTHORS = ['Author', 'Publisher', 'Originator'];
 const DATES = ['Published', 'Issued', 'Posted'];
 const PORTIONS = ['Page', 'Paragraph'];
-const CAPCO = ['TBD', 'C', 'U', 'TS'];
+const CAPCO = ['TBD', 'C', 'U', 'S', 'TS'];
 
 export function getCustomCapco() {
   return localStorage.getItem('customCapcoList')
