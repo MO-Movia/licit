@@ -124,5 +124,5 @@ export const TEXT_COLOR = new TextColorCommand();
 export const TEXT_HIGHLIGHT = new TextHighlightCommand();
 export const TEXT_INSERT_TAB_SPACE = new TextInsertTabSpaceCommand();
 export const TEXT_LINE_SPACINGS = TextLineSpacingCommand.createGroup();
-export const UL = new ListToggleCommand(false, undefined);
+export const UL = new ListToggleCommand(false, '');
 export const UNDERLINE = new MarkToggleCommand(MARK_UNDERLINE);

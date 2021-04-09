@@ -17,7 +17,8 @@ import {setStyles} from '../../src/customStyle';
 const STYLES_URI = 'http://localhost:3000';
 class CustomLicitRuntime {
   // keep styles locally
-  styleProps: StyleProps[] = null;
+  styleProps: StyleProps[] = [];
+  loaded: boolean = false;
 
   // Image Proxy
   canProxyImageSrc(): boolean {
@@ -88,11 +89,10 @@ class CustomLicitRuntime {
             }
           );
         },
-        (err) => {}
+        (err) => {
+          reject(this.styleProps);
+        }
       );
-      // Refresh from server after save
-      this.styleProps = this.fetchStyles();
-      resolve(this.styleProps);
     });
 
     return this.styleProps;
@@ -102,8 +102,9 @@ class CustomLicitRuntime {
    * Returns styles to editor
    */
   async getStylesAsync(): Promise<StyleProps[]> {
-    if (!this.styleProps) {
+    if (!this.loaded) {
       this.fetchStyles();
+      this.loaded = true;
     }
     return this.styleProps;
   }
@@ -114,7 +115,7 @@ class CustomLicitRuntime {
    * @param oldStyleName name of style to rename
    * @param newStyleName new name to apply to style
    */
-  async renameStyle(oldStyleName, newStyleName) {
+  async renameStyle(oldStyleName: string, newStyleName: string) {
     const obj = {
       oldName: oldStyleName,
       newName: newStyleName,
@@ -193,7 +194,7 @@ class CustomLicitRuntime {
    *
    * @param path  path segments to join.
    */
-  buildRoute(...path: string) {
+  buildRoute(...path: string[]) {
     return [STYLES_URI, ...path].join('/');
   }
 }

@@ -11,7 +11,10 @@ import {FONT_TYPE_NAMES} from '../FontTypeMarkSpec';
 import {getLineSpacingValue} from './toCSSLineSpacing';
 import {isCustomStyleExists} from '../customStyle';
 import {RESERVED_STYLE_NONE} from '../ParagraphNodeSpec';
-let customStyles = [];
+import {EditorState} from 'prosemirror-state';
+import type {EditorRuntime, StyleProps} from '../Types';
+
+let customStyles: StyleProps[] = [];
 const otherStyleSelected = false;
 const editedStyles = [];
 
@@ -98,8 +101,18 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         break;
       case 'name':
         if (undefined !== event) {
+          const styleName = this.state.styleName;
           this.setState({
             styleName: event.target.value,
+            // [FS] IRAD-1285 2021-03-29
+            // Issue fix : The selected Next Line style option removes when enter style name.
+            styles: {
+              ...this.state.styles,
+              nextLineStyleName:
+                this.state.styles.nextLineStyleName === styleName
+                  ? event.target.value
+                  : this.state.styles.nextLineStyleName,
+            },
           });
         }
         break;
@@ -199,7 +212,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       }
     } else {
       const levelValue = document && document.getElementById('levelValue');
-      if (levelValue && levelValue.value) {
+      if (
+        // this covers null & undefined
+        levelValue instanceof window.HTMLSelectElement &&
+        levelValue.value
+      ) {
         style.marginLeft = `${parseInt(levelValue.value) * 2}px`;
       }
     }
@@ -211,18 +228,17 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       ) {
         // [FS] IRAD-1137 2021-01-11
         // Issue fix : The Preview text is not showing the numbering in bold after Bold Numbering is enabled.
-        if (this.state.styles.boldNumbering) {
-          document.getElementById(
-            'sampletextdiv'
-          ).innerHTML = `<strong>${this.getNumberingLevel(
-            this.state.styles.styleLevel
-          )}</strong>${SAMPLE_TEXT}`;
-        } else {
-          document.getElementById(
-            'sampletextdiv'
-          ).innerText = `${this.getNumberingLevel(
-            this.state.styles.styleLevel
-          )}${SAMPLE_TEXT}`;
+        const sampleDiv = document.getElementById('sampletextdiv');
+        if (sampleDiv) {
+          if (this.state.styles.boldNumbering) {
+            sampleDiv.innerHTML = `<strong>${this.getNumberingLevel(
+              this.state.styles.styleLevel
+            )}</strong>${SAMPLE_TEXT}`;
+          } else {
+            sampleDiv.innerText = `${this.getNumberingLevel(
+              this.state.styles.styleLevel
+            )}${SAMPLE_TEXT}`;
+          }
         }
       }
     }
@@ -297,9 +313,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
   // [FS] IRAD-1201 2021-02-18
   // set the nextLineStyle to JSON according to the selected option
-  onNextLineStyleSelected(selectedOption, e) {
+  onNextLineStyleSelected(selectedOption: number) {
     const hiddenDiv = document.getElementById('nextStyle');
-    hiddenDiv.style.display = 'none';
+    if (hiddenDiv) {
+      hiddenDiv.style.display = 'none';
+    }
     if (0 === selectedOption) {
       this.setState({
         otherStyleSelected: false,
@@ -315,16 +333,20 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         styles: {...this.state.styles, nextLineStyleName: this.state.styleName},
       });
     } else {
-      hiddenDiv.style.display = 'block';
+      if (hiddenDiv) {
+        hiddenDiv.style.display = 'block';
+      }
       const selectedStyle = document.getElementById('nextStyleValue');
-      this.setState({
-        otherStyleSelected: true,
-        styles: {
-          ...this.state.styles,
-          nextLineStyleName:
-            selectedStyle.options[selectedStyle.selectedIndex].text,
-        },
-      });
+      if (selectedStyle instanceof window.HTMLSelectElement) {
+        this.setState({
+          otherStyleSelected: true,
+          styles: {
+            ...this.state.styles,
+            nextLineStyleName:
+              selectedStyle.options[selectedStyle.selectedIndex].text,
+          },
+        });
+      }
     }
   }
 
@@ -1157,7 +1179,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                         value={this.state.styles.nextLineStyleName}
                       >
                         {customStyles.map((style) => (
-                          <option key={style.styleName} value={style.style}>
+                          <option key={style.styleName}>
                             {style.styleName}
                           </option>
                         ))}
@@ -1200,7 +1222,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     // [FS] IRAD-1137 2021-01-15
     // FIX: able to save a custom style name with already exist style name
     if (0 === this.state.mode && isCustomStyleExists(this.state.styleName)) {
-      document.getElementById('errormsg').style.display = '';
+      const errMsg = document.getElementById('errormsg');
+      if (errMsg && errMsg.style) {
+        errMsg.style.display = '';
+      }
 
       // [FS] IRAD-1176 2021-02-08
       // save the custom styles from Edit all option.
@@ -1217,7 +1242,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
   // [FS] IRAD-1176 2021-02-08
   // save the custom styles from Edit all option.
-  modifyCustomStyle(val) {
+  modifyCustomStyle(val: EditorState) {
     const {runtime} = this.props.editorView;
     if (runtime && typeof runtime.saveStyle === 'function') {
       delete val.editorView;
@@ -1226,7 +1251,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   }
 
   // To fetch the custom styles from server and set to the state.
-  getCustomStyles(runtime) {
+  getCustomStyles(runtime: EditorRuntime) {
     if (runtime && typeof runtime.getStylesAsync === 'function') {
       runtime.getStylesAsync().then((result) => {
         customStyles = result;
@@ -1241,10 +1266,11 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
   // [FS] IRAD-1231 2021-03-03
   // Issue fix: Selected style for next line not retaining when modify.
-  setNextLineStyle(nextLineStyleName) {
-   // [FS] IRAD-1241 2021-03-05
-   // The selcted Style in the Next line setting not retaing in Edit All and modify
-    const hiddenDiv = document.getElementById('nextStyle');
+  setNextLineStyle(nextLineStyleName: string) {
+    // [FS] IRAD-1241 2021-03-05
+    // The selcted Style in the Next line setting not retaing in Edit All and modify
+    let display = '';
+
     if (
       0 < this.props.mode &&
       nextLineStyleName &&
@@ -1254,14 +1280,23 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       this.setState({
         otherStyleSelected: true,
       });
-      hiddenDiv.style.display = 'block';
+
+      display = 'block';
       const selectedStyle = document.getElementById('nextStyleValue');
-      selectedStyle.value = nextLineStyleName;
+      if (selectedStyle instanceof window.HTMLSelectElement) {
+        selectedStyle.value = nextLineStyleName;
+      }
     } else {
       this.setState({
         otherStyleSelected: false,
       });
-      hiddenDiv.style.display = 'none';
+
+      display = 'none';
+    }
+
+    const hiddenDiv = document.getElementById('nextStyle');
+    if (hiddenDiv && hiddenDiv.style) {
+      hiddenDiv.style.display = display;
     }
   }
 }

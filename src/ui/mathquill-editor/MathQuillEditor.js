@@ -10,8 +10,8 @@ import cx from 'classnames';
 
 // [FS] IRAD-1061 2020-09-19
 // Now loaded locally, so that it work in closed network as well.
-import type { MathQuillEditorSymbol } from './MathQuillEditorSymbols';
-import { MathQuill } from './mathquill-import-kludge';
+import type {MathQuillEditorSymbol} from './MathQuillEditorSymbols';
+import {MathQuill} from './mathquill-import-kludge';
 
 const CSS_CDN_URL =
   '//cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.css';
@@ -39,7 +39,7 @@ class MathQuillElement extends React.Component<any, any> {
     return (
       <div
         className="czi-mathquill-editor-element"
-        dangerouslySetInnerHTML={{ __html: this.props.value }}
+        dangerouslySetInnerHTML={{__html: this.props.value}}
       />
     );
   }
@@ -58,7 +58,7 @@ class MathQuillEditor extends React.PureComponent<any, any> {
   _latex = '';
 
   render(): React.Element<any> {
-    const { value } = this.props;
+    const {value} = this.props;
     const panels = [
       MathQuillEditorSymbols.OPERATORS,
       MathQuillEditorSymbols.STRUCTURE,
@@ -67,7 +67,7 @@ class MathQuillEditor extends React.PureComponent<any, any> {
     ].map(this._renderPanel);
 
     const empty = !value;
-    const className = cx('czi-mathquill-editor', { empty });
+    const className = cx('czi-mathquill-editor', {empty});
     return (
       <div className={className}>
         <div className="czi-mathquill-editor-main">
@@ -109,7 +109,7 @@ class MathQuillEditor extends React.PureComponent<any, any> {
   }
 
   _renderPanel = (
-    symbols: { title: string, symbols: Array<MathQuillEditorSymbol> },
+    symbols: {title: string, symbols: Array<MathQuillEditorSymbol>},
     ii: number
   ): React.Element<any> => {
     return (
@@ -122,7 +122,7 @@ class MathQuillEditor extends React.PureComponent<any, any> {
   };
 
   _onSymbolSelect = (symbol: MathQuillEditorSymbol): void => {
-    const { latex, cmd } = symbol;
+    const {latex, cmd} = symbol;
     const mathField = this._mathField;
     if (!mathField || !cmd || !latex) {
       return;
@@ -141,7 +141,7 @@ class MathQuillEditor extends React.PureComponent<any, any> {
       return;
     }
 
-    const { onChange } = this.props;
+    const {onChange} = this.props;
     const latex = mathField.latex();
     this._latex = latex;
     onChange && onChange(latex);

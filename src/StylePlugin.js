@@ -170,6 +170,8 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
         DELKEYCODE === view.lastKeyCode ? selectedPos - 1 : selectedPos + 1;
       const selectedNode = prevState.doc.nodeAt(selectedPos);
       if (
+        selectedNode &&
+        selectedNode.attrs &&
         selectedNode.attrs.styleName !== 'None' &&
         0 !== Number(getStyleLevel(selectedNode.attrs.styleName))
       ) {
@@ -233,13 +235,6 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
               levelCounter = subsequantLevel;
             }
           }
-
-          tr = removeLastLevelHeirarchy(
-            tr,
-            prevNodeLevel,
-            nodesBeforeSelection,
-            nodesAfterSelection
-          );
         }
       }
     }
@@ -247,25 +242,6 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
   return tr;
 }
 
-// to manage the heirachy only two levels are available
-function removeLastLevelHeirarchy(
-  tr,
-  prevNodeLevel,
-  nodesBeforeSelection,
-  nodesAfterSelection
-) {
-  let subsequantLevel = 0;
-  subsequantLevel = Number(prevNodeLevel) - 1;
-
-  const style = getCustomStyleByLevel(subsequantLevel);
-
-  if (style) {
-    const newattrs = Object.assign({}, nodesBeforeSelection[0].node.attrs);
-    newattrs.styleName = style.styleName;
-    tr = tr.setNodeMarkup(nodesBeforeSelection[0].pos, undefined, newattrs);
-  }
-  return tr;
-}
 // get all the nodes having styleName attribute
 function nodeAssignment(state) {
   const nodes = [];
@@ -310,7 +286,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
           nextNode.attrs.styleName === 'None'
         ) {
           const style = getCustomStyleByName(newattrs.styleName);
-          if (null !== style) {
+          if (null !== style && style.styles) {
             // [FS] IRAD-1217 2021-02-24
             // Select style for next line not working continuously for more that 2 paragraphs
             newattrs = setNodeAttrs(style.styles.nextLineStyleName, newattrs);
@@ -347,7 +323,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
 // get the style object using the nextlineStyleName and set the attribute values to the node.
 function setNodeAttrs(nextLineStyleName, newattrs) {
   const nextLineStyle = getCustomStyleByName(nextLineStyleName);
-  if (nextLineStyle) {
+  if (nextLineStyle && nextLineStyle.styles) {
     newattrs.styleName = nextLineStyleName;
     newattrs.indent = nextLineStyle.styles.indent;
     newattrs.align = nextLineStyle.styles.align;
@@ -536,7 +512,7 @@ function applyLineStyle(prevState, nextState, tr) {
     // Check styleName is available for node
     if (node.attrs && node.attrs.styleName) {
       const styleProp = getCustomStyleByName(node.attrs.styleName);
-      if (null !== styleProp && styleProp.styles.boldPartial) {
+      if (null !== styleProp && styleProp.styles && styleProp.styles.boldPartial) {
         if (!tr) {
           tr = nextState.tr;
         }

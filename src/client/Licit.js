@@ -118,6 +118,22 @@ class Licit extends React.Component<any, any> {
     if (this._connector.updateSchema) {
       this._connector.updateSchema(this.state.editorState.schema);
     }
+    // [FS] 2021-03-30
+    // FIX: Custom styles not loading on read only mode
+    if (this.state.readOnly) {
+      this.fetchCustomStyles();
+    }
+  }
+  // To cache custom styles from server in readOnly mode
+  // Normal mode it is handled on custom style menu load
+  // Readonly mode menus are disabled, so caching custom styles is not invoked
+  fetchCustomStyles() {
+    if (
+      this.state.runtime &&
+      typeof this.state.runtime.getStylesAsync === 'function'
+    ) {
+      this.state.runtime.getStylesAsync();
+    }
   }
 
   // [FS] IRAD-1067 2020-09-19
@@ -135,7 +151,7 @@ class Licit extends React.Component<any, any> {
     });
   }
 
-  resetCounters(transaction) {
+  resetCounters(transaction: Transform) {
     for (let index = 1; index <= 10; index++) {
       const counterVar = 'set-cust-style-counter-' + index;
       const setCounterVal = window[counterVar];
@@ -146,7 +162,7 @@ class Licit extends React.Component<any, any> {
     this.setCounterFlags(transaction, true);
   }
 
-  setCounterFlags(transaction, reset) {
+  setCounterFlags(transaction: Transform, reset: boolean) {
     let modified = false;
     let counterFlags = null;
     const existingCFlags = transaction.doc.attrs.counterFlags;
@@ -308,7 +324,9 @@ class Licit extends React.Component<any, any> {
       this._connector._editorState = this._editorView.state;
       invokeOnEdit = true;
     } else {
-      if (this._connector instanceof SimpleConnector) {
+      // [FS] IRAD-1264 2021-03-19
+      // check if in non-collab mode.
+      if (!(this._connector instanceof CollabConnector)) {
         invokeOnEdit = true;
       }
     }

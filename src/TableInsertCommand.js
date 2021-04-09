@@ -1,17 +1,18 @@
 // @flow
 
 import nullthrows from 'nullthrows';
-import { EditorState } from 'prosemirror-state';
-import { TextSelection } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
-
+import {EditorState} from 'prosemirror-state';
+import {TextSelection} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
+import {Fragment} from 'prosemirror-model';
 import insertTable from './insertTable';
-import { atAnchorRight } from './ui/PopUpPosition';
+import {atAnchorRight} from './ui/PopUpPosition';
 import TableGridSizeEditor from './ui/TableGridSizeEditor';
 import UICommand from './ui/UICommand';
 import createPopUp from './ui/createPopUp';
-import type { TableGridSizeEditorValue } from './ui/TableGridSizeEditor';
+import {PARAGRAPH} from './NodeNames';
+import type {TableGridSizeEditorValue} from './ui/TableGridSizeEditor';
 
 class TableInsertCommand extends UICommand {
   _popUp = null;
@@ -23,7 +24,7 @@ class TableInsertCommand extends UICommand {
   isEnabled = (state: EditorState): boolean => {
     const tr = state;
     let bOK = false;
-    const { selection } = tr;
+    const {selection} = tr;
     if (selection instanceof TextSelection) {
       bOK = selection.from === selection.to;
       // [FS] IRAD-1065 2020-09-18
@@ -56,11 +57,11 @@ class TableInsertCommand extends UICommand {
     }
 
     const anchor = event ? event.currentTarget : null;
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._popUp = createPopUp(TableGridSizeEditor, null, {
         anchor,
         position: atAnchorRight,
-        onClose: val => {
+        onClose: (val) => {
           if (this._popUp) {
             this._popUp = null;
             resolve(val);
@@ -77,12 +78,13 @@ class TableInsertCommand extends UICommand {
     inputs: ?TableGridSizeEditorValue
   ): boolean => {
     if (dispatch) {
-      const { selection, schema } = state;
-      let { tr } = state;
+      const {selection, schema} = state;
+      let {tr} = state;
       if (inputs) {
-        const { rows, cols } = inputs;
+        const {rows, cols} = inputs;
         tr = tr.setSelection(selection);
         tr = insertTable(tr, schema, rows, cols);
+        tr = insertParagraph(state, tr);
       }
       dispatch(tr);
     }
@@ -90,4 +92,21 @@ class TableInsertCommand extends UICommand {
   };
 }
 
+// [FS] 2021-04-01
+// Add empty line after table drop
+// To make easier to enter a line after table
+function insertParagraph(state, tr) {
+  const paragraph = state.schema.nodes[PARAGRAPH];
+  const textNode = state.schema.text(' ');
+  const {from, to} = tr.selection;
+  if (from !== to) {
+    return tr;
+  }
+  const paragraphNode = paragraph.create({}, textNode, null);
+  tr = tr.insert(
+    from + tr.selection.$head.node(1).nodeSize - 4,
+    Fragment.from(paragraphNode)
+  );
+  return tr;
+}
 export default TableInsertCommand;

@@ -27,7 +27,7 @@ class CustomStyleItem extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const {icon, label, hasText, ...pointerProps} = this.props;
+    const {label, hasText, ...pointerProps} = this.props;
     let text = '';
     let customStyle;
     text = this.sampleText();
@@ -36,9 +36,7 @@ class CustomStyleItem extends React.PureComponent<any, any> {
     if (styleProps && styleProps.styles) {
       customStyle = getCustomStyle(styleProps.styles);
     }
-    const klass = cx(className, '', {
-      'use-icon': !!icon,
-    });
+    const klass = cx(className);
     return (
       <div id="container1" tag={label}>
         <div style={{width: '140px', height: 'auto'}}>
@@ -47,7 +45,6 @@ class CustomStyleItem extends React.PureComponent<any, any> {
             className={klass}
             style={{display: 'inline-block', width: '140px'}}
           >
-            {icon}
             {label}
           </PointerSurface>
         </div>
@@ -57,7 +54,6 @@ class CustomStyleItem extends React.PureComponent<any, any> {
             className={klass}
             style={customStyle}
           >
-            {icon}
             {text}
           </PointerSurface>
         </div>

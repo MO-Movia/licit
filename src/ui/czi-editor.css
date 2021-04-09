@@ -38,7 +38,7 @@
   z-index: 1;
 }
 
-.ProseMirror nobr {
+.ProseMirror .nobr {
   hyphens: none;
   white-space: nowrap;
 }

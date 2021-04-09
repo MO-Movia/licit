@@ -18,7 +18,7 @@ const queue = [];
 
 export default function resolveImage(src: ?string): Promise<ImageResult> {
   return new Promise((resolve, reject) => {
-    const bag = { src, resolve, reject };
+    const bag = {src, resolve, reject};
     queue.push(bag);
     processQueue();
   });
@@ -63,35 +63,13 @@ function processPromise(
   const parsedURL = url.parse(srcStr);
   // [FS] IRAD-1007 2020-07-13
   // Removed the port validation from here
-  const { protocol } = parsedURL;
+  const {protocol} = parsedURL;
   if (!/(http:|https:|data:)/.test(protocol || window.location.protocol)) {
     resolve(result);
     return;
   }
 
   let img;
-
-  const onLoad = () => {
-    if (img) {
-      result.width = img.width;
-      result.height = img.height;
-      result.naturalWidth = img.width;
-      result.naturalHeight = img.height;
-      result.complete = true;
-    }
-    resolve(result);
-    dispose();
-    // [FS] IRAD-1006 2020-07-17
-    // Fix: Inconsistent behavior on image load
-    // Avoid image caching remove the below line
-    cache[srcStr] = { ...result };
-
-  };
-
-  const onError = () => {
-    resolve(result);
-    dispose();
-  };
 
   const dispose = () => {
     if (img) {
@@ -106,7 +84,28 @@ function processPromise(
     processQueue();
   };
 
-  const { body } = document;
+  const onLoad = () => {
+    if (img) {
+      result.width = img.width;
+      result.height = img.height;
+      result.naturalWidth = img.width;
+      result.naturalHeight = img.height;
+      result.complete = true;
+    }
+    resolve(result);
+    dispose();
+    // [FS] IRAD-1006 2020-07-17
+    // Fix: Inconsistent behavior on image load
+    // Avoid image caching remove the below line
+    cache[srcStr] = {...result};
+  };
+
+  const onError = () => {
+    resolve(result);
+    dispose();
+  };
+
+  const {body} = document;
   if (body) {
     img = document.createElement('img');
     img.style.cssText =

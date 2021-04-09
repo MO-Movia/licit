@@ -72,8 +72,8 @@ export class ListToggleCommand extends UICommand {
   executeCustom = (
     state: EditorState,
     tr: Transform,
-    from: Number,
-    to: Number
+    from: number,
+    to: number
   ): boolean => {
     const {schema} = state;
     const nodeType = schema.nodes[this._ordered ? ORDERED_LIST : BULLET_LIST];
@@ -96,7 +96,12 @@ export function hasCustomNumberedList(state: EditorState) {
   if (result && result.node.attrs) {
     if (result.node.attrs.styleName && 'None' !== result.node.attrs.styleName) {
       const style = getCustomStyleByName(result.node.attrs.styleName);
-      if (style && style.styles.styleLevel && style.styles.hasNumbering)
+      if (
+        style &&
+        style.styles &&
+        style.styles.styleLevel &&
+        style.styles.hasNumbering
+      )
         isNumberedList = true;
     }
   }

@@ -8,7 +8,10 @@ import uuid from './uuid';
 import './listType.css';
 import CustomStyleItem from './CustomStyleItem';
 
+import {atViewportCenter} from './PopUpPosition';
 import createPopUp from './createPopUp';
+import AlertInfo from './AlertInfo';
+
 import CustomStyleSubMenu from './CustomStyleSubMenu';
 import CustomStyleEditor from './CustomStyleEditor';
 import {
@@ -16,7 +19,6 @@ import {
   updateDocument,
   isCustomStyleAlreadyApplied,
 } from '../CustomStyleCommand';
-import {atViewportCenter} from './PopUpPosition';
 import {setTextAlign} from '../TextAlignCommand';
 import {setTextLineSpacing} from '../TextLineSpacingCommand';
 import {setParagraphSpacing} from '../ParagraphSpacingCommand';
@@ -126,6 +128,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
   }
 
   _onUIEnter = (command: UICommand, event: SyntheticEvent<*>) => {
+    // [FS] IRAD-1253 2021-04-01
+    // Reset the key code for style and citation plugin.
+    this.props.editorView.lastKeyCode = null;
     if (command.shouldRespondToUIEvent(event)) {
       // check the mouse clicked on down arror to show sub menu
       if (event.currentTarget.className === 'czi-custom-menu-item edit-icon') {
@@ -189,10 +194,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                       );
                     });
                 } else {
-                  // TODO: need to show this alert message in a popup.
-                  window.alert(
-                    'This custom style already in use, by removing this style breaks the heirarchy '
-                  );
+                  this.showAlert();
                 }
               } else if ('rename' === val.type) {
                 this.showStyleWindow(command, event, 2);
@@ -280,6 +282,27 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     return tr;
   }
 
+  showAlert() {
+    const anchor = null;
+    this._popUp = createPopUp(
+      AlertInfo,
+      {
+        content:
+          'This custom style already in use, by removing this style breaks the heirarchy ',
+        title: 'Style Error!!!',
+      },
+      {
+        anchor,
+        position: atViewportCenter,
+        onClose: (val) => {
+          if (this._popUp) {
+            this._popUp = null;
+          }
+        },
+      }
+    );
+  }
+
   //shows the alignment and line spacing option
   showStyleWindow(command: UICommand, event: SyntheticEvent<*>, mode) {
     // const anchor = event ? event.currentTarget : null;
@@ -347,15 +370,15 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                     if (null != result) {
                       let tr;
                       result.forEach((obj) => {
-                          if (val.styleName === obj.styleName) {
-                            tr = this.renameStyleInDocument(
-                              this.props.editorState,
-                              this.props.editorState.tr,
-                              this._styleName,
-                              val.styleName,
-                              obj.styles
-                            );
-                          }
+                        if (val.styleName === obj.styleName) {
+                          tr = this.renameStyleInDocument(
+                            this.props.editorState,
+                            this.props.editorState.tr,
+                            this._styleName,
+                            val.styleName,
+                            obj.styles
+                          );
+                        }
                       });
                       if (tr) {
                         dispatch(tr);
