@@ -141,6 +141,23 @@ export type CitationProps = {
   isCitationObject: Boolean,
 };
 
+/**
+ * Styles to display in Preview text
+ **/
+export type Style = {
+  float: ?string, // css float property
+  fontWeight: ?string, // css font-weight property
+  fontStyle: ?string, //css font-style property
+  color: ?string, //css color property
+  backgroundColor: ?string, //css background-color property
+  fontSize: ?string, //css font-size property
+  fontName: ?string, //css font property
+  textDecorationLine: ?string, //css text-decoration-line property
+  verticalAlign: ?string, //css vertical-align property
+  textDecoration: ?string, //css text-decoration property
+  textAlign: ?string, //css text-align property
+  lineHeight: ?string, //css line-height property
+};
 export type EditorRuntime = {
   // Image Proxy
   canProxyImageSrc?: (src: string) => boolean,
