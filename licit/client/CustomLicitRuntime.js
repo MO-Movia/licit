@@ -15,13 +15,14 @@ import {setStyles, setCitations} from '../../src/customStyle';
  */
 
 const STYLES_URI = 'http://localhost:3000';
+const DIAGRAMS_URI = 'http://88.99.193.94:8085/diagrams';
 const CITATION_URI = 'http://localhost:3006';
 
 class CustomLicitRuntime {
   // keep styles locally
-  styleProps: StyleProps[] = null;
-  citations: Citation[] = null;
-
+  styleProps: StyleProps[] = [];
+  citations: Citation[] = [];
+  loaded: boolean = false;
   // Image Proxy
   canProxyImageSrc(): boolean {
     return false;
@@ -91,11 +92,10 @@ class CustomLicitRuntime {
             }
           );
         },
-        (err) => {}
+        (err) => {
+          reject(this.styleProps);
+        }
       );
-      // Refresh from server after save
-      this.styleProps = this.fetchStyles();
-      resolve(this.styleProps);
     });
 
     return this.styleProps;
@@ -105,8 +105,9 @@ class CustomLicitRuntime {
    * Returns styles to editor
    */
   async getStylesAsync(): Promise<StyleProps[]> {
-    if (!this.styleProps) {
+    if (!this.loaded) {
       this.fetchStyles();
+      this.loaded = true;
     }
     return this.styleProps;
   }
@@ -117,7 +118,7 @@ class CustomLicitRuntime {
    * @param oldStyleName name of style to rename
    * @param newStyleName new name to apply to style
    */
-  async renameStyle(oldStyleName, newStyleName) {
+  async renameStyle(oldStyleName: string, newStyleName: string) {
     const obj = {
       oldName: oldStyleName,
       newName: newStyleName,
@@ -196,11 +197,15 @@ class CustomLicitRuntime {
    *
    * @param path  path segments to join.
    */
-  buildRoute(...path: string) {
+  buildRoute(...path: string[]) {
     return [STYLES_URI, ...path].join('/');
   }
 
-  buildRouteForCitation(...path: string) {
+  buildRouteForDiagrams(...path: string[]) {
+    return [DIAGRAMS_URI, ...path].join('/');
+  }
+
+  buildRouteForCitation(...path: string[]) {
     return [CITATION_URI, ...path].join('/');
   }
 
@@ -212,7 +217,11 @@ class CustomLicitRuntime {
   async saveCitation(citation: Citation): Promise<Citation[]> {
     const url = this.buildRouteForCitation('citations');
     await new Promise((resolve, reject) => {
-      POST(url, JSON.stringify(citation), 'application/json; charset=utf-8').then(
+      POST(
+        url,
+        JSON.stringify(citation),
+        'application/json; charset=utf-8'
+      ).then(
         (data) => {
           // Refresh from server after save
           this.fetchCitations().then(
@@ -220,7 +229,7 @@ class CustomLicitRuntime {
               resolve(result);
             },
             (error) => {
-              reject(this.styleProps);
+              reject(this.citations);
             }
           );
         },
@@ -228,7 +237,7 @@ class CustomLicitRuntime {
       );
     });
 
-    return this.styleProps;
+    return this.citations;
   }
 
   // to get all saved citations
@@ -264,7 +273,10 @@ class CustomLicitRuntime {
    * @param referenceId of the citation to delete
    */
   async removeCitation(referenceId: string): Promise<Citation[]> {
-    const url = this.buildRouteForCitation('citations', encodeURIComponent(referenceId));
+    const url = this.buildRouteForCitation(
+      'citations',
+      encodeURIComponent(referenceId)
+    );
     await new Promise((resolve, reject) => {
       DELETE(url, 'text/plain').then(
         (data) => {

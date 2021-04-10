@@ -26,13 +26,14 @@ class CommandMenu extends React.PureComponent<any, any> {
     const jj = commandGroups.length - 1;
 
     commandGroups.forEach((group, ii) => {
-      Object.keys(group).forEach(label => {
+      Object.keys(group).forEach((label) => {
         const command = group[label];
         let disabled = true;
         try {
           // [FS] IRAD-1053 2020-10-22
           // Disable the Clear style menu when no styles applied to a paragraph
-          disabled = !editorView || !command.isEnabled(editorState, editorView,label);
+          disabled =
+            !editorView || !command.isEnabled(editorState, editorView, label);
         } catch (ex) {
           disabled = false;
         }
@@ -56,6 +57,11 @@ class CommandMenu extends React.PureComponent<any, any> {
   }
 
   _onUIEnter = (command: UICommand, event: SyntheticEvent<>): void => {
+    // [FS] IRAD-1253 2021-04-01
+    // Reset key code for style and citation plugin.
+    if (this.props && this.props.editorView) {
+      this.props.editorView.lastKeyCode = null;
+    }
     if (command.shouldRespondToUIEvent(event)) {
       this._activeCommand && this._activeCommand.cancel();
       this._activeCommand = command;

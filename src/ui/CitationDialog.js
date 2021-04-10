@@ -3,6 +3,7 @@
 // [FS] IRAD-1251 2021-03-10
 // UI for Citation dialog
 import * as React from 'react';
+import {EditorView} from 'prosemirror-view';
 import createPopUp from './createPopUp';
 import SearchCitation from './SearchCitation';
 import {atAnchorBottomCenter} from './PopUpPosition';
@@ -14,14 +15,17 @@ const PORTIONS = ['Page', 'Paragraph'];
 const CAPCO = ['TBD', 'C', 'U', 'S', 'TS'];
 
 export function getCustomCapco() {
-  return localStorage.getItem('customCapcoList')
-    ? JSON.parse(localStorage.getItem('customCapcoList'))
-    : [];
+  const customCapco = localStorage.getItem('customCapcoList');
+  let retList = [];
+  if (customCapco) {
+    retList = JSON.parse(customCapco);
+  }
+  return retList;
 }
 
 // [FS] IRAD-1289 2021-03-30
 // Show ellipsis on Advanced lengthy Capco
-function addElipsesForLongCAPCO(capco) {
+function addElipsesForLongCAPCO(capco: any) {
   let advancedCapco = capco;
   if (capco.length >= 25) {
     advancedCapco = capco.slice(0, 15) + '...';
@@ -107,7 +111,7 @@ class CitationDialog extends React.PureComponent<any, any> {
   }
 
   // show ellipsis in label  for long advanced capco also
-  showElipsesForLongCAPCOLabel(capco) {
+  showElipsesForLongCAPCOLabel(capco: any) {
     let capcoLabel = capco || 'TBD';
     if (capco.length >= 15) {
       capcoLabel = capco.slice(0, 15) + '...';
@@ -145,7 +149,7 @@ class CitationDialog extends React.PureComponent<any, any> {
             >
               {getCapcoList().map(({label, value}) => (
                 <option key={value} title={value} value={value}>
-                  {'(' + label +')'}
+                  {'(' + label + ')'}
                 </option>
               ))}
             </select>
@@ -269,11 +273,13 @@ class CitationDialog extends React.PureComponent<any, any> {
                     title={
                       this.state.citationObject.documentTitleCapco || 'TBD'
                     }
-                    value={this.state.citationObject.documentTitleCapco || 'TBD'}
+                    value={
+                      this.state.citationObject.documentTitleCapco || 'TBD'
+                    }
                   >
                     {getCapcoList().map(({label, value}) => (
                       <option key={value} title={value} value={value}>
-                        {'(' + label +')'}
+                        {'(' + label + ')'}
                       </option>
                     ))}
                   </select>
@@ -286,7 +292,9 @@ class CitationDialog extends React.PureComponent<any, any> {
                     title={
                       this.state.citationObject.documentTitleCapco || 'TBD'
                     }
-                    value={this.state.citationObject.documentTitleCapco || 'TBD'}
+                    value={
+                      this.state.citationObject.documentTitleCapco || 'TBD'
+                    }
                   >
                     {'Document Title'}
                   </label>
@@ -363,7 +371,7 @@ class CitationDialog extends React.PureComponent<any, any> {
               >
                 {getCapcoList().map(({label, value}) => (
                   <option key={value} title={value} value={value}>
-                   {'(' + label +')'}
+                    {'(' + label + ')'}
                   </option>
                 ))}
               </select>
@@ -392,7 +400,7 @@ class CitationDialog extends React.PureComponent<any, any> {
               >
                 {getCapcoList().map(({label, value}) => (
                   <option key={value} title={value} value={value}>
-                   {'(' + label +')'}
+                    {'(' + label + ')'}
                   </option>
                 ))}
               </select>
@@ -435,7 +443,7 @@ class CitationDialog extends React.PureComponent<any, any> {
                 </option>
                 {getCapcoList().map(({label, value}) => (
                   <option key={value} title={value} value={value}>
-                   {'(' + label +')'}
+                    {'(' + label + ')'}
                   </option>
                 ))}
               </select>
@@ -780,7 +788,7 @@ class CitationDialog extends React.PureComponent<any, any> {
     this.props.close(this.state);
   };
 
-  createCitationObject(editorView, mode) {
+  createCitationObject(editorView: EditorView, mode: string) {
     return {
       mode: mode, //0 = new , 1- modify, 2- delete
       editorView: editorView,
@@ -791,27 +799,27 @@ class CitationDialog extends React.PureComponent<any, any> {
     const anchor = event ? event.currentTarget : null;
     this._popUp = createPopUp(
       SearchCitation,
-      this.createCitationObject(this.props.editorView, 1),
+      this.createCitationObject(this.props.editorView, '1'),
       {
         anchor,
         // modal:true,
         autoDismiss: false,
         IsChildDialog: true,
         position: atAnchorBottomCenter,
-        onClose: (val) => {
+        onClose: (val: any) => {
           if (this._popUp) {
             this._popUp = null;
             if (undefined !== val) {
               this.setState(
-                              {
-                                citationObject: {
-                                  ...val.citationUseObject,
-                                },
-                              },
-                              () => {
-                                this.setSourceText();
-                              }
-                            );
+                {
+                  citationObject: {
+                    ...val.citationUseObject,
+                  },
+                },
+                () => {
+                  this.setSourceText();
+                }
+              );
             }
           }
         },

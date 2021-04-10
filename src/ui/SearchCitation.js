@@ -3,17 +3,20 @@
 // [FS] IRAD-1251 2021-03-10
 // UI for Citation dialog
 import * as React from 'react';
-
 import './citation-note.css';
 
 const DATES = ['Published', 'Issued', 'Posted'];
 let citations = [];
 let citationUseObject = {};
 let selectedRefID = '';
+
 export function getCustomCapco() {
-  return localStorage.getItem('customCapcoList')
-    ? JSON.parse(localStorage.getItem('customCapcoList'))
-    : [];
+  const capcoList = localStorage.getItem('customCapcoList');
+  let retList = [];
+  if (capcoList) {
+    retList = JSON.parse(capcoList);
+  }
+  return retList;
 }
 
 class SearchCitation extends React.PureComponent<any, any> {
@@ -24,13 +27,13 @@ class SearchCitation extends React.PureComponent<any, any> {
     super(props);
     this.state = {
       ...props,
-      citationUseObject
+      citationUseObject,
     };
     this.getCitations(props.editorView.runtime);
   }
 
   // To fetch the custom styles from server and set to the state.
-  getCitations(runtime) {
+  getCitations(runtime: any) {
     if (runtime && typeof runtime.getCitationsAsync === 'function') {
       runtime.fetchCitations().then((result) => {
         if (result) {
@@ -65,31 +68,32 @@ class SearchCitation extends React.PureComponent<any, any> {
         tr += '</tr>';
       });
       table.innerHTML += tr;
-      this.addRowClickEvent(this);
+      this.addRowClickEvent();
     }
   }
 
-  addRowClickEvent(popupu) {
+  addRowClickEvent() {
     const table = document.getElementById('myTable');
-    const rows = table.rows;
-    for (let i = 0; i < rows.length; i++) {
-      // rows[i].style.backgroundColor = "white";
-        rows[i].onclick = (function() {
-            return function() {
-              this.style.backgroundColor = '#eaeaea';
-               selectedRefID = this.cells[2].innerHTML;
-            };
+    if (table) {
+      const rows = table.rows;
+      for (let i = 0; i < rows.length; i++) {
+        rows[i].onclick = (function (k: number) {
+          return function () {
+            this.style.backgroundColor = '#eaeaea';
+            selectedRefID = this.cells[2].innerHTML;
+          };
         })(i);
+      }
     }
-}
+  }
 
   onSelectCitation() {
-    if(citations && '' !== selectedRefID){
+    if (citations && '' !== selectedRefID) {
       citationUseObject = citations.find(
         (u) => u.referenceId === selectedRefID
       );
       this.state = this.createCitationUseObject();
-        }
+    }
   }
 
   createCitationUseObject() {
@@ -101,20 +105,24 @@ class SearchCitation extends React.PureComponent<any, any> {
     };
   }
 
-
   componentWillUnmount(): void {
     this._unmounted = true;
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   render(): React.Element<any> {
     return (
-      <div style={{width: '780px' ,border: '1px solid lightgray', boxShadow: '1px 1px'}}>
+      <div
+        style={{
+          width: '780px',
+          border: '1px solid lightgray',
+          boxShadow: '1px 1px',
+        }}
+      >
         <form className="czi-form" style={{height: '224px'}}>
-          <div className='searchDiv'>
-            <div className="div-display" style={{display:'none'}}>
+          <div className="searchDiv">
+            <div className="div-display" style={{display: 'none'}}>
               <label
                 className="citation-label"
                 style={{display: 'block', marginLeft: '2px'}}
@@ -128,7 +136,7 @@ class SearchCitation extends React.PureComponent<any, any> {
               />
             </div>
 
-            <div className="div-display" style={{display:'none'}}>
+            <div className="div-display" style={{display: 'none'}}>
               <label
                 className="citation-label"
                 style={{display: 'block', marginLeft: '10px'}}
@@ -142,7 +150,7 @@ class SearchCitation extends React.PureComponent<any, any> {
               />
             </div>
 
-            <div className="div-display" style={{display:'none'}}>
+            <div className="div-display" style={{display: 'none'}}>
               <label
                 className="citation-label"
                 style={{
@@ -160,7 +168,7 @@ class SearchCitation extends React.PureComponent<any, any> {
               />
             </div>
 
-            <div className="div-display" style={{display:'none'}}>
+            <div className="div-display" style={{display: 'none'}}>
               <div className="div-display">
                 <div>
                   <select
@@ -199,11 +207,10 @@ class SearchCitation extends React.PureComponent<any, any> {
             >
               <button
                 onClick={this._save.bind(this)}
-                style={{display:'none',height: '27px', width: '60px'}}
+                style={{display: 'none', height: '27px', width: '60px'}}
               >
                 OK
               </button>
-             
             </div>
           </div>
           <hr
@@ -211,13 +218,13 @@ class SearchCitation extends React.PureComponent<any, any> {
             style={{marginBottom: '5px', marginTop: '1px'}}
           ></hr>
           <div style={{float: 'right'}}>
-          <button
-                className="btnsave"
-                onClick={this._save.bind(this)}
-                style={{height: '27px', width: '60px'}}
-              >
-                OK
-              </button>
+            <button
+              className="btnsave"
+              onClick={this._save.bind(this)}
+              style={{height: '27px', width: '60px'}}
+            >
+              OK
+            </button>
           </div>
         </form>
       </div>

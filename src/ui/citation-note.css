@@ -76,7 +76,7 @@ textarea:focus {
 
 .citation-submenu-href {
   border: none;
-  color: var(--czi-link-color);
+  color: var(--czi-button-text-color);
   display: inline-block;
   flex: 1;
   margin: 0 6px 0 0;

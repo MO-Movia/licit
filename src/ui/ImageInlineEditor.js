@@ -23,6 +23,18 @@ const ImageAlignValues = {
   },
 };
 
+const DiagramMenuValues = {
+  EDIT: {
+    value: 'edit',
+    text: 'Edit',
+  },
+  EDIT_FULL_SCREEN: {
+    value: 'edit_full_screen',
+    text: 'Edit in full screen',
+  },
+  ...ImageAlignValues,
+};
+
 export type ImageInlineEditorValue = {
   align: ?string,
 };
@@ -35,9 +47,12 @@ class ImageInlineEditor extends React.PureComponent<any, any> {
 
   render(): React.Element<any> {
     const align = this.props.value ? this.props.value.align : null;
+    const values =
+      this.props.value.diagram === '1' ? DiagramMenuValues : ImageAlignValues;
+
     const onClick = this._onClick;
-    const buttons = Object.keys(ImageAlignValues).map(key => {
-      const {value, text} = ImageAlignValues[key];
+    const buttons = Object.keys(values).map((key) => {
+      const {value, text} = values[key];
       return (
         <CustomButton
           active={align === value}

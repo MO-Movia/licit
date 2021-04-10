@@ -1,6 +1,7 @@
 // @flow
 
-import {StepMap} from 'prosemirror-transform';
+import {StepMap, Transform} from 'prosemirror-transform';
+import {Node} from 'prosemirror-model';
 import {keymap} from 'prosemirror-keymap';
 import {undo, redo} from 'prosemirror-history';
 import {EditorView} from 'prosemirror-view';
@@ -8,19 +9,25 @@ import {EditorState} from 'prosemirror-state';
 import CitationSubMenu from './CitationSubMenu';
 import {atAnchorTopCenter} from './PopUpPosition';
 import createPopUp from './createPopUp';
-import { DOMSerializer } from 'prosemirror-model';
+import type {PopUpHandle} from './createPopUp';
+import {DOMSerializer} from 'prosemirror-model';
 import {MARK_UNDERLINE, MARK_TEXT_HIGHLIGHT} from '../MarkNames';
 import CitationDialog from './CitationDialog';
 import {getNode} from '../CustomStyleCommand';
 import './citation-note.css';
 
 class CitationView {
-  constructor(node, view, getPos, nodeSelection) {
+  node: Node = null;
+  outerView: EditorView = null;
+  getPos: any = null;
+  _popUp: PopUpHandle = null;
+  innerView: EditorView = null;
+
+  constructor(node: Node, view: EditorView, getPos: any) {
     // We'll need these later
     this.node = node;
     this.outerView = view;
     this.getPos = getPos;
-    this.nodeSelection = nodeSelection;
     // [FS] IRAD-1251 2021-04-05
     // Use PM DomSerializer to create element so that attributes including dataset are properly created.
     const spec = DOMSerializer.renderSpec(
@@ -40,12 +47,12 @@ class CitationView {
       this.hideSourceText.bind(this, false)
     );
     // These are used when the citationnote is selected
-    this.innerView = null;
-    this._popup = null;
+    // this.innerView = null;
+    // this._popup = null;
     this._anchorEl = null;
   }
 
-  showSourceText(customEditorView, e) {
+  showSourceText(customEditorView: any, e: any) {
     if (this.dom.classList) {
       this.dom.classList.add('ProseMirror-selectednode');
       if (!this.innerView) this.open(e);
@@ -80,7 +87,7 @@ class CitationView {
     }
   }
 
-  hideSourceText(selected, view) {
+  hideSourceText(selected: boolean) {
     this.dom.classList.remove('ProseMirror-selectednode');
     if (this.innerView) this.close();
     // [FS] IRAD-1251 2021-03-23
@@ -92,19 +99,10 @@ class CitationView {
         (node, pos) => {
           if (node.attrs.citationUseObject) {
             let tr = this.outerView.state.tr;
-            const markType = this.outerView.state.schema.marks[MARK_UNDERLINE];
-            const highLightMarkType = this.outerView.state.schema.marks[
-              MARK_TEXT_HIGHLIGHT
-            ];
-            tr = tr.removeMark(
+            tr = this.removeCitationMark(
+              tr,
               this.node.attrs.from,
-              this.node.attrs.to,
-              markType
-            );
-            tr = tr.removeMark(
-              this.node.attrs.from,
-              this.node.attrs.to,
-              highLightMarkType
+              this.node.attrs.to
             );
             // [FS] IRAD-1253 2021-03-24
             // issue fix : citation submenu auto dismiss on mouse out
@@ -116,9 +114,19 @@ class CitationView {
       );
     }
   }
+  // Removes the text highlight and text underline of citation applied text
+  removeCitationMark(tr: Transform, from: number, to: number) {
+    const markType = this.outerView.state.schema.marks[MARK_UNDERLINE];
+    const highLightMarkType = this.outerView.state.schema.marks[
+      MARK_TEXT_HIGHLIGHT
+    ];
+    tr = tr.removeMark(from, to, markType);
+    tr = tr.removeMark(from, to, highLightMarkType);
+    return tr;
+  }
 
   selectNode() {
-    this.hideSourceText(true, this.outerView);
+    this.hideSourceText(true);
     // [FS] IRAD-1253 2021-03-24
     // to show the sub menu popup to Edit, delte and go to the link for citation.
     const anchorEl = this.dom;
@@ -160,7 +168,7 @@ class CitationView {
     view.focus();
   };
 
-  createCitationObject(editorView, mode) {
+  createCitationObject(editorView: EditorView, mode: string) {
     return {
       citationUseObject: JSON.parse(this.node.attrs.citationUseObject),
       citationObject: JSON.parse(this.node.attrs.citationObject),
@@ -196,6 +204,11 @@ class CitationView {
     const {selection} = tr;
 
     if ('citationnote' === selection.node.type.name) {
+      tr = this.removeCitationMark(
+        tr,
+        selection.node.attrs.from,
+        selection.node.attrs.to
+      );
       tr = tr.delete(selection.from, selection.to);
       const parentPos = selection.$head.pos - selection.$head.parentOffset - 1;
       const parentNode = tr.doc.nodeAt(parentPos);
@@ -210,14 +223,14 @@ class CitationView {
 
   // [FS] IRAD-1253 2021-03-25
   // Edit citation from a paragraph
-  updateCitation(view, citation) {
+  updateCitation(view: EditorView, citation: any) {
     if (view.dispatch) {
       const {selection} = view.state;
       let {tr} = view.state;
       tr = tr.setSelection(selection);
       if (citation) {
         // save the citation use object to node
-        tr = this.updateCitationUseObject(view.state, selection, tr, citation);
+        tr = this.updateCitationUseObject(view.state, tr, citation);
         if (view.runtime && typeof view.runtime.saveCitation === 'function') {
           view.runtime.saveCitation(citation.citationObject).then((result) => {
             tr = this.updateCitationObjectInCitationNote(
@@ -235,18 +248,21 @@ class CitationView {
 
   // [FS] IRAD-1251 2021-03-23
   // to save the citation use object in the node attribute
-  updateCitationUseObject(state, selection, tr, citation) {
+  updateCitationUseObject(state: EditorState, tr: Transform, citation: any) {
     if (!citation.isCitationObject) {
+      const {selection} = state;
       const from = selection.$from.before(1);
       const node = getNode(state, this.node.attrs.from, this.node.attrs.to, tr);
       const newattrs = Object.assign({}, node.attrs);
-      newattrs['citationUseObject'] = JSON.stringify(citation.citationUseObject);
+      newattrs['citationUseObject'] = JSON.stringify(
+        citation.citationUseObject
+      );
       tr = tr.setNodeMarkup(from, undefined, newattrs);
     }
     return tr;
   }
 
-  updateCitationObjectInCitationNote(view, state, tr, citation) {
+  updateCitationObjectInCitationNote(tr: Transform, citation: any) {
     const newattrs = Object.assign({}, this.node.attrs);
     newattrs['citationObject'] = JSON.stringify(citation.citationObject);
     newattrs['citationUseObject'] = JSON.stringify(citation.citationUseObject);
@@ -265,9 +281,9 @@ class CitationView {
     this.dom.classList.remove('ProseMirror-selectednode');
     this._popup && this._popup.close();
     if (this.innerView) this.close();
-    this.hideSourceText(false, this.outerView);
+    this.hideSourceText(false);
   }
-  open(e) {
+  open(e: any) {
     const MAX_CLIENT_WIDTH = 975;
     const RIGHT_MARGIN_ADJ = 50;
     const POSITION_ADJ = -110;
@@ -313,10 +329,14 @@ class CitationView {
     footNoteDiv.setProperty('padding-left', '10px');
     footNoteDiv.setProperty('padding-top', '3px');
     footNoteDiv.setProperty('padding-bottom', '3px');
+
     const width_diff = e.clientX - parent.clientWidth;
     const counter = e.clientX > MAX_CLIENT_WIDTH ? RIGHT_MARGIN_ADJ : 0;
     if (width_diff > POSITION_ADJ && width_diff < tooltip.clientWidth) {
       footNoteDiv.setProperty('right', parent.offsetLeft + counter + 'px');
+    }
+    if (window.screen.availHeight - e.clientY < 170) {
+      footNoteDiv.setProperty('bottom', '114px');
     }
   }
 
@@ -325,7 +345,7 @@ class CitationView {
     this.innerView = null;
     this.dom.textContent = '';
   }
-  dispatchInner(tr) {
+  dispatchInner(tr: Transform) {
     const {state, transactions} = this.innerView.state.applyTransaction(tr);
     this.innerView.updateState(state);
 
@@ -340,7 +360,7 @@ class CitationView {
       if (outerTr.docChanged) this.outerView.dispatch(outerTr);
     }
   }
-  update(node) {
+  update(node: Node) {
     if (!node.sameMarkup(this.node)) return false;
     this.node = node;
     if (this.innerView) {
@@ -366,7 +386,7 @@ class CitationView {
     if (this.innerView) this.close();
   }
 
-  stopEvent(event) {
+  stopEvent(event: any) {
     return this.innerView && this.innerView.dom.contains(event.target);
   }
 

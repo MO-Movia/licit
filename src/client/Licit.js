@@ -120,9 +120,7 @@ class Licit extends React.Component<any, any> {
     }
     // [FS] 2021-03-30
     // FIX: Custom styles not loading on read only mode
-    if (this.state.readOnly) {
       this.fetchCustomStyles();
-    }
   }
   // To cache custom styles from server in readOnly mode
   // Normal mode it is handled on custom style menu load
@@ -151,7 +149,7 @@ class Licit extends React.Component<any, any> {
     });
   }
 
-  resetCounters(transaction) {
+  resetCounters(transaction: Transform) {
     for (let index = 1; index <= 10; index++) {
       const counterVar = 'set-cust-style-counter-' + index;
       const setCounterVal = window[counterVar];
@@ -162,7 +160,7 @@ class Licit extends React.Component<any, any> {
     this.setCounterFlags(transaction, true);
   }
 
-  setCounterFlags(transaction, reset) {
+  setCounterFlags(transaction: Transform, reset: boolean) {
     let modified = false;
     let counterFlags = null;
     const existingCFlags = transaction.doc.attrs.counterFlags;

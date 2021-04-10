@@ -104,7 +104,7 @@ function getAttrs(dom: HTMLElement): Object {
   };
 }
 
-function getStyle(attrs) {
+function getStyle(attrs: Object) {
   return getStyleEx(
     attrs.align,
     attrs.lineSpacing,
@@ -132,7 +132,7 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
 
   //to get the styles of the corresponding style name
   const styleProps = getCustomStyleByName(styleName);
-  if (null !== styleProps) {
+  if (null !== styleProps && styleProps.styles) {
     // [FS] IRAD-1100 2020-11-04
     // Add in leading and trailing spacing (before and after a paragraph)
     if (styleProps.styles.paragraphSpacingAfter) {

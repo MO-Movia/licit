@@ -41,14 +41,19 @@ function getAttrs(dom: HTMLElement): Object {
     (undefined !== null) !== dom.getAttribute('citationObject') &&
     null !== dom.getAttribute('citationObject')
   ) {
-    citationObject = JSON.parse(dom.getAttribute('citationObject')) || null;
+    const citationAttr = dom.getAttribute('citationObject');
+    if (citationAttr) {
+      citationObject = JSON.parse(citationAttr);
+    }
   }
   if (
     dom.hasAttribute('citationUseObject') &&
     null !== dom.getAttribute('citationUseObject')
   ) {
-    citationUseObject =
-      JSON.parse(dom.getAttribute('citationUseObject')) || null;
+    const citationUseAttr = dom.getAttribute('citationUseObject');
+    if (citationUseAttr) {
+      citationUseObject = JSON.parse(citationUseAttr);
+    }
   }
   const sourceText = dom.getAttribute('sourceText') || null;
 

@@ -27,27 +27,24 @@ class CustomStyleItem extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const {icon, label, hasText, ...pointerProps} = this.props;
+    const {label, hasText, ...pointerProps} = this.props;
     let text = '';
     let customStyle;
+    text = this.sampleText();
     const styleProps = getCustomStyleByName(label);
-    text = this.sampleText(styleProps? styleProps.styles: null);
     const className = 'czi-custom-menu-item';
     if (styleProps && styleProps.styles) {
       customStyle = getCustomStyle(styleProps.styles);
     }
-    const klass = cx(className, '', {
-      'use-icon': !!icon,
-    });
+    const klass = cx(className);
     return (
       <div id="container1" tag={label}>
-        <div style={{width: '130px', height: 'auto'}}>
+        <div style={{width: '140px', height: 'auto'}}>
           <PointerSurface
             {...pointerProps}
             className={klass}
             style={{display: 'inline-block', width: '140px'}}
           >
-            {icon}
             {label}
           </PointerSurface>
         </div>
@@ -57,7 +54,6 @@ class CustomStyleItem extends React.PureComponent<any, any> {
             className={klass}
             style={customStyle}
           >
-            {icon}
             {text}
           </PointerSurface>
         </div>
@@ -77,7 +73,7 @@ class CustomStyleItem extends React.PureComponent<any, any> {
   }
 
   // temp method to clear sample text for new and clear command menu item
-  sampleText(styles): string {
+  sampleText(styles: any): string {
     let text = 'AaBbCcDd';
     if (!this.props.hasText) {
       text = '';
@@ -87,7 +83,7 @@ class CustomStyleItem extends React.PureComponent<any, any> {
       for (let i = 0; i < parseInt(styles.styleLevel); i++) {
         level = level + '1.';
       }
-      const sampletext = (parseInt(styles.styleLevel)<=4)?'AaBbCcDd':'AaBb';
+      const sampletext = parseInt(styles.styleLevel) <= 4 ? 'AaBbCcDd' : 'AaBb';
       text = level + '' + sampletext;
     }
     return text;
