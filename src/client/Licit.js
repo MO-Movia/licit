@@ -120,7 +120,7 @@ class Licit extends React.Component<any, any> {
     }
     // [FS] 2021-03-30
     // FIX: Custom styles not loading on read only mode
-      this.fetchCustomStyles();
+    this.fetchCustomStyles();
   }
   // To cache custom styles from server in readOnly mode
   // Normal mode it is handled on custom style menu load

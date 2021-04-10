@@ -14,9 +14,9 @@ import {setStyles, setCitations} from '../../src/customStyle';
  import {setStyles, setCitations} from '@modusoperandi/licit';
  */
 
-const STYLES_URI = 'http://localhost:3000';
+const STYLES_URI = 'http://greathints.com:3000';
 const DIAGRAMS_URI = 'http://88.99.193.94:8085/diagrams';
-const CITATION_URI = 'http://localhost:3006';
+const CITATION_URI = 'http://greathints.com:3003';
 
 class CustomLicitRuntime {
   // keep styles locally

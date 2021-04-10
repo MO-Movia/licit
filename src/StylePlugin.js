@@ -512,7 +512,11 @@ function applyLineStyle(prevState, nextState, tr) {
     // Check styleName is available for node
     if (node.attrs && node.attrs.styleName) {
       const styleProp = getCustomStyleByName(node.attrs.styleName);
-      if (null !== styleProp && styleProp.styles && styleProp.styles.boldPartial) {
+      if (
+        null !== styleProp &&
+        styleProp.styles &&
+        styleProp.styles.boldPartial
+      ) {
         if (!tr) {
           tr = nextState.tr;
         }

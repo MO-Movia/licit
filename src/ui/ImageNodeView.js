@@ -514,7 +514,7 @@ class ImageViewBody extends React.PureComponent<any, any> {
         'czi-image-view ProseMirror-selectednode'
       )[0].offsetTop;
       if (iframe) {
-       iframe.setAttribute('src', url);
+        iframe.setAttribute('src', url);
         iframe.setAttribute(
           'style',
           'z-index: 9999; position: absolute; top: ' +
@@ -528,7 +528,6 @@ class ImageViewBody extends React.PureComponent<any, any> {
             'px;' +
             'box-shadow: 0 0 2px 2px'
         );
-
 
         parent.appendChild(iframe);
       }
