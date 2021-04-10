@@ -76,7 +76,7 @@ export type StyleProps = {
 /**
  * Styles to display in Preview text
  **/
-export type Style = {
+export type CSSStyle = {
   float: ?string, // css float property
   fontWeight: ?string, // css font-weight property
   fontStyle: ?string, //css font-style property
