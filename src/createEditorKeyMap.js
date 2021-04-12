@@ -1,8 +1,8 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
 import * as EditorCommands from './EditorCommands';
 import * as EditorKeyMap from './EditorKeyMap';
@@ -61,8 +61,8 @@ function bindCommands(...commands: Array<UICommand>): UserKeyCommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean {
-    return commands.some((cmd) => {
-      if (cmd.isEnabled(state, view)) {
+    return commands.some(cmd => {
+      if (cmd.isEnabled(state, view, '')) {
         cmd.execute(state, dispatch, view);
         return true;
       }

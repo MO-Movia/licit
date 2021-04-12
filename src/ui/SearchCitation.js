@@ -46,35 +46,38 @@ class SearchCitation extends React.PureComponent<any, any> {
 
   populateCitations() {
     const table = document.getElementById('datas');
-    table.innerHTML = '';
-    // this.props.editorView.runtime.getCitationsAsync().then((result) => {
-    if (citations) {
-      let tr = '';
-      citations.forEach((obj) => {
-        tr += '<tr className="citationrow" >';
-        tr +=
-          '<td className="citationcolumn">' +
-          obj.documentTitle +
-          '</td>' +
-          '<td className="citationcolumn">' +
-          obj.publishedDate +
-          '</td>' +
-          '<td className="citationcolumn">' +
-          obj.referenceId +
-          '</td>' +
-          '<td className="citationcolumn">' +
-          obj.author +
-          '</td>';
-        tr += '</tr>';
-      });
-      table.innerHTML += tr;
-      this.addRowClickEvent();
+
+    if (table instanceof window.HTMLTableElement) {
+      table.innerHTML = '';
+      // this.props.editorView.runtime.getCitationsAsync().then((result) => {
+      if (citations) {
+        let tr = '';
+        citations.forEach((obj) => {
+          tr += '<tr className="citationrow" >';
+          tr +=
+            '<td className="citationcolumn">' +
+            obj.documentTitle +
+            '</td>' +
+            '<td className="citationcolumn">' +
+            obj.publishedDate +
+            '</td>' +
+            '<td className="citationcolumn">' +
+            obj.referenceId +
+            '</td>' +
+            '<td className="citationcolumn">' +
+            obj.author +
+            '</td>';
+          tr += '</tr>';
+        });
+        table.innerHTML += tr;
+        this.addRowClickEvent();
+      }
     }
   }
 
   addRowClickEvent() {
     const table = document.getElementById('myTable');
-    if (table) {
+    if (table instanceof window.HTMLTableElement) {
       const rows = table.rows;
       for (let i = 0; i < rows.length; i++) {
         rows[i].onclick = (function (k: number) {

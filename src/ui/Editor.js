@@ -17,7 +17,7 @@ import {
   registeryKeys,
   releaseEditorView,
 } from '../CZIProseMirror';
-import { BOOKMARK, IMAGE, LIST_ITEM, MATH,CITATIONNOTE } from '../NodeNames';
+import { BOOKMARK, IMAGE, LIST_ITEM, MATH, CITATIONNOTE } from '../NodeNames';
 import WebFontLoader from '../WebFontLoader';
 import { preLoadFonts } from '../FontTypeMarkSpec';
 import createEmptyEditorState from '../createEmptyEditorState';

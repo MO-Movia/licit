@@ -338,7 +338,7 @@ class ImageViewBody extends React.PureComponent<any, any> {
       ('edit_full_screen' === align || 'edit' === align)
     ) {
       this.createIframe();
-      this.openDiagramNet(value.align);
+      this.openDiagramNet(value ? value.align || '' : '');
     } else {
       const {getPos, node, editorView} = this.props;
       const pos = getPos();
@@ -455,10 +455,15 @@ class ImageViewBody extends React.PureComponent<any, any> {
       'czi-image-resize-box-image'
     )[0]; // Implements protocol for loading and exporting with embedded XML
     const inline = document.getElementsByClassName('czi-inline-editor')[0];
-    let parent;
-    let rect;
+    let parent: ?Element;
+    let rect: window.ClientRect;
     let inlineHeight;
-    if (source.parentElement.parentElement.parentElement) {
+    if (
+      source &&
+      source.parentElement &&
+      source.parentElement.parentElement &&
+      source.parentElement.parentElement.parentElement
+    ) {
       parent = source.parentElement.parentElement.parentElement;
       rect = parent.getBoundingClientRect();
       inlineHeight = inline.getBoundingClientRect().height;
@@ -470,7 +475,7 @@ class ImageViewBody extends React.PureComponent<any, any> {
         const msg = JSON.parse(evt.data);
 
         // Received if the editor is ready
-        if (msg.event == 'init') {
+        if (msg.event == 'init' && iframe && iframe.contentWindow) {
           // Sends the data URI with embedded XML to editor
           //  this.updateDiagramEditState(2);
           iframe.contentWindow.postMessage(
@@ -513,14 +518,14 @@ class ImageViewBody extends React.PureComponent<any, any> {
       const offsetTop = document.getElementsByClassName(
         'czi-image-view ProseMirror-selectednode'
       )[0].offsetTop;
-      if (iframe) {
+      if (iframe && rect && parent) {
         iframe.setAttribute('src', url);
         iframe.setAttribute(
           'style',
           'z-index: 9999; position: absolute; top: ' +
             (offsetTop - 2) +
             'px; left: ' +
-            (rect.x - (offsetLeft + 2)) +
+            (rect.left - (offsetLeft + 2)) +
             'px; height: ' +
             (rect.height + inlineHeight + 8) +
             'px; width: ' +
@@ -537,7 +542,10 @@ class ImageViewBody extends React.PureComponent<any, any> {
     } else {
       if (iframe) {
         iframe.setAttribute('class', 'iframe-diagram');
-        document.body.appendChild(iframe);
+
+        if (null != document.body) {
+          document.body.appendChild(iframe);
+        }
       }
     }
   }

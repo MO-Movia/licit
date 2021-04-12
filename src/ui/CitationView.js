@@ -20,8 +20,10 @@ class CitationView {
   node: Node = null;
   outerView: EditorView = null;
   getPos: any = null;
-  _popUp: PopUpHandle = null;
+  _popUp: PopUpHandle | null = null;
   innerView: EditorView = null;
+  dom: any = null;
+  _anchorEl: any = null;
 
   constructor(node: Node, view: EditorView, getPos: any) {
     // We'll need these later
@@ -106,7 +108,7 @@ class CitationView {
             );
             // [FS] IRAD-1253 2021-03-24
             // issue fix : citation submenu auto dismiss on mouse out
-            (undefined === this._popup || null === this._popup) &&
+            (undefined === this._popUp || null === this._popUp) &&
               this.outerView.dispatch &&
               this.outerView.dispatch(tr);
           }
@@ -134,7 +136,7 @@ class CitationView {
       this.destroy();
       return;
     }
-    const popup = this._popup;
+    const popup = this._popUp;
     const viewPops = {
       editorState: this.outerView.state,
       editorView: this.outerView,
@@ -150,7 +152,7 @@ class CitationView {
     } else {
       popup && popup.close();
       this._anchorEl = anchorEl;
-      this._popup = createPopUp(CitationSubMenu, viewPops, {
+      this._popUp = createPopUp(CitationSubMenu, viewPops, {
         anchor: anchorEl,
         autoDismiss: false,
         onClose: this._onClose,
@@ -160,7 +162,7 @@ class CitationView {
   }
 
   _onClose = (): void => {
-    this._popup = null;
+    this._popUp = null;
   };
 
   onCancel = (view: EditorView): void => {
@@ -234,8 +236,6 @@ class CitationView {
         if (view.runtime && typeof view.runtime.saveCitation === 'function') {
           view.runtime.saveCitation(citation.citationObject).then((result) => {
             tr = this.updateCitationObjectInCitationNote(
-              view,
-              view.state,
               tr,
               citation
             );
@@ -274,12 +274,12 @@ class CitationView {
   }
 
   destroy() {
-    this._popup && this._popup.close();
+    this._popUp && this._popUp.close();
   }
 
   deselectNode() {
     this.dom.classList.remove('ProseMirror-selectednode');
-    this._popup && this._popup.close();
+    this._popUp && this._popUp.close();
     if (this.innerView) this.close();
     this.hideSourceText(false);
   }
