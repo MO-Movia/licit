@@ -177,19 +177,7 @@ class Editor extends React.PureComponent<any, any> {
 
       // Expose the view to CZIProseMirror so developer could debug it.
       registerEditorView(this._id, view);
-
-      // [FS] 2021-03-30
-      // FIX: Custom styles not loading on read only mode
-      if (view.runtime && typeof view.runtime.getStylesAsync === 'function') {
-        view.runtime.fetchStyles().then(
-          (result) => {
-            this.onEditorReady(view, onReady);
-          },
-          (error) => {
-            this.onEditorReady(view, onReady);
-          }
-        );
-      }
+      this.onEditorReady(view, onReady);
     }
 
     window.addEventListener('beforeprint', this._onPrintStart, false);

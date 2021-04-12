@@ -302,53 +302,57 @@ class Licit extends React.Component<any, any> {
      ** This results in the connector's state as an orphan and thus transaction mismatch error.
      ** To resolve check and update the connector's state to keep in sync.
      */
-    const isSameState = this._connector._editorState == this._editorView.state;
-    let invokeOnEdit = false;
 
-    if (!isSameState) {
-      this._connector._editorState = this._editorView.state;
-      invokeOnEdit = true;
-    } else {
-      // [FS] IRAD-1264 2021-03-19
-      // check if in non-collab mode.
-      if (!(this._connector instanceof CollabConnector)) {
+    if (this._editorView) {
+      const isSameState =
+        this._connector._editorState == this._editorView.state;
+      let invokeOnEdit = false;
+
+      if (!isSameState) {
+        this._connector._editorState = this._editorView.state;
         invokeOnEdit = true;
-      }
-    }
-    if (invokeOnEdit) {
-      // [FS] IRAD-1236 2020-03-05
-      // Only need to call if there is any difference in collab mode OR always in non-collab mode.
-      this._connector.onEdit(transaction, this._editorView);
-    }
-
-    if (transaction.docChanged) {
-      const docJson = transaction.doc.toJSON();
-      let isEmpty = false;
-
-      if (docJson.content && docJson.content.length === 1) {
-        if (
-          !docJson.content[0].content ||
-          (docJson.content[0].content &&
-            docJson.content[0].content[0].text &&
-            '' === docJson.content[0].content[0].text.trim())
-        ) {
-          isEmpty = true;
+      } else {
+        // [FS] IRAD-1264 2021-03-19
+        // check if in non-collab mode.
+        if (!(this._connector instanceof CollabConnector)) {
+          invokeOnEdit = true;
         }
       }
-
-      // setCFlags is/was always the opposite of isEmpty.
-      if (isEmpty) {
-        this.resetCounters(transaction);
-      } else {
-        this.setCounterFlags(transaction, false);
+      if (invokeOnEdit) {
+        // [FS] IRAD-1236 2020-03-05
+        // Only need to call if there is any difference in collab mode OR always in non-collab mode.
+        this._connector.onEdit(transaction, this._editorView);
       }
 
-      // Changing 2nd parameter from boolean to object was not in any way
-      // backwards compatible. Any conditional logic placed on isEmpty was
-      // broken. Reverting that change, then adding view as a 3rd parameter.
-      this.state.onChangeCB(docJson, isEmpty, this._editorView);
+      if (transaction.docChanged) {
+        const docJson = transaction.doc.toJSON();
+        let isEmpty = false;
 
-      this.closeOpenedPopupModels();
+        if (docJson.content && docJson.content.length === 1) {
+          if (
+            !docJson.content[0].content ||
+            (docJson.content[0].content &&
+              docJson.content[0].content[0].text &&
+              '' === docJson.content[0].content[0].text.trim())
+          ) {
+            isEmpty = true;
+          }
+        }
+
+        // setCFlags is/was always the opposite of isEmpty.
+        if (isEmpty) {
+          this.resetCounters(transaction);
+        } else {
+          this.setCounterFlags(transaction, false);
+        }
+
+        // Changing 2nd parameter from boolean to object was not in any way
+        // backwards compatible. Any conditional logic placed on isEmpty was
+        // broken. Reverting that change, then adding view as a 3rd parameter.
+        this.state.onChangeCB(docJson, isEmpty, this._editorView);
+
+        this.closeOpenedPopupModels();
+      }
     }
   };
   // [FS] IRAD-1173 2021-02-25
