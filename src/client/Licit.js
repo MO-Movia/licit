@@ -366,7 +366,8 @@ class Licit extends React.Component<any, any> {
     this._editorView = editorView;
     const tr = state.tr;
     const doc = state.doc;
-    dispatch(tr.setSelection(TextSelection.create(doc, 0, doc.content.size)));
+    const trx = tr.setSelection(TextSelection.create(doc, 0, doc.content.size));
+    dispatch(trx.scrollIntoView());
     editorView.focus();
 
     if (this.state.onReadyCB) {
