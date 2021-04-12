@@ -345,7 +345,7 @@ function main(): void {
           <Licit
             data={docJSON}
             debug={true}
-            docID={1}
+            docID={0}
             embedded={false}
             height={'100vh'}
             onChange={onChangeCB}
@@ -364,7 +364,7 @@ function main(): void {
           <Licit
             data={docJSON}
             debug={true}
-            docID={1}
+            docID={0}
             embedded={false}
             height={'100vh'}
             onChange={onChangeCB}
