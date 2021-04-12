@@ -16,6 +16,8 @@ import '@modusoperandi/licit-doc-attrs-step';
 // [FS] IRAD-1040 2020-09-02
 import * as Flatted from 'flatted';
 
+const TXT_PLAIN = 'text/plain';
+
 const router = new Router();
 // [FS] IRAD-1040 2020-09-02
 let effectiveSchema = EditorSchema;
@@ -38,7 +40,7 @@ function handleCollabRequest(req: any, resp: any) {
       resp.writeHead(200, headers);
       resp.end();
     } else {
-      resp.writeHead(404, {'Content-Type': 'text/plain'});
+      resp.writeHead(404, {'Content-Type': TXT_PLAIN});
       resp.end('Not found');
     }
   }
@@ -51,12 +53,12 @@ class Output {
   // fix_flow_errors:  declarion to  avoid flow errors
   code = null;
   body = null;
-  type = 'text/plain';
+  type = TXT_PLAIN;
   //end
   constructor(code, body, type) {
     this.code = code;
     this.body = body;
-    this.type = type || 'text/plain';
+    this.type = type || TXT_PLAIN;
   }
 
   static json(data) {

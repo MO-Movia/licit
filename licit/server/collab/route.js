@@ -15,6 +15,22 @@ class Router {
     this.routes.push({method, url, handler});
   }
 
+  matchEx(pattern: any, path: any) {
+    const parts = path.slice(1).split('/');
+    if (parts.length && !parts[parts.length - 1]) parts.pop();
+    if (parts.length != pattern.length) return null;
+    const result = [];
+    for (let i = 0; i < parts.length; i++) {
+      const pat = pattern[i];
+      if (pat) {
+        if (pat != parts[i]) return null;
+      } else {
+        result.push(parts[i]);
+      }
+    }
+    return result;
+  }
+
   // : (union<string, RegExp, Array>, string) → union<Array, null>
   // Check whether a route pattern matches a given URL path.
   match(pattern: any, path: any) {
@@ -27,18 +43,7 @@ class Router {
         result = match.slice(1);
       }
     } else {
-      const parts = path.slice(1).split('/');
-      if (parts.length && !parts[parts.length - 1]) parts.pop();
-      if (parts.length != pattern.length) return null;
-      result = [];
-      for (let i = 0; i < parts.length; i++) {
-        const pat = pattern[i];
-        if (pat) {
-          if (pat != parts[i]) return null;
-        } else {
-          result.push(parts[i]);
-        }
-      }
+      result = this.matchEx(pattern, path);
     }
     return result;
   }

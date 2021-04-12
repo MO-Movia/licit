@@ -18,6 +18,8 @@ const STYLES_URI = 'http://greathints.com:3000';
 const DIAGRAMS_URI = 'http://88.99.193.94:8085/diagrams';
 const CITATION_URI = 'http://greathints.com:3003';
 
+const TYPE_JSON = 'application/json; charset=utf-8';
+
 class CustomLicitRuntime {
   // keep styles locally
   styleProps: StyleProps[] = [];
@@ -80,7 +82,7 @@ class CustomLicitRuntime {
   async saveStyle(style: StyleProps): Promise<StyleProps[]> {
     const url = this.buildRoute('styles');
     await new Promise((resolve, reject) => {
-      POST(url, JSON.stringify(style), 'application/json; charset=utf-8').then(
+      POST(url, JSON.stringify(style), TYPE_JSON).then(
         (data) => {
           // Refresh from server after save
           this.fetchStyles().then(
@@ -125,7 +127,7 @@ class CustomLicitRuntime {
     };
     const url = this.buildRoute('styles/rename');
     await new Promise((resolve, reject) => {
-      PATCH(url, JSON.stringify(obj), 'application/json; charset=utf-8').then(
+      PATCH(url, JSON.stringify(obj), TYPE_JSON).then(
         (data) => {
           // Refresh from server after rename
           this.fetchStyles().then(
@@ -220,7 +222,7 @@ class CustomLicitRuntime {
       POST(
         url,
         JSON.stringify(citation),
-        'application/json; charset=utf-8'
+        TYPE_JSON
       ).then(
         (data) => {
           // Refresh from server after save

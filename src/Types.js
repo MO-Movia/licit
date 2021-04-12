@@ -158,6 +158,7 @@ export type Style = {
   textAlign: ?string, //css text-align property
   lineHeight: ?string, //css line-height property
 };
+
 export type EditorRuntime = {
   // Image Proxy
   canProxyImageSrc?: (src: string) => boolean,
