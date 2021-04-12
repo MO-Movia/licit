@@ -82,6 +82,7 @@ class Licit extends React.Component<any, any> {
     const runtime = props.runtime || null;
     //const runtime = null;
     const plugins = props.plugins || null;
+
     let editorState = convertFromJSON(data, null, plugins);
     // [FS] IRAD-1067 2020-09-19
     // The editorState will return null if the doc Json is mal-formed

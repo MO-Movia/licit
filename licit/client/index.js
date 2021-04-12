@@ -10,9 +10,319 @@ function main(): void {
   el.id = 'licit-app';
   el.style.setProperty('width', '100vw');
   el.style.setProperty('height', '100vh');
-  const { body } = document;
+  const {body} = document;
   body && body.appendChild(el);
-  const docJSON = { 'type': 'doc', 'attrs': { 'layout': null, 'padding': null, 'width': null }, 'content': [{ 'type': 'paragraph', 'attrs': { 'align': null, 'color': null, 'id': null, 'indent': null, 'lineSpacing': null, 'paddingBottom': null, 'paddingTop': null }, 'content': [{ 'type': 'text', 'marks': [{ 'type': 'mark-font-type', 'attrs': { 'name': 'Arial Black' } }], 'text': 'First line Arial black' }] }, { 'type': 'ordered_list', 'attrs': { 'id': null, 'counterReset': null, 'indent': 0, 'following': null, 'listStyleType': null, 'name': null, 'start': 1 }, 'content': [{ 'type': 'list_item', 'attrs': { 'align': null }, 'content': [{ 'type': 'paragraph', 'attrs': { 'align': null, 'color': null, 'id': null, 'indent': null, 'lineSpacing': null, 'paddingBottom': null, 'paddingTop': null }, 'content': [{ 'type': 'text', 'text': 'List 1' }] }] }] }, { 'type': 'ordered_list', 'attrs': { 'id': null, 'counterReset': null, 'indent': 1, 'following': null, 'listStyleType': null, 'name': null, 'start': 1 }, 'content': [{ 'type': 'list_item', 'attrs': { 'align': null }, 'content': [{ 'type': 'paragraph', 'attrs': { 'align': null, 'color': null, 'id': null, 'indent': null, 'lineSpacing': null, 'paddingBottom': null, 'paddingTop': null }, 'content': [{ 'type': 'text', 'text': 'Child' }] }] }] }, { 'type': 'ordered_list', 'attrs': { 'id': null, 'counterReset': 'none', 'indent': 0, 'following': null, 'listStyleType': null, 'name': null, 'start': 1 }, 'content': [{ 'type': 'list_item', 'attrs': { 'align': null }, 'content': [{ 'type': 'paragraph', 'attrs': { 'align': null, 'color': null, 'id': null, 'indent': null, 'lineSpacing': null, 'paddingBottom': null, 'paddingTop': null }, 'content': [{ 'type': 'text', 'text': 'List 2' }] }] }] }, { 'type': 'paragraph', 'attrs': { 'align': 'center', 'color': null, 'id': null, 'indent': null, 'lineSpacing': null, 'paddingBottom': null, 'paddingTop': null }, 'content': [{ 'type': 'text', 'text': 'Align' }] }, { 'type': 'paragraph', 'attrs': { 'align': null, 'color': null, 'id': null, 'indent': null, 'lineSpacing': null, 'paddingBottom': null, 'paddingTop': null }, 'content': [{ 'type': 'text', 'marks': [{ 'type': 'mark-text-color', 'attrs': { 'color': '#f20d96' } }], 'text': 'Font' }, { 'type': 'text', 'text': ' ' }, { 'type': 'text', 'marks': [{ 'type': 'mark-text-highlight', 'attrs': { 'highlightColor': '#e5e5e5' } }], 'text': 'Color ' }, { 'type': 'text', 'marks': [{ 'type': 'strong' }], 'text': 'align ' }, { 'type': 'text', 'marks': [{ 'type': 'link', 'attrs': { 'href': 'http://www.google.com', 'rel': 'noopener noreferrer nofollow', 'target': 'blank', 'title': null } }, { 'type': 'em' }], 'text': 'Link to google' }, { 'type': 'text', 'marks': [{ 'type': 'em' }], 'text': ' ' }, { 'type': 'text', 'marks': [{ 'type': 'underline' }], 'text': 'underline ' }, { 'type': 'text', 'marks': [{ 'type': 'em' }, { 'type': 'strong' }, { 'type': 'mark-text-color', 'attrs': { 'color': '#e5e5e5' } }, { 'type': 'mark-text-highlight', 'attrs': { 'highlightColor': '#979797' } }, { 'type': 'underline' }], 'text': 'combined' }] }, { 'type': 'heading', 'attrs': { 'align': null, 'color': null, 'id': null, 'indent': null, 'lineSpacing': null, 'paddingBottom': null, 'paddingTop': null, 'level': 1 }, 'content': [{ 'type': 'text', 'text': 'Header 1' }] }, { 'type': 'paragraph', 'attrs': { 'align': null, 'color': null, 'id': null, 'indent': null, 'lineSpacing': null, 'paddingBottom': null, 'paddingTop': null } }, { 'type': 'table', 'attrs': { 'marginLeft': null }, 'content': [{ 'type': 'table_row', 'content': [{ 'type': 'table_cell', 'attrs': { 'colspan': 1, 'rowspan': 1, 'colwidth': null, 'borderColor': null, 'background': null }, 'content': [{ 'type': 'paragraph', 'attrs': { 'align': null, 'color': null, 'id': null, 'indent': null, 'lineSpacing': null, 'paddingBottom': null, 'paddingTop': null }, 'content': [{ 'type': 'text', 'marks': [{ 'type': 'strong' }], 'text': 'Cell 1' }] }] }, { 'type': 'table_cell', 'attrs': { 'colspan': 1, 'rowspan': 1, 'colwidth': null, 'borderColor': null, 'background': null }, 'content': [{ 'type': 'paragraph', 'attrs': { 'align': null, 'color': null, 'id': null, 'indent': null, 'lineSpacing': null, 'paddingBottom': null, 'paddingTop': null }, 'content': [{ 'type': 'text', 'text': 'Cell 2' }] }] }] }] }, { 'type': 'paragraph', 'attrs': { 'align': null, 'color': null, 'id': null, 'indent': null, 'lineSpacing': null, 'paddingBottom': null, 'paddingTop': null } }, { 'type': 'paragraph', 'attrs': { 'align': null, 'color': null, 'id': null, 'indent': null, 'lineSpacing': null, 'paddingBottom': null, 'paddingTop': null }, 'content': [{ 'type': 'text', 'text': 'Subscript ' }, { 'type': 'text', 'marks': [{ 'type': 'super' }], 'text': '2 ' }] }] };
+  const docJSON = {
+    type: 'doc',
+    attrs: {layout: null, padding: null, width: null},
+    content: [
+      {
+        type: 'paragraph',
+        attrs: {
+          align: null,
+          color: null,
+          id: null,
+          indent: null,
+          lineSpacing: null,
+          paddingBottom: null,
+          paddingTop: null,
+        },
+        content: [
+          {
+            type: 'text',
+            marks: [{type: 'mark-font-type', attrs: {name: 'Arial Black'}}],
+            text: 'First line Arial black',
+          },
+        ],
+      },
+      {
+        type: 'ordered_list',
+        attrs: {
+          id: null,
+          counterReset: null,
+          indent: 0,
+          following: null,
+          listStyleType: null,
+          name: null,
+          start: 1,
+        },
+        content: [
+          {
+            type: 'list_item',
+            attrs: {align: null},
+            content: [
+              {
+                type: 'paragraph',
+                attrs: {
+                  align: null,
+                  color: null,
+                  id: null,
+                  indent: null,
+                  lineSpacing: null,
+                  paddingBottom: null,
+                  paddingTop: null,
+                },
+                content: [{type: 'text', text: 'List 1'}],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'ordered_list',
+        attrs: {
+          id: null,
+          counterReset: null,
+          indent: 1,
+          following: null,
+          listStyleType: null,
+          name: null,
+          start: 1,
+        },
+        content: [
+          {
+            type: 'list_item',
+            attrs: {align: null},
+            content: [
+              {
+                type: 'paragraph',
+                attrs: {
+                  align: null,
+                  color: null,
+                  id: null,
+                  indent: null,
+                  lineSpacing: null,
+                  paddingBottom: null,
+                  paddingTop: null,
+                },
+                content: [{type: 'text', text: 'Child'}],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'ordered_list',
+        attrs: {
+          id: null,
+          counterReset: 'none',
+          indent: 0,
+          following: null,
+          listStyleType: null,
+          name: null,
+          start: 1,
+        },
+        content: [
+          {
+            type: 'list_item',
+            attrs: {align: null},
+            content: [
+              {
+                type: 'paragraph',
+                attrs: {
+                  align: null,
+                  color: null,
+                  id: null,
+                  indent: null,
+                  lineSpacing: null,
+                  paddingBottom: null,
+                  paddingTop: null,
+                },
+                content: [{type: 'text', text: 'List 2'}],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'paragraph',
+        attrs: {
+          align: 'center',
+          color: null,
+          id: null,
+          indent: null,
+          lineSpacing: null,
+          paddingBottom: null,
+          paddingTop: null,
+        },
+        content: [{type: 'text', text: 'Align'}],
+      },
+      {
+        type: 'paragraph',
+        attrs: {
+          align: null,
+          color: null,
+          id: null,
+          indent: null,
+          lineSpacing: null,
+          paddingBottom: null,
+          paddingTop: null,
+        },
+        content: [
+          {
+            type: 'text',
+            marks: [{type: 'mark-text-color', attrs: {color: '#f20d96'}}],
+            text: 'Font',
+          },
+          {type: 'text', text: ' '},
+          {
+            type: 'text',
+            marks: [
+              {type: 'mark-text-highlight', attrs: {highlightColor: '#e5e5e5'}},
+            ],
+            text: 'Color ',
+          },
+          {type: 'text', marks: [{type: 'strong'}], text: 'align '},
+          {
+            type: 'text',
+            marks: [
+              {
+                type: 'link',
+                attrs: {
+                  href: 'http://www.google.com',
+                  rel: 'noopener noreferrer nofollow',
+                  target: 'blank',
+                  title: null,
+                },
+              },
+              {type: 'em'},
+            ],
+            text: 'Link to google',
+          },
+          {type: 'text', marks: [{type: 'em'}], text: ' '},
+          {type: 'text', marks: [{type: 'underline'}], text: 'underline '},
+          {
+            type: 'text',
+            marks: [
+              {type: 'em'},
+              {type: 'strong'},
+              {type: 'mark-text-color', attrs: {color: '#e5e5e5'}},
+              {type: 'mark-text-highlight', attrs: {highlightColor: '#979797'}},
+              {type: 'underline'},
+            ],
+            text: 'combined',
+          },
+        ],
+      },
+      {
+        type: 'heading',
+        attrs: {
+          align: null,
+          color: null,
+          id: null,
+          indent: null,
+          lineSpacing: null,
+          paddingBottom: null,
+          paddingTop: null,
+          level: 1,
+        },
+        content: [{type: 'text', text: 'Header 1'}],
+      },
+      {
+        type: 'paragraph',
+        attrs: {
+          align: null,
+          color: null,
+          id: null,
+          indent: null,
+          lineSpacing: null,
+          paddingBottom: null,
+          paddingTop: null,
+        },
+      },
+      {
+        type: 'table',
+        attrs: {marginLeft: null},
+        content: [
+          {
+            type: 'table_row',
+            content: [
+              {
+                type: 'table_cell',
+                attrs: {
+                  colspan: 1,
+                  rowspan: 1,
+                  colwidth: null,
+                  borderColor: null,
+                  background: null,
+                },
+                content: [
+                  {
+                    type: 'paragraph',
+                    attrs: {
+                      align: null,
+                      color: null,
+                      id: null,
+                      indent: null,
+                      lineSpacing: null,
+                      paddingBottom: null,
+                      paddingTop: null,
+                    },
+                    content: [
+                      {type: 'text', marks: [{type: 'strong'}], text: 'Cell 1'},
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'table_cell',
+                attrs: {
+                  colspan: 1,
+                  rowspan: 1,
+                  colwidth: null,
+                  borderColor: null,
+                  background: null,
+                },
+                content: [
+                  {
+                    type: 'paragraph',
+                    attrs: {
+                      align: null,
+                      color: null,
+                      id: null,
+                      indent: null,
+                      lineSpacing: null,
+                      paddingBottom: null,
+                      paddingTop: null,
+                    },
+                    content: [{type: 'text', text: 'Cell 2'}],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'paragraph',
+        attrs: {
+          align: null,
+          color: null,
+          id: null,
+          indent: null,
+          lineSpacing: null,
+          paddingBottom: null,
+          paddingTop: null,
+        },
+      },
+      {
+        type: 'paragraph',
+        attrs: {
+          align: null,
+          color: null,
+          id: null,
+          indent: null,
+          lineSpacing: null,
+          paddingBottom: null,
+          paddingTop: null,
+        },
+        content: [
+          {type: 'text', text: 'Subscript '},
+          {type: 'text', marks: [{type: 'super'}], text: '2 '},
+        ],
+      },
+    ],
+  };
   // Use this (set to null) if need a empty editor.
   // docJSON = null;
   // [FS] IRAD-982 2020-06-10
@@ -26,21 +336,48 @@ function main(): void {
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
   const plugins = null;
   const runtime = new CustomLicitRuntime();
-  ReactDOM.render(
-    <Licit
-      data={docJSON}
-      debug={true}
-      docID={0}
-      embedded={false}
-      height={'100vh'}
-      onChange={onChangeCB}
-      onReady={onReadyCB}
-      plugins={plugins}
-      runtime={runtime}
-      width={'100vw'}
-     />,
-    el
-  );
+  // ATTN: Custom styles MUST be loaded before rendering Licit
+  // TODO: Better is to bring this inside the Licit component.
+  if (runtime && typeof runtime.getStylesAsync === 'function') {
+    runtime.fetchStyles().then(
+      (result) => {
+        ReactDOM.render(
+          <Licit
+            data={docJSON}
+            debug={true}
+            docID={1}
+            embedded={false}
+            height={'100vh'}
+            onChange={onChangeCB}
+            onReady={onReadyCB}
+            plugins={plugins}
+            runtime={runtime}
+            width={'100vw'}
+          />,
+          el
+        );
+      },
+      (error) => {
+        // Here Licit is loaded without style list.
+        console.log('Failed to load custom styles:' + error);
+        ReactDOM.render(
+          <Licit
+            data={docJSON}
+            debug={true}
+            docID={1}
+            embedded={false}
+            height={'100vh'}
+            onChange={onChangeCB}
+            onReady={onReadyCB}
+            plugins={plugins}
+            runtime={runtime}
+            width={'100vw'}
+          />,
+          el
+        );
+      }
+    );
+  }
 }
 
 function onChangeCB(data) {
