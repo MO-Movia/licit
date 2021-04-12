@@ -1,10 +1,10 @@
 // @flow
 
 import cx from 'classnames';
-import { DOMSerializer, Schema } from 'prosemirror-model';
-import { EditorState, Transaction } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {DOMSerializer, Schema} from 'prosemirror-model';
+import {EditorState, Transaction} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
 import webfontloader from 'webfontloader';
 
@@ -17,9 +17,9 @@ import {
   registeryKeys,
   releaseEditorView,
 } from '../CZIProseMirror';
-import { BOOKMARK, IMAGE, LIST_ITEM, MATH, CITATIONNOTE } from '../NodeNames';
+import {BOOKMARK, IMAGE, LIST_ITEM, MATH, CITATIONNOTE} from '../NodeNames';
 import WebFontLoader from '../WebFontLoader';
-import { preLoadFonts } from '../FontTypeMarkSpec';
+import {preLoadFonts} from '../FontTypeMarkSpec';
 import createEmptyEditorState from '../createEmptyEditorState';
 import normalizeHTML from '../normalizeHTML';
 import BookmarkNodeView from './BookmarkNodeView';
@@ -33,7 +33,7 @@ import handleEditorKeyDown from './handleEditorKeyDown';
 import handleEditorPaste from './handleEditorPaste';
 import uuid from './uuid';
 import './czi-editor.css';
-import type { EditorRuntime } from '../Types';
+import type {EditorRuntime} from '../Types';
 import CitationView from './CitationView';
 
 export type EditorProps = {
@@ -46,7 +46,7 @@ export type EditorProps = {
   onChange?: ?(state: EditorState) => void,
   onReady?: ?(view: EditorView) => void,
   // Mapping for custom node views.
-  nodeViews?: ?{ [nodeName: string]: CustomNodeView },
+  nodeViews?: ?{[nodeName: string]: CustomNodeView},
   placeholder?: ?(string | React.Element<any>),
   readOnly?: ?boolean,
   runtime?: ?EditorRuntime,
@@ -67,7 +67,7 @@ export const DEFAULT_NODE_VIEWS = Object.freeze({
   [MATH]: MathNodeView,
   [BOOKMARK]: BookmarkNodeView,
   [LIST_ITEM]: ListItemNodeView,
-  [CITATIONNOTE]:CitationView
+  [CITATIONNOTE]: CitationView,
 });
 
 const EDITOR_EMPTY_STATE = Object.freeze(createEmptyEditorState());
@@ -148,9 +148,9 @@ class Editor extends React.PureComponent<any, any> {
       );
       const boundNodeViews = {};
       const schema = getSchema(editorState);
-      const { nodes } = schema;
+      const {nodes} = schema;
 
-      Object.keys(effectiveNodeViews).forEach(nodeName => {
+      Object.keys(effectiveNodeViews).forEach((nodeName) => {
         const nodeView = effectiveNodeViews[nodeName];
         // Only valid and supported node views should be used.
         if (nodes[nodeName]) {
@@ -178,16 +178,30 @@ class Editor extends React.PureComponent<any, any> {
       // Expose the view to CZIProseMirror so developer could debug it.
       registerEditorView(this._id, view);
 
-      onReady && onReady(view);
-
-      this._autoFocusTimer && clearTimeout(this._autoFocusTimer);
-      this._autoFocusTimer = this.props.autoFocus
-        ? setTimeout(this.focus, AUTO_FOCUS_DELAY)
-        : 0;
+      // [FS] 2021-03-30
+      // FIX: Custom styles not loading on read only mode
+      if (view.runtime && typeof view.runtime.getStylesAsync === 'function') {
+        view.runtime.fetchStyles().then(
+          (result) => {
+            this.onEditorReady(view, onReady);
+          },
+          (error) => {
+            this.onEditorReady(view, onReady);
+          }
+        );
+      }
     }
 
     window.addEventListener('beforeprint', this._onPrintStart, false);
     window.addEventListener('afterprint', this._onPrintEnd, false);
+  }
+
+  onEditorReady(view: EditorView, onReady: Function) {
+    onReady && onReady(view);
+    this._autoFocusTimer && clearTimeout(this._autoFocusTimer);
+    this._autoFocusTimer = this.props.autoFocus
+      ? setTimeout(this.focus, AUTO_FOCUS_DELAY)
+      : 0;
   }
 
   componentDidUpdate(prevProps: EditorProps): void {
@@ -208,7 +222,7 @@ class Editor extends React.PureComponent<any, any> {
         readOnly,
         disabled,
       } = this.props;
-      const { isPrinting } = this.state;
+      const {isPrinting} = this.state;
       const state = editorState || EDITOR_EMPTY_STATE;
       view.runtime = runtime;
       view.placeholder = placeholder;
@@ -234,8 +248,8 @@ class Editor extends React.PureComponent<any, any> {
   }
 
   render(): React.Element<any> {
-    const { embedded, readOnly } = this.props;
-    const className = cx('prosemirror-editor-wrapper', { embedded, readOnly });
+    const {embedded, readOnly} = this.props;
+    const className = cx('prosemirror-editor-wrapper', {embedded, readOnly});
     return (
       <div
         className={className}
@@ -247,7 +261,7 @@ class Editor extends React.PureComponent<any, any> {
   }
 
   _onBlur = (): void => {
-    const { onBlur } = this.props;
+    const {onBlur} = this.props;
     const view = this._editorView;
     if (view && !view.disabled && !view.readOnly && onBlur) {
       onBlur();
@@ -263,7 +277,7 @@ class Editor extends React.PureComponent<any, any> {
   // [FS-AFQ][20-FEB-2020]
   // Collaboration
   _dispatchTransaction = (transaction: Transform): void => {
-    const { editorState, readOnly, onChange } = this.props;
+    const {editorState, readOnly, onChange} = this.props;
     if (readOnly === true || !onChange) {
       return;
     }
@@ -274,17 +288,17 @@ class Editor extends React.PureComponent<any, any> {
   };
 
   _isEditable = (): boolean => {
-    const { disabled, readOnly } = this.props;
-    const { isPrinting } = this.state;
+    const {disabled, readOnly} = this.props;
+    const {isPrinting} = this.state;
     return !isPrinting && !!this._editorView && !readOnly && !disabled;
   };
 
   _onPrintStart = (): void => {
-    this.setState({ isPrinting: true });
+    this.setState({isPrinting: true});
   };
 
   _onPrintEnd = (): void => {
-    this.setState({ isPrinting: false });
+    this.setState({isPrinting: false});
   };
 }
 

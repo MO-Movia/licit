@@ -177,9 +177,14 @@ export type EditorRuntime = {
   loadHTML?: () => Promise<?string>,
 
   /**
-   * Gets array of styles from the service
+   * Gets array of styles asynchronously from the service
    */
   getStylesAsync: () => Promise<StyleProps[]>,
+
+  /**
+   * Gets array of styles from the service
+   */
+  fetchStyles: () => Promise<StyleProps[]>,
   /**
    * Renames an existing style from the service.
    * @param oldStyleName
