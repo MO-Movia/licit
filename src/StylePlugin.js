@@ -286,7 +286,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
           nextNode.attrs.styleName === 'None'
         ) {
           const style = getCustomStyleByName(newattrs.styleName);
-          if (null !== style && style.styles) {
+          if (style && style.styles) {
             // [FS] IRAD-1217 2021-02-24
             // Select style for next line not working continuously for more that 2 paragraphs
             newattrs = setNodeAttrs(style.styles.nextLineStyleName, newattrs);
