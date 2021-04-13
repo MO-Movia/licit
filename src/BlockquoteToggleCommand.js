@@ -7,7 +7,7 @@ import {EditorView} from 'prosemirror-view';
 
 import {BLOCKQUOTE} from './NodeNames';
 import toggleBlockquote from './toggleBlockquote';
-import UICommand from './ui/UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 class BlockquoteToggleCommand extends UICommand {
   isActive = (state: EditorState): boolean => {

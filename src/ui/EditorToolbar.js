@@ -13,7 +13,7 @@ import CustomButton from './CustomButton';
 import {COMMAND_GROUPS, parseLabel} from './EditorToolbarConfig';
 import Icon from './Icon';
 import ResizeObserver from './ResizeObserver';
-import UICommand from './UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import isReactClass from './isReactClass';
 
 import './czi-editor-toolbar.css';

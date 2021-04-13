@@ -1,6 +1,6 @@
 // @flow
 // [FS] IRAD-1085 2020-10-09
-import type {StyleProps, Style} from './Types';
+import type {StyleProps, CSSStyle} from './Types';
 import {
   RESERVED_STYLE_NONE,
   RESERVED_STYLE_NONE_NUMBERING,
@@ -55,6 +55,13 @@ export function getCustomStyleByName(name: string): StyleProps {
 export function setStyles(style: StyleProps[]) {
   customStyles = style;
 }
+
+// [FS] IRAD-1252 2021-03-12
+// store citations in cache
+export function setCitations(citation: any) {
+  return citation;
+}
+
 // get a style by Level
 export function getCustomStyleByLevel(level: number) {
   let style = null;
@@ -96,7 +103,7 @@ export function isPreviousLevelExists(previousLevel: number) {
 // [FS] IRAD-1046 2020-09-24
 // To create a style object from the customstyles to show the styles in the example piece.
 export function getCustomStyle(customStyle: any) {
-  const style: Style = {};
+  const style: CSSStyle = {};
 
   for (const property in customStyle) {
     switch (property) {

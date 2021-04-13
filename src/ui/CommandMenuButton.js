@@ -8,7 +8,7 @@ import * as React from 'react';
 
 import CommandMenu from './CommandMenu';
 import CustomButton from './CustomButton';
-import UICommand from './UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './createPopUp';
 import uuid from './uuid';
 

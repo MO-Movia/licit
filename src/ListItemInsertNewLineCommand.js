@@ -8,7 +8,7 @@ import {findParentNodeOfType} from 'prosemirror-utils';
 import {EditorView} from 'prosemirror-view';
 
 import {HARD_BREAK, LIST_ITEM} from './NodeNames';
-import UICommand from './ui/UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 // This handles the case when user press SHIFT + ENTER key to insert a new line
 // into list item.

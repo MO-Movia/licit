@@ -16,6 +16,7 @@ import TablePlugins from './TablePlugins';
 import buildInputRules from './buildInputRules';
 import createEditorKeyMap from './createEditorKeyMap';
 import StylePlugin from './StylePlugin';
+import CitationUsePlugin from './CitationUsePlugin';
 
 // Creates the default plugin for the editor.
 export default function buildEditorPlugins(schema: Schema): Array<Plugin> {
@@ -28,6 +29,7 @@ export default function buildEditorPlugins(schema: Schema): Array<Plugin> {
     new LinkTooltipPlugin(),
     new SelectionPlaceholderPlugin(),
     new StylePlugin(),
+    new CitationUsePlugin(),
     setPluginKey(buildInputRules(schema), 'InputRules'),
     setPluginKey(dropCursor(), 'DropCursor'),
     setPluginKey(gapCursor(), 'GapCursor'),

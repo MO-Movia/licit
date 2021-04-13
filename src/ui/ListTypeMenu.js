@@ -1,5 +1,5 @@
 import * as React from 'react';
-import UICommand from './UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';

@@ -6,7 +6,7 @@ import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
 
 import {clearMarks, clearHeading} from './clearMarks';
-import UICommand from './ui/UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import {getNode, getMarkByStyleName} from './CustomStyleCommand';
 
 class MarksClearCommand extends UICommand {

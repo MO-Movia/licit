@@ -1,5 +1,5 @@
 import * as React from 'react';
-import UICommand from './UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import {EditorState} from 'prosemirror-state';
 import {Schema} from 'prosemirror-model';
 import {Transform} from 'prosemirror-transform';
@@ -346,7 +346,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                           this.props.editorState,
                           this.props.editorState.tr,
                           val.styleName,
-                          obj.styles
+                          obj
                         );
                       }
                     });

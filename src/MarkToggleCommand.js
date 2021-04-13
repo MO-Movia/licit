@@ -7,7 +7,7 @@ import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import findNodesWithSameMark from './findNodesWithSameMark';
-import UICommand from './ui/UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 class MarkToggleCommand extends UICommand {
   _markName: string;

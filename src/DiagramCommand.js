@@ -5,10 +5,10 @@ import {EditorState} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
 
-import {HORIZONTAL_RULE} from './NodeNames';
+import {IMAGE} from './NodeNames';
 import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
-
-function insertHorizontalRule(tr: Transform, schema: Schema): Transform {
+import {EMPTY_DIAGRAM_SRC} from './ui/ImageNodeView';
+function insertImage(tr: Transform, schema: Schema): Transform {
   const {selection} = tr;
   if (!selection) {
     return tr;
@@ -18,25 +18,33 @@ function insertHorizontalRule(tr: Transform, schema: Schema): Transform {
     return tr;
   }
 
-  const horizontalRule = schema.nodes[HORIZONTAL_RULE];
-  if (!horizontalRule) {
+  const image = schema.nodes[IMAGE];
+  if (!image) {
     return tr;
   }
 
-  const node = horizontalRule.create({}, null, null);
+  const attrs = {
+    src: EMPTY_DIAGRAM_SRC,
+    alt: '',
+    title: '',
+    diagram: '1',
+    width: 701,
+    height: 535,
+  };
+
+  const node = image.create(attrs, null, null);
   const frag = Fragment.from(node);
   tr = tr.insert(from, frag);
   return tr;
 }
-
-class HorizontalRuleCommand extends UICommand {
+class DiagramCommands extends UICommand {
   execute = (
     state: EditorState,
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
     const {selection, schema} = state;
-    const tr = insertHorizontalRule(state.tr.setSelection(selection), schema);
+    const tr = insertImage(state.tr.setSelection(selection), schema);
     if (tr.docChanged) {
       dispatch && dispatch(tr);
       return true;
@@ -46,4 +54,4 @@ class HorizontalRuleCommand extends UICommand {
   };
 }
 
-export default HorizontalRuleCommand;
+export default DiagramCommands;

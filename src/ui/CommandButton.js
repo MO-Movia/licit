@@ -6,7 +6,7 @@ import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
 
 import CustomButton from './CustomButton';
-import UICommand from './UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 class CommandButton extends React.PureComponent<any, any> {
   props: {

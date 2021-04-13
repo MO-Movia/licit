@@ -7,7 +7,7 @@ import * as React from 'react';
 
 import CustomMenu from './CustomMenu';
 import CustomMenuItem from './CustomMenuItem';
-import UICommand from './UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 class CommandMenu extends React.PureComponent<any, any> {
   _activeCommand: ?UICommand = null;

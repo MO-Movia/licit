@@ -14,7 +14,7 @@ import {
 } from './CursorPlaceholderPlugin';
 import {MATH} from './NodeNames';
 import MathEditor from './ui/MathEditor';
-import UICommand from './ui/UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './ui/createPopUp';
 
 function insertMath(tr: Transform, schema: Schema, latex: ?string): Transform {

@@ -286,7 +286,7 @@ function applyStyleForNextParagraph(prevState, nextState, tr, view) {
           nextNode.attrs.styleName === 'None'
         ) {
           const style = getCustomStyleByName(newattrs.styleName);
-          if (null !== style && style.styles) {
+          if (style && style.styles) {
             // [FS] IRAD-1217 2021-02-24
             // Select style for next line not working continuously for more that 2 paragraphs
             newattrs = setNodeAttrs(style.styles.nextLineStyleName, newattrs);
@@ -512,7 +512,11 @@ function applyLineStyle(prevState, nextState, tr) {
     // Check styleName is available for node
     if (node.attrs && node.attrs.styleName) {
       const styleProp = getCustomStyleByName(node.attrs.styleName);
-      if (null !== styleProp && styleProp.styles && styleProp.styles.boldPartial) {
+      if (
+        null !== styleProp &&
+        styleProp.styles &&
+        styleProp.styles.boldPartial
+      ) {
         if (!tr) {
           tr = nextState.tr;
         }
@@ -532,9 +536,12 @@ function applyLineStyle(prevState, nextState, tr) {
 // get text content from selected node
 function getNodeText(node: Node) {
   let textContent = '';
+  let isCitationText = false;
   node.descendants(function (child: Node, pos: number, parent: Node) {
-    if ('text' === child.type.name) {
+    if ('text' === child.type.name && !isCitationText) {
       textContent = `${textContent}${child.text}`;
+    } else if ('citationnote' === child.type.name) {
+      isCitationText = true;
     }
   });
   return textContent;

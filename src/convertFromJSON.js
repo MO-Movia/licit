@@ -8,6 +8,8 @@ import EditorPlugins from './EditorPlugins';
 import EditorSchema from './EditorSchema';
 import createEmptyEditorState from './createEmptyEditorState';
 
+import {COMMAND_GROUPS} from './ui/EditorToolbarConfig';
+
 export default function convertFromJSON(
   json: Object | string,
   schema: ?Schema,
@@ -25,6 +27,14 @@ export default function convertFromJSON(
         effectivePlugins.push(p);
         if (p.getEffectiveSchema) {
           editorSchema = p.getEffectiveSchema(editorSchema);
+        }
+
+        if(p.initKeyCommands) {
+          effectivePlugins.push(p.initKeyCommands());
+        }
+
+        if(p.initButtonCommands) {
+          COMMAND_GROUPS.push(p.initButtonCommands());
         }
       }
     }

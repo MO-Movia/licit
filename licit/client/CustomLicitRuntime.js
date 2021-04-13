@@ -2,24 +2,29 @@
 
 // This implements the interface of `EditorRuntime`.
 // To  run  editor directly:
-import type {ImageLike, StyleProps} from '../../src/Types';
+import type {ImageLike, StyleProps, Citation} from '../../src/Types';
 import {POST, GET, DELETE, PATCH} from '../../src/client/http';
-import {setStyles} from '../../src/customStyle';
+import {setStyles, setCitations} from '../../src/customStyle';
 
 // When use it in a componet:
 
 /*
- import type {ImageLike, StyleProps} from '@modusoperandi/licit';
+ import type {ImageLike, StyleProps, Citation} from '@modusoperandi/licit';
  import {POST, GET, DELETE, PATCH} from '@modusoperandi/licit';
- import {setStyles} from '@modusoperandi/licit';
+ import {setStyles, setCitations} from '@modusoperandi/licit';
  */
 
-const STYLES_URI = 'http://localhost:3000';
+const STYLES_URI = 'http://greathints.com:3000';
+const DIAGRAMS_URI = 'http://88.99.193.94:8085/diagrams';
+const CITATION_URI = 'http://greathints.com:3003';
+
+const TYPE_JSON = 'application/json; charset=utf-8';
+
 class CustomLicitRuntime {
   // keep styles locally
   styleProps: StyleProps[] = [];
+  citations: Citation[] = [];
   loaded: boolean = false;
-
   // Image Proxy
   canProxyImageSrc(): boolean {
     return false;
@@ -77,7 +82,7 @@ class CustomLicitRuntime {
   async saveStyle(style: StyleProps): Promise<StyleProps[]> {
     const url = this.buildRoute('styles');
     await new Promise((resolve, reject) => {
-      POST(url, JSON.stringify(style), 'application/json; charset=utf-8').then(
+      POST(url, JSON.stringify(style), TYPE_JSON).then(
         (data) => {
           // Refresh from server after save
           this.fetchStyles().then(
@@ -122,7 +127,7 @@ class CustomLicitRuntime {
     };
     const url = this.buildRoute('styles/rename');
     await new Promise((resolve, reject) => {
-      PATCH(url, JSON.stringify(obj), 'application/json; charset=utf-8').then(
+      PATCH(url, JSON.stringify(obj), TYPE_JSON).then(
         (data) => {
           // Refresh from server after rename
           this.fetchStyles().then(
@@ -196,6 +201,102 @@ class CustomLicitRuntime {
    */
   buildRoute(...path: string[]) {
     return [STYLES_URI, ...path].join('/');
+  }
+
+  buildRouteForDiagrams(...path: string[]) {
+    return [DIAGRAMS_URI, ...path].join('/');
+  }
+
+  buildRouteForCitation(...path: string[]) {
+    return [CITATION_URI, ...path].join('/');
+  }
+
+  /**
+   * Save or update a citation on the service.
+   *
+   * @param citation Citation to update.
+   */
+  async saveCitation(citation: Citation): Promise<Citation[]> {
+    const url = this.buildRouteForCitation('citations');
+    await new Promise((resolve, reject) => {
+      POST(
+        url,
+        JSON.stringify(citation),
+        TYPE_JSON
+      ).then(
+        (data) => {
+          // Refresh from server after save
+          this.fetchCitations().then(
+            (result) => {
+              resolve(result);
+            },
+            (error) => {
+              reject(this.citations);
+            }
+          );
+        },
+        (err) => {}
+      );
+    });
+
+    return this.citations;
+  }
+
+  // to get all saved citations
+  fetchCitations(): Promise<Citation[]> {
+    const url = this.buildRouteForCitation('citations');
+    return new Promise((resolve, reject) => {
+      GET(url).then(
+        (data) => {
+          const citations = JSON.parse(data);
+          this.citations = citations;
+          setCitations(citations);
+          resolve(citations);
+        },
+        (err) => {
+          reject(null);
+        }
+      );
+    });
+  }
+
+  /**
+   * Returns all the citations to editor
+   */
+  async getCitationsAsync(): Promise<Citation[]> {
+    if (!this.citations) {
+      this.fetchCitations();
+    }
+    return this.citations;
+  }
+
+  /**
+   * Delete an existing citation from the service
+   * @param referenceId of the citation to delete
+   */
+  async removeCitation(referenceId: string): Promise<Citation[]> {
+    const url = this.buildRouteForCitation(
+      'citations',
+      encodeURIComponent(referenceId)
+    );
+    await new Promise((resolve, reject) => {
+      DELETE(url, 'text/plain').then(
+        (data) => {
+          // Refresh from server after remove
+          this.fetchCitations().then(
+            (result) => {
+              resolve(result);
+            },
+            (error) => {
+              reject(null);
+            }
+          );
+        },
+        (err) => {}
+      );
+    });
+
+    return this.citations;
   }
 }
 export default CustomLicitRuntime;
