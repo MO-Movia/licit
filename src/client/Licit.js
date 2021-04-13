@@ -54,7 +54,28 @@ class Licit extends React.Component<any, any> {
 
   constructor(props: any, context: any) {
     super(props, context);
+    this.state = {loaded: false};
+    setTimeout(this.loadStyles.bind(this), 100, props);
+  }
 
+  loadStyles(props: any) {
+    const runtime = props.runtime || null;
+    // ATTN: Custom styles MUST be loaded before rendering Licit
+    if (runtime && typeof runtime.getStylesAsync === 'function') {
+      runtime.fetchStyles().then(
+        (result) => {
+          this.initialize(props);
+        },
+        (error) => {
+          // Here Licit is loaded without style list.
+          console.log('Failed to load custom styles: ' + error);
+          this.initialize(props);
+        }
+      );
+    }
+  }
+
+  initialize(props: any) {
     this._clientID = uuid();
     this._editorView = null;
     this._skipSCU = true;
@@ -98,9 +119,11 @@ class Licit extends React.Component<any, any> {
         })
       : new SimpleConnector(editorState, setState);
 
+    const loaded = true;
+
     // FS IRAD-989 2020-18-06
     // updating properties should automatically render the changes
-    this.state = {
+    this.setState({
       docID,
       data,
       editorState,
@@ -113,7 +136,8 @@ class Licit extends React.Component<any, any> {
       disabled,
       embedded,
       runtime,
-    };
+      loaded,
+    });
     // FS IRAD-1040 2020-26-08
     // Get the modified schema from editorstate and send it to collab server
     if (this._connector.updateSchema) {
@@ -267,31 +291,35 @@ class Licit extends React.Component<any, any> {
   }
 
   render(): React.Element<any> {
-    const {
-      editorState,
-      width,
-      height,
-      readOnly,
-      disabled,
-      embedded,
-      runtime,
-    } = this.state;
-    // [FS] IRAD-978 2020-06-05
-    // Using 100vw & 100vh (100% viewport) is not ideal for a component which is expected to be a part of a page,
-    // so changing it to 100%  width & height which will occupy the area relative to its parent.
-    return (
-      <RichTextEditor
-        disabled={disabled}
-        editorState={editorState}
-        embedded={embedded}
-        height={height}
-        onChange={this._onChange}
-        onReady={this._onReady}
-        readOnly={readOnly}
-        runtime={runtime}
-        width={width}
-      />
-    );
+    if (this.state.loaded) {
+      const {
+        editorState,
+        width,
+        height,
+        readOnly,
+        disabled,
+        embedded,
+        runtime,
+      } = this.state;
+      // [FS] IRAD-978 2020-06-05
+      // Using 100vw & 100vh (100% viewport) is not ideal for a component which is expected to be a part of a page,
+      // so changing it to 100%  width & height which will occupy the area relative to its parent.
+      return (
+        <RichTextEditor
+          disabled={disabled}
+          editorState={editorState}
+          embedded={embedded}
+          height={height}
+          onChange={this._onChange}
+          onReady={this._onReady}
+          readOnly={readOnly}
+          runtime={runtime}
+          width={width}
+        />
+      );
+    } else {
+      return <div>Loading Styles...</div>;
+    }
   }
 
   _onChange = (data: {state: EditorState, transaction: Transform}): void => {

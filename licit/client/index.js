@@ -336,48 +336,21 @@ function main(): void {
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
   const plugins = null;
   const runtime = new CustomLicitRuntime();
-  // ATTN: Custom styles MUST be loaded before rendering Licit
-  // TODO: Better is to bring this inside the Licit component.
-  if (runtime && typeof runtime.getStylesAsync === 'function') {
-    runtime.fetchStyles().then(
-      (result) => {
-        ReactDOM.render(
-          <Licit
-            data={docJSON}
-            debug={true}
-            docID={0}
-            embedded={false}
-            height={'100vh'}
-            onChange={onChangeCB}
-            onReady={onReadyCB}
-            plugins={plugins}
-            runtime={runtime}
-            width={'100vw'}
-          />,
-          el
-        );
-      },
-      (error) => {
-        // Here Licit is loaded without style list.
-        console.log('Failed to load custom styles:' + error);
-        ReactDOM.render(
-          <Licit
-            data={docJSON}
-            debug={true}
-            docID={0}
-            embedded={false}
-            height={'100vh'}
-            onChange={onChangeCB}
-            onReady={onReadyCB}
-            plugins={plugins}
-            runtime={runtime}
-            width={'100vw'}
-          />,
-          el
-        );
-      }
-    );
-  }
+  ReactDOM.render(
+    <Licit
+      data={docJSON}
+      debug={true}
+      docID={0}
+      embedded={false}
+      height={'100vh'}
+      onChange={onChangeCB}
+      onReady={onReadyCB}
+      plugins={plugins}
+      runtime={runtime}
+      width={'100vw'}
+    />,
+    el
+  );
 }
 
 function onChangeCB(data) {
