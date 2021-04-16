@@ -1,5 +1,5 @@
 // @flow
-import {EditorState, TextSelection} from 'prosemirror-state';
+import {EditorState, TextSelection, Selection} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
 import {Node, Fragment, Schema} from 'prosemirror-model';
@@ -69,97 +69,104 @@ const MISSED_HEIRACHY_ELEMENT = {};
 const nodesAfterSelection = [];
 const nodesBeforeSelection = [];
 const selectedNodes = [];
+
+function getCustomStyleCommandsEx(
+  customStyle: any,
+  property: string,
+  commands: UICommand[]
+): UICommand[] {
+  switch (property) {
+    case STRONG:
+      // [FS] IRAD-1043 2020-10-23
+      // Issue fix : unselect a style when creating a new style
+      // and that unselected styles also applied in selected paragraph
+      if (customStyle[property]) commands.push(new MarkToggleCommand('strong'));
+      break;
+
+    case EM:
+      // [FS] IRAD-1043 2020-10-23
+      // Issue fix : unselect a style when creating a new style
+      // and that unselected styles also applied in selected paragraph
+      if (customStyle[property]) commands.push(new MarkToggleCommand('em'));
+      break;
+
+    case COLOR:
+      commands.push(new TextColorCommand(customStyle[property]));
+      break;
+
+    case FONTSIZE:
+      commands.push(new FontSizeCommand(Number(customStyle[property])));
+      break;
+
+    case FONTNAME:
+      commands.push(new FontTypeCommand(customStyle[property]));
+      break;
+
+    case STRIKE:
+      // [FS] IRAD-1043 2020-10-23
+      // Issue fix : unselect a style when creating a new style
+      // and that unselected styles also applied in selected paragraph
+      if (customStyle[property]) commands.push(new MarkToggleCommand('strike'));
+      break;
+
+    case SUPER:
+      commands.push(new MarkToggleCommand('super'));
+      break;
+
+    case TEXTHL:
+      commands.push(new TextHighlightCommand(customStyle[property]));
+      break;
+
+    case UNDERLINE:
+      // [FS] IRAD-1043 2020-12-15
+      // Issue fix: user unselect Underline from a existing custom style, it didn't reflect in editor
+      if (customStyle[property])
+        commands.push(new MarkToggleCommand('underline'));
+      break;
+
+    case ALIGN:
+      commands.push(new TextAlignCommand(customStyle[property]));
+      break;
+
+    case LHEIGHT:
+      commands.push(new TextLineSpacingCommand(customStyle[property]));
+      break;
+
+    // [FS] IRAD-1100 2020-11-05
+    // Add in leading and trailing spacing (before and after a paragraph)
+    case SAFTER:
+      commands.push(new ParagraphSpacingCommand(customStyle[property], true));
+      break;
+
+    case SBEFORE:
+      commands.push(new ParagraphSpacingCommand(customStyle[property], false));
+      break;
+    case INDENT:
+      if (0 < customStyle[property]) {
+        commands.push(new IndentCommand(customStyle[property]));
+      }
+      break;
+
+    case LEVELBASEDINDENT:
+      // [FS] IRAD-1162 2021-1-25
+      // Bug fix: indent not working along with level
+      if (customStyle[LEVEL] && Number(customStyle[LEVEL]) > 0) {
+        commands.push(new IndentCommand(customStyle[LEVEL]));
+      }
+      break;
+    default:
+      break;
+  }
+
+  return commands;
+}
+
 // [FS] IRAD-1042 2020-10-01
 // Creates commands based on custom style JSon object
 export function getCustomStyleCommands(customStyle: any) {
-  const commands = [];
+  let commands: UICommand[] = [];
   for (const property in customStyle) {
-    switch (property) {
-      case STRONG:
-        // [FS] IRAD-1043 2020-10-23
-        // Issue fix : unselect a style when creating a new style
-        // and that unselected styles also applied in selected paragraph
-        if (customStyle[property])
-          commands.push(new MarkToggleCommand('strong'));
-        break;
-
-      case EM:
-        // [FS] IRAD-1043 2020-10-23
-        // Issue fix : unselect a style when creating a new style
-        // and that unselected styles also applied in selected paragraph
-        if (customStyle[property]) commands.push(new MarkToggleCommand('em'));
-        break;
-
-      case COLOR:
-        commands.push(new TextColorCommand(customStyle[property]));
-        break;
-
-      case FONTSIZE:
-        commands.push(new FontSizeCommand(Number(customStyle[property])));
-        break;
-
-      case FONTNAME:
-        commands.push(new FontTypeCommand(customStyle[property]));
-        break;
-
-      case STRIKE:
-        // [FS] IRAD-1043 2020-10-23
-        // Issue fix : unselect a style when creating a new style
-        // and that unselected styles also applied in selected paragraph
-        if (customStyle[property])
-          commands.push(new MarkToggleCommand('strike'));
-        break;
-
-      case SUPER:
-        commands.push(new MarkToggleCommand('super'));
-        break;
-
-      case TEXTHL:
-        commands.push(new TextHighlightCommand(customStyle[property]));
-        break;
-
-      case UNDERLINE:
-        // [FS] IRAD-1043 2020-12-15
-        // Issue fix: user unselect Underline from a existing custom style, it didn't reflect in editor
-        if (customStyle[property])
-          commands.push(new MarkToggleCommand('underline'));
-        break;
-
-      case ALIGN:
-        commands.push(new TextAlignCommand(customStyle[property]));
-        break;
-
-      case LHEIGHT:
-        commands.push(new TextLineSpacingCommand(customStyle[property]));
-        break;
-
-      // [FS] IRAD-1100 2020-11-05
-      // Add in leading and trailing spacing (before and after a paragraph)
-      case SAFTER:
-        commands.push(new ParagraphSpacingCommand(customStyle[property], true));
-        break;
-
-      case SBEFORE:
-        commands.push(
-          new ParagraphSpacingCommand(customStyle[property], false)
-        );
-        break;
-      case INDENT:
-        if (0 < customStyle[property]) {
-          commands.push(new IndentCommand(customStyle[property]));
-        }
-        break;
-
-      case LEVELBASEDINDENT:
-        // [FS] IRAD-1162 2021-1-25
-        // Bug fix: indent not working along with level
-        if (customStyle[LEVEL] && Number(customStyle[LEVEL]) > 0) {
-          commands.push(new IndentCommand(customStyle[LEVEL]));
-        }
-        break;
-      default:
-        break;
-    }
+    commands = getCustomStyleCommandsEx(customStyle, property, commands);
   }
   return commands;
 }
@@ -215,6 +222,39 @@ class CustomStyleCommand extends UICommand {
     return customStyleName;
   }
 
+  executeClearStyle(
+    state: EditorState,
+    dispatch: ?(tr: Transform) => void,
+    node: any,
+    startPos: number,
+    endPos: number,
+    newattrs: any,
+    selection: Selection
+  ) {
+    let done = false;
+    let tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
+    tr = removeTextAlignAndLineSpacing(tr, state.schema);
+    hasMismatchHeirarchy(state, tr, node, startPos, endPos);
+
+    // const newattrs = Object.assign({}, node.attrs);
+    newattrs['styleName'] = 'None';
+    newattrs['id'] = '';
+    tr = tr.setNodeMarkup(startPos, undefined, newattrs);
+    tr = createEmptyElement(
+      state,
+      tr,
+      node,
+      startPos,
+      endPos,
+      node ? node.attrs : {}
+    );
+    if (dispatch && tr.docChanged) {
+      dispatch(tr);
+      done = true;
+    }
+    return done;
+  }
+
   execute = (
     state: EditorState,
     dispatch: ?(tr: Transform) => void,
@@ -245,27 +285,15 @@ class CustomStyleCommand extends UICommand {
       'clearstyle' === this._customStyle ||
       RESERVED_STYLE_NONE === this._customStyle
     ) {
-      tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
-      tr = removeTextAlignAndLineSpacing(tr, state.schema);
-      hasMismatchHeirarchy(state, tr, node, startPos, endPos);
-
-      // const newattrs = Object.assign({}, node.attrs);
-      newattrs['styleName'] = 'None';
-      newattrs['id'] = '';
-      tr = tr.setNodeMarkup(startPos, undefined, newattrs);
-      tr = createEmptyElement(
+      return this.executeClearStyle(
         state,
-        tr,
+        dispatch,
         node,
         startPos,
         endPos,
-        node ? node.attrs : {}
+        newattrs,
+        selection
       );
-      if (dispatch && tr.docChanged) {
-        dispatch(tr);
-        return true;
-      }
-      return false;
     }
 
     // [FS] IRAD-1213 2020-02-23
@@ -1176,13 +1204,14 @@ function applyLineStyle(node, style, state, tr, startPos, endPos) {
   if (style && style.boldPartial) {
     let textContent = '';
     let separator = '';
+    let isCitationText = false;
     const markType = state.schema.marks[MARK_STRONG];
     separator = style.boldSentence ? '.' : ' ';
 
     // [FS] IRAD-1181 2021-02-09
     // Issue fix: Multi-selecting several paragraphs and applying a style is only partially successfull
     tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
-      if ('text' === node.type.name) {
+      if ('text' === node.type.name && node.isAtom && !isCitationText) {
         textContent = `${textContent}${node.text}`;
         textContent = textContent.split(separator)[0];
         tr = tr.addMark(
@@ -1191,6 +1220,9 @@ function applyLineStyle(node, style, state, tr, startPos, endPos) {
           markType.create(null)
         );
         textContent = '';
+        isCitationText = false;
+      } else if ('citationnote' === node.type.name) {
+        isCitationText = true;
       }
     });
   }
@@ -1335,7 +1367,7 @@ export function getNode(
   from: number,
   to: number,
   tr: Transform
-) {
+): Node {
   let selectedNode = null;
   selectedNodes.splice(0);
   tr.doc.nodesBetween(from, to, (node, startPos) => {

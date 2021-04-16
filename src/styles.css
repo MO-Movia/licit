@@ -19,3 +19,4 @@
 @import './ui/icon-font.css';
 @import '~node-mathquill/build/mathquill.css';
 @import '~katex/dist/katex.min.css';
+@import './ui/citation-note.css';

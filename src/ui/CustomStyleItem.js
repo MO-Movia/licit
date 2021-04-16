@@ -73,10 +73,18 @@ class CustomStyleItem extends React.PureComponent<any, any> {
   }
 
   // temp method to clear sample text for new and clear command menu item
-  sampleText(): string {
+  sampleText(styles: any): string {
     let text = 'AaBbCcDd';
     if (!this.props.hasText) {
       text = '';
+    }
+    if (this.props.hasText && styles && styles.hasNumbering && '' !== text) {
+      let level = '';
+      for (let i = 0; i < parseInt(styles.styleLevel); i++) {
+        level = level + '1.';
+      }
+      const sampletext = parseInt(styles.styleLevel) <= 4 ? 'AaBbCcDd' : 'AaBb';
+      text = level + '' + sampletext;
     }
     return text;
   }

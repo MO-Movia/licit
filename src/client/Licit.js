@@ -54,7 +54,28 @@ class Licit extends React.Component<any, any> {
 
   constructor(props: any, context: any) {
     super(props, context);
+    this.state = {loaded: false};
+    setTimeout(this.loadStyles.bind(this), 100, props);
+  }
 
+  loadStyles(props: any) {
+    const runtime = props.runtime || null;
+    // ATTN: Custom styles MUST be loaded before rendering Licit
+    if (runtime && typeof runtime.getStylesAsync === 'function') {
+      runtime.fetchStyles().then(
+        (result) => {
+          this.initialize(props);
+        },
+        (error) => {
+          // Here Licit is loaded without style list.
+          console.log('Failed to load custom styles: ' + error);
+          this.initialize(props);
+        }
+      );
+    }
+  }
+
+  initialize(props: any) {
     this._clientID = uuid();
     this._editorView = null;
     this._skipSCU = true;
@@ -82,6 +103,7 @@ class Licit extends React.Component<any, any> {
     const runtime = props.runtime || null;
     //const runtime = null;
     const plugins = props.plugins || null;
+
     let editorState = convertFromJSON(data, null, plugins);
     // [FS] IRAD-1067 2020-09-19
     // The editorState will return null if the doc Json is mal-formed
@@ -97,9 +119,11 @@ class Licit extends React.Component<any, any> {
         })
       : new SimpleConnector(editorState, setState);
 
+    const loaded = true;
+
     // FS IRAD-989 2020-18-06
     // updating properties should automatically render the changes
-    this.state = {
+    this.setState({
       docID,
       data,
       editorState,
@@ -112,27 +136,12 @@ class Licit extends React.Component<any, any> {
       disabled,
       embedded,
       runtime,
-    };
+      loaded,
+    });
     // FS IRAD-1040 2020-26-08
     // Get the modified schema from editorstate and send it to collab server
     if (this._connector.updateSchema) {
       this._connector.updateSchema(this.state.editorState.schema);
-    }
-    // [FS] 2021-03-30
-    // FIX: Custom styles not loading on read only mode
-    if (this.state.readOnly) {
-      this.fetchCustomStyles();
-    }
-  }
-  // To cache custom styles from server in readOnly mode
-  // Normal mode it is handled on custom style menu load
-  // Readonly mode menus are disabled, so caching custom styles is not invoked
-  fetchCustomStyles() {
-    if (
-      this.state.runtime &&
-      typeof this.state.runtime.getStylesAsync === 'function'
-    ) {
-      this.state.runtime.getStylesAsync();
     }
   }
 
@@ -282,31 +291,35 @@ class Licit extends React.Component<any, any> {
   }
 
   render(): React.Element<any> {
-    const {
-      editorState,
-      width,
-      height,
-      readOnly,
-      disabled,
-      embedded,
-      runtime,
-    } = this.state;
-    // [FS] IRAD-978 2020-06-05
-    // Using 100vw & 100vh (100% viewport) is not ideal for a component which is expected to be a part of a page,
-    // so changing it to 100%  width & height which will occupy the area relative to its parent.
-    return (
-      <RichTextEditor
-        disabled={disabled}
-        editorState={editorState}
-        embedded={embedded}
-        height={height}
-        onChange={this._onChange}
-        onReady={this._onReady}
-        readOnly={readOnly}
-        runtime={runtime}
-        width={width}
-      />
-    );
+    if (this.state.loaded) {
+      const {
+        editorState,
+        width,
+        height,
+        readOnly,
+        disabled,
+        embedded,
+        runtime,
+      } = this.state;
+      // [FS] IRAD-978 2020-06-05
+      // Using 100vw & 100vh (100% viewport) is not ideal for a component which is expected to be a part of a page,
+      // so changing it to 100%  width & height which will occupy the area relative to its parent.
+      return (
+        <RichTextEditor
+          disabled={disabled}
+          editorState={editorState}
+          embedded={embedded}
+          height={height}
+          onChange={this._onChange}
+          onReady={this._onReady}
+          readOnly={readOnly}
+          runtime={runtime}
+          width={width}
+        />
+      );
+    } else {
+      return <div>Loading Styles...</div>;
+    }
   }
 
   _onChange = (data: {state: EditorState, transaction: Transform}): void => {
@@ -317,53 +330,57 @@ class Licit extends React.Component<any, any> {
      ** This results in the connector's state as an orphan and thus transaction mismatch error.
      ** To resolve check and update the connector's state to keep in sync.
      */
-    const isSameState = this._connector._editorState == this._editorView.state;
-    let invokeOnEdit = false;
 
-    if (!isSameState) {
-      this._connector._editorState = this._editorView.state;
-      invokeOnEdit = true;
-    } else {
-      // [FS] IRAD-1264 2021-03-19
-      // check if in non-collab mode.
-      if (!(this._connector instanceof CollabConnector)) {
+    if (this._editorView) {
+      const isSameState =
+        this._connector._editorState == this._editorView.state;
+      let invokeOnEdit = false;
+
+      if (!isSameState) {
+        this._connector._editorState = this._editorView.state;
         invokeOnEdit = true;
-      }
-    }
-    if (invokeOnEdit) {
-      // [FS] IRAD-1236 2020-03-05
-      // Only need to call if there is any difference in collab mode OR always in non-collab mode.
-      this._connector.onEdit(transaction, this._editorView);
-    }
-
-    if (transaction.docChanged) {
-      const docJson = transaction.doc.toJSON();
-      let isEmpty = false;
-
-      if (docJson.content && docJson.content.length === 1) {
-        if (
-          !docJson.content[0].content ||
-          (docJson.content[0].content &&
-            docJson.content[0].content[0].text &&
-            '' === docJson.content[0].content[0].text.trim())
-        ) {
-          isEmpty = true;
+      } else {
+        // [FS] IRAD-1264 2021-03-19
+        // check if in non-collab mode.
+        if (!(this._connector instanceof CollabConnector)) {
+          invokeOnEdit = true;
         }
       }
-
-      // setCFlags is/was always the opposite of isEmpty.
-      if (isEmpty) {
-        this.resetCounters(transaction);
-      } else {
-        this.setCounterFlags(transaction, false);
+      if (invokeOnEdit) {
+        // [FS] IRAD-1236 2020-03-05
+        // Only need to call if there is any difference in collab mode OR always in non-collab mode.
+        this._connector.onEdit(transaction, this._editorView);
       }
 
-      // Changing 2nd parameter from boolean to object was not in any way
-      // backwards compatible. Any conditional logic placed on isEmpty was
-      // broken. Reverting that change, then adding view as a 3rd parameter.
-      this.state.onChangeCB(docJson, isEmpty, this._editorView);
+      if (transaction.docChanged) {
+        const docJson = transaction.doc.toJSON();
+        let isEmpty = false;
 
-      this.closeOpenedPopupModels();
+        if (docJson.content && docJson.content.length === 1) {
+          if (
+            !docJson.content[0].content ||
+            (docJson.content[0].content &&
+              docJson.content[0].content[0].text &&
+              '' === docJson.content[0].content[0].text.trim())
+          ) {
+            isEmpty = true;
+          }
+        }
+
+        // setCFlags is/was always the opposite of isEmpty.
+        if (isEmpty) {
+          this.resetCounters(transaction);
+        } else {
+          this.setCounterFlags(transaction, false);
+        }
+
+        // Changing 2nd parameter from boolean to object was not in any way
+        // backwards compatible. Any conditional logic placed on isEmpty was
+        // broken. Reverting that change, then adding view as a 3rd parameter.
+        this.state.onChangeCB(docJson, isEmpty, this._editorView);
+
+        this.closeOpenedPopupModels();
+      }
     }
   };
   // [FS] IRAD-1173 2021-02-25
@@ -382,7 +399,8 @@ class Licit extends React.Component<any, any> {
     this._editorView = editorView;
     const tr = state.tr;
     const doc = state.doc;
-    dispatch(tr.setSelection(TextSelection.create(doc, 0, doc.content.size)));
+    const trx = tr.setSelection(TextSelection.create(doc, 0, doc.content.size));
+    dispatch(trx.scrollIntoView());
     editorView.focus();
 
     if (this.state.onReadyCB) {
