@@ -73,6 +73,10 @@
   background-color: lightgrey;
 }
 
+.selectbackground {
+  background-color: lightgrey;
+}
+
 .arrow-right {
   text-align: right;
   width: 30px;

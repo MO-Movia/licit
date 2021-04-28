@@ -2,10 +2,10 @@
 
 import './czi-custom-button.css';
 import * as React from 'react';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import {EditorState} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import './custom-dropdown.css';
 import {getCustomStyleByName, getCustomStyle} from '../customStyle';
 import PointerSurface from './PointerSurface';
@@ -24,6 +24,7 @@ class CustomStyleItem extends React.PureComponent<any, any> {
     onMouseEnter: ?(value: any, e: SyntheticEvent<>) => void,
     hasText?: ?Boolean,
     onCommand: ?Function,
+    selectionClassName: ?string,
   };
 
   render(): React.Element<any> {
@@ -38,7 +39,11 @@ class CustomStyleItem extends React.PureComponent<any, any> {
     }
     const klass = cx(className);
     return (
-      <div id="container1" tag={label}>
+      <div
+        className={this.props.selectionClassName}
+        id="container1"
+        tag={label}
+      >
         <div style={{width: '140px', height: 'auto'}}>
           <PointerSurface
             {...pointerProps}
