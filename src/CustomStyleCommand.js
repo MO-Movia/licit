@@ -233,13 +233,14 @@ class CustomStyleCommand extends UICommand {
   ) {
     let done = false;
     let tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
-    tr = removeTextAlignAndLineSpacing(tr, state.schema);
+
     hasMismatchHeirarchy(state, tr, node, startPos, endPos);
 
     // const newattrs = Object.assign({}, node.attrs);
     newattrs['styleName'] = 'None';
     newattrs['id'] = '';
     tr = tr.setNodeMarkup(startPos, undefined, newattrs);
+    tr = removeTextAlignAndLineSpacing(tr, state.schema);
     tr = createEmptyElement(
       state,
       tr,
