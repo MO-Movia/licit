@@ -237,6 +237,9 @@
   padding: 3px;
   border-radius: 2px;
   max-width: 400px;
+  text-align: left;
+  line-height: normal;
+  margin: auto;
 }
 
 .citationnote-tooltip::before {

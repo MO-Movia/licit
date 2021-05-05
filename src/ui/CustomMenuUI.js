@@ -16,7 +16,6 @@ import AlertInfo from './AlertInfo';
 import CustomStyleSubMenu from './CustomStyleSubMenu';
 import CustomStyleEditor from './CustomStyleEditor';
 import {
-  applyLatestStyle,
   updateDocument,
   isCustomStyleAlreadyApplied,
 } from '../CustomStyleCommand';
@@ -418,6 +417,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     );
   }
 
+   // [FS] IRAD-1237 2021-05-05
+   // Issue fix: Rename style not working on the fly
   renameStyleInDocument(
     state: EditorState,
     tr: Transform,
@@ -428,18 +429,9 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     const {doc} = state;
 
     doc.descendants(function (child, pos) {
-      const contentLen = child.content.size;
       if (oldStyleName === child.attrs.styleName) {
         child.attrs.styleName = styleName;
-        tr = applyLatestStyle(
-          child.attrs.styleName,
-          state,
-          tr,
-          child,
-          pos,
-          pos + contentLen + 1,
-          style
-        );
+        tr = tr.setNodeMarkup(pos, undefined, child.attrs);
       }
     });
     return tr;
