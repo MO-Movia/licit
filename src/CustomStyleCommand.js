@@ -233,13 +233,14 @@ class CustomStyleCommand extends UICommand {
   ) {
     let done = false;
     let tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
-    tr = removeTextAlignAndLineSpacing(tr, state.schema);
+
     hasMismatchHeirarchy(state, tr, node, startPos, endPos);
 
     // const newattrs = Object.assign({}, node.attrs);
     newattrs['styleName'] = 'None';
     newattrs['id'] = '';
     tr = tr.setNodeMarkup(startPos, undefined, newattrs);
+    tr = removeTextAlignAndLineSpacing(tr, state.schema);
     tr = createEmptyElement(
       state,
       tr,
@@ -750,6 +751,7 @@ function applyStyleEx(
     });
     tr = applyLineStyle(node, styleProp.styles, state, tr, startPos, endPos);
     const storedmarks = getMarkByStyleName(styleName, state.schema);
+    newattrs.id = null === newattrs.id ? '' : null;
     tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
     tr.storedMarks = storedmarks;
   }
@@ -824,9 +826,7 @@ function hasMismatchHeirarchy(
   // }
 
   nodesBeforeSelection.forEach((item) => {
-    // if (null === previousLevel) {
     previousLevel = Number(getStyleLevel(item.node.attrs.styleName));
-    // }
   });
   if (null === previousLevel && null == currentLevel) {
     // No levels established before.
@@ -1207,18 +1207,23 @@ function applyLineStyle(node, style, state, tr, startPos, endPos) {
     let isCitationText = false;
     const markType = state.schema.marks[MARK_STRONG];
     separator = style.boldSentence ? '.' : ' ';
+    let splitArray = null;
 
     // [FS] IRAD-1181 2021-02-09
     // Issue fix: Multi-selecting several paragraphs and applying a style is only partially successfull
     tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
       if ('text' === node.type.name && node.isAtom && !isCitationText) {
         textContent = `${textContent}${node.text}`;
-        textContent = textContent.split(separator)[0];
-        tr = tr.addMark(
-          pos,
-          pos + textContent.length + 1,
-          markType.create(null)
-        );
+        splitArray = textContent.split(separator);
+        if ('' !== splitArray[0]) {
+          textContent = splitArray[0];
+        } else {
+          if (splitArray.length > 1) {
+            textContent = splitArray[1];
+          }
+        }
+
+        tr = tr.addMark(0, pos + textContent.length + 2, markType.create(null));
         textContent = '';
         isCitationText = false;
       } else if ('citationnote' === node.type.name) {
@@ -1338,7 +1343,7 @@ export function applyStyle(
 }
 
 // apply style to each selected node (when style applied to multiple paragraphs)
-function applyStyleToEachNode(
+export function applyStyleToEachNode(
   state: EditorState,
   from: number,
   to: number,
@@ -1403,7 +1408,27 @@ export function updateDocument(
         style
       );
     }
+    // to handle Numbered custom style on edit
+    if (
+      style &&
+      style.styles &&
+      style.styles.styleLevel &&
+      child.attrs.styleName === styleName
+    ) {
+      nodesBeforeSelection.push({pos, node: child});
+    }
   });
+
+  if (nodesBeforeSelection.length > 0) {
+    const child = nodesBeforeSelection[0].node;
+    const newPos = nodesBeforeSelection[0].pos;
+    const newattrs = Object.assign({}, child ? child.attrs : {});
+    newattrs['styleName'] = styleName;
+    newattrs['id'] = child.attrs.id === null ? '' : null;
+    // TODO: Need to handle  the heirarchy break scenario
+    setNewElementObject(newattrs, newPos, 0, false);
+    tr = createEmptyElement(state, tr, child, newPos, 0, newattrs);
+  }
   return tr;
 }
 
