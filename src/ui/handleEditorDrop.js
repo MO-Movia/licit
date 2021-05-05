@@ -13,6 +13,19 @@ export default function handleEditorDrop(
   if (!dataTransfer) {
     return false;
   }
+
+  // [FS] IRAD-1298 2021-05-03
+  // to block drag and drop citation numbering alone
+  const {selection, tr} = view.state;
+  let node = selection.node;
+  if (!node) {
+    node = tr.doc.nodeAt(selection.from + 1);
+  }
+  if ('citationnote' === node.type.name) {
+    event.preventDefault();
+    return true;
+  }
+
   const {files} = dataTransfer;
   if (!files || !files.length) {
     return false;

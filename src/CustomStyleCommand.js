@@ -1110,11 +1110,22 @@ function insertParagraph(nodeAttrs, startPos, tr, index, state) {
     // Handle Numbering case for None styles.
     // Use the styleName to hold the style level.
     const customStyle = getCustomStyleByLevel(index);
-    nodeAttrs.styleName = customStyle ? customStyle.styleName : '';
+    nodeAttrs = resetNodeAttrs(nodeAttrs, customStyle);
     const paragraphNode = paragraph.create(nodeAttrs, null, null);
     tr = tr.insert(startPos, Fragment.from(paragraphNode));
   }
   return tr;
+}
+
+// [FS] IRAD-1243 2021-05-05
+// To reset the previous numbering custom style attribute values.
+function resetNodeAttrs(nodeAttrs, customStyle) {
+  nodeAttrs.styleName = customStyle ? customStyle.styleName : '';
+  nodeAttrs.indent = null;
+  nodeAttrs.lineSpacing = null;
+  nodeAttrs.paddingBottom = null;
+  nodeAttrs.paddingTop = null;
+  return nodeAttrs;
 }
 
 function addElementEx(

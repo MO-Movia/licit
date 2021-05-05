@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 
 import Licit from '../../src/client/Licit';
 import CustomLicitRuntime from './CustomLicitRuntime';
-import CitationPlugin from '@mo/licit-citation';
+// import CitationPlugin from '@mo/licit-citation';
 
 function main(): void {
   const el = document.createElement('div');
@@ -336,7 +336,7 @@ function main(): void {
   // To pass prosemirror plugins to editor pass it to plugins property which accept array of plugin object.
   // null means no custom plugins to pass
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
-  const plugins = [new CitationPlugin()];
+  const plugins = null;
   const runtime = new CustomLicitRuntime();
   ReactDOM.render(
     <Licit

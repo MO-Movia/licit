@@ -87,7 +87,6 @@
     "write-file-webpack-plugin": "4.5.1"
   },
   "dependencies": {
-    "@mo/licit-citation": "file:mo-licit-citation-0.0.1.tgz",
     "@modusoperandi/licit-doc-attrs-step": "file:modusoperandi-licit-doc-attrs-step-0.0.2.tgz",
     "body-parser": "^1.19.0",
     "browserkeymap": "2.0.2",
