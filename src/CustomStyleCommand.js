@@ -591,7 +591,9 @@ function onLoadRemoveAllMarksExceptOverridden(
   node.descendants(function (child: Node, pos: number, parent: Node) {
     if (child instanceof Node) {
       child.marks.forEach(function (mark, index) {
-        if (!mark.attrs[ATTR_OVERRIDDEN]) {
+        // [FS] IRAD-1311 2021-05-06
+        // Issue fix: Applied URL is removed when applying number style and refresh.
+        if (!mark.attrs[ATTR_OVERRIDDEN] && 'link' !== mark.type.name) {
           tasks.push({
             child,
             pos,

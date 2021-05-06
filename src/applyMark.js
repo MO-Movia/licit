@@ -52,12 +52,12 @@ export default function applyMark(
     const {$from, $to} = ranges[i];
     // [FS] IRAD-1043 2020-10-27
     // No need to remove the applied custom styles when select the custom style mutiple times.
-    // if (has && !isCustomStyleApplied) {
-    //   tr = tr.removeMark($from.pos, $to.pos, markType);
-    // }
-    // if (attrs) {
+    if (has && !isCustomStyleApplied) {
+      tr = tr.removeMark($from.pos, $to.pos, markType);
+    }
+    if (attrs) {
       tr = tr.addMark($from.pos, $to.pos, markType.create(attrs));
-    // }
+    }
   }
 
   return tr;
