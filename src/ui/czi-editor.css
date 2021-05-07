@@ -213,47 +213,8 @@
   line-height: var(--czi-content-line-height);
 }
 
-.citationnote {
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
-}
-
-.citationnote::after {
-  content: '[' counter(prosemirror-citationnote) ']';
-  font-size: 75%;
-  counter-increment: prosemirror-citationnote;
-}
-
-.ProseMirror-hideselection .citationnote-tooltip *::selection { background-color: transparent; }
-.ProseMirror-hideselection .citationnote-tooltip *::-moz-selection { background-color: transparent; }
-
-.citationnote-tooltip {
-  cursor: auto;
-  position: absolute;
-  left: -30px;
-  top: calc(100% + 10px);
-  background: transparent !important;
-  padding: 3px;
-  border-radius: 2px;
-  max-width: 400px;
-  text-align: left;
-  line-height: normal;
-  margin: auto;
-}
-
-.citationnote-tooltip::before {
-  border: 5px solid transparent !important;
-  border-top-width: 0;
-  border-left-color: transparent;
-  border-right-color: transparent;
-  position: absolute;
-  top: -5px;
-  left: 27px;
-  content: " ";
-  height: 0;
-  width: 0;
-}
+.ProseMirror-hideselection *::selection { background-color: transparent; }
+.ProseMirror-hideselection *::-moz-selection { background-color: transparent; }
 
 .iframe-diagram {
   border: 1px solid;
