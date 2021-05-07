@@ -520,6 +520,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             </p>
             <span>
               <input
+                autoFocus
                 className="stylenameinput fontstyle"
                 disabled={
                   this.state.mode == 1 || this.state.mode == 3 ? true : false

@@ -32,7 +32,6 @@ import TextHighlightCommand from './TextHighlightCommand';
 import TextInsertTabSpaceCommand from './TextInsertTabSpaceCommand';
 import TextLineSpacingCommand from './TextLineSpacingCommand';
 import createCommand from './createCommand';
-import DiagramCommands from './DiagramCommand';
 
 const {
   addColumnAfter,
@@ -127,4 +126,3 @@ export const TEXT_INSERT_TAB_SPACE = new TextInsertTabSpaceCommand();
 export const TEXT_LINE_SPACINGS = TextLineSpacingCommand.createGroup();
 export const UL = new ListToggleCommand(false, '');
 export const UNDERLINE = new MarkToggleCommand(MARK_UNDERLINE);
-export const DIAGRAM = new DiagramCommands();

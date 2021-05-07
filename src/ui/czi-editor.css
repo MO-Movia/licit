@@ -213,16 +213,10 @@
   line-height: var(--czi-content-line-height);
 }
 
-.ProseMirror-hideselection *::selection { background-color: transparent; }
-.ProseMirror-hideselection *::-moz-selection { background-color: transparent; }
+.ProseMirror-hideselection *::selection {
+  background-color: transparent;
+}
 
-.iframe-diagram {
-  border: 1px solid;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
+.ProseMirror-hideselection *::-moz-selection {
+  background-color: transparent;
 }

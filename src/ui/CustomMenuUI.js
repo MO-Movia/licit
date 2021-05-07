@@ -404,21 +404,22 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                       if (tr) {
                         dispatch(tr);
                       }
-                      this.props.editorView.focus();
                       this._stylePopup.close();
                       this._stylePopup = null;
+                      this.props.editorView.focus();
                     }
                   });
               }
             }
           }
+          this.props.editorView.focus();
         },
       }
     );
   }
 
-   // [FS] IRAD-1237 2021-05-05
-   // Issue fix: Rename style not working on the fly
+  // [FS] IRAD-1237 2021-05-05
+  // Issue fix: Rename style not working on the fly
   renameStyleInDocument(
     state: EditorState,
     tr: Transform,

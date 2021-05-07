@@ -75,7 +75,6 @@ const {
   TEXT_LINE_SPACINGS,
   UL,
   UNDERLINE,
-  DIAGRAM,
 } = EditorCommands;
 
 export const TABLE_COMMANDS_GROUP = [
@@ -110,7 +109,6 @@ export const TABLE_COMMANDS_GROUP = [
     'Delete Table': TABLE_DELETE_TABLE,
   },
 ];
-
 
 // [FS] IRAD-1012 2020-07-14
 // Fix: Toolbar is poorly organized.
@@ -149,7 +147,6 @@ export const COMMAND_GROUPS = [
     // Added new command button that brings a popup
     '[format_list_numbered] Ordered list': ListTypeCommandButton,
     '[format_list_bulleted] Bulleted list': UL,
-
   },
   // [FS] IRAD-1042 2020-09-09
   // Changes the menu for include the custom styles.
@@ -165,7 +162,6 @@ export const COMMAND_GROUPS = [
       },
     ],
     '[grid_on] Table...': TABLE_COMMANDS_GROUP,
-    '[bar_chart] Daigrams': DIAGRAM,
     '[hr] Horizontal line': HR,
     '[functions] Math': MATH_EDIT,
 

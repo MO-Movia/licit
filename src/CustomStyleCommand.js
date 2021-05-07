@@ -455,6 +455,7 @@ class CustomStyleCommand extends UICommand {
               }
             }
           }
+          view.focus();
         },
       }
     );

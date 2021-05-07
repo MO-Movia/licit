@@ -15,9 +15,7 @@ import {setStyles, setCitations} from '../../src/customStyle';
  */
 
 const STYLES_URI = 'http://greathints.com:3000';
-const DIAGRAMS_URI = 'http://88.99.193.94:8085/diagrams';
 const CITATION_URI = 'http://greathints.com:3003';
-
 const TYPE_JSON = 'application/json; charset=utf-8';
 
 class CustomLicitRuntime {
@@ -203,10 +201,6 @@ class CustomLicitRuntime {
     return [STYLES_URI, ...path].join('/');
   }
 
-  buildRouteForDiagrams(...path: string[]) {
-    return [DIAGRAMS_URI, ...path].join('/');
-  }
-
   buildRouteForCitation(...path: string[]) {
     return [CITATION_URI, ...path].join('/');
   }
@@ -219,11 +213,7 @@ class CustomLicitRuntime {
   async saveCitation(citation: Citation): Promise<Citation[]> {
     const url = this.buildRouteForCitation('citations');
     await new Promise((resolve, reject) => {
-      POST(
-        url,
-        JSON.stringify(citation),
-        TYPE_JSON
-      ).then(
+      POST(url, JSON.stringify(citation), TYPE_JSON).then(
         (data) => {
           // Refresh from server after save
           this.fetchCitations().then(
