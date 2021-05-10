@@ -52,11 +52,6 @@ const ParagraphNodeSpec: NodeSpec = {
     styleName: {
       default: RESERVED_STYLE_NONE,
     },
-    // [FS] IRAD-1251 2021-03-23
-    // new attribute to hold the citation use object.
-    citationUseObject: {
-      default: null,
-    },
   },
   content: 'inline*',
   group: 'block',

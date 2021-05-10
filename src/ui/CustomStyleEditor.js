@@ -525,6 +525,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                 disabled={
                   this.state.mode == 1 || this.state.mode == 3 ? true : false
                 }
+                id="txtName"
                 key="name"
                 onChange={this.onStyleClick.bind(this, 'name')}
                 type="text"
@@ -1197,6 +1198,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
           <button
             className="btnsave buttonstyle"
             onClick={this._save.bind(this)}
+            onKeyDown={this.handleKeyDown}
           >
             Save
           </button>
@@ -1239,6 +1241,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
   };
 
+  handleKeyDown = (e: KeyboardEvent): void => {
+    const txtName = document.getElementById('txtName');
+    if (txtName) {
+      txtName.focus();
+    }
+  };
   // [FS] IRAD-1176 2021-02-08
   // save the custom styles from Edit all option.
   modifyCustomStyle(val: EditorState) {

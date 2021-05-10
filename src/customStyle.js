@@ -91,7 +91,7 @@ export function isPreviousLevelExists(previousLevel: number) {
     const value = customStyles.find((u) => {
       let retVal = false;
       if (u && u.styles) {
-        retVal = u.styles.styleLevel === previousLevel;
+        retVal = Number(u.styles.styleLevel) === previousLevel;
       }
       return retVal;
     });
