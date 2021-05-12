@@ -752,7 +752,6 @@ function applyStyleEx(
         tr = element.executeCustom(state, tr, startPos, endPos);
       }
     });
-    tr = applyLineStyle(node, styleProp.styles, state, tr, startPos, endPos);
     const storedmarks = getMarkByStyleName(styleName, state.schema);
     newattrs.id = null === newattrs.id ? '' : null;
     tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
@@ -1212,40 +1211,6 @@ export function getStyleLevel(styleName: string) {
     }
   }
   return styleLevel;
-}
-
-function applyLineStyle(node, style, state, tr, startPos, endPos) {
-  if (style && style.boldPartial) {
-    let textContent = '';
-    let separator = '';
-    let isCitationText = false;
-    const markType = state.schema.marks[MARK_STRONG];
-    separator = style.boldSentence ? '.' : ' ';
-    let splitArray = null;
-
-    // [FS] IRAD-1181 2021-02-09
-    // Issue fix: Multi-selecting several paragraphs and applying a style is only partially successfull
-    tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
-      if ('text' === node.type.name && node.isAtom && !isCitationText) {
-        textContent = `${textContent}${node.text}`;
-        splitArray = textContent.split(separator);
-        if ('' !== splitArray[0]) {
-          textContent = splitArray[0];
-        } else {
-          if (splitArray.length > 1) {
-            textContent = splitArray[1];
-          }
-        }
-
-        tr = tr.addMark(0, pos + textContent.length + 2, markType.create(null));
-        textContent = '';
-        isCitationText = false;
-      } else if ('citationnote' === node.type.name) {
-        isCitationText = true;
-      }
-    });
-  }
-  return tr;
 }
 
 export function executeCommands(
