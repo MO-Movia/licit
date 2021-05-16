@@ -58,10 +58,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       this.state.styles.nextLineStyleName = RESERVED_STYLE_NONE;
     }
     if (!this.state.styles.fontName) {
-      this.state.styles.fontName = 'Alconica';
+      this.state.styles.fontName = 'Arial';
       }
     if (!this.state.styles.fontSize) {
-      this.state.styles.fontSize = 8;
+      this.state.styles.fontSize = 11;
       }
     this.getCustomStyles(props.editorView.runtime);
   }
@@ -626,7 +626,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <select
                     className="fonttype fontstyle"
                     onChange={this.onFontNameChange.bind(this)}
-                    value={this.state.styles.fontName || 'Alconica'}
+                    value={this.state.styles.fontName || 'Arial'}
                   >
                     {FONT_TYPE_NAMES.map((value) => (
                       <option key={value} value={value}>
@@ -637,7 +637,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <select
                     className="fontsize fontstyle"
                     onChange={this.onFontSizeChange.bind(this)}
-                    value={this.state.styles.fontSize || 8}
+                    value={this.state.styles.fontSize || 11}
                   >
                     {FONT_PT_SIZES.map((value) => (
                       <option key={value} value={value}>
