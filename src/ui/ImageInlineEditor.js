@@ -4,7 +4,14 @@ import './czi-inline-editor.css';
 import CustomButton from './CustomButton';
 import * as React from 'react';
 
-const ImageAlignValues = {
+export type PropValue = {
+  value: ?string,
+  text: ?string,
+};
+
+type Key = 'NONE' | 'LEFT' | 'CENTER' | 'RIGHT';
+
+const ImageAlignValues: {[key: Key]: PropValue} = {
   NONE: {
     value: null,
     text: 'Inline',
