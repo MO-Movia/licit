@@ -8,7 +8,8 @@ import type {MarkSpec} from './Types';
 
 const TextHighlightMarkSpec: MarkSpec = {
   attrs: {
-    highlightColor: '',
+    highlightColor: {default: ''},
+    hasCitation: {default: false},
   },
   inline: true,
   group: 'inline',
@@ -16,20 +17,28 @@ const TextHighlightMarkSpec: MarkSpec = {
     {
       tag: 'span[style*=background-color]',
       getAttrs: (dom: HTMLElement) => {
-        const {backgroundColor} = dom.style;
+        const {backgroundColor, zIndex} = dom.style;
         const color = toCSSColor(backgroundColor);
         return {
           highlightColor: isTransparent(color) ? '' : color,
+          hasCitation: zIndex === '1' ? true : false,
         };
       },
     },
   ],
 
   toDOM(node: Node) {
-    const {highlightColor} = node.attrs;
+    const {highlightColor, hasCitation} = node.attrs;
     let style = '';
-    if (highlightColor) {
+    const empty = '';
+    // [FS] IRAD-1361 2021-05-18
+    // Mange Copy paste citation applied text
+    // added new attribute hasCitation - This should be in plugin but it will not create any issue.
+    if (highlightColor && !hasCitation) {
       style += `background-color: ${highlightColor};`;
+    }
+    if (hasCitation) {
+      style += `background-color: ${empty};z-index: 1`;
     }
     return ['span', {style}, 0];
   },
