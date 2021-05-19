@@ -1387,27 +1387,7 @@ export function updateDocument(
         style
       );
     }
-    // to handle Numbered custom style on edit
-    if (
-      style &&
-      style.styles &&
-      style.styles.styleLevel &&
-      child.attrs.styleName === styleName
-    ) {
-      nodesBeforeSelection.push({pos, node: child});
-    }
   });
-
-  if (nodesBeforeSelection.length > 0) {
-    const child = nodesBeforeSelection[0].node;
-    const newPos = nodesBeforeSelection[0].pos;
-    const newattrs = Object.assign({}, child ? child.attrs : {});
-    newattrs['styleName'] = styleName;
-    newattrs['id'] = child.attrs.id === null ? '' : null;
-    // TODO: Need to handle  the heirarchy break scenario
-    setNewElementObject(newattrs, newPos, 0, false);
-    tr = createEmptyElement(state, tr, child, newPos, 0, newattrs);
-  }
   return tr;
 }
 
@@ -1440,6 +1420,31 @@ function haveEligibleChildren(
     0 < contentLen &&
     styleName === node.attrs.styleName
   );
+}
+
+// [FS] IRAD-1350 2021-05-19
+// To check the style have numbering
+// blocks edit if the style is already applied in editor
+export function isLevelUpdated(
+  state: EditorState,
+  styleName: string,
+  style: StyleProps
+) {
+  const {doc} = state;
+  let bOK = true;
+  const currentLevel = getStyleLevel(styleName);
+  if (style.styles && style.styles.styleLevel === currentLevel) {
+    bOK = true;
+  }
+  if (currentLevel > 0) {
+    doc.descendants(function (child, pos) {
+      const contentLen = child.content.size;
+      if (haveEligibleChildren(child, contentLen, styleName)) {
+        bOK = false;
+      }
+    });
+  }
+  return bOK;
 }
 
 export default CustomStyleCommand;

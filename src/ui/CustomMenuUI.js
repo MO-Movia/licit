@@ -18,6 +18,7 @@ import CustomStyleEditor from './CustomStyleEditor';
 import {
   updateDocument,
   isCustomStyleAlreadyApplied,
+  isLevelUpdated,
 } from '../CustomStyleCommand';
 import {setTextAlign} from '../TextAlignCommand';
 import {setTextLineSpacing} from '../TextLineSpacingCommand';
@@ -359,27 +360,34 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                 // update
                 delete val.editorView;
                 let tr;
-                runtime.saveStyle(val).then((result) => {
-                  if (result) {
-                    result.forEach((obj) => {
-                      if (val.styleName === obj.styleName) {
-                        tr = updateDocument(
-                          this.props.editorState,
-                          this.props.editorState.tr,
-                          val.styleName,
-                          obj
-                        );
+                // [FS] IRAD-1350 2021-05-19
+                // blocks edit if the style is already applied in editor
+                if (
+                  isLevelUpdated(this.props.editorState, val.styleName, val)
+                ) {
+                  runtime.saveStyle(val).then((result) => {
+                    if (result) {
+                      result.forEach((obj) => {
+                        if (val.styleName === obj.styleName) {
+                          tr = updateDocument(
+                            this.props.editorState,
+                            this.props.editorState.tr,
+                            val.styleName,
+                            obj
+                          );
+                        }
+                      });
+                      if (tr) {
+                        dispatch(tr);
                       }
-                    });
-                    if (tr) {
-                      dispatch(tr);
                     }
-                  }
-
-                  this.props.editorView.focus();
-                  this._stylePopup.close();
-                  this._stylePopup = null;
-                });
+                    this.props.editorView.focus();
+                    this._stylePopup.close();
+                    this._stylePopup = null;
+                  });
+                } else {
+                  this.showAlert();
+                }
               } else {
                 // rename
                 runtime
