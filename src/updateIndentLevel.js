@@ -10,7 +10,7 @@ import {Fragment, Schema} from 'prosemirror-model';
 import {MAX_INDENT_LEVEL, MIN_INDENT_LEVEL} from './ParagraphNodeSpec';
 import {Transform} from 'prosemirror-transform';
 import {getCustomStyleByLevel} from './customStyle';
-import { getStyleLevel} from './CustomStyleCommand';
+import {getStyleLevel, applyLatestStyle} from './CustomStyleCommand';
 
 export default function updateIndentLevel(
   state: EditorState,
@@ -45,7 +45,6 @@ export default function updateIndentLevel(
       nodeType === blockquote
     ) {
       tr = setNodeIndentMarkup(state, tr, pos, delta);
-      return false;
     } else if (isListNode(node)) {
       // List is tricky, we'll handle it later.
       listNodePoses.push(pos);
@@ -201,11 +200,11 @@ function setNodeIndentMarkup(
   if (styleLevel) {
     //FIX:  Normal Indent is not working along with custom style numbering
     const nextLevel = parseInt(styleLevel) + delta;
-    // const startPos = tr.selection.$from.before(1);
-    // const endPos = tr.selection.$to.after(1);
+    const startPos = tr.selection.$from.before(1);
+    const endPos = tr.selection.$to.after(1);
     const style = getCustomStyleByLevel(nextLevel);
     if (style) {
-      // tr = applyLatestStyle(style.styleName, state, tr, node, startPos, endPos);
+      tr = applyLatestStyle(style.styleName, state, tr, node, startPos, endPos);
     }
     return tr;
   }
