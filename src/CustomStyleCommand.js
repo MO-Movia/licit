@@ -269,9 +269,6 @@ class CustomStyleCommand extends UICommand {
     const newattrs = Object.assign({}, node ? node.attrs : {});
     let isValidated = true;
 
-    if (view) {
-      view.lastKeyCode = null;
-    }
 
     if ('newstyle' === this._customStyle) {
       this.editWindow(state, view, 0);

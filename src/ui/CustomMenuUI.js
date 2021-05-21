@@ -150,9 +150,6 @@ class CustomMenuUI extends React.PureComponent<any, any> {
   }
 
   _onUIEnter = (command: UICommand, event: SyntheticEvent<*>) => {
-    // [FS] IRAD-1253 2021-04-01
-    // Reset the key code for style and citation plugin.
-    this.props.editorView.lastKeyCode = null;
     if (command.shouldRespondToUIEvent(event)) {
       // check the mouse clicked on down arror to show sub menu
       if (event.currentTarget.className === 'czi-custom-menu-item edit-icon') {

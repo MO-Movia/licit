@@ -54,11 +54,6 @@ class CommandButton extends React.PureComponent<any, any> {
     command: UICommand,
     event: SyntheticEvent<HTMLButtonElement>
   ): void => {
-    // [FS] IRAD-1253 2021-04-01
-    // Reset the key code for style and citation plugin.
-    if (this.props && this.props.editorView) {
-      this.props.editorView.lastKeyCode = null;
-    }
     if (command.shouldRespondToUIEvent(event)) {
       this._execute(command, event);
     }

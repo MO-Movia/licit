@@ -35,7 +35,7 @@ const LEVEL_VALUES = [
   '10',
 ];
 
-const SAMPLE_TEXT = `Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample
+const SAMPLE_TEXT = `Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample.
 Sample Text Sample Text Sample Text Sample Text Sample Text`;
 class CustomStyleEditor extends React.PureComponent<any, any> {
   _unmounted = false;
@@ -59,10 +59,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
     if (!this.state.styles.fontName) {
       this.state.styles.fontName = 'Arial';
-      }
+    }
     if (!this.state.styles.fontSize) {
       this.state.styles.fontSize = 11;
-      }
+    }
     this.getCustomStyles(props.editorView.runtime);
   }
 
@@ -227,11 +227,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       }
     }
 
-    if (this.state.styles.styleLevel && this.state.styles.hasNumbering) {
-      if (
-        document.getElementById('sampletextdiv') &&
-        null !== document.getElementById('sampletextdiv')
-      ) {
+    const sampleDiv = document.getElementById('sampletextdiv');
+    if (sampleDiv && undefined !== sampleDiv) {
+      if (this.state.styles.styleLevel && this.state.styles.hasNumbering) {
         // [FS] IRAD-1137 2021-01-11
         // Issue fix : The Preview text is not showing the numbering in bold after Bold Numbering is enabled.
         const sampleDiv = document.getElementById('sampletextdiv');
@@ -245,6 +243,17 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
               this.state.styles.styleLevel
             )}${SAMPLE_TEXT}`;
           }
+        }
+      } else {
+        sampleDiv.innerText = `${SAMPLE_TEXT}`;
+      }
+      if (this.state.styles.boldPartial) {
+        if (this.state.styles.boldSentence) {
+          const content = SAMPLE_TEXT.split('.');
+          sampleDiv.innerHTML = `<strong>${content[0]}</strong> ${content[1]}`;
+        } else {
+          const content = SAMPLE_TEXT.split(' ');
+          sampleDiv.innerHTML = `<strong>${content[0]}</strong> ${SAMPLE_TEXT}`;
         }
       }
     }
