@@ -31,7 +31,15 @@ class CustomStyleItem extends React.PureComponent<any, any> {
     const {label, hasText, ...pointerProps} = this.props;
     let text = '';
     let customStyle;
-    text = this.sampleText();
+    text = this.sampleText(pointerProps.command._customStyle.styles);
+    const level = this.sampleLevel(pointerProps.command._customStyle.styles);
+    const hasBoldPartial = this.hasBoldPartial(
+      pointerProps.command._customStyle.styles
+    );
+    // [FS] IRAD-1394 2021-05-25
+    // Added two divs to display Numbering and bold first word/sentece.
+    const BOLD_WORD = 'AaBb ';
+    const BOLD_SENTENCE = 'AaBbCc. ';
     const styleProps = getCustomStyleByName(label);
     const className = 'czi-custom-menu-item';
     if (styleProps && styleProps.styles) {
@@ -53,7 +61,39 @@ class CustomStyleItem extends React.PureComponent<any, any> {
             {label}
           </PointerSurface>
         </div>
-        <div style={{width: '100px'}} style={customStyle}>
+        <div
+          style={{
+            display: level === '' ? 'none' : '',
+            fontWeight:
+              pointerProps.command._customStyle.styles &&
+              pointerProps.command._customStyle.styles.boldNumbering
+                ? 'bold'
+                : 'normal',
+          }}
+        >
+          <PointerSurface
+            {...pointerProps}
+            className={klass}
+            style={customStyle}
+          >
+            {level}
+          </PointerSurface>
+        </div>
+        <div
+          style={{
+            display: hasBoldPartial ? '' : 'none',
+            fontWeight: hasBoldPartial ? 'bold' : 'normal',
+          }}
+        >
+          <PointerSurface
+            {...pointerProps}
+            className={klass}
+            style={customStyle}
+          >
+            {hasBoldPartial ? BOLD_SENTENCE : BOLD_WORD}
+          </PointerSurface>
+        </div>
+        <div className="style-sampletext" style={customStyle}>
           <PointerSurface
             {...pointerProps}
             className={klass}
@@ -83,15 +123,26 @@ class CustomStyleItem extends React.PureComponent<any, any> {
     if (!this.props.hasText) {
       text = '';
     }
-    if (this.props.hasText && styles && styles.hasNumbering && '' !== text) {
-      let level = '';
+    return text;
+  }
+  // [FS] IRAD-1394 2021-05-25
+  // To show Numbering in dropdown menu sample text
+  sampleLevel(styles: any): string {
+    let level = '';
+    if (this.props.hasText && styles && styles.hasNumbering) {
       for (let i = 0; i < parseInt(styles.styleLevel); i++) {
         level = level + '1.';
       }
-      const sampletext = parseInt(styles.styleLevel) <= 4 ? 'AaBbCcDd' : 'AaBb';
-      text = level + '' + sampletext;
     }
-    return text;
+    return level;
+  }
+
+  hasBoldPartial(styles: any) {
+    return styles && styles.boldPartial ? true : false;
+  }
+
+  hasBoldSentence(styles: any) {
+    return styles && styles.boldSentence ? true : false;
   }
 }
 

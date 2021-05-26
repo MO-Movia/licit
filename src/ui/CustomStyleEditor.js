@@ -228,7 +228,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
 
     const sampleDiv = document.getElementById('sampletextdiv');
-    if (sampleDiv && undefined !== sampleDiv) {
+    if (sampleDiv) {
       if (this.state.styles.styleLevel && this.state.styles.hasNumbering) {
         // [FS] IRAD-1137 2021-01-11
         // Issue fix : The Preview text is not showing the numbering in bold after Bold Numbering is enabled.

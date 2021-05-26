@@ -1,8 +1,8 @@
 // @flow
 
-import { EditorState, TextSelection } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState, TextSelection} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 
 import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import updateIndentLevel from './updateIndentLevel';
@@ -24,12 +24,12 @@ class IndentCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const { selection, schema } = state;
-    let { tr } = state;
+    const {selection, schema} = state;
+    let {tr} = state;
     tr = tr.setSelection(selection);
-    tr = updateIndentLevel(state, tr, schema, this._delta);
-    if (tr.docChanged) {
-      dispatch && dispatch(tr);
+    const trx = updateIndentLevel(state, tr, schema, this._delta,view);
+    if (trx.docChanged) {
+      dispatch && dispatch(trx.tr);
       return true;
     } else {
       return false;
@@ -44,11 +44,14 @@ class IndentCommand extends UICommand {
     from: number,
     to: number
   ): boolean => {
-    const { schema } = state;
-    tr = updateIndentLevel(state, tr.setSelection(TextSelection.create(tr.doc, from, to)),
+    const {schema} = state;
+    tr = updateIndentLevel(
+      state,
+      tr.setSelection(TextSelection.create(tr.doc, from, to)).tr,
       schema,
-      this._delta
-    );
+      this._delta,
+      null
+    ).tr;
     return tr;
   };
 }

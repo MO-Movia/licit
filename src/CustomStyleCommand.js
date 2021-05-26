@@ -1040,6 +1040,67 @@ function createEmptyElement(
   return tr;
 }
 
+// [FS] IRAD-1387 2021-05-25
+// Indent/deindent without heirachy break
+export function allowCustomLevelIndent(
+  tr: Transform,
+  startPos: number,
+  styleName: string,
+  delta: number
+) {
+  const styleLevel = Number(getStyleLevel(styleName));
+  let allowIndent = false;
+  startPos = startPos < 2 ? 2 : startPos - 1;
+  if (delta > 0) {
+    for (let index = startPos; index >= 0; index--) {
+      const element = tr.doc.resolve(index);
+      if (element && element.parent) {
+        const node = element.parent;
+        if (isAllowedNode(node)) {
+          if ('None' !== node.attrs.styleName) {
+            const nodeStyleLevel = Number(getStyleLevel(node.attrs.styleName));
+            if (
+              nodeStyleLevel >= styleLevel ||
+              styleLevel - nodeStyleLevel === 1
+            ) {
+              allowIndent = true;
+              break;
+            } else {
+              index = index - node.nodeSize || 0;
+            }
+          }
+        } else {
+          index = index - node.nodeSize || 0;
+        }
+      }
+    }
+  } else {
+    startPos = startPos + 1;
+    for (let index = startPos; index < tr.doc.nodeSize - 2; index++) {
+      const element = tr.doc.resolve(index);
+      if (element && element.parent) {
+        const node = element.parent;
+        if (isAllowedNode(node)) {
+          if ('None' !== node.attrs.styleName) {
+            const nodeStyleLevel = Number(getStyleLevel(node.attrs.styleName));
+            if (nodeStyleLevel >= styleLevel) {
+              allowIndent = true;
+              index = index - node.nodeSize;
+              break;
+            } else {
+              index = index + node.nodeSize;
+            }
+          }
+        } else {
+          index = index + node.nodeSize;
+        }
+      }
+    }
+  }
+
+  return allowIndent;
+}
+
 // Mange heirarchy for the elements after selection
 function manageElementsAfterSelection(nodeArray, state, tr) {
   let selectedLevel = Number(MISSED_HEIRACHY_ELEMENT.previousLevel);
@@ -1140,7 +1201,6 @@ function addElementEx(
   let counter = 0;
   const nextLevel = 0;
   if (after) {
-    level = 0;
     //TODO: Need to check this code it wont work
     addElementAfter(nodeAttrs, state, tr, startPos, nextLevel);
   } else {
@@ -1427,19 +1487,14 @@ export function isLevelUpdated(
   styleName: string,
   style: StyleProps
 ) {
-  const {doc} = state;
-  let bOK = true;
+  let bOK = false;
   const currentLevel = getStyleLevel(styleName);
-  if (style.styles && style.styles.styleLevel === currentLevel) {
+  if (
+    style.styles &&
+    (undefined === style.styles.styleLevel ||
+      style.styles.styleLevel === currentLevel)
+  ) {
     bOK = true;
-  }
-  if (currentLevel > 0) {
-    doc.descendants(function (child, pos) {
-      const contentLen = child.content.size;
-      if (haveEligibleChildren(child, contentLen, styleName)) {
-        bOK = false;
-      }
-    });
   }
   return bOK;
 }

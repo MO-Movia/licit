@@ -10,29 +10,34 @@ import {Fragment, Schema} from 'prosemirror-model';
 import {MAX_INDENT_LEVEL, MIN_INDENT_LEVEL} from './ParagraphNodeSpec';
 import {Transform} from 'prosemirror-transform';
 import {getCustomStyleByLevel} from './customStyle';
-import {getStyleLevel, applyLatestStyle} from './CustomStyleCommand';
+import {
+  getStyleLevel,
+  applyLatestStyle,
+  allowCustomLevelIndent,
+} from './CustomStyleCommand';
+import {EditorView} from 'prosemirror-view';
 
 export default function updateIndentLevel(
   state: EditorState,
   tr: Transform,
   schema: Schema,
-  delta: number
+  delta: number,
+  view: EditorView
 ): Transform {
   const {doc, selection} = tr;
   if (!doc || !selection) {
-    return tr;
+    return {tr, docChanged: false};
   }
 
   if (
     !(selection instanceof TextSelection || selection instanceof AllSelection)
   ) {
-    return tr;
+    return {tr, docChanged: false};
   }
 
   const {nodes} = schema;
   const {from, to} = selection;
   const listNodePoses = [];
-
   const blockquote = nodes[BLOCKQUOTE];
   const heading = nodes[HEADING];
   const paragraph = nodes[PARAGRAPH];
@@ -44,7 +49,7 @@ export default function updateIndentLevel(
       nodeType === heading ||
       nodeType === blockquote
     ) {
-      tr = setNodeIndentMarkup(state, tr, pos, delta);
+      tr = setNodeIndentMarkup(state, tr, pos, delta, view);
     } else if (isListNode(node)) {
       // List is tricky, we'll handle it later.
       listNodePoses.push(pos);
@@ -54,7 +59,7 @@ export default function updateIndentLevel(
   });
 
   if (!listNodePoses.length) {
-    return tr;
+    return {tr, docChanged: true};
   }
 
   tr = transformAndPreserveTextSelection(tr, schema, (memo) => {
@@ -70,7 +75,7 @@ export default function updateIndentLevel(
     return tr2;
   });
 
-  return tr;
+  return {tr, docChanged: true};
 }
 
 function setListNodeIndent(
@@ -112,7 +117,7 @@ function setListNodeIndent(
   // It wont satisfy the list hve childrens
 
   if (from <= pos && to >= pos) {
-    return setNodeIndentMarkup(state, tr, pos, delta);
+    return setNodeIndentMarkup(state, tr, pos, delta).tr;
   }
 
   const listNodeType = listNode.type;
@@ -182,14 +187,16 @@ function setNodeIndentMarkup(
   state: EditorState,
   tr: Transform,
   pos: number,
-  delta: number
+  delta: number,
+  view: EditorView
 ): Transform {
+  let retVal = true;
   if (!tr.doc) {
     return tr;
   }
   const node = tr.doc.nodeAt(pos);
   if (!node) {
-    return tr;
+    return {tr, docChanged: retVal};
   }
   const indent = clamp(
     MIN_INDENT_LEVEL,
@@ -202,18 +209,51 @@ function setNodeIndentMarkup(
     const nextLevel = parseInt(styleLevel) + delta;
     const startPos = tr.selection.$from.before(1);
     const endPos = tr.selection.$to.after(1);
+
     const style = getCustomStyleByLevel(nextLevel);
+    let isTabKey = false;
+    let applyNext = false;
     if (style) {
-      tr = applyLatestStyle(style.styleName, state, tr, node, startPos, endPos);
+      // [FS] IRAD-1387 2021-05-25
+      // avoid executing the apply style on changing the cursor position
+      if (view && view.lastKeyCode === 9) {
+        isTabKey = true;
+      }
+      if (delta === 1 && nextLevel - parseInt(styleLevel) === 1) {
+        applyNext = true;
+      } else if (delta === -1 && parseInt(styleLevel) - nextLevel === 1) {
+        applyNext = true;
+      }
+      if (view && view.dispatch && applyNext) {
+        applyNext = true;
+      } else if (isTabKey && applyNext) {
+        applyNext = true;
+      }
+      if (
+        applyNext &&
+        allowCustomLevelIndent(tr, startPos, style.styleName, delta)
+      ) {
+        tr = applyLatestStyle(
+          style.styleName,
+          state,
+          tr,
+          node,
+          startPos,
+          endPos
+        );
+      } else {
+        retVal = false;
+      }
     }
-    return tr;
+    return {tr, docChanged: retVal};
   }
   if (indent === node.attrs.indent) {
-    return tr;
+    return {tr, docChanged: false};
   }
   const nodeAttrs = {
     ...node.attrs,
     indent,
   };
-  return tr.setNodeMarkup(pos, node.type, nodeAttrs, node.marks);
+  tr = tr.setNodeMarkup(pos, node.type, nodeAttrs, node.marks);
+  return {tr, docChanged: true};
 }

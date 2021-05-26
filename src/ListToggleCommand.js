@@ -1,6 +1,6 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
+import {EditorState, TextSelection} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {findParentNodeOfType} from 'prosemirror-utils';
 import {EditorView} from 'prosemirror-view';
@@ -50,7 +50,21 @@ export class ListToggleCommand extends UICommand {
     if (!nodeType) {
       return tr;
     }
-
+    // [FS] IRAD-1391 2021-05-25
+    // For Citation applied paragraph list is not applying
+    // the issue is because of position and node type
+    let selectedNode = tr.doc.nodeAt(selection.from);
+    if (null == selectedNode) {
+      selectedNode = tr.doc.nodeAt(selection.from - 2);
+      if ('citationnote' === selectedNode.type.name) {
+        const newSelection = TextSelection.create(
+          tr.doc,
+          selection.from - 2,
+          selection.to
+        );
+        tr.setSelection(newSelection);
+      }
+    }
     tr = toggleList(tr, schema, nodeType, this._orderedListType);
     if (tr.docChanged) {
       dispatch && dispatch(tr);

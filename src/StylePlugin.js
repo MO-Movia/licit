@@ -597,12 +597,15 @@ function handlePasteCustomStyle(view, event, slice) {
     const newattrs = Object.assign({}, node.attrs);
     newattrs.id = null === newattrs.id ? '' : null;
     let {tr} = view.state;
-    tr = tr.setNodeMarkup(
-      view.state.tr.curSelection.from - 1,
-      undefined,
-      newattrs
-    );
-    view.dispatch(tr);
+    const resPos = tr.doc.resolve(view.state.tr.curSelection.from);
+    if (resPos && resPos.parentOffset === 0) {
+      tr = tr.setNodeMarkup(
+        view.state.tr.curSelection.from - 1,
+        undefined,
+        newattrs
+      );
+      view.dispatch(tr);
+    }
   }
   return false;
 }

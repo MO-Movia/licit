@@ -81,3 +81,10 @@
   text-align: right;
   width: 30px;
 }
+
+.style-sampletext {
+  text-overflow: ellipsis;
+  width: 105px;
+  overflow: hidden;
+  white-space: nowrap;
+}
