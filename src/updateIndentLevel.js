@@ -49,7 +49,7 @@ export default function updateIndentLevel(
       nodeType === heading ||
       nodeType === blockquote
     ) {
-      tr = setNodeIndentMarkup(state, tr, pos, delta, view);
+      tr = setNodeIndentMarkup(state, tr, pos, delta, view).tr;
       return false;
     } else if (isListNode(node)) {
       // List is tricky, we'll handle it later.

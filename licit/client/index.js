@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom';
 
 import Licit from '../../src/client/Licit';
 import CustomLicitRuntime from './CustomLicitRuntime';
-// import CitationPlugin from '@mo/licit-citation';
 
 function main(): void {
   const el = document.createElement('div');

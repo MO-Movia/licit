@@ -55,13 +55,11 @@ export class ListToggleCommand extends UICommand {
     // the issue is because of position and node type
     let selectedNode = tr.doc.nodeAt(selection.from);
     if (null == selectedNode) {
-      selectedNode = tr.doc.nodeAt(selection.from - 2);
-      if ('citationnote' === selectedNode.type.name) {
-        const newSelection = TextSelection.create(
-          tr.doc,
-          selection.from - 2,
-          selection.to
-        );
+      let pos = selection.from - 2;
+      pos = pos < 0 ? 0 : pos;
+      selectedNode = tr.doc.nodeAt(pos);
+      if (selectedNode && 'citationnote' === selectedNode.type.name) {
+        const newSelection = TextSelection.create(tr.doc, pos, selection.to);
         tr.setSelection(newSelection);
       }
     }
