@@ -50,6 +50,7 @@ export default function updateIndentLevel(
       nodeType === blockquote
     ) {
       tr = setNodeIndentMarkup(state, tr, pos, delta, view);
+      return false;
     } else if (isListNode(node)) {
       // List is tricky, we'll handle it later.
       listNodePoses.push(pos);
