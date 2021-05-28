@@ -27,7 +27,7 @@ class IndentCommand extends UICommand {
     const {selection, schema} = state;
     let {tr} = state;
     tr = tr.setSelection(selection);
-    const trx = updateIndentLevel(state, tr, schema, this._delta,view);
+    const trx = updateIndentLevel(state, tr, schema, this._delta, view);
     if (trx.docChanged) {
       dispatch && dispatch(trx.tr);
       return true;
@@ -45,14 +45,9 @@ class IndentCommand extends UICommand {
     to: number
   ): boolean => {
     const {schema} = state;
-    tr = updateIndentLevel(
-      state,
-      tr.setSelection(TextSelection.create(tr.doc, from, to)).tr,
-      schema,
-      this._delta,
-      null
-    ).tr;
-    return tr;
+    tr = tr.setSelection(TextSelection.create(tr.doc, from, to));
+    const trx = updateIndentLevel(state, tr, schema, this._delta, null);
+    return trx.tr;
   };
 }
 
