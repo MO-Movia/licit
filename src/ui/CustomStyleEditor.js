@@ -601,7 +601,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             </div>
           </div>
 
-          <div className="sectiondiv editorsection">
+          <div
+            className="sectiondiv editorsection"
+            style={this.disableRename()}
+          >
             <p className="formp">Style Attributes:</p>
             <div
               style={{
@@ -1320,6 +1323,17 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     if (hiddenDiv && hiddenDiv.style) {
       hiddenDiv.style.display = display;
     }
+  }
+
+  // Disable the style attribute div on Rename
+  disableRename() {
+    const style = {};
+    if (2 === this.state.mode) {
+      style.opacity = 0.4;
+      style.pointerEvents = 'none';
+    }
+
+    return style;
   }
 }
 

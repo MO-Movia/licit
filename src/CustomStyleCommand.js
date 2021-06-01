@@ -1335,11 +1335,13 @@ function removeAllMarksExceptLink(
     if (node.marks && node.marks.length) {
       node.marks.some((mark) => {
         if ('link' !== mark.type.name) {
-          tasks.push({
-            node,
-            pos,
-            mark,
-          });
+          if (!(mark.attrs && mark.attrs.hasCitation)) {
+            tasks.push({
+              node,
+              pos,
+              mark,
+            });
+          }
         }
       });
       return true;
