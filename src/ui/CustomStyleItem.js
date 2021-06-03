@@ -85,6 +85,9 @@ class CustomStyleItem extends React.PureComponent<any, any> {
         <div
           style={{
             display: hasBoldPartial ? '' : 'none',
+            // [FS] IRAD-1410 2021-06-03
+            // Issue: Number example along with Bold first word in custom style menu box not showing properly
+            marginTop: '-4px',
             fontWeight: hasBoldPartial ? 'bold' : 'normal',
           }}
         >

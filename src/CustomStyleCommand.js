@@ -602,11 +602,15 @@ function onLoadRemoveAllMarksExceptOverridden(
         // [FS] IRAD-1311 2021-05-06
         // Issue fix: Applied URL is removed when applying number style and refresh.
         if (!mark.attrs[ATTR_OVERRIDDEN] && 'link' !== mark.type.name) {
+          // [FS] IRAD-1292 2021-06-03
+          // Issue fix: On reload citation word not showing highlighted with custom style applied.
+          if (!(mark.attrs && mark.attrs.hasCitation)) {
           tasks.push({
             child,
             pos,
             mark,
           });
+          }
         }
       });
     }
