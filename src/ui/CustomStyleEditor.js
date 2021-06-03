@@ -229,24 +229,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
     const sampleDiv = document.getElementById('sampletextdiv');
     if (sampleDiv) {
-      if (this.state.styles.styleLevel && this.state.styles.hasNumbering) {
-        // [FS] IRAD-1137 2021-01-11
-        // Issue fix : The Preview text is not showing the numbering in bold after Bold Numbering is enabled.
-        const sampleDiv = document.getElementById('sampletextdiv');
-        if (sampleDiv) {
-          if (this.state.styles.boldNumbering) {
-            sampleDiv.innerHTML = `<strong>${this.getNumberingLevel(
-              this.state.styles.styleLevel
-            )}</strong>${SAMPLE_TEXT}`;
-          } else {
-            sampleDiv.innerText = `${this.getNumberingLevel(
-              this.state.styles.styleLevel
-            )}${SAMPLE_TEXT}`;
-          }
-        }
-      } else {
-        sampleDiv.innerText = `${SAMPLE_TEXT}`;
-      }
+      // [FS] IRAD-1394 2021-06-02
+      // Issue: numbering sample not working when select Bold first sentence
+      let textSample = SAMPLE_TEXT;
       if (this.state.styles.boldPartial) {
         if (this.state.styles.boldSentence) {
           const content = SAMPLE_TEXT.split('.');
@@ -255,6 +240,26 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
           const content = SAMPLE_TEXT.split(' ');
           sampleDiv.innerHTML = `<strong>${content[0]}</strong> ${SAMPLE_TEXT}`;
         }
+        textSample = sampleDiv.innerHTML;
+      }
+      if (this.state.styles.styleLevel && this.state.styles.hasNumbering) {
+        // [FS] IRAD-1137 2021-01-11
+        // Issue fix : The Preview text is not showing the numbering in bold after Bold Numbering is enabled.
+        const sampleDiv = document.getElementById('sampletextdiv');
+        if (sampleDiv) {
+          if (this.state.styles.boldNumbering) {
+            sampleDiv.innerHTML = `<strong>${this.getNumberingLevel(
+              this.state.styles.styleLevel
+            )}</strong>${textSample}`;
+          } else {
+            sampleDiv.innerText = `${this.getNumberingLevel(
+              this.state.styles.styleLevel
+            )}${textSample}`;
+          }
+        }
+      } else {
+        sampleDiv.innerText = `${SAMPLE_TEXT}`;
+        sampleDiv.innerHTML = textSample;
       }
     }
     return style;

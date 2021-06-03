@@ -269,7 +269,6 @@ class CustomStyleCommand extends UICommand {
     const newattrs = Object.assign({}, node ? node.attrs : {});
     let isValidated = true;
 
-
     if ('newstyle' === this._customStyle) {
       this.editWindow(state, view, 0);
       return false;
@@ -418,36 +417,47 @@ class CustomStyleCommand extends UICommand {
                   typeof view.runtime.saveStyle === 'function'
                 ) {
                   delete val.editorView;
-                  view.runtime.saveStyle(val).then((result) => {
-                    // Issue fix: Created custom style Numbering not applied to paragraph.
-                    tr = tr.setSelection(TextSelection.create(doc, 0, 0));
-                    // Apply created styles to document
-                    const {selection} = state;
-                    const startPos = selection.$from.before(1);
-                    const endPos = selection.$to.after(1);
-                    const node = getNode(state, startPos, endPos, tr);
-                    // [FS] IRAD-1238 2021-03-08
-                    // Fix: Shows alert message 'This Numberings breaks hierarchy, Previous levels are missing' on create styles
-                    // if a numbering applied in editor.
-                    if (
-                      !styleHasNumbering(val) ||
-                      isValidHeirarchy(val.styleName)
-                    ) {
-                      // to add previous heirarchy levels
-                      hasMismatchHeirarchy(
-                        state,
-                        tr,
-                        node,
-                        startPos,
-                        endPos,
-                        val.styleName
-                      );
-                      tr = applyStyle(val, val.styleName, state, tr);
-                      dispatch(tr);
-                    } else {
-                      this.showAlert();
-                    }
-                  });
+
+                  // [FS] IRAD-1415 2021-06-02
+                  // Issue: Allow to create custom style numbering level 2 without level 1
+                  if (
+                    styleHasNumbering(val) &&
+                    !isValidHeirarchy(
+                      val.styleName,
+                      parseInt(val.styles.styleLevel)
+                    )
+                  ) {
+                    this.showAlert();
+                  } else {
+                    view.runtime.saveStyle(val).then((result) => {
+                      // Issue fix: Created custom style Numbering not applied to paragraph.
+                      tr = tr.setSelection(TextSelection.create(doc, 0, 0));
+                      // Apply created styles to document
+                      const {selection} = state;
+                      const startPos = selection.$from.before(1);
+                      const endPos = selection.$to.after(1);
+                      const node = getNode(state, startPos, endPos, tr);
+                      // [FS] IRAD-1238 2021-03-08
+                      // Fix: Shows alert message 'This Numberings breaks hierarchy, Previous levels are missing' on create styles
+                      // if a numbering applied in editor.
+                      if (
+                        !styleHasNumbering(val) ||
+                        isValidHeirarchy(val.styleName, 0)
+                      ) {
+                        // to add previous heirarchy levels
+                        hasMismatchHeirarchy(
+                          state,
+                          tr,
+                          node,
+                          startPos,
+                          endPos,
+                          val.styleName
+                        );
+                        tr = applyStyle(val, val.styleName, state, tr);
+                        dispatch(tr);
+                      }
+                    });
+                  }
                 }
               }
             }
@@ -768,8 +778,11 @@ function styleHasNumbering(style) {
 
 // [FS] IRAD-1238 2021-03-08
 // Check for the style with previous numbering level exists
-function isValidHeirarchy(styleName /* New style to be applied */) {
-  const styleLevel = getStyleLevel(styleName);
+function isValidHeirarchy(
+  styleName /* New style to be applied */,
+  level: number
+) {
+  const styleLevel = level > 0 ? level : getStyleLevel(styleName);
   // to find if the previous level of this level present
   const previousLevel = styleLevel - 1;
   return isPreviousLevelExists(previousLevel);

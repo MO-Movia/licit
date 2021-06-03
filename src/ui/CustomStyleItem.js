@@ -64,6 +64,9 @@ class CustomStyleItem extends React.PureComponent<any, any> {
         <div
           style={{
             display: level === '' ? 'none' : '',
+            // [FS] IRAD-1410 2021-06-02
+            // Issue: Number example in custom style menu box not showing properly
+            marginTop: '-4px',
             fontWeight:
               pointerProps.command._customStyle.styles &&
               pointerProps.command._customStyle.styles.boldNumbering
