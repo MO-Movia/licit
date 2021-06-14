@@ -3,7 +3,7 @@ import {EditorState, TextSelection, Selection} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
 import {Node, Fragment, Schema} from 'prosemirror-model';
-import UICommand from './ui/UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import {atViewportCenter} from './ui/PopUpPosition';
 import createPopUp from './ui/createPopUp';
 import AlertInfo from './ui/AlertInfo';
@@ -233,13 +233,12 @@ class CustomStyleCommand extends UICommand {
   ) {
     let done = false;
     let tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
-    tr = removeTextAlignAndLineSpacing(tr, state.schema);
-    hasMismatchHeirarchy(state, tr, node, startPos, endPos);
 
-    // const newattrs = Object.assign({}, node.attrs);
+    hasMismatchHeirarchy(state, tr, node, startPos, endPos);
     newattrs['styleName'] = 'None';
     newattrs['id'] = '';
     tr = tr.setNodeMarkup(startPos, undefined, newattrs);
+    tr = removeTextAlignAndLineSpacing(tr, state.schema);
     tr = createEmptyElement(
       state,
       tr,
@@ -267,10 +266,6 @@ class CustomStyleCommand extends UICommand {
     const node = getNode(state, startPos, endPos, tr);
     const newattrs = Object.assign({}, node ? node.attrs : {});
     let isValidated = true;
-
-    if (view) {
-      view.lastKeyCode = null;
-    }
 
     if ('newstyle' === this._customStyle) {
       this.editWindow(state, view, 0);
@@ -420,40 +415,52 @@ class CustomStyleCommand extends UICommand {
                   typeof view.runtime.saveStyle === 'function'
                 ) {
                   delete val.editorView;
-                  view.runtime.saveStyle(val).then((result) => {
-                    // Issue fix: Created custom style Numbering not applied to paragraph.
-                    tr = tr.setSelection(TextSelection.create(doc, 0, 0));
-                    // Apply created styles to document
-                    const {selection} = state;
-                    const startPos = selection.$from.before(1);
-                    const endPos = selection.$to.after(1);
-                    const node = getNode(state, startPos, endPos, tr);
-                    // [FS] IRAD-1238 2021-03-08
-                    // Fix: Shows alert message 'This Numberings breaks hierarchy, Previous levels are missing' on create styles
-                    // if a numbering applied in editor.
-                    if (
-                      !styleHasNumbering(val) ||
-                      isValidHeirarchy(val.styleName)
-                    ) {
-                      // to add previous heirarchy levels
-                      hasMismatchHeirarchy(
-                        state,
-                        tr,
-                        node,
-                        startPos,
-                        endPos,
-                        val.styleName
-                      );
-                      tr = applyStyle(val, val.styleName, state, tr);
-                      dispatch(tr);
-                    } else {
-                      this.showAlert();
-                    }
-                  });
+
+                  // [FS] IRAD-1415 2021-06-02
+                  // Issue: Allow to create custom style numbering level 2 without level 1
+                  if (
+                    styleHasNumbering(val) &&
+                    !isValidHeirarchy(
+                      val.styleName,
+                      parseInt(val.styles.styleLevel)
+                    )
+                  ) {
+                    this.showAlert();
+                  } else {
+                    view.runtime.saveStyle(val).then((result) => {
+                      // Issue fix: Created custom style Numbering not applied to paragraph.
+                      tr = tr.setSelection(TextSelection.create(doc, 0, 0));
+                      // Apply created styles to document
+                      const {selection} = state;
+                      const startPos = selection.$from.before(1);
+                      const endPos = selection.$to.after(1);
+                      const node = getNode(state, startPos, endPos, tr);
+                      // [FS] IRAD-1238 2021-03-08
+                      // Fix: Shows alert message 'This Numberings breaks hierarchy, Previous levels are missing' on create styles
+                      // if a numbering applied in editor.
+                      if (
+                        !styleHasNumbering(val) ||
+                        isValidHeirarchy(val.styleName, 0)
+                      ) {
+                        // to add previous heirarchy levels
+                        hasMismatchHeirarchy(
+                          state,
+                          tr,
+                          node,
+                          startPos,
+                          endPos,
+                          val.styleName
+                        );
+                        tr = applyStyle(val, val.styleName, state, tr);
+                        dispatch(tr);
+                      }
+                    });
+                  }
                 }
               }
             }
           }
+          view.focus();
         },
       }
     );
@@ -590,12 +597,18 @@ function onLoadRemoveAllMarksExceptOverridden(
   node.descendants(function (child: Node, pos: number, parent: Node) {
     if (child instanceof Node) {
       child.marks.forEach(function (mark, index) {
-        if (!mark.attrs[ATTR_OVERRIDDEN]) {
+        // [FS] IRAD-1311 2021-05-06
+        // Issue fix: Applied URL is removed when applying number style and refresh.
+        if (!mark.attrs[ATTR_OVERRIDDEN] && 'link' !== mark.type.name) {
+          // [FS] IRAD-1292 2021-06-03
+          // Issue fix: On reload citation word not showing highlighted with custom style applied.
+          if (!(mark.attrs && mark.attrs.hasCitation)) {
           tasks.push({
             child,
             pos,
             mark,
           });
+          }
         }
       });
     }
@@ -748,8 +761,8 @@ function applyStyleEx(
         tr = element.executeCustom(state, tr, startPos, endPos);
       }
     });
-    tr = applyLineStyle(node, styleProp.styles, state, tr, startPos, endPos);
     const storedmarks = getMarkByStyleName(styleName, state.schema);
+    newattrs.id = null === newattrs.id ? '' : null;
     tr = _setNodeAttribute(state, tr, startPos, endPos, newattrs);
     tr.storedMarks = storedmarks;
   }
@@ -767,8 +780,11 @@ function styleHasNumbering(style) {
 
 // [FS] IRAD-1238 2021-03-08
 // Check for the style with previous numbering level exists
-function isValidHeirarchy(styleName /* New style to be applied */) {
-  const styleLevel = getStyleLevel(styleName);
+function isValidHeirarchy(
+  styleName /* New style to be applied */,
+  level: number
+) {
+  const styleLevel = level > 0 ? level : getStyleLevel(styleName);
   // to find if the previous level of this level present
   const previousLevel = styleLevel - 1;
   return isPreviousLevelExists(previousLevel);
@@ -824,9 +840,7 @@ function hasMismatchHeirarchy(
   // }
 
   nodesBeforeSelection.forEach((item) => {
-    // if (null === previousLevel) {
     previousLevel = Number(getStyleLevel(item.node.attrs.styleName));
-    // }
   });
   if (null === previousLevel && null == currentLevel) {
     // No levels established before.
@@ -1041,6 +1055,67 @@ function createEmptyElement(
   return tr;
 }
 
+// [FS] IRAD-1387 2021-05-25
+// Indent/deindent without heirachy break
+export function allowCustomLevelIndent(
+  tr: Transform,
+  startPos: number,
+  styleName: string,
+  delta: number
+) {
+  const styleLevel = Number(getStyleLevel(styleName));
+  let allowIndent = false;
+  startPos = startPos < 2 ? 2 : startPos - 1;
+  if (delta > 0) {
+    for (let index = startPos; index >= 0; index--) {
+      const element = tr.doc.resolve(index);
+      if (element && element.parent) {
+        const node = element.parent;
+        if (isAllowedNode(node)) {
+          if ('None' !== node.attrs.styleName) {
+            const nodeStyleLevel = Number(getStyleLevel(node.attrs.styleName));
+            if (
+              nodeStyleLevel >= styleLevel ||
+              styleLevel - nodeStyleLevel === 1
+            ) {
+              allowIndent = true;
+              break;
+            } else {
+              index = index - node.nodeSize || 0;
+            }
+          }
+        } else {
+          index = index - node.nodeSize || 0;
+        }
+      }
+    }
+  } else {
+    startPos = startPos + 1;
+    for (let index = startPos; index < tr.doc.nodeSize - 2; index++) {
+      const element = tr.doc.resolve(index);
+      if (element && element.parent) {
+        const node = element.parent;
+        if (isAllowedNode(node)) {
+          if ('None' !== node.attrs.styleName) {
+            const nodeStyleLevel = Number(getStyleLevel(node.attrs.styleName));
+            if (nodeStyleLevel >= styleLevel) {
+              allowIndent = true;
+              index = index - node.nodeSize;
+              break;
+            } else {
+              index = index + node.nodeSize;
+            }
+          }
+        } else {
+          index = index + node.nodeSize;
+        }
+      }
+    }
+  }
+
+  return allowIndent;
+}
+
 // Mange heirarchy for the elements after selection
 function manageElementsAfterSelection(nodeArray, state, tr) {
   let selectedLevel = Number(MISSED_HEIRACHY_ELEMENT.previousLevel);
@@ -1110,11 +1185,22 @@ function insertParagraph(nodeAttrs, startPos, tr, index, state) {
     // Handle Numbering case for None styles.
     // Use the styleName to hold the style level.
     const customStyle = getCustomStyleByLevel(index);
-    nodeAttrs.styleName = customStyle ? customStyle.styleName : '';
+    nodeAttrs = resetNodeAttrs(nodeAttrs, customStyle);
     const paragraphNode = paragraph.create(nodeAttrs, null, null);
     tr = tr.insert(startPos, Fragment.from(paragraphNode));
   }
   return tr;
+}
+
+// [FS] IRAD-1243 2021-05-05
+// To reset the previous numbering custom style attribute values.
+function resetNodeAttrs(nodeAttrs, customStyle) {
+  nodeAttrs.styleName = customStyle ? customStyle.styleName : '';
+  nodeAttrs.indent = null;
+  nodeAttrs.lineSpacing = null;
+  nodeAttrs.paddingBottom = null;
+  nodeAttrs.paddingTop = null;
+  return nodeAttrs;
 }
 
 function addElementEx(
@@ -1130,7 +1216,6 @@ function addElementEx(
   let counter = 0;
   const nextLevel = 0;
   if (after) {
-    level = 0;
     //TODO: Need to check this code it wont work
     addElementAfter(nodeAttrs, state, tr, startPos, nextLevel);
   } else {
@@ -1200,35 +1285,6 @@ export function getStyleLevel(styleName: string) {
   return styleLevel;
 }
 
-function applyLineStyle(node, style, state, tr, startPos, endPos) {
-  if (style && style.boldPartial) {
-    let textContent = '';
-    let separator = '';
-    let isCitationText = false;
-    const markType = state.schema.marks[MARK_STRONG];
-    separator = style.boldSentence ? '.' : ' ';
-
-    // [FS] IRAD-1181 2021-02-09
-    // Issue fix: Multi-selecting several paragraphs and applying a style is only partially successfull
-    tr.doc.nodesBetween(startPos, endPos, (node, pos) => {
-      if ('text' === node.type.name && node.isAtom && !isCitationText) {
-        textContent = `${textContent}${node.text}`;
-        textContent = textContent.split(separator)[0];
-        tr = tr.addMark(
-          pos,
-          pos + textContent.length + 1,
-          markType.create(null)
-        );
-        textContent = '';
-        isCitationText = false;
-      } else if ('citationnote' === node.type.name) {
-        isCitationText = true;
-      }
-    });
-  }
-  return tr;
-}
-
 export function executeCommands(
   state: EditorState,
   tr: Transform,
@@ -1294,11 +1350,13 @@ function removeAllMarksExceptLink(
     if (node.marks && node.marks.length) {
       node.marks.some((mark) => {
         if ('link' !== mark.type.name) {
-          tasks.push({
-            node,
-            pos,
-            mark,
-          });
+          if (!(mark.attrs && mark.attrs.hasCitation)) {
+            tasks.push({
+              node,
+              pos,
+              mark,
+            });
+          }
         }
       });
       return true;
@@ -1338,7 +1396,7 @@ export function applyStyle(
 }
 
 // apply style to each selected node (when style applied to multiple paragraphs)
-function applyStyleToEachNode(
+export function applyStyleToEachNode(
   state: EditorState,
   from: number,
   to: number,
@@ -1436,6 +1494,26 @@ function haveEligibleChildren(
     0 < contentLen &&
     styleName === node.attrs.styleName
   );
+}
+
+// [FS] IRAD-1350 2021-05-19
+// To check the style have numbering
+// blocks edit if the style is already applied in editor
+export function isLevelUpdated(
+  state: EditorState,
+  styleName: string,
+  style: StyleProps
+) {
+  let bOK = false;
+  const currentLevel = getStyleLevel(styleName);
+  if (
+    style.styles &&
+    (undefined === style.styles.styleLevel ||
+      style.styles.styleLevel === currentLevel)
+  ) {
+    bOK = true;
+  }
+  return bOK;
 }
 
 export default CustomStyleCommand;

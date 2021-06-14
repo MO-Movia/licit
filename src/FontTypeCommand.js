@@ -9,7 +9,7 @@ import * as React from 'react';
 
 import { MARK_FONT_TYPE } from './MarkNames';
 import applyMark from './applyMark';
-import UICommand from './ui/UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 function setFontType(tr: Transform, schema: Schema, name: string): Transform {
   const markType = schema.marks[MARK_FONT_TYPE];

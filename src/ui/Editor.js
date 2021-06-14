@@ -17,7 +17,7 @@ import {
   registeryKeys,
   releaseEditorView,
 } from '../CZIProseMirror';
-import {BOOKMARK, IMAGE, LIST_ITEM, MATH, CITATIONNOTE} from '../NodeNames';
+import {BOOKMARK, IMAGE, LIST_ITEM, MATH} from '../NodeNames';
 import WebFontLoader from '../WebFontLoader';
 import {preLoadFonts} from '../FontTypeMarkSpec';
 import createEmptyEditorState from '../createEmptyEditorState';
@@ -34,7 +34,6 @@ import handleEditorPaste from './handleEditorPaste';
 import uuid from './uuid';
 import './czi-editor.css';
 import type {EditorRuntime} from '../Types';
-import CitationView from './CitationView';
 
 export type EditorProps = {
   autoFocus?: ?boolean,
@@ -66,8 +65,7 @@ export const DEFAULT_NODE_VIEWS = Object.freeze({
   [IMAGE]: ImageNodeView,
   [MATH]: MathNodeView,
   [BOOKMARK]: BookmarkNodeView,
-  [LIST_ITEM]: ListItemNodeView,
-  [CITATIONNOTE]: CitationView,
+  [LIST_ITEM]: ListItemNodeView
 });
 
 const EDITOR_EMPTY_STATE = Object.freeze(createEmptyEditorState());

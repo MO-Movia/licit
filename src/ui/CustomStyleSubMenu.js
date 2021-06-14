@@ -3,7 +3,7 @@
 import './czi-custom-button.css';
 import * as React from 'react';
 import './custom-dropdown.css';
-import UICommand from './UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 class CustomStyleSubMenu extends React.PureComponent<any, any> {
     props: {

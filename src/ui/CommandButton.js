@@ -6,7 +6,7 @@ import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
 
 import CustomButton from './CustomButton';
-import UICommand from './UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 class CommandButton extends React.PureComponent<any, any> {
   props: {
@@ -54,11 +54,6 @@ class CommandButton extends React.PureComponent<any, any> {
     command: UICommand,
     event: SyntheticEvent<HTMLButtonElement>
   ): void => {
-    // [FS] IRAD-1253 2021-04-01
-    // Reset the key code for style and citation plugin.
-    if (this.props && this.props.editorView) {
-      this.props.editorView.lastKeyCode = null;
-    }
     if (command.shouldRespondToUIEvent(event)) {
       this._execute(command, event);
     }

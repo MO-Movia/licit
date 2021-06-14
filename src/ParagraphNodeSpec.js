@@ -52,11 +52,6 @@ const ParagraphNodeSpec: NodeSpec = {
     styleName: {
       default: RESERVED_STYLE_NONE,
     },
-    // [FS] IRAD-1251 2021-03-23
-    // new attribute to hold the citation use object.
-    citationUseObject: {
-      default: null,
-    },
   },
   content: 'inline*',
   group: 'block',
@@ -117,6 +112,7 @@ function getStyle(attrs: Object) {
 function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
   let style = '';
   let styleLevel = 0;
+  let indentOverriden = '';
   if (align && align !== 'left') {
     style += `text-align: ${align};`;
   }
@@ -160,6 +156,9 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
       if (styleProps.styles.fontName) {
         style += `font-family: ${styleProps.styles.fontName};`;
       }
+      if (styleProps.styles.indent) {
+        indentOverriden = styleProps.styles.indent;
+      }
       styleLevel = parseInt(styleProps.styles.styleLevel);
       style += refreshCounters(styleLevel);
     }
@@ -179,7 +178,8 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
   if (paddingBottom && !EMPTY_CSS_VALUE.has(paddingBottom)) {
     style += `padding-bottom: ${paddingBottom};`;
   }
-  return {style, styleLevel};
+
+  return {style, styleLevel, indentOverriden};
 }
 
 // [FS] IRAD-1202 2021-02-15
@@ -209,7 +209,7 @@ function refreshCounters(styleLevel) {
 function toDOM(node: Node): Array<any> {
   const {indent, id, styleName} = node.attrs;
   const attrs = {};
-  const {style, styleLevel} = getStyle(node.attrs);
+  const {style, styleLevel, indentOverriden} = getStyle(node.attrs);
 
   style && (attrs.style = style);
   if (styleLevel) {
@@ -219,7 +219,9 @@ function toDOM(node: Node): Array<any> {
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);
   }
-
+  if ('' !== indentOverriden) {
+    attrs[ATTRIBUTE_INDENT] = String(indentOverriden);
+  }
   if (id) {
     attrs.id = id;
   }

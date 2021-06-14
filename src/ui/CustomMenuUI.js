@@ -1,9 +1,10 @@
 import * as React from 'react';
-import UICommand from './UICommand';
 import {EditorState} from 'prosemirror-state';
 import {Schema} from 'prosemirror-model';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
+import {Node} from 'prosemirror-model';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import uuid from './uuid';
 import './listType.css';
 import CustomStyleItem from './CustomStyleItem';
@@ -15,9 +16,9 @@ import AlertInfo from './AlertInfo';
 import CustomStyleSubMenu from './CustomStyleSubMenu';
 import CustomStyleEditor from './CustomStyleEditor';
 import {
-  applyLatestStyle,
   updateDocument,
   isCustomStyleAlreadyApplied,
+  isLevelUpdated,
 } from '../CustomStyleCommand';
 import {setTextAlign} from '../TextAlignCommand';
 import {setTextLineSpacing} from '../TextLineSpacingCommand';
@@ -32,6 +33,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
   _popUp = null;
   _stylePopup = null;
   _styleName = null;
+  _menuItemHeight = 28;
   // _popUpId = uuid();
   props: {
     className?: ?string,
@@ -47,9 +49,8 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     _style?: ?any,
   };
 
-  _menu = null;
   _id = uuid();
-  _modalId = null;
+  _selectedIndex = 0;
 
   state = {
     expanded: false,
@@ -71,11 +72,20 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     } = this.props;
     const children = [];
     const children1 = [];
-
+    let counter = 0;
+    let selecteClassName = '';
+    const selectedName = this.getTheSelectedCustomStyle(this.props.editorState);
     commandGroups.forEach((group, ii) => {
       Object.keys(group).forEach((label) => {
         const command = group[label];
         const hasText = RESERVED_STYLE_NONE !== label;
+        counter++;
+        if (label === selectedName && '' === selecteClassName) {
+          selecteClassName = 'selectbackground';
+          this._selectedIndex = counter;
+        } else {
+          selecteClassName = '';
+        }
         children.push(
           <CustomStyleItem
             command={command}
@@ -89,6 +99,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             onClick={this._onUIEnter}
             onCommand={onCommand}
             onMouseEnter={this._onUIEnter}
+            selectionClassName={selecteClassName}
             value={command}
           ></CustomStyleItem>
         );
@@ -110,6 +121,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
             onClick={this._onUIEnter}
             onCommand={onCommand}
             onMouseEnter={this._onUIEnter}
+            selectionClassName={''}
             value={command}
           ></CustomStyleItem>
         );
@@ -127,10 +139,17 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     );
   }
 
+  componentDidMount() {
+    const styleDiv = document.getElementsByClassName('stylenames')[0];
+    styleDiv.scrollTop =
+      this._menuItemHeight * this._selectedIndex - this._menuItemHeight * 2 - 5;
+  }
+
+  isAllowedNode(node: Node) {
+    return node.type.name === 'paragraph' || node.type.name === 'ordered_list';
+  }
+
   _onUIEnter = (command: UICommand, event: SyntheticEvent<*>) => {
-    // [FS] IRAD-1253 2021-04-01
-    // Reset the key code for style and citation plugin.
-    this.props.editorView.lastKeyCode = null;
     if (command.shouldRespondToUIEvent(event)) {
       // check the mouse clicked on down arror to show sub menu
       if (event.currentTarget.className === 'czi-custom-menu-item edit-icon') {
@@ -338,27 +357,35 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                 // update
                 delete val.editorView;
                 let tr;
-                runtime.saveStyle(val).then((result) => {
-                  if (result) {
-                    result.forEach((obj) => {
-                      if (val.styleName === obj.styleName) {
-                        tr = updateDocument(
-                          this.props.editorState,
-                          this.props.editorState.tr,
-                          val.styleName,
-                          obj
-                        );
-                      }
-                    });
-                    if (tr) {
-                      dispatch(tr);
-                    }
-                  }
 
-                  this.props.editorView.focus();
-                  this._stylePopup.close();
-                  this._stylePopup = null;
-                });
+                // [FS] IRAD-1350 2021-05-19
+                // blocks edit if the style is already applied in editor
+                if (
+                  isLevelUpdated(this.props.editorState, val.styleName, val)
+                ) {
+                  runtime.saveStyle(val).then((result) => {
+                    if (result) {
+                      result.forEach((obj) => {
+                        if (val.styleName === obj.styleName) {
+                          tr = updateDocument(
+                            this.props.editorState,
+                            this.props.editorState.tr,
+                            val.styleName,
+                            obj
+                          );
+                        }
+                      });
+                      if (tr) {
+                        dispatch(tr);
+                      }
+                    }
+                    this.props.editorView.focus();
+                    this._stylePopup.close();
+                    this._stylePopup = null;
+                  });
+                } else {
+                  this.showAlert();
+                }
               } else {
                 // rename
                 runtime
@@ -383,19 +410,22 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                       if (tr) {
                         dispatch(tr);
                       }
-                      this.props.editorView.focus();
                       this._stylePopup.close();
                       this._stylePopup = null;
+                      this.props.editorView.focus();
                     }
                   });
               }
             }
           }
+          this.props.editorView.focus();
         },
       }
     );
   }
 
+  // [FS] IRAD-1237 2021-05-05
+  // Issue fix: Rename style not working on the fly
   renameStyleInDocument(
     state: EditorState,
     tr: Transform,
@@ -406,21 +436,28 @@ class CustomMenuUI extends React.PureComponent<any, any> {
     const {doc} = state;
 
     doc.descendants(function (child, pos) {
-      const contentLen = child.content.size;
       if (oldStyleName === child.attrs.styleName) {
         child.attrs.styleName = styleName;
-        tr = applyLatestStyle(
-          child.attrs.styleName,
-          state,
-          tr,
-          child,
-          pos,
-          pos + contentLen + 1,
-          style
-        );
+        tr = tr.setNodeMarkup(pos, undefined, child.attrs);
       }
     });
     return tr;
+  }
+
+  // [FS] IRAD-1308 2020-04-21
+  // To get the customstylename of the selected paragraph
+  getTheSelectedCustomStyle(editorState) {
+    const {selection, doc} = editorState;
+    const {from, to} = selection;
+    let customStyleName = RESERVED_STYLE_NONE;
+    doc.nodesBetween(from, to, (node, pos) => {
+      if (this.isAllowedNode(node)) {
+        if (node.attrs.styleName) {
+          customStyleName = node.attrs.styleName;
+        }
+      }
+    });
+    return customStyleName;
   }
 }
 

@@ -35,7 +35,7 @@ const LEVEL_VALUES = [
   '10',
 ];
 
-const SAMPLE_TEXT = `Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample
+const SAMPLE_TEXT = `Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample Text Sample.
 Sample Text Sample Text Sample Text Sample Text Sample Text`;
 class CustomStyleEditor extends React.PureComponent<any, any> {
   _unmounted = false;
@@ -56,6 +56,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       this.state.styles.boldNumbering = true;
       this.state.styles.boldSentence = true;
       this.state.styles.nextLineStyleName = RESERVED_STYLE_NONE;
+    }
+    if (!this.state.styles.fontName) {
+      this.state.styles.fontName = 'Arial';
+    }
+    if (!this.state.styles.fontSize) {
+      this.state.styles.fontSize = 11;
     }
     this.getCustomStyles(props.editorView.runtime);
   }
@@ -221,11 +227,22 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       }
     }
 
-    if (this.state.styles.styleLevel && this.state.styles.hasNumbering) {
-      if (
-        document.getElementById('sampletextdiv') &&
-        null !== document.getElementById('sampletextdiv')
-      ) {
+    const sampleDiv = document.getElementById('sampletextdiv');
+    if (sampleDiv) {
+      // [FS] IRAD-1394 2021-06-02
+      // Issue: numbering sample not working when select Bold first sentence
+      let textSample = SAMPLE_TEXT;
+      if (this.state.styles.boldPartial) {
+        if (this.state.styles.boldSentence) {
+          const content = SAMPLE_TEXT.split('.');
+          sampleDiv.innerHTML = `<strong>${content[0]}</strong> ${content[1]}`;
+        } else {
+          const content = SAMPLE_TEXT.split(' ');
+          sampleDiv.innerHTML = `<strong>${content[0]}</strong> ${SAMPLE_TEXT}`;
+        }
+        textSample = sampleDiv.innerHTML;
+      }
+      if (this.state.styles.styleLevel && this.state.styles.hasNumbering) {
         // [FS] IRAD-1137 2021-01-11
         // Issue fix : The Preview text is not showing the numbering in bold after Bold Numbering is enabled.
         const sampleDiv = document.getElementById('sampletextdiv');
@@ -233,13 +250,16 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
           if (this.state.styles.boldNumbering) {
             sampleDiv.innerHTML = `<strong>${this.getNumberingLevel(
               this.state.styles.styleLevel
-            )}</strong>${SAMPLE_TEXT}`;
+            )}</strong>${textSample}`;
           } else {
             sampleDiv.innerText = `${this.getNumberingLevel(
               this.state.styles.styleLevel
-            )}${SAMPLE_TEXT}`;
+            )}${textSample}`;
           }
         }
+      } else {
+        sampleDiv.innerText = `${SAMPLE_TEXT}`;
+        sampleDiv.innerHTML = textSample;
       }
     }
     return style;
@@ -520,10 +540,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             </p>
             <span>
               <input
+                autoFocus
                 className="stylenameinput fontstyle"
                 disabled={
                   this.state.mode == 1 || this.state.mode == 3 ? true : false
                 }
+                id="txtName"
                 key="name"
                 onChange={this.onStyleClick.bind(this, 'name')}
                 type="text"
@@ -584,7 +606,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             </div>
           </div>
 
-          <div className="sectiondiv editorsection">
+          <div
+            className="sectiondiv editorsection"
+            style={this.disableRename()}
+          >
             <p className="formp">Style Attributes:</p>
             <div
               style={{
@@ -618,7 +643,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <select
                     className="fonttype fontstyle"
                     onChange={this.onFontNameChange.bind(this)}
-                    value={this.state.styles.fontName || ''}
+                    value={this.state.styles.fontName || 'Arial'}
                   >
                     {FONT_TYPE_NAMES.map((value) => (
                       <option key={value} value={value}>
@@ -629,7 +654,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   <select
                     className="fontsize fontstyle"
                     onChange={this.onFontSizeChange.bind(this)}
-                    value={this.state.styles.fontSize || ''}
+                    value={this.state.styles.fontSize || 11}
                   >
                     {FONT_PT_SIZES.map((value) => (
                       <option key={value} value={value}>
@@ -1196,6 +1221,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
           <button
             className="btnsave buttonstyle"
             onClick={this._save.bind(this)}
+            onKeyDown={this.handleKeyDown}
           >
             Save
           </button>
@@ -1238,6 +1264,12 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     }
   };
 
+  handleKeyDown = (e: KeyboardEvent): void => {
+    const txtName = document.getElementById('txtName');
+    if (txtName) {
+      txtName.focus();
+    }
+  };
   // [FS] IRAD-1176 2021-02-08
   // save the custom styles from Edit all option.
   modifyCustomStyle(val: EditorState) {
@@ -1296,6 +1328,17 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     if (hiddenDiv && hiddenDiv.style) {
       hiddenDiv.style.display = display;
     }
+  }
+
+  // Disable the style attribute div on Rename
+  disableRename() {
+    const style = {};
+    if (2 === this.state.mode) {
+      style.opacity = 0.4;
+      style.pointerEvents = 'none';
+    }
+
+    return style;
   }
 }
 

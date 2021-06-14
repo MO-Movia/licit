@@ -4,6 +4,8 @@ import Keymap from 'browserkeymap';
 
 import browser from './browser';
 
+import {makeKeyMap, makeKeyMapWithCommon} from '@modusoperandi/licit-doc-attrs-step';
+
 // https://tinyurl.com/ybwf3wex
 
 export function tooltip(keymap: ?Keymap): ?string {
@@ -21,26 +23,6 @@ export function tooltip(keymap: ?Keymap): ?string {
     return `${keymap.description} (${shortcut})`;
   }
   return null;
-}
-
-function makeKeyMap(
-  description: string,
-  windows: string,
-  mac: string,
-  common?: ?string
-): Keymap {
-  return {
-    description: description,
-    windows: windows,
-    mac: mac,
-    common: common,
-  };
-}
-
-function makeKeyMapWithCommon(description: string, common: string): Keymap {
-  const windows = common.replace(/Mod/i, 'Ctrl');
-  const mac = common.replace(/Mod/i, 'Cmd');
-  return makeKeyMap(description, windows, mac, common);
 }
 
 export const KEY_BACK_DELETE = makeKeyMapWithCommon('', 'Backspace');

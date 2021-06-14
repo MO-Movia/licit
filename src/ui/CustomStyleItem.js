@@ -2,10 +2,10 @@
 
 import './czi-custom-button.css';
 import * as React from 'react';
-import UICommand from './UICommand';
 import {EditorState} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import './custom-dropdown.css';
 import {getCustomStyleByName, getCustomStyle} from '../customStyle';
 import PointerSurface from './PointerSurface';
@@ -24,13 +24,22 @@ class CustomStyleItem extends React.PureComponent<any, any> {
     onMouseEnter: ?(value: any, e: SyntheticEvent<>) => void,
     hasText?: ?Boolean,
     onCommand: ?Function,
+    selectionClassName: ?string,
   };
 
   render(): React.Element<any> {
     const {label, hasText, ...pointerProps} = this.props;
     let text = '';
     let customStyle;
-    text = this.sampleText();
+    text = this.sampleText(pointerProps.command._customStyle.styles);
+    const level = this.sampleLevel(pointerProps.command._customStyle.styles);
+    const hasBoldPartial = this.hasBoldPartial(
+      pointerProps.command._customStyle.styles
+    );
+    // [FS] IRAD-1394 2021-05-25
+    // Added two divs to display Numbering and bold first word/sentece.
+    const BOLD_WORD = 'AaBb ';
+    const BOLD_SENTENCE = 'AaBbCc. ';
     const styleProps = getCustomStyleByName(label);
     const className = 'czi-custom-menu-item';
     if (styleProps && styleProps.styles) {
@@ -38,7 +47,11 @@ class CustomStyleItem extends React.PureComponent<any, any> {
     }
     const klass = cx(className);
     return (
-      <div id="container1" tag={label}>
+      <div
+        className={this.props.selectionClassName}
+        id="container1"
+        tag={label}
+      >
         <div style={{width: '140px', height: 'auto'}}>
           <PointerSurface
             {...pointerProps}
@@ -48,7 +61,45 @@ class CustomStyleItem extends React.PureComponent<any, any> {
             {label}
           </PointerSurface>
         </div>
-        <div style={{width: '100px'}} style={customStyle}>
+        <div
+          style={{
+            display: level === '' ? 'none' : '',
+            // [FS] IRAD-1410 2021-06-02
+            // Issue: Number example in custom style menu box not showing properly
+            marginTop: '-4px',
+            fontWeight:
+              pointerProps.command._customStyle.styles &&
+              pointerProps.command._customStyle.styles.boldNumbering
+                ? 'bold'
+                : 'normal',
+          }}
+        >
+          <PointerSurface
+            {...pointerProps}
+            className={klass}
+            style={customStyle}
+          >
+            {level}
+          </PointerSurface>
+        </div>
+        <div
+          style={{
+            display: hasBoldPartial ? '' : 'none',
+            // [FS] IRAD-1410 2021-06-03
+            // Issue: Number example along with Bold first word in custom style menu box not showing properly
+            marginTop: '-4px',
+            fontWeight: hasBoldPartial ? 'bold' : 'normal',
+          }}
+        >
+          <PointerSurface
+            {...pointerProps}
+            className={klass}
+            style={customStyle}
+          >
+            {hasBoldPartial ? BOLD_SENTENCE : BOLD_WORD}
+          </PointerSurface>
+        </div>
+        <div className="style-sampletext" style={customStyle}>
           <PointerSurface
             {...pointerProps}
             className={klass}
@@ -87,6 +138,25 @@ class CustomStyleItem extends React.PureComponent<any, any> {
       text = level + '' + sampletext;
     }
     return text;
+  }
+  // [FS] IRAD-1394 2021-05-25
+  // To show Numbering in dropdown menu sample text
+  sampleLevel(styles: any): string {
+    let level = '';
+    if (this.props.hasText && styles && styles.hasNumbering) {
+      for (let i = 0; i < parseInt(styles.styleLevel); i++) {
+        level = level + '1.';
+      }
+    }
+    return level;
+  }
+
+  hasBoldPartial(styles: any) {
+    return styles && styles.boldPartial ? true : false;
+  }
+
+  hasBoldSentence(styles: any) {
+    return styles && styles.boldSentence ? true : false;
   }
 }
 

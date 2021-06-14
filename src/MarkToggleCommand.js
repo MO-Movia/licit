@@ -1,13 +1,13 @@
 // @flow
 
-import { toggleMark } from 'prosemirror-commands';
+import {toggleMark} from 'prosemirror-commands';
 // import { Schema } from 'prosemirror-model';
 // import applyMark from './applyMark';
-import { EditorState, TextSelection } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState, TextSelection} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 import findNodesWithSameMark from './findNodesWithSameMark';
-import UICommand from './ui/UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 class MarkToggleCommand extends UICommand {
   _markName: string;
@@ -18,8 +18,8 @@ class MarkToggleCommand extends UICommand {
   }
 
   isActive = (state: EditorState): boolean => {
-    const { schema, doc, selection } = state;
-    const { from, to } = selection;
+    const {schema, doc, selection} = state;
+    const {from, to} = selection;
     const markType = schema.marks[this._markName];
     if (markType && from < to) {
       return !!findNodesWithSameMark(doc, from, to - 1, markType);
@@ -32,8 +32,8 @@ class MarkToggleCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const { schema, selection } = state;
-    const { tr } = state;
+    const {schema, selection} = state;
+    const {tr} = state;
     const markType = schema.marks[this._markName];
     if (!markType) {
       return false;
@@ -43,7 +43,7 @@ class MarkToggleCommand extends UICommand {
       return false;
     }
 
-    const { from, to } = selection;
+    const {from, to} = selection;
     if (tr && to === from + 1) {
       const node = tr.doc.nodeAt(from);
       if (node.isAtom && !node.isText && node.isLeaf) {
@@ -61,8 +61,6 @@ class MarkToggleCommand extends UICommand {
     // }
   };
 
-
-
   // [FS] IRAD-1087 2020-09-30
   // Method to execute strike, em, strong, underline,superscrpt for custom styling implementation.
   executeCustom = (
@@ -71,7 +69,7 @@ class MarkToggleCommand extends UICommand {
     posfrom: number,
     posto: number
   ) => {
-    const { schema, selection } = state;
+    const {schema, selection} = state;
     const markType = schema.marks[this._markName];
     if (!markType) {
       return false;
@@ -81,7 +79,7 @@ class MarkToggleCommand extends UICommand {
       return false;
     }
 
-    const { from, to } = selection;
+    const {from, to} = selection;
     if (tr && to === from + 1) {
       const node = tr.doc.nodeAt(from);
       if (node.isAtom && !node.isText && node.isLeaf) {
@@ -90,35 +88,38 @@ class MarkToggleCommand extends UICommand {
       }
     }
 
-    return toggleCustomStyle(markType, null, state, tr);
-
+    return toggleCustomStyle(markType, null, state, tr, posfrom, posto);
   };
 }
 
 // [FS] IRAD-1042 2020-09-30
 // Fix: overrided the toggleMarks for custom style implementation
 // Return Transform object
-function toggleCustomStyle(markType, attrs, state, tr) {
+function toggleCustomStyle(
+  markType,
+  attrs,
+  state,
+  tr,
+  posfrom: number,
+  posto: number
+) {
   const ref = state.selection;
   const empty = ref.empty;
   const $cursor = ref.$cursor;
   const ranges = ref.ranges;
-  const startPos = ref.$from.before(1);
-  const endPos = ref.$to.after(1);
   if ((empty && !$cursor) || !markApplies(state.doc, ranges, markType)) {
     return tr;
   }
-  if ($cursor && $cursor.parentOffset === 0) {
+  if ($cursor && $cursor.parentOffset === 0 && posfrom === posto) {
     if (markType.isInSet(state.storedMarks || $cursor.marks())) {
       tr = state.tr.removeStoredMark(markType);
     } else {
       tr = state.tr.addStoredMark(markType.create(attrs));
     }
-  }
-  else {
+  } else {
     // [FS] IRAD-1043 2020-10-27
     // No need to remove the applied custom style, if user select the same style multiple times.
-    tr.addMark(startPos, endPos, markType.create(attrs));
+    tr.addMark(posfrom, posto, markType.create(attrs));
   }
   return tr;
 }
@@ -153,7 +154,6 @@ function markApplies(doc, ranges, type) {
   }
   return returned;
 }
-
 
 // function setMark(tr: Transform, schema: Schema, markType): Transform {
 //   // const markType = schema.marks[MARK_FONT_SIZE];

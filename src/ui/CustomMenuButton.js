@@ -9,7 +9,7 @@ import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
 import CustomButton from './CustomButton';
-import UICommand from './UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './createPopUp';
 import uuid from './uuid';
 import CustomMenuUI from './CustomMenuUI';

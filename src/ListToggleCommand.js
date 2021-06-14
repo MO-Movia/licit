@@ -1,15 +1,16 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
+import {EditorState, TextSelection} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {findParentNodeOfType} from 'prosemirror-utils';
 import {EditorView} from 'prosemirror-view';
 
-import {BULLET_LIST, ORDERED_LIST, PARAGRAPH} from './NodeNames';
+import {BULLET_LIST, ORDERED_LIST, PARAGRAPH, IMAGE} from './NodeNames';
 import noop from './noop';
 import toggleList from './toggleList';
-import UICommand from './ui/UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import {getCustomStyleByName} from './customStyle';
+import isNodeSelectionForNodeType from './isNodeSelectionForNodeType';
 
 export class ListToggleCommand extends UICommand {
   _ordered: boolean;
@@ -33,7 +34,7 @@ export class ListToggleCommand extends UICommand {
 
   isEnabled = (state: EditorState, view: ?EditorView): boolean => {
     let bOK = false;
-    bOK = hasCustomNumberedList(state);
+    bOK = hasCustomNumberedList(state) || hasImageNode(state);
     return !bOK;
   };
 
@@ -49,7 +50,19 @@ export class ListToggleCommand extends UICommand {
     if (!nodeType) {
       return tr;
     }
-
+    // [FS] IRAD-1391 2021-05-25
+    // For Citation applied paragraph list is not applying
+    // the issue is because of position and node type
+    let selectedNode = tr.doc.nodeAt(selection.from);
+    if (null == selectedNode) {
+      let pos = selection.from - 2;
+      pos = pos < 0 ? 0 : pos;
+      selectedNode = tr.doc.nodeAt(pos);
+      if (selectedNode && 'citationnote' === selectedNode.type.name) {
+        const newSelection = TextSelection.create(tr.doc, pos, selection.to);
+        tr.setSelection(newSelection);
+      }
+    }
     tr = toggleList(tr, schema, nodeType, this._orderedListType);
     if (tr.docChanged) {
       dispatch && dispatch(tr);
@@ -106,4 +119,12 @@ export function hasCustomNumberedList(state: EditorState) {
     }
   }
   return isNumberedList;
+}
+
+// [FS] IRAD-1317 2021-05-06
+// To disable the list menu in toolbar when select an image
+export function hasImageNode(state: EditorState) {
+  const {selection, schema} = state;
+  const imageNodeType = schema.nodes[IMAGE];
+  return imageNodeType && isNodeSelectionForNodeType(selection, imageNodeType);
 }

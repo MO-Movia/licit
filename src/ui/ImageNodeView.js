@@ -28,8 +28,6 @@ import type {ResizeObserverEntry} from './ResizeObserver';
 const EMPTY_SRC =
   'data:image/gif;base64,' +
   'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-export const EMPTY_DIAGRAM_SRC =
-  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAACsXRFWHRteGZpbGUAJTNDbXhmaWxlJTIwaG9zdCUzRCUyMmFwcC5kaWFncmFtcy5uZXQlMjIlMjBtb2RpZmllZCUzRCUyMjIwMjEtMDQtMDlUMDUlM0E0NSUzQTA0LjIzNFolMjIlMjBhZ2VudCUzRCUyMjUuMCUyMChXaW5kb3dzJTIwTlQlMjA2LjMlM0IlMjBXaW42NCUzQiUyMHg2NCklMjBBcHBsZVdlYktpdCUyRjUzNy4zNiUyMChLSFRNTCUyQyUyMGxpa2UlMjBHZWNrbyklMjBDaHJvbWUlMkY4OS4wLjQzODkuMTE0JTIwU2FmYXJpJTJGNTM3LjM2JTIyJTIwZXRhZyUzRCUyMlVpWDl0Q1dqNTlMRjlWSVZTSHJVJTIyJTIwdmVyc2lvbiUzRCUyMjE0LjUuNCUyMiUyMHR5cGUlM0QlMjJkZXZpY2UlMjIlM0UlM0NkaWFncmFtJTIwaWQlM0QlMjJfb3BOR19iTGFXOEg5c1lOZVlBTiUyMiUyMG5hbWUlM0QlMjJQYWdlLTElMjIlM0VkWkU5RDRJd0VJWiUyRlRYZG9EZUtNcUlzVGczTkRUOXFrY0UycEFmMzFRa3JGQmwyYTYzUHZmUk5XdE9QWmNpT3ZLRUFUbW9pUnNDT2hOTSUyRnk2WjNCMDROZGxualFXQ1U4U2xkUXFSY3NNTWdlU2tBZkNSMmlkc3JFc01hdWc5cEZqRnVMUXl5N280NnJHdDdBQmxRMTExdDZVOExKWlN5NlglMkZrRlZDTkQ1VFE3ZUUlMkZMZzNpWnBKZGM0UENGV0VsWVlSR2R0OXF4QUQzdkx1ekZ4NTMlMkJlRCUyQk5XZWpjajRESldITlBuJTJCaEFySHdEJTNDJTJGZGlhZ3JhbSUzRSUzQyUyRm14ZmlsZSUzRQ9mAI4AAAAXSURBVChTY2QgEjASqY5hVCHekCI6eAAKaQALl4wrOAAAAABJRU5ErkJggg==';
 
 /* This value must be synced with the margin defined at .czi-image-view */
 const IMAGE_MARGIN = 2;
@@ -45,8 +43,6 @@ const DEFAULT_ORIGINAL_SIZE = {
 };
 
 const SIZE_OVERFLOW = 100;
-
-let iframe = null;
 
 // Get the maxWidth that the image could be resized to.
 function getMaxResizeWidth(el: any): number {
@@ -246,7 +242,6 @@ class ImageViewBody extends React.PureComponent<any, any> {
   }
 
   _renderInlineEditor(): void {
-    this.exportAndExitIFrame();
     const el = document.getElementById(this._id);
     if (!el || el.getAttribute('data-active') !== 'true') {
       this._inlineEditor && this._inlineEditor.close();
@@ -332,31 +327,24 @@ class ImageViewBody extends React.PureComponent<any, any> {
     if (!this._mounted) {
       return;
     }
-    const align = value ? value.align : null;
-    if (
-      this.props.node.attrs.diagram === '1' &&
-      ('edit_full_screen' === align || 'edit' === align)
-    ) {
-      this.createIframe();
-      this.openDiagramNet(value ? value.align || '' : '');
-    } else {
-      const {getPos, node, editorView} = this.props;
-      const pos = getPos();
-      const attrs = {
-        ...node.attrs,
-        align,
-      };
 
-      let tr = editorView.state.tr;
-      const {selection} = editorView.state;
-      tr = tr.setNodeMarkup(pos, null, attrs);
-      // [FS] IRAD-1005 2020-07-09
-      // Upgrade outdated packages.
-      // reset selection to original using the latest doc.
-      const origSelection = NodeSelection.create(tr.doc, selection.from);
-      tr = tr.setSelection(origSelection);
-      editorView.dispatch(tr);
-    }
+    const align = value ? value.align : null;
+    const {getPos, node, editorView} = this.props;
+    const pos = getPos();
+    const attrs = {
+      ...node.attrs,
+      align,
+    };
+
+    let tr = editorView.state.tr;
+    const {selection} = editorView.state;
+    tr = tr.setNodeMarkup(pos, null, attrs);
+    // [FS] IRAD-1005 2020-07-09
+    // Upgrade outdated packages.
+    // reset selection to original using the latest doc.
+    const origSelection = NodeSelection.create(tr.doc, selection.from);
+    tr = tr.setSelection(origSelection);
+    editorView.dispatch(tr);
   };
 
   _onBodyRef = (ref: any): void => {
@@ -390,165 +378,6 @@ class ImageViewBody extends React.PureComponent<any, any> {
       },
     });
   };
-
-  createIframe() {
-    iframe = document.createElement('iframe');
-    iframe.setAttribute('frameborder', '0');
-  }
-
-  exportAndExitIFrame() {
-    if (iframe) {
-      // Sends a request to export the diagram as XML with embedded PNG
-      iframe.contentWindow.postMessage(
-        JSON.stringify({
-          action: 'export',
-          format: 'xmlpng',
-          spinKey: 'saving',
-        }),
-        '*'
-      );
-    }
-  }
-
-  saveImage(data) {
-    const src = data;
-    const {getPos, node, editorView} = this.props;
-    const pos = getPos();
-    const attrs = {
-      ...node.attrs,
-      src,
-    };
-
-    let tr = editorView.state.tr;
-    tr = tr.setNodeMarkup(pos, null, attrs);
-    editorView.dispatch(tr);
-  }
-
-  isDefaultData(src) {
-    return EMPTY_DIAGRAM_SRC === src ? '' : src;
-  }
-
-  destroyIFrame() {
-    if (iframe) {
-      iframe.remove();
-      iframe = null;
-    }
-    //this.updateDiagramEditState(1);
-  }
-
-  updateDiagramEditState(value: Number) {
-    const {getPos, node, editorView} = this.props;
-    const pos = getPos();
-    const newattrs = Object.assign({}, node.attrs);
-    newattrs.diagram = value;
-    let tr = editorView.state.tr;
-    tr = tr.setNodeMarkup(pos, null, newattrs);
-    editorView.dispatch(tr);
-  }
-
-  openDiagramNet(editMode: string) {
-    const url =
-      this.props.editorView.runtime.buildRouteForDiagrams() +
-      '?embed=1&ui=min&modified=0&proto=json&noSaveBtn=1';
-
-    const source = document.getElementsByClassName(
-      'czi-image-resize-box-image'
-    )[0]; // Implements protocol for loading and exporting with embedded XML
-    const inline = document.getElementsByClassName('czi-inline-editor')[0];
-    let parent: ?Element;
-    let rect: window.ClientRect;
-    let inlineHeight;
-    if (
-      source &&
-      source.parentElement &&
-      source.parentElement.parentElement &&
-      source.parentElement.parentElement.parentElement
-    ) {
-      parent = source.parentElement.parentElement.parentElement;
-      rect = parent.getBoundingClientRect();
-      inlineHeight = inline.getBoundingClientRect().height;
-    }
-
-    // Implements protocol for loading and exporting with embedded XML
-    const receive = (evt) => {
-      if (evt.data.length > 0) {
-        const msg = JSON.parse(evt.data);
-
-        // Received if the editor is ready
-        if (msg.event == 'init' && iframe && iframe.contentWindow) {
-          // Sends the data URI with embedded XML to editor
-          //  this.updateDiagramEditState(2);
-          iframe.contentWindow.postMessage(
-            JSON.stringify({
-              action: 'load',
-              xmlpng:
-                editMode === 'new'
-                  ? ''
-                  : this.isDefaultData(source.getAttribute('src')),
-            }),
-            '*'
-          );
-        }
-        // Received if the user clicks save
-        else if (msg.event == 'save') {
-          this.exportAndExitIFrame();
-        }
-        // Received if the export request was processed
-        else if (msg.event == 'export') {
-          // Updates the data URI of the image
-          this.saveImage(msg.data);
-        }
-
-        // Received if the user clicks exit or after export
-        if (msg.event == 'exit' || msg.event == 'export') {
-          // Closes the editor
-
-          window.removeEventListener('message', receive);
-          this.destroyIFrame();
-        }
-      }
-    };
-
-    window.addEventListener('message', receive);
-
-    if ('edit' === editMode) {
-      const offsetLeft = document.getElementsByClassName(
-        'ProseMirror czi-prosemirror-editor'
-      )[0].offsetLeft;
-      const offsetTop = document.getElementsByClassName(
-        'czi-image-view ProseMirror-selectednode'
-      )[0].offsetTop;
-      if (iframe && rect && parent) {
-        iframe.setAttribute('src', url);
-        iframe.setAttribute(
-          'style',
-          'z-index: 9999; position: absolute; top: ' +
-            (offsetTop - 2) +
-            'px; left: ' +
-            (rect.left - (offsetLeft + 2)) +
-            'px; height: ' +
-            (rect.height + inlineHeight + 8) +
-            'px; width: ' +
-            (rect.width + 4) +
-            'px;' +
-            'box-shadow: 0 0 2px 2px'
-        );
-
-        parent.appendChild(iframe);
-      }
-      if (this._inlineEditor) {
-        this._inlineEditor.close();
-      }
-    } else {
-      if (iframe) {
-        iframe.setAttribute('class', 'iframe-diagram');
-
-        if (null != document.body) {
-          document.body.appendChild(iframe);
-        }
-      }
-    }
-  }
 }
 
 class ImageNodeView extends CustomNodeView {

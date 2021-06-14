@@ -7,7 +7,7 @@ import { EditorView } from 'prosemirror-view';
 
 import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
 import DocLayoutEditor from './ui/DocLayoutEditor';
-import UICommand from './ui/UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './ui/createPopUp';
 
 import type { DocLayoutEditorValue } from './ui/DocLayoutEditor';

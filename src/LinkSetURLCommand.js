@@ -13,7 +13,7 @@ import {
 import applyMark from './applyMark';
 import findNodesWithSameMark from './findNodesWithSameMark';
 import LinkURLEditor from './ui/LinkURLEditor';
-import UICommand from './ui/UICommand';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './ui/createPopUp';
 
 class LinkSetURLCommand extends UICommand {

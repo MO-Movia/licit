@@ -54,8 +54,6 @@ function getAttrs(dom: HTMLElement) {
     }
   }
 
-  const diagram = dom.getAttribute('diagram');
-
   return {
     align,
     alt: dom.getAttribute('alt') || null,
@@ -65,7 +63,6 @@ function getAttrs(dom: HTMLElement) {
     src: dom.getAttribute('src') || null,
     title: dom.getAttribute('title') || null,
     width: parseInt(width, 10) || null,
-    diagram,
   };
 }
 
@@ -81,7 +78,6 @@ const ImageNodeSpec: NodeSpec = {
     src: {default: null},
     title: {default: ''},
     width: {default: null},
-    diagram: {default: 0}, // diagram=0 means image, 1 means diagram, 2 means diagram in edit mode.
   },
   group: 'inline',
   draggable: true,

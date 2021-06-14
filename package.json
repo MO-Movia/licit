@@ -23,7 +23,6 @@
     "lint:css": "stylelint \"**/*.css\"",
     "lint:js": "eslint \"src/**/*.js\" \"licit/**/*.js\"",
     "start": "node scripts/webserver.js",
-    "postinstall": "node fix_pm_tables_dist.js",
     "prepare": "npm run build:dist",
     "prebuild:style-service-docker": "node utils/build_customstyle_server.js",
     "build:style-service-docker": "docker build . -f style-service.Dockerfile -t style-service:latest"
@@ -114,7 +113,7 @@
     "prosemirror-keymap": "^1.1.4",
     "prosemirror-model": "^1.13.1",
     "prosemirror-state": "^1.3.4",
-    "prosemirror-tables": "github:ProseMirror/prosemirror-tables",
+    "prosemirror-tables": "^1.1.1",
     "prosemirror-transform": "^1.2.9",
     "prosemirror-utils": "0.9.6",
     "prosemirror-view": "^1.17.3",

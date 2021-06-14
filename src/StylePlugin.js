@@ -72,6 +72,9 @@ export default class StylePlugin extends Plugin {
             this.view = view;
           },
         },
+        handlePaste(view, event, slice) {
+          return handlePasteCustomStyle(view, event, slice);
+        },
         nodeViews: [],
       },
       appendTransaction: (transactions, prevState, nextState) => {
@@ -536,12 +539,9 @@ function applyLineStyle(prevState, nextState, tr) {
 // get text content from selected node
 function getNodeText(node: Node) {
   let textContent = '';
-  let isCitationText = false;
   node.descendants(function (child: Node, pos: number, parent: Node) {
-    if ('text' === child.type.name && !isCitationText) {
+    if ('text' === child.type.name) {
       textContent = `${textContent}${child.text}`;
-    } else if ('citationnote' === child.type.name) {
-      isCitationText = true;
     }
   });
   return textContent;
@@ -553,19 +553,59 @@ function addMarksToLine(tr, state, node, pos, boldSentence) {
   let textContent = getNodeText(node);
   const endPos = textContent.length;
   let content = '';
+  let counter = 0;
   if (boldSentence) {
     content = textContent.split('.');
   } else {
     content = textContent.split(' ');
   }
-  textContent = content[0];
-  tr = tr.addMark(pos, pos + textContent.length + 1, markType.create(null));
+  if ('' !== content[0]) {
+    textContent = content[0];
+  } else {
+    if (content.length > 1) {
+      for (let index = 0; index < content.length; index++) {
+        if ('' === content[index]) {
+          counter++;
+        } else {
+          textContent = content[index];
+          index = content.length;
+        }
+      }
+    }
+  }
+
+  tr = tr.addMark(
+    pos,
+    pos + textContent.length + 1 + counter,
+    markType.create(null)
+  );
   if (content.length > 1) {
     tr = tr.removeMark(
-      pos + textContent.length + 1,
+      pos + textContent.length + 1 + counter,
       pos + endPos + 1,
       markType
     );
   }
   return tr;
+}
+
+// Handles the styleName attribute on copy/paste
+function handlePasteCustomStyle(view, event, slice) {
+  const selectionHead = view.state.tr.curSelection.$head;
+  if (selectionHead && slice.content.content) {
+    const node = slice.content.content[0];
+    const newattrs = Object.assign({}, node.attrs);
+    newattrs.id = null === newattrs.id ? '' : null;
+    let {tr} = view.state;
+    const resPos = tr.doc.resolve(view.state.tr.curSelection.from);
+    if (resPos && resPos.parentOffset === 0) {
+      tr = tr.setNodeMarkup(
+        view.state.tr.curSelection.from - 1,
+        undefined,
+        newattrs
+      );
+      view.dispatch(tr);
+    }
+  }
+  return false;
 }

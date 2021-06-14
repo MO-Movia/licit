@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 
 import Licit from '../../src/client/Licit';
 import CustomLicitRuntime from './CustomLicitRuntime';
+
 function main(): void {
   const el = document.createElement('div');
   el.id = 'licit-app';
