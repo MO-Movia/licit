@@ -30,8 +30,21 @@ const ImageAlignValues: {[key: Key]: PropValue} = {
   },
 };
 
+const DiagramMenuValues: {[key: Key]: PropValue} = {
+  ...ImageAlignValues,
+  EDIT: {
+    value: 'edit',
+    text: 'Edit',
+  },
+  EDIT_FULL_SCREEN: {
+    value: 'edit_full_screen',
+    text: 'Edit in full screen',
+  },
+};
+
 export type ImageInlineEditorValue = {
   align: ?string,
+  diagram: ?string,
 };
 
 class ImageInlineEditor extends React.PureComponent<any, any> {
@@ -42,9 +55,15 @@ class ImageInlineEditor extends React.PureComponent<any, any> {
 
   render(): React.Element<any> {
     const align = this.props.value ? this.props.value.align : null;
+    const values: {[key: Key]: PropValue} = this.props.value
+      ? this.props.value.diagram === '1'
+        ? DiagramMenuValues
+        : ImageAlignValues
+      : ImageAlignValues;
+
     const onClick = this._onClick;
-    const buttons = Object.keys(ImageAlignValues).map(key => {
-      const {value, text} = ImageAlignValues[key];
+    const buttons = Object.keys(values).map((key) => {
+      const {value, text} = values[key];
       return (
         <CustomButton
           active={align === value}
@@ -60,7 +79,7 @@ class ImageInlineEditor extends React.PureComponent<any, any> {
   }
 
   _onClick = (align: ?string): void => {
-    this.props.onSelect({align: align});
+    this.props.onSelect({align: align, diagram: undefined});
   };
 }
 

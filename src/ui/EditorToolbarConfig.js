@@ -75,6 +75,8 @@ const {
   TEXT_LINE_SPACINGS,
   UL,
   UNDERLINE,
+  DIAGRAM,
+  ADD_CITATION,
 } = EditorCommands;
 
 export const TABLE_COMMANDS_GROUP = [
@@ -162,6 +164,7 @@ export const COMMAND_GROUPS = [
       },
     ],
     '[grid_on] Table...': TABLE_COMMANDS_GROUP,
+    '[bar_chart] Daigrams': DIAGRAM,
     '[hr] Horizontal line': HR,
     '[functions] Math': MATH_EDIT,
 

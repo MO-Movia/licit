@@ -25,7 +25,10 @@ describe('<Licit />', () => {
         content: {size: 10},
         resolve: () => ({min: () => 0, max: () => 10}),
       },
-      tr: {setSelection: noop},
+      tr: {
+        setSelection: () => fakeEditorView.state.tr,
+        scrollIntoView: noop,
+      },
     },
   };
 

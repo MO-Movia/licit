@@ -539,9 +539,12 @@ function applyLineStyle(prevState, nextState, tr) {
 // get text content from selected node
 function getNodeText(node: Node) {
   let textContent = '';
+  let isCitationText = false;
   node.descendants(function (child: Node, pos: number, parent: Node) {
-    if ('text' === child.type.name) {
+    if ('text' === child.type.name && !isCitationText) {
       textContent = `${textContent}${child.text}`;
+    } else if ('citationnote' === child.type.name) {
+      isCitationText = true;
     }
   });
   return textContent;

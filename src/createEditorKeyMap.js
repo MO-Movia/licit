@@ -42,6 +42,7 @@ const {
   TEXT_INSERT_TAB_SPACE,
   STRONG,
   UNDERLINE,
+  ADD_CITATION,
 } = EditorCommands;
 
 function bindCommands(...commands: Array<UICommand>): UserKeyCommand {
@@ -85,6 +86,7 @@ export default function createEditorKeyMap(): UserKeyMap {
     //   BLOCKQUOTE_INSERT_NEW_LINE.execute,
     [KEY_INSERT_NEW_LINE_IN_LIST_ITEM.common]:
       LIST_ITEM_INSERT_NEW_LINE.execute,
+    [KEY_CITATION.common]: ADD_CITATION.execute,
   };
 
   return result;

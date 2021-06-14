@@ -234,9 +234,7 @@ class CustomStyleCommand extends UICommand {
     let done = false;
     let tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
 
-    hasMismatchHeirarchy(state, tr, node, startPos, endPos);
-
-    // const newattrs = Object.assign({}, node.attrs);
+    hasMismatchHeirarchy(state, tr, node, startPos, endPos);    
     newattrs['styleName'] = 'None';
     newattrs['id'] = '';
     tr = tr.setNodeMarkup(startPos, undefined, newattrs);
@@ -1286,7 +1284,7 @@ export function getStyleLevel(styleName: string) {
   }
   return styleLevel;
 }
-
+ 
 export function executeCommands(
   state: EditorState,
   tr: Transform,

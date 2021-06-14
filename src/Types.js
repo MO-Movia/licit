@@ -212,6 +212,7 @@ export type EditorRuntime = {
    * Delete an existing citation from the service.
    * @param name
    */
+
   removeCitation: (referenceId: string) => Promise<Citation[]>,
 };
 

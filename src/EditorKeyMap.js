@@ -135,6 +135,7 @@ export const KEY_TOGGLE_UNDERLINE = makeKeyMapWithCommon(
   'Mod-u'
 );
 export const KEY_UNDO = makeKeyMapWithCommon('Undo', 'Mod-z');
+export const KEY_CITATION = makeKeyMapWithCommon('Citation', 'Mod-' + "'");
 
 export const ALL_KEYS = [
   KEY_BACK_DELETE,
@@ -166,6 +167,7 @@ export const ALL_KEYS = [
   KEY_TOGGLE_STRIKETHROUGH,
   KEY_TOGGLE_UNDERLINE,
   KEY_UNDO,
+  KEY_CITATION,
 ];
 
 export function findKeymapByDescription(description: string): ?Keymap {

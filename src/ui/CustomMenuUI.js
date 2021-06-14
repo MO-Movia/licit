@@ -357,6 +357,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                 // update
                 delete val.editorView;
                 let tr;
+
                 // [FS] IRAD-1350 2021-05-19
                 // blocks edit if the style is already applied in editor
                 if (

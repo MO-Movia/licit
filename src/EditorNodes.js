@@ -14,6 +14,7 @@ import MathNodeSpec from './MathNodeSpec';
 import * as NodeNames from './NodeNames';
 import OrderedListNodeSpec from './OrderedListNodeSpec';
 import ParagraphNodeSpec from './ParagraphNodeSpec';
+import CitationNodeSpec from './CitationNodeSpec';
 import TableNodesSpecs from './TableNodesSpecs';
 import TextNodeSpec from './TextNodeSpec';
 
@@ -32,6 +33,7 @@ const {
   ORDERED_LIST,
   PARAGRAPH,
   TEXT,
+  CITATIONNOTE,
 } = NodeNames;
 
 // https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
@@ -55,6 +57,10 @@ const nodes = {
 };
 
 const marks = {};
-const schema = new Schema({nodes, marks});
+let schema = new Schema({nodes, marks});
+schema = new Schema({
+  nodes: schema.spec.nodes.addBefore('image', CITATIONNOTE, CitationNodeSpec),
+  marks: marks
+});
 const EditorNodes = schema.spec.nodes.append(TableNodesSpecs);
 export default EditorNodes;

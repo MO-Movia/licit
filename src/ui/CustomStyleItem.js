@@ -129,6 +129,14 @@ class CustomStyleItem extends React.PureComponent<any, any> {
     if (!this.props.hasText) {
       text = '';
     }
+    if (this.props.hasText && styles && styles.hasNumbering && '' !== text) {
+      let level = '';
+      for (let i = 0; i < parseInt(styles.styleLevel); i++) {
+        level = level + '1.';
+      }
+      const sampletext = parseInt(styles.styleLevel) <= 4 ? 'AaBbCcDd' : 'AaBb';
+      text = level + '' + sampletext;
+    }
     return text;
   }
   // [FS] IRAD-1394 2021-05-25
