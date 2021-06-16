@@ -1,6 +1,6 @@
 // @flow
 import applyDevTools from 'prosemirror-dev-tools';
-import {EditorState, TextSelection} from 'prosemirror-state';
+import {EditorState, TextSelection, Plugin} from 'prosemirror-state';
 import {Node} from 'prosemirror-model';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
@@ -18,6 +18,11 @@ import {atViewportCenter} from '../ui/PopUpPosition';
 import AlertInfo from '../ui/AlertInfo';
 import {SetDocAttrStep} from '@modusoperandi/licit-doc-attrs-step';
 import './licit.css';
+import DefaultEditorPlugins from '../buildEditorPlugins';
+import {Schema} from 'prosemirror-model';
+import EditorMarks from '../EditorMarks';
+import EditorNodes from '../EditorNodes';
+
 const ATTR_OBJID = 'objectId';
 const ATTR_OBJMETADATA = 'objectMetaData';
 /**
@@ -42,6 +47,8 @@ class Licit extends React.Component<any, any> {
   _clientID: string;
   _editorView: EditorView; // This will be handy in updating document's content.
   _skipSCU: boolean; // Flag to decide whether to skip shouldComponentUpdate
+  _defaultEditorSchema: Schema;
+  _defaultEditorPlugins: Array<Plugin>;
 
   _popUp = null;
 
@@ -101,22 +108,47 @@ class Licit extends React.Component<any, any> {
     // [FS] 2020-07-03
     // Handle Image Upload from Angular App
     const runtime = props.runtime || null;
-    //const runtime = null;
     const plugins = props.plugins || null;
 
-    let editorState = convertFromJSON(data, null, plugins);
+    this._defaultEditorSchema = new Schema({
+      nodes: EditorNodes,
+      marks: EditorMarks,
+    });
+    this._defaultEditorPlugins = new DefaultEditorPlugins(
+      this._defaultEditorSchema
+    ).get();
+
+    let editorState = convertFromJSON(
+      data,
+      null,
+      this._defaultEditorSchema,
+      plugins,
+      this._defaultEditorPlugins
+    );
     // [FS] IRAD-1067 2020-09-19
     // The editorState will return null if the doc Json is mal-formed
     if (null === editorState) {
-      editorState = convertFromJSON(EMPTY_DOC_JSON, null, plugins);
+      editorState = convertFromJSON(
+        EMPTY_DOC_JSON,
+        null,
+        this._defaultEditorSchema,
+        plugins,
+        this._defaultEditorPlugins
+      );
       this.showAlert();
     }
 
     const setState = this.setState.bind(this);
     this._connector = collaborative
-      ? new CollabConnector(editorState, setState, {
-          docID,
-        })
+      ? new CollabConnector(
+          editorState,
+          setState,
+          {
+            docID,
+          },
+          this._defaultEditorSchema,
+          this._defaultEditorPlugins
+        )
       : new SimpleConnector(editorState, setState);
 
     const loaded = true;
@@ -280,9 +312,15 @@ class Licit extends React.Component<any, any> {
         const docID = nextState.docID || 1;
         // create new connector
         this._connector = collabEditing
-          ? new CollabConnector(editorState, setState, {
-              docID,
-            })
+          ? new CollabConnector(
+              editorState,
+              setState,
+              {
+                docID,
+              },
+              this._defaultEditorSchema,
+              this._defaultEditorPlugins
+            )
           : new SimpleConnector(editorState, setState);
       }
     }

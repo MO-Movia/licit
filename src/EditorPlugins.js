@@ -1,8 +1,8 @@
 // @flow
 
 import EditorSchema from './EditorSchema';
-import buildEditorPlugins from './buildEditorPlugins';
+import DefaultEditorPlugins from './buildEditorPlugins';
 
 // Plugin
-const EditorPlugins = buildEditorPlugins(EditorSchema);
+const EditorPlugins = new DefaultEditorPlugins(EditorSchema);
 export default EditorPlugins;

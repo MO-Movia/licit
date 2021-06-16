@@ -3,8 +3,10 @@
 import {Schema} from 'prosemirror-model';
 import {EditorState} from 'prosemirror-state';
 import {Plugin} from 'prosemirror-state';
+import DefaultEditorPlugins from './buildEditorPlugins';
 
 import convertFromJSON from './convertFromJSON';
+import EditorSchema from './EditorSchema';
 
 export const EMPTY_DOC_JSON = {
   type: 'doc',
@@ -21,10 +23,19 @@ export const EMPTY_DOC_JSON = {
   ],
 };
 
-export default function createEmptyEditorStateschema(
+export default function createEmptyEditorState(
   schema: ?Schema,
-  plugins: ?Array<Plugin>
+  defaultSchema: ?Schema,
+  plugins: ?Array<Plugin>,
+  defaultPlugins: ?Array<Plugin>
 ): EditorState {
+  const newSchema = schema || (defaultSchema ? defaultSchema : EditorSchema);
   // TODO: Check if schema support doc and paragraph nodes.
-  return convertFromJSON(EMPTY_DOC_JSON, schema, plugins);
+  return convertFromJSON(
+    EMPTY_DOC_JSON,
+    schema,
+    defaultSchema ? defaultSchema : EditorSchema,
+    plugins,
+    defaultPlugins ? defaultPlugins : new DefaultEditorPlugins(newSchema).get()
+  );
 }
