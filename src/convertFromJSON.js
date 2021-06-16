@@ -44,13 +44,17 @@ export default function convertFromJSON(
       json = JSON.parse(json);
     } catch (ex) {
       console.error('convertFromJSON:', ex);
-      return createEmptyEditorState(schema, plugins);
+      // [FS] IRAD-1455 2021-06-16
+      // Use the effectivePlugins, editor hangs, b'coz of missing default core plugins
+      return createEmptyEditorState(schema, effectivePlugins);
     }
   }
 
   if (!json || typeof json !== 'object') {
     console.error('convertFromJSON: invalid object', json);
-    return createEmptyEditorState(schema, plugins);
+    // [FS] IRAD-1455 2021-06-16
+    // Use the effectivePlugins, editor hangs, b'coz of missing default core plugins
+    return createEmptyEditorState(schema, effectivePlugins);
   }
 
   // [FS] IRAD-1067 2020-09-19
