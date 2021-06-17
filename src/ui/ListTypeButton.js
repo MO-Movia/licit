@@ -38,8 +38,14 @@ class ListTypeButton extends React.PureComponent<any, any> {
   render(): React.Element<any> {
     // editorState,
     // editorView,
-    const { className, label, commandGroups, icon, disabled, title } =
-      this.props;
+    const {
+      className,
+      label,
+      commandGroups,
+      icon,
+      disabled,
+      title,
+    } = this.props;
     const enabled =
       !disabled &&
       commandGroups.some((group, ii) => {

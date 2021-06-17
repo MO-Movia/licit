@@ -595,8 +595,9 @@ export default class TableResizePlugin extends Plugin {
       key: PLUGIN_KEY,
       state: {
         init(_: any, state: EditorState): ResizeState {
-          this.spec.props.nodeViews[tableNodeTypes(state.schema).table.name] =
-            createTableView;
+          this.spec.props.nodeViews[
+            tableNodeTypes(state.schema).table.name
+          ] = createTableView;
           return new ResizeState(-1, null);
         },
         apply(tr: Transform, prev: EditorState): EditorState {

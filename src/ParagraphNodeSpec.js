@@ -65,8 +65,13 @@ const ParagraphNodeSpec: NodeSpec = {
 };
 
 function getAttrs(dom: HTMLElement): Object {
-  const { lineHeight, textAlign, marginLeft, paddingTop, paddingBottom } =
-    dom.style;
+  const {
+    lineHeight,
+    textAlign,
+    marginLeft,
+    paddingTop,
+    paddingBottom,
+  } = dom.style;
 
   let align = dom.getAttribute('align') || textAlign || '';
   align = ALIGN_PATTERN.test(align) ? align : null;
