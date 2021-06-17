@@ -6,16 +6,14 @@ import {
   receiveTransaction,
   sendableSteps,
 } from 'prosemirror-collab';
-import { EditorState } from 'prosemirror-state';
-import { Step } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
-import EditorPlugins from '../EditorPlugins';
-import EditorSchema from '../EditorSchema';
+import {Plugin, EditorState} from 'prosemirror-state';
+import {Step} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 import uuid from '../uuid';
-import { GET, POST } from './http';
+import {GET, POST} from './http';
 // [FS] IRAD-1040 2020-09-02
-import { Schema } from 'prosemirror-model';
-import { stringify } from 'flatted';
+import {Schema} from 'prosemirror-model';
+import {stringify} from 'flatted';
 
 function badVersion(err: Object) {
   return err.status == 400 && /invalid version/i.test(String(err));
@@ -40,8 +38,16 @@ class EditorConnection {
   url: string;
   view: ?EditorView;
   schema: Schema;
+  plugins: Array<Plugin>;
+  defaultSchema: Schema;
 
-  constructor(onReady: Function, report: any, url: string) {
+  constructor(
+    onReady: Function,
+    report: any,
+    url: string,
+    plugins: Array<Plugin>,
+    defaultSchema: Schema
+  ) {
     this.schema = null;
     this.report = report;
     this.url = url;
@@ -52,11 +58,13 @@ class EditorConnection {
     this.dispatch = this.dispatch.bind(this);
     this.ready = false;
     this.onReady = onReady;
+    this.plugins = plugins;
+    this.defaultSchema = defaultSchema;
   }
 
   // [FS] IRAD-1040 2020-09-08
   getEffectiveSchema(): Schema {
-    return (null != this.schema) ? this.schema : EditorSchema;
+    return null != this.schema ? this.schema : this.defaultSchema;
   }
 
   // All state changes go through this
@@ -65,7 +73,7 @@ class EditorConnection {
     if (action.type == 'loaded') {
       const editState = EditorState.create({
         doc: action.doc,
-        plugins: EditorPlugins.concat([
+        plugins: this.plugins.concat([
           collab({
             clientID: uuid(),
             version: action.version,
@@ -127,7 +135,7 @@ class EditorConnection {
   // Load the document from the server and start up
   start(): void {
     this.run(GET(this.url)).then(
-      data => {
+      (data) => {
         data = JSON.parse(data);
         this.report.success();
         this.backOff = 0;
@@ -138,7 +146,7 @@ class EditorConnection {
           users: data.users,
         });
       },
-      err => {
+      (err) => {
         this.report.failure(err);
       }
     );
@@ -151,14 +159,14 @@ class EditorConnection {
   poll(): void {
     const query = 'version=' + getVersion(this.state.edit);
     this.run(GET(this.url + '/events?' + query)).then(
-      data => {
+      (data) => {
         this.report.success();
         data = JSON.parse(data);
         this.backOff = 0;
         if (data.steps && data.steps.length) {
           const tr = receiveTransaction(
             this.state.edit,
-            data.steps.map(j => Step.fromJSON(this.getEffectiveSchema(), j)),
+            data.steps.map((j) => Step.fromJSON(this.getEffectiveSchema(), j)),
             data.clientIDs
           );
           this.dispatch({
@@ -170,44 +178,44 @@ class EditorConnection {
           this.poll();
         }
       },
-      err => {
+      (err) => {
         if (err.status == 410 || badVersion(err)) {
           // Too far behind. Revert to server state
           this.report.failure(err);
-          this.dispatch({ type: 'restart' });
+          this.dispatch({type: 'restart'});
         } else if (err) {
-          this.dispatch({ type: 'recover', error: err });
+          this.dispatch({type: 'recover', error: err});
         }
       }
     );
   }
 
-  sendable(editState: EditorState): ?{ steps: Array<Step> } {
+  sendable(editState: EditorState): ?{steps: Array<Step>} {
     const steps = sendableSteps(editState);
     if (steps) {
-      return { steps };
+      return {steps};
     }
     return null;
   }
 
   // Send the given steps to the server
   send(editState: EditorState, sendable: Object) {
-    const { steps } = sendable;
+    const {steps} = sendable;
     const json = JSON.stringify({
       version: getVersion(editState),
-      steps: steps ? steps.steps.map(s => s.toJSON()) : [],
+      steps: steps ? steps.steps.map((s) => s.toJSON()) : [],
       clientID: steps ? steps.clientID : 0,
     });
     this.run(POST(this.url + '/events', json, 'application/json')).then(
-      data => {
+      (data) => {
         this.report.success();
         this.backOff = 0;
         const tr = steps
           ? receiveTransaction(
-            this.state.edit,
-            steps.steps,
-            repeat(steps.clientID, steps.steps.length)
-          )
+              this.state.edit,
+              steps.steps,
+              repeat(steps.clientID, steps.steps.length)
+            )
           : this.state.edit.tr;
 
         this.dispatch({
@@ -216,17 +224,17 @@ class EditorConnection {
           requestDone: true,
         });
       },
-      err => {
+      (err) => {
         if (err.status == 409) {
           // The client's document conflicts with the server's version.
           // Poll for changes and then try again.
           this.backOff = 0;
-          this.dispatch({ type: 'poll' });
+          this.dispatch({type: 'poll'});
         } else if (badVersion(err)) {
           this.report.failure(err);
-          this.dispatch({ type: 'restart' });
+          this.dispatch({type: 'restart'});
         } else {
-          this.dispatch({ type: 'recover', error: err });
+          this.dispatch({type: 'recover', error: err});
         }
       }
     );
@@ -235,16 +243,16 @@ class EditorConnection {
   // [FS] IRAD-1040 2020-09-02
   // Send the modified schema to server
   updateSchema(schema: Schema) {
-	// to avoid cyclic reference error, use flatted string.
-	const schemaFlatted = stringify(schema);
+    // to avoid cyclic reference error, use flatted string.
+    const schemaFlatted = stringify(schema);
     this.run(POST(this.url + '/schema/', schemaFlatted, 'text/plain')).then(
-      data => {
+      (data) => {
         console.log("collab server's schema updated");
         // [FS] IRAD-1040 2020-09-08
         this.schema = schema;
         this.start();
       },
-      err => {
+      (err) => {
         this.report.failure(err);
       }
     );
@@ -259,7 +267,7 @@ class EditorConnection {
     this.backOff = newBackOff;
     setTimeout(() => {
       if (this.state.comm == 'recover') {
-        this.dispatch({ type: 'poll' });
+        this.dispatch({type: 'poll'});
       }
     }, this.backOff);
   }
