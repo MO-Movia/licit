@@ -1,13 +1,13 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {AllSelection, TextSelection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { AllSelection, TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
-import {clearMarks, clearHeading} from './clearMarks';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
-import {getNode, getMarkByStyleName} from './CustomStyleCommand';
+import { clearMarks, clearHeading } from './clearMarks';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { getNode, getMarkByStyleName } from './CustomStyleCommand';
 
 class MarksClearCommand extends UICommand {
   isActive = (state: EditorState): boolean => {
@@ -15,7 +15,7 @@ class MarksClearCommand extends UICommand {
   };
 
   isEnabled = (state: EditorState) => {
-    const {selection} = state;
+    const { selection } = state;
     return (
       !selection.empty &&
       (selection instanceof TextSelection || selection instanceof AllSelection)

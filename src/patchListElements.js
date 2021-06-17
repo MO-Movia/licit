@@ -4,7 +4,7 @@ import HTMLMutator from './HTMLMutator';
 import nullthrows from 'nullthrows';
 import uuid from './ui/uuid';
 
-import {ATTRIBUTE_LIST_STYLE_TYPE} from './ListItemNodeSpec';
+import { ATTRIBUTE_LIST_STYLE_TYPE } from './ListItemNodeSpec';
 import {
   ATTRIBUTE_INDENT,
   EMPTY_CSS_VALUE,
@@ -14,7 +14,7 @@ import {
   ATTRIBUTE_COUNTER_RESET,
   ATTRIBUTE_FOLLOWING,
 } from './OrderedListNodeSpec';
-import {ATTRIBUTE_CSS_BEFORE_CONTENT} from './patchStyleElements';
+import { ATTRIBUTE_CSS_BEFORE_CONTENT } from './patchStyleElements';
 
 export default function patchListElements(doc: Document): void {
   // In Google Doc, lists are exported as indented
@@ -41,7 +41,7 @@ function patchListElementsElement(listElement: HTMLElement): void {
   // it to be indented.
   let marginLeft = undefined;
   let beforeContent = undefined;
-  const {parentElement, children} = listElement;
+  const { parentElement, children } = listElement;
 
   // A workaround to patch the issue when <ul /> or <ol /> is pasted as the
   // first child of <body />, its first <li /> somehow can't be wrapped
@@ -56,8 +56,8 @@ function patchListElementsElement(listElement: HTMLElement): void {
     parentElement.insertBefore(tt, listElement);
   }
 
-  Array.from(children).forEach(listItemElement => {
-    const {style} = listItemElement;
+  Array.from(children).forEach((listItemElement) => {
+    const { style } = listItemElement;
     patchPaddingStyle(listItemElement);
 
     const bc = listItemElement.getAttribute(ATTRIBUTE_CSS_BEFORE_CONTENT) || '';
@@ -137,8 +137,8 @@ function patchListElementsElement(listElement: HTMLElement): void {
 
 // This moves the styles of <li /> into its content <p />.
 function patchPaddingStyle(listItemElement: HTMLElement): void {
-  const {style, childNodes} = listItemElement;
-  const {paddingTop, paddingBottom, lineHeight} = style;
+  const { style, childNodes } = listItemElement;
+  const { paddingTop, paddingBottom, lineHeight } = style;
   if (
     !EMPTY_CSS_VALUE.has(paddingBottom) &&
     !EMPTY_CSS_VALUE.has(paddingTop) &&
@@ -151,7 +151,7 @@ function patchPaddingStyle(listItemElement: HTMLElement): void {
   const frag = doc.createDocumentFragment();
   let contentIsInline = true;
 
-  Array.from(childNodes).forEach(cn => {
+  Array.from(childNodes).forEach((cn) => {
     contentIsInline =
       contentIsInline && INLINE_NODE_NAME_PATTERN.test(cn.nodeName);
     frag.appendChild(cn);
@@ -207,7 +207,7 @@ function liftNestedListElements(doc: Document): void {
   const els = Array.from(doc.querySelectorAll(selector));
   const htmlMutator = new HTMLMutator(doc);
 
-  els.forEach(list => {
+  els.forEach((list) => {
     const indent = findIndentLevel(list);
     list.setAttribute('data-indent', String(indent));
 
@@ -264,7 +264,7 @@ function findIndentLevel(el: Element): number {
   let indent = 0;
   let currentEl = el.parentElement;
   while (currentEl) {
-    const {nodeName} = currentEl;
+    const { nodeName } = currentEl;
     if (nodeName === 'OL' || nodeName === 'UL') {
       indent++;
     } else if (nodeName !== 'LI') {

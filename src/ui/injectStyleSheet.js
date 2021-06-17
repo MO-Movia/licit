@@ -6,7 +6,7 @@ const addedElements = new Map<any, any>();
 
 function createElement(tag: string, attrs: Object): Element {
   const el: any = document.createElement(tag);
-  Object.keys(attrs).forEach(key => {
+  Object.keys(attrs).forEach((key) => {
     if (key === 'className') {
       el[key] = attrs[key];
     } else {
@@ -18,7 +18,7 @@ function createElement(tag: string, attrs: Object): Element {
 
 export default function injectStyleSheet(urlStr: string): void {
   const parsedURL = url.parse(urlStr);
-  const {protocol} = parsedURL;
+  const { protocol } = parsedURL;
   const protocolPattern = /^(http:|https:)/;
   if (!protocolPattern.test(protocol || '')) {
     if (protocolPattern.test(window.location.protocol)) {

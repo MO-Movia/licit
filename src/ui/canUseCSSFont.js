@@ -23,7 +23,7 @@ export default function canUseCSSFont(fontName: string): Promise<boolean> {
     return Promise.resolve(false);
   }
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     // https://stackoverflow.com/questions/5680013/how-to-be-notified-once-a-web-font-has-loaded
     // All fonts in use by visible text have loaded.
     const check = () => {
@@ -33,7 +33,7 @@ export default function canUseCSSFont(fontName: string): Promise<boolean> {
       }
       // Do not use `doc.fonts.check()` because it may return falsey result.
       const fontFaces = Array.from(doc.fonts.values());
-      const matched = fontFaces.find(ff => ff.family === fontName);
+      const matched = fontFaces.find((ff) => ff.family === fontName);
       const result = !!matched;
       cached[fontName] = result;
       resolve(result);

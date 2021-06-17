@@ -1,6 +1,6 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 
 export default function nodeAt(doc: Node, pos: number): ?Node {
   if (pos < 0 || pos > doc.content.size) {

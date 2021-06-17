@@ -1,13 +1,13 @@
 // @flow
 
-import type {NodeSpec} from './Types';
+import type { NodeSpec } from './Types';
 
 const CSS_ROTATE_PATTERN = /rotate\(([0-9\.]+)rad\)/i;
 const EMPTY_CSS_VALUE = new Set(['0%', '0pt', '0px']);
 
 function getAttrs(dom: HTMLElement) {
-  const {cssFloat, display, marginTop, marginLeft} = dom.style;
-  let {width, height} = dom.style;
+  const { cssFloat, display, marginTop, marginLeft } = dom.style;
+  let { width, height } = dom.style;
   let align = dom.getAttribute('data-align') || dom.getAttribute('align');
   if (align) {
     align = /(left|right|center)/.test(align) ? align : null;
@@ -24,7 +24,7 @@ function getAttrs(dom: HTMLElement) {
 
   let crop = null;
   let rotate = null;
-  const {parentElement} = dom;
+  const { parentElement } = dom;
   if (parentElement instanceof HTMLElement) {
     // Special case for Google doc's image.
     const ps = parentElement.style;
@@ -70,18 +70,18 @@ function getAttrs(dom: HTMLElement) {
 const ImageNodeSpec: NodeSpec = {
   inline: true,
   attrs: {
-    align: {default: null},
-    alt: {default: ''},
-    crop: {default: null},
-    height: {default: null},
-    rotate: {default: null},
-    src: {default: null},
-    title: {default: ''},
-    width: {default: null},
+    align: { default: null },
+    alt: { default: '' },
+    crop: { default: null },
+    height: { default: null },
+    rotate: { default: null },
+    src: { default: null },
+    title: { default: '' },
+    width: { default: null },
   },
   group: 'inline',
   draggable: true,
-  parseDOM: [{tag: 'img[src]', getAttrs}],
+  parseDOM: [{ tag: 'img[src]', getAttrs }],
   toDOM(node) {
     return ['img', node.attrs];
   },

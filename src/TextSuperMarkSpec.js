@@ -1,13 +1,13 @@
 // @flow
 
-import type {MarkSpec} from './Types';
+import type { MarkSpec } from './Types';
 
 const TextSuperMarkSpec: MarkSpec = {
   parseDOM: [
-    {tag: 'sup'},
+    { tag: 'sup' },
     {
       style: 'vertical-align',
-      getAttrs: value => {
+      getAttrs: (value) => {
         return value === 'super' && null;
       },
     },

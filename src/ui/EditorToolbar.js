@@ -1,19 +1,19 @@
 // @flow
 
 import cx from 'classnames';
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 
 import CommandButton from './CommandButton';
 import CommandMenuButton from './CommandMenuButton';
 import CustomButton from './CustomButton';
-import {COMMAND_GROUPS, parseLabel} from './EditorToolbarConfig';
+import { COMMAND_GROUPS, parseLabel } from './EditorToolbarConfig';
 import Icon from './Icon';
 import ResizeObserver from './ResizeObserver';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import isReactClass from './isReactClass';
 
 import './czi-editor-toolbar.css';
@@ -36,8 +36,8 @@ class EditorToolbar extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const {wrapped, expanded} = this.state;
-    const className = cx('czi-editor-toolbar', {expanded, wrapped});
+    const { wrapped, expanded } = this.state;
+    const className = cx('czi-editor-toolbar', { expanded, wrapped });
     const wrappedButton = wrapped ? (
       <CustomButton
         active={expanded}
@@ -78,13 +78,13 @@ class EditorToolbar extends React.PureComponent<any, any> {
 
   _renderButtonsGroup = (group: Object, index: number): React.Element<any> => {
     const buttons = Object.keys(group)
-      .map(label => {
+      .map((label) => {
         const obj = group[label];
 
         if (isReactClass(obj)) {
           // JSX requies the component to be named with upper camel case.
           const ThatComponent = obj;
-          const {editorState, editorView, dispatchTransaction} = this.props;
+          const { editorState, editorView, dispatchTransaction } = this.props;
           return (
             <ThatComponent
               dispatch={dispatchTransaction}
@@ -111,10 +111,11 @@ class EditorToolbar extends React.PureComponent<any, any> {
 
   _renderMenuButton = (
     label: string,
-    commandGroups: Array<{[string]: UICommand}>
+    commandGroups: Array<{ [string]: UICommand }>
   ): React.Element<any> => {
-    const {editorState, editorView, disabled, dispatchTransaction} = this.props;
-    const {icon, title} = parseLabel(label);
+    const { editorState, editorView, disabled, dispatchTransaction } =
+      this.props;
+    const { icon, title } = parseLabel(label);
     return (
       <CommandMenuButton
         commandGroups={commandGroups}
@@ -131,8 +132,9 @@ class EditorToolbar extends React.PureComponent<any, any> {
   };
 
   _renderButton = (label: string, command: UICommand): React.Element<any> => {
-    const {disabled, editorState, editorView, dispatchTransaction} = this.props;
-    const {icon, title} = parseLabel(label);
+    const { disabled, editorState, editorView, dispatchTransaction } =
+      this.props;
+    const { icon, title } = parseLabel(label);
 
     return (
       <CommandButton
@@ -174,12 +176,12 @@ class EditorToolbar extends React.PureComponent<any, any> {
     const endAnchor = el && el.lastChild;
     if (startAnchor && endAnchor) {
       const wrapped = startAnchor.offsetTop < endAnchor.offsetTop;
-      this.setState({wrapped});
+      this.setState({ wrapped });
     }
   };
 
   _toggleExpansion = (expanded: boolean): void => {
-    this.setState({expanded: !expanded});
+    this.setState({ expanded: !expanded });
   };
 }
 

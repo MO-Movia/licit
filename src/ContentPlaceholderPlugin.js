@@ -1,7 +1,7 @@
 // @flow
 
-import {Plugin, PluginKey} from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
+import { Plugin, PluginKey } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 

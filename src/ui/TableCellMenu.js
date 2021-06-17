@@ -1,10 +1,10 @@
 // @flow
-import {EditorState} from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import CommandMenuButton from './CommandMenuButton';
-import {TABLE_COMMANDS_GROUP} from './EditorToolbarConfig';
+import { TABLE_COMMANDS_GROUP } from './EditorToolbarConfig';
 import Icon from './Icon';
 
 import './czi-table-cell-menu.css';
@@ -20,7 +20,7 @@ class TableCellMenu extends React.PureComponent<any, any> {
   props: Props;
 
   render(): React.Element<any> {
-    const {editorState, editorView} = this.props;
+    const { editorState, editorView } = this.props;
     return (
       <CommandMenuButton
         className="czi-table-cell-menu"

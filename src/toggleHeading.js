@@ -55,7 +55,7 @@ export default function toggleHeading(
   poses
     .sort(compareNumber)
     .reverse()
-    .forEach(pos => {
+    .forEach((pos) => {
       tr = setHeadingNode(
         tr,
         schema,
@@ -90,7 +90,7 @@ function setHeadingNode(
   } else if (isListNode(node)) {
     // Toggle list
     if (level !== null) {
-      tr = unwrapNodesFromList(tr, schema, pos, paragraphNode => {
+      tr = unwrapNodesFromList(tr, schema, pos, (paragraphNode) => {
         const { content, marks, attrs } = paragraphNode;
         const headingAttrs = { ...attrs, level };
         return heading.create(headingAttrs, content, marks);

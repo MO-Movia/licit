@@ -1,5 +1,5 @@
 // @flow
-import {PT_TO_PX_RATIO} from './convertToCSSPTValue';
+import { PT_TO_PX_RATIO } from './convertToCSSPTValue';
 import convertToCSSPTValue from './convertToCSSPTValue';
 import toHexColor from './ui/toHexColor';
 
@@ -14,11 +14,11 @@ const LINE_HEIGHT_PT_VALUE = 15.81149997;
 // Workaround to patch HTML from Google Doc that Table Cells will apply
 // its background colr to all its inner <span />.
 function patchTableCell(tdElement: HTMLElement): void {
-  const {style} = tdElement;
+  const { style } = tdElement;
   if (!style) {
     return;
   }
-  const {backgroundColor, width} = style;
+  const { backgroundColor, width } = style;
   if (backgroundColor) {
     const tdBgColor = toHexColor(backgroundColor);
     const selector = 'span[style*=background-color]';

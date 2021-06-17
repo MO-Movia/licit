@@ -1,19 +1,19 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import CustomMenu from './CustomMenu';
 import CustomMenuItem from './CustomMenuItem';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 class CommandMenu extends React.PureComponent<any, any> {
   _activeCommand: ?UICommand = null;
 
   props: {
-    commandGroups: Array<{[string]: UICommand}>,
+    commandGroups: Array<{ [string]: UICommand }>,
     dispatch: (tr: Transform) => void,
     editorState: EditorState,
     editorView: ?EditorView,
@@ -21,7 +21,7 @@ class CommandMenu extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const {commandGroups, editorState, editorView} = this.props;
+    const { commandGroups, editorState, editorView } = this.props;
     const children = [];
     const jj = commandGroups.length - 1;
 
@@ -57,7 +57,7 @@ class CommandMenu extends React.PureComponent<any, any> {
   }
 
   _onUIEnter = (command: UICommand, event: SyntheticEvent<>): void => {
-     if (command.shouldRespondToUIEvent(event)) {
+    if (command.shouldRespondToUIEvent(event)) {
       this._activeCommand && this._activeCommand.cancel();
       this._activeCommand = command;
       this._execute(command, event);
@@ -65,7 +65,7 @@ class CommandMenu extends React.PureComponent<any, any> {
   };
 
   _execute = (command: UICommand, e: SyntheticEvent<>) => {
-    const {dispatch, editorState, editorView, onCommand} = this.props;
+    const { dispatch, editorState, editorView, onCommand } = this.props;
     if (command.execute(editorState, dispatch, editorView, e)) {
       onCommand && onCommand();
     }

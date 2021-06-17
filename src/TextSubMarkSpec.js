@@ -1,13 +1,13 @@
 // @flow
 
-import type {MarkSpec} from './Types';
+import type { MarkSpec } from './Types';
 
 const TextSubMarkSpec: MarkSpec = {
   parseDOM: [
-    {tag: 'sub'},
+    { tag: 'sub' },
     {
       style: 'vertical-align',
-      getAttrs: value => {
+      getAttrs: (value) => {
         return value === 'sub' && null;
       },
     },

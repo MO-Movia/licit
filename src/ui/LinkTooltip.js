@@ -1,6 +1,6 @@
 // @flow
 
-import {EditorView} from 'prosemirror-view';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import scrollIntoView from 'smooth-scroll-into-view-if-needed';
 
@@ -29,7 +29,7 @@ class LinkTooltip extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const {href, editorView, onEdit, onRemove} = this.props;
+    const { href, editorView, onEdit, onRemove } = this.props;
     // [FS] IRAD-1013 2020-07-09
     // Change button in "Apply Link" missing in LICIT.
 
@@ -37,7 +37,7 @@ class LinkTooltip extends React.PureComponent<any, any> {
       <div className="czi-link-tooltip">
         <div className="czi-link-tooltip-body">
           <div className="czi-link-tooltip-row">
-          <CustomButton
+            <CustomButton
               className="czi-link-tooltip-href"
               label={href}
               onClick={this._openLink}
@@ -45,11 +45,7 @@ class LinkTooltip extends React.PureComponent<any, any> {
               title={href}
               value={href}
             />
-            <CustomButton
-              label="Change"
-              onClick={onEdit}
-              value={editorView}
-            />
+            <CustomButton label="Change" onClick={onEdit} value={editorView} />
             <CustomButton
               label="Remove"
               onClick={onRemove}
@@ -66,7 +62,7 @@ class LinkTooltip extends React.PureComponent<any, any> {
       const id = href.substr(1);
       const el = document.getElementById(id);
       if (el) {
-        const {onCancel, editorView} = this.props;
+        const { onCancel, editorView } = this.props;
         onCancel(editorView);
         (async () => {
           // https://www.npmjs.com/package/smooth-scroll-into-view-if-needed

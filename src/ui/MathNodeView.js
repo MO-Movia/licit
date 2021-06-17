@@ -8,13 +8,13 @@ import createPopUp from './createPopUp';
 import cx from 'classnames';
 import renderLaTeXAsHTML from './renderLaTeXAsHTML';
 import uuid from './uuid';
-import {Decoration} from 'prosemirror-view';
-import {FRAMESET_BODY_CLASSNAME} from './EditorFrameset';
-import {Node} from 'prosemirror-model';
-import {atAnchorBottomCenter} from './PopUpPosition';
+import { Decoration } from 'prosemirror-view';
+import { FRAMESET_BODY_CLASSNAME } from './EditorFrameset';
+import { Node } from 'prosemirror-model';
+import { atAnchorBottomCenter } from './PopUpPosition';
 import { NodeSelection } from 'prosemirror-state';
 
-import type {NodeViewProps} from './CustomNodeView';
+import type { NodeViewProps } from './CustomNodeView';
 
 const EMPTY_SRC =
   'data:image/gif;base64,' +
@@ -47,13 +47,13 @@ class MathViewBody extends React.PureComponent<any, any> {
   render(): React.Element<any> {
     // TODO: Resolve `readOnly`;
     const readOnly = false;
-    const {node, selected, focused} = this.props;
-    const {attrs} = node;
-    const {latex} = attrs;
-    const {isEditing} = this.state;
+    const { node, selected, focused } = this.props;
+    const { attrs } = node;
+    const { latex } = attrs;
+    const { isEditing } = this.state;
 
     const active = (focused || isEditing) && !readOnly;
-    const className = cx('czi-math-view-body', {active, selected});
+    const className = cx('czi-math-view-body', { active, selected });
     const html = renderLaTeXAsHTML(latex);
     return (
       <span
@@ -71,7 +71,7 @@ class MathViewBody extends React.PureComponent<any, any> {
         />
         <span
           className="czi-math-view-body-content"
-          dangerouslySetInnerHTML={{__html: html}}
+          dangerouslySetInnerHTML={{ __html: html }}
         />
       </span>
     );
@@ -83,7 +83,7 @@ class MathViewBody extends React.PureComponent<any, any> {
       this._inlineEditor && this._inlineEditor.close();
       return;
     }
-    const {node} = this.props;
+    const { node } = this.props;
     const editorProps = {
       value: node.attrs,
       onSelect: this._onChange,
@@ -106,14 +106,14 @@ class MathViewBody extends React.PureComponent<any, any> {
   }
 
   _onEditStart = (): void => {
-    this.setState({isEditing: true});
+    this.setState({ isEditing: true });
   };
 
   _onEditEnd = (): void => {
-    this.setState({isEditing: false});
+    this.setState({ isEditing: false });
   };
 
-  _onChange = (value: ?{align: ?string, latex: string}): void => {
+  _onChange = (value: ?{ align: ?string, latex: string }): void => {
     if (!this._mounted) {
       return;
     }
@@ -121,7 +121,7 @@ class MathViewBody extends React.PureComponent<any, any> {
     const align = value ? value.align : null;
     const latex = value ? value.latex : null;
 
-    const {getPos, node, editorView} = this.props;
+    const { getPos, node, editorView } = this.props;
     const pos = getPos();
     const attrs = {
       ...node.attrs,
@@ -130,15 +130,12 @@ class MathViewBody extends React.PureComponent<any, any> {
     };
 
     let tr = editorView.state.tr;
-    const {selection} = editorView.state;
+    const { selection } = editorView.state;
     tr = tr.setNodeMarkup(pos, null, attrs);
     // [FS] IRAD-1005 2020-07-23
     // Upgrade outdated packages.
     // reset selection to original using the latest doc.
-    const origSelection = NodeSelection.create(
-      tr.doc,
-      selection.from
-    );
+    const origSelection = NodeSelection.create(tr.doc, selection.from);
     tr = tr.setSelection(origSelection);
     editorView.dispatch(tr);
   };
@@ -166,7 +163,7 @@ class MathNodeView extends CustomNodeView {
   }
 
   _updateDOM(el: HTMLElement): void {
-    const {align} = this.props.node.attrs;
+    const { align } = this.props.node.attrs;
     let className = 'czi-math-view';
     if (align) {
       className += ' align-' + align;

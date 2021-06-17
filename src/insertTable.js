@@ -37,7 +37,10 @@ export default function insertTable(
     for (let cc = 0; cc < cols; cc++) {
       // [FS] IRAD-950 2020-05-25
       // Fix:Extra arrow key required for cell navigation using arrow right/Left
-      const cellNode = cell.create(undefined, Fragment.fromArray([paragraph.create()]));
+      const cellNode = cell.create(
+        undefined,
+        Fragment.fromArray([paragraph.create()])
+      );
       cellNodes.push(cellNode);
     }
     const rowNode = row.create({}, Fragment.from(cellNodes));

@@ -11,7 +11,7 @@ import uuid from './uuid';
 import './czi-form.css';
 import './czi-image-upload-editor.css';
 
-import type {EditorRuntime, ImageLike} from '../Types';
+import type { EditorRuntime, ImageLike } from '../Types';
 
 class ImageUploadEditor extends React.PureComponent<any, any> {
   _img = null;
@@ -33,8 +33,8 @@ class ImageUploadEditor extends React.PureComponent<any, any> {
   }
 
   render(): React.Element<any> {
-    const {id, error, pending} = this.state;
-    const className = cx('czi-image-upload-editor', {pending, error});
+    const { id, error, pending } = this.state;
+    const className = cx('czi-image-upload-editor', { pending, error });
     let label = 'Choose an image file...';
 
     if (pending) {
@@ -97,11 +97,11 @@ class ImageUploadEditor extends React.PureComponent<any, any> {
   _upload = async (file: Object): Promise<void> => {
     try {
       const runtime = this.props.runtime || {};
-      const {canUploadImage, uploadImage} = runtime;
+      const { canUploadImage, uploadImage } = runtime;
       if (!canUploadImage || !uploadImage || !canUploadImage()) {
         throw new Error('feature is not available');
       }
-      this.setState({pending: true, error: null});
+      this.setState({ pending: true, error: null });
       const image = await uploadImage(file);
       this._onSuccess(image);
     } catch (ex) {

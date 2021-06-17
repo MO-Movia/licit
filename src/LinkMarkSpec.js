@@ -1,19 +1,19 @@
 // @flow
 
-import type {MarkSpec} from './Types';
+import type { MarkSpec } from './Types';
 
 const LinkMarkSpec: MarkSpec = {
   attrs: {
-    href: {default: null},
-    rel: {default: 'noopener noreferrer nofollow'},
-    target: {default: 'blank'},
-    title: {default: null},
+    href: { default: null },
+    rel: { default: 'noopener noreferrer nofollow' },
+    target: { default: 'blank' },
+    title: { default: null },
   },
   inclusive: false,
   parseDOM: [
     {
       tag: 'a[href]',
-      getAttrs: dom => {
+      getAttrs: (dom) => {
         const href = dom.getAttribute('href');
         const target = href && href.indexOf('#') === 0 ? '' : 'blank';
         return {

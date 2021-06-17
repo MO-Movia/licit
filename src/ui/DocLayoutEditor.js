@@ -27,7 +27,6 @@ class DocLayoutEditor extends React.PureComponent<any, any> {
   // Upgrade outdated packages.
   // To take care of the property type declaration.
   static propsTypes = {
-
     // initialValue: PropTypes.shape({
     //   layout: PropTypes.string,
     //   width: PropTypes.number,
@@ -35,14 +34,19 @@ class DocLayoutEditor extends React.PureComponent<any, any> {
 
     close: function (props: any, propName: string) {
       const fn = props[propName];
-      if (!fn.prototype ||
+      if (
+        !fn.prototype ||
         (typeof fn.prototype.constructor !== 'function' &&
-          fn.prototype.constructor.length !== 1)) {
-        return new Error(propName + 'must be a function with 1 arg of type DocLayoutEditorValue');
+          fn.prototype.constructor.length !== 1)
+      ) {
+        return new Error(
+          propName +
+            'must be a function with 1 arg of type DocLayoutEditorValue'
+        );
       }
       return null;
-    }
-  }
+    },
+  };
 
   state: State;
 

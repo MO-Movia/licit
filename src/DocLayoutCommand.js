@@ -7,7 +7,7 @@ import { EditorView } from 'prosemirror-view';
 
 import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
 import DocLayoutEditor from './ui/DocLayoutEditor';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './ui/createPopUp';
 
 import type { DocLayoutEditorValue } from './ui/DocLayoutEditor';
@@ -51,13 +51,13 @@ class DocLayoutCommand extends UICommand {
 
     const { doc } = state;
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const props = {
         initialValue: doc.attrs,
       };
       this._popUp = createPopUp(DocLayoutEditor, props, {
         modal: true,
-        onClose: val => {
+        onClose: (val) => {
           if (this._popUp) {
             this._popUp = null;
             resolve(val);

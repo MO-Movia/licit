@@ -1,6 +1,6 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 
 const DOM_ATTRIBUTE_PAGE_BREAK = 'data-page-break';
 
@@ -20,12 +20,12 @@ function getAttrs(dom: HTMLElement) {
 
 const HorizontalRuleNode = {
   attrs: {
-    pageBreak: {default: null},
+    pageBreak: { default: null },
   },
 
   group: 'block',
 
-  parseDOM: [{tag: 'hr', getAttrs}],
+  parseDOM: [{ tag: 'hr', getAttrs }],
 
   toDOM(node: Node): Array<any> {
     const domAttrs = {};

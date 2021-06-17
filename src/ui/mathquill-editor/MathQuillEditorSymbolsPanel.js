@@ -5,7 +5,7 @@ import './czi-mathquill-editor-symbols-panel.css';
 import CustomButton from '../CustomButton';
 import * as React from 'react';
 
-import type {MathQuillEditorSymbol} from './MathQuillEditorSymbols';
+import type { MathQuillEditorSymbol } from './MathQuillEditorSymbols';
 
 class MathQuillEditorSymbolsPanel extends React.PureComponent<any, any> {
   props: {
@@ -18,7 +18,7 @@ class MathQuillEditorSymbolsPanel extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const {title, symbols} = this.props.symbols;
+    const { title, symbols } = this.props.symbols;
     const buttons = symbols.map(this._renderButton);
     return (
       <div className="czi-mathquill-editor-symbols-panel">
@@ -29,9 +29,9 @@ class MathQuillEditorSymbolsPanel extends React.PureComponent<any, any> {
   }
 
   _renderButton = (symbol: MathQuillEditorSymbol): React.Element<any> => {
-    const {label, latex, description} = symbol;
+    const { label, latex, description } = symbol;
     const html = renderLaTeXAsHTML(label);
-    const icon = <span dangerouslySetInnerHTML={{__html: html}} />;
+    const icon = <span dangerouslySetInnerHTML={{ __html: html }} />;
     return (
       <CustomButton
         className="czi-mathquill-editor-symbols-panel-button"

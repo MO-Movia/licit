@@ -1,13 +1,13 @@
 // @flow
 
 import nullthrows from 'nullthrows';
-import {Plugin, PluginKey} from 'prosemirror-state';
-import {EditorState, TextSelection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {Decoration, DecorationSet} from 'prosemirror-view';
-import {EditorView} from 'prosemirror-view';
+import { Plugin, PluginKey } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { Decoration, DecorationSet } from 'prosemirror-view';
+import { EditorView } from 'prosemirror-view';
 
-import {IMAGE} from './NodeNames';
+import { IMAGE } from './NodeNames';
 import uuid from './ui/uuid';
 
 import './ui/czi-image-upload-placeholder.css';
@@ -39,7 +39,7 @@ function findImageUploadPlaceholder(
   id: Object
 ): ?Decoration {
   const decos = placeholderPlugin.getState(state);
-  const found = decos.find(null, null, spec => spec.id === id);
+  const found = decos.find(null, null, (spec) => spec.id === id);
   return found.length ? found[0].from : null;
 }
 
@@ -52,10 +52,10 @@ function defer(fn: Function): Function {
 export function uploadImageFiles(
   view: EditorView,
   files: Array<File>,
-  coords: ?{x: number, y: number}
+  coords: ?{ x: number, y: number }
 ): boolean {
-  const {runtime, state, readOnly, disabled} = view;
-  const {schema, plugins} = state;
+  const { runtime, state, readOnly, disabled } = view;
+  const { schema, plugins } = state;
   if (readOnly || disabled || !runtime || !runtime.canUploadImage) {
     return false;
   }
@@ -65,7 +65,7 @@ export function uploadImageFiles(
     return false;
   }
 
-  const {uploadImage, canUploadImage} = runtime;
+  const { uploadImage, canUploadImage } = runtime;
   if (!uploadImage || !canUploadImage) {
     return false;
   }
@@ -86,7 +86,7 @@ export function uploadImageFiles(
   };
 
   const uploadNext = defer(() => {
-    const done = (imageInfo: {src: ?string}) => {
+    const done = (imageInfo: { src: ?string }) => {
       const pos = findImageUploadPlaceholder(placeholderPlugin, view.state, id);
       let trNext = view.state.tr;
       if (pos && !view.readOnly && !view.disabled) {
@@ -100,19 +100,19 @@ export function uploadImageFiles(
         uploadNext();
       } else {
         // Remove the placeholder.
-        trNext = trNext.setMeta(placeholderPlugin, {remove: {id}});
+        trNext = trNext.setMeta(placeholderPlugin, { remove: { id } });
       }
       view.dispatch(trNext);
     };
     const ff = nullthrows(imageFiles.shift());
     uploadImage(ff)
       .then(done)
-      .catch(done.bind(null, {src: null}));
+      .catch(done.bind(null, { src: null }));
   });
 
   uploadNext();
 
-  let {tr} = state;
+  let { tr } = state;
 
   // Replace the selection with a placeholder
   let from = 0;
@@ -174,7 +174,7 @@ class ImageUploadPlaceholderPlugin extends Plugin {
 
             set = set.add(tr.doc, [deco]);
           } else if (action && action.remove) {
-            const finder = spec => spec.id == action.remove.id;
+            const finder = (spec) => spec.id == action.remove.id;
             set = set.remove(set.find(null, null, finder));
           }
           return set;

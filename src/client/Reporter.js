@@ -2,36 +2,35 @@
 
 class Reporter {
   constructor() {
-    this.setAt = 0
+    this.setAt = 0;
   }
 
   clearState() {
     if (this.state) {
-      this.state = this.node = null
-      this.setAt = 0
+      this.state = this.node = null;
+      this.setAt = 0;
     }
   }
 
   failure(err) {
-    console.error("fail", err.toString())
+    console.error('fail', err.toString());
   }
 
   delay(err) {
-    if (this.state == "fail") return
-    console.info("delay", err.toString())
+    if (this.state == 'fail') return;
+    console.info('delay', err.toString());
   }
 
   show(type, message) {
-    this.clearState()
-    this.state = type
-    this.setAt = Date.now()
+    this.clearState();
+    this.state = type;
+    this.setAt = Date.now();
   }
 
   success() {
-    if (this.state == "fail" && this.setAt > Date.now() - 1000 * 10)
-      setTimeout(() => this.success(), 5000)
-    else
-      this.clearState()
+    if (this.state == 'fail' && this.setAt > Date.now() - 1000 * 10)
+      setTimeout(() => this.success(), 5000);
+    else this.clearState();
   }
 }
 

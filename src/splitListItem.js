@@ -1,11 +1,11 @@
 // @flow
 
 import uuid from './ui/uuid';
-import {Fragment, Schema} from 'prosemirror-model';
-import {TextSelection} from 'prosemirror-state';
-import {Transform, canSplit} from 'prosemirror-transform';
-import {LIST_ITEM, ORDERED_LIST, BULLET_LIST, PARAGRAPH} from './NodeNames';
-import {findParentNodeOfType} from 'prosemirror-utils';
+import { Fragment, Schema } from 'prosemirror-model';
+import { TextSelection } from 'prosemirror-state';
+import { Transform, canSplit } from 'prosemirror-transform';
+import { LIST_ITEM, ORDERED_LIST, BULLET_LIST, PARAGRAPH } from './NodeNames';
+import { findParentNodeOfType } from 'prosemirror-utils';
 
 // Splits a list item by the current cursor's position.
 // Some examples:
@@ -63,12 +63,12 @@ export default function splitListItem(
     return tr;
   }
 
-  const {selection} = tr;
+  const { selection } = tr;
   if (!selection) {
     return tr;
   }
 
-  const {$from, $to, node} = selection;
+  const { $from, $to, node } = selection;
   if ((node && node.isBlock) || $from.depth < 2 || !$from.sameParent($to)) {
     return tr;
   }
@@ -89,7 +89,7 @@ export default function splitListItem(
       : null;
 
   tr = tr.delete($from.pos, $to.pos);
-  const types = nextType && [null, {type: nextType}];
+  const types = nextType && [null, { type: nextType }];
   if (!canSplit(tr.doc, $from.pos, 2, types)) {
     return tr;
   }
@@ -149,7 +149,7 @@ function splitEmptyListItem(tr: Transform, schema: Schema): Transform {
 
   // Find the name of the current list to split. If the name isn't available,
   // assigns a new name.
-  let {name} = listFoundNode.attrs;
+  let { name } = listFoundNode.attrs;
   if (!name) {
     name = uuid();
     tr = tr.setNodeMarkup(
@@ -175,7 +175,7 @@ function splitEmptyListItem(tr: Transform, schema: Schema): Transform {
   const deleteTo = listFound.pos + listFound.node.nodeSize;
   tr = tr.delete(deleteFrom, deleteTo);
   const sourceListNode = listFound.node;
-  const listAttrs = {...sourceListNode.attrs};
+  const listAttrs = { ...sourceListNode.attrs };
   if (orderedListType === sourceListNode.type) {
     listAttrs.counterReset = 'none';
     listAttrs.following = name;

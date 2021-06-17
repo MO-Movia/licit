@@ -1,21 +1,21 @@
 // @flow
 
 import nullthrows from 'nullthrows';
-import {Fragment, Schema} from 'prosemirror-model';
-import {EditorState} from 'prosemirror-state';
-import {TextSelection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {findParentNodeOfType} from 'prosemirror-utils';
-import {EditorView} from 'prosemirror-view';
+import { Fragment, Schema } from 'prosemirror-model';
+import { EditorState } from 'prosemirror-state';
+import { TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { findParentNodeOfType } from 'prosemirror-utils';
+import { EditorView } from 'prosemirror-view';
 
-import {HEADING, LIST_ITEM, PARAGRAPH} from './NodeNames';
+import { HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
 import nodeAt from './nodeAt';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 function mergeListItemUp(tr: Transform, schema: Schema): Transform {
   // This merge a list item to is previous list item of the selection is at the
   // beginning of the list item.
-  const {selection} = tr;
+  const { selection } = tr;
   if (!selection) {
     return tr;
   }
@@ -23,7 +23,7 @@ function mergeListItemUp(tr: Transform, schema: Schema): Transform {
   if (!nodeType) {
     return tr;
   }
-  const {from, empty} = selection;
+  const { from, empty } = selection;
   if (!empty) {
     // Selection is collapsed.
     return tr;
@@ -32,7 +32,7 @@ function mergeListItemUp(tr: Transform, schema: Schema): Transform {
   if (!result) {
     return tr;
   }
-  const {pos, node} = result;
+  const { pos, node } = result;
   if (from !== pos + 2) {
     // Selection is not at the begining of the list item.
     return tr;
@@ -63,7 +63,7 @@ function mergeListItemUp(tr: Transform, schema: Schema): Transform {
 function mergeListItemDown(tr: Transform, schema: Schema): Transform {
   // This merge a list item to is next list item of the selection is at the
   // beginning of the list item.
-  const {selection} = tr;
+  const { selection } = tr;
   if (!selection) {
     return tr;
   }
@@ -71,7 +71,7 @@ function mergeListItemDown(tr: Transform, schema: Schema): Transform {
   if (!listItem) {
     return tr;
   }
-  const {from, empty} = selection;
+  const { from, empty } = selection;
   if (!empty) {
     // Selection is collapsed.
     return tr;
@@ -80,7 +80,7 @@ function mergeListItemDown(tr: Transform, schema: Schema): Transform {
   if (!result) {
     return tr;
   }
-  const {pos, node} = result;
+  const { pos, node } = result;
   if (from !== pos + node.content.size) {
     // Selection is not at the begining of the list item.
     return tr;
@@ -156,8 +156,8 @@ class ListItemMergeCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const {selection, schema} = state;
-    let {tr} = state;
+    const { selection, schema } = state;
+    let { tr } = state;
     const direction = this._direction;
     if (direction === 'down') {
       tr = mergeListItemDown(tr.setSelection(selection), schema);

@@ -1,11 +1,11 @@
 // @flow
 
-import {Schema} from 'prosemirror-model';
-import {DOMParser} from 'prosemirror-model';
-import {EditorState} from 'prosemirror-state';
-import {Plugin} from 'prosemirror-state';
+import { Schema } from 'prosemirror-model';
+import { DOMParser } from 'prosemirror-model';
+import { EditorState } from 'prosemirror-state';
+import { Plugin } from 'prosemirror-state';
 
-import {getAttrs} from './DocNodeSpec';
+import { getAttrs } from './DocNodeSpec';
 import EditorPlugins from './EditorPlugins';
 import EditorSchema from './EditorSchema';
 

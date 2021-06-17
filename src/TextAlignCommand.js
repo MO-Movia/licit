@@ -1,24 +1,24 @@
 // @flow
 
-import {Schema} from 'prosemirror-model';
-import {AllSelection, EditorState, TextSelection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { Schema } from 'prosemirror-model';
+import { AllSelection, EditorState, TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
-import {BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH} from './NodeNames';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 export function setTextAlign(
   tr: Transform,
   schema: Schema,
   alignment: ?string
 ): Transform {
-  const {selection, doc} = tr;
+  const { selection, doc } = tr;
   if (!selection || !doc) {
     return tr;
   }
-  const {from, to} = selection;
-  const {nodes} = schema;
+  const { from, to } = selection;
+  const { nodes } = schema;
 
   const blockquote = nodes[BLOCKQUOTE];
   const listItem = nodes[LIST_ITEM];
@@ -47,9 +47,9 @@ export function setTextAlign(
     return tr;
   }
 
-  tasks.forEach(job => {
-    const {node, pos, nodeType} = job;
-    let {attrs} = node;
+  tasks.forEach((job) => {
+    const { node, pos, nodeType } = job;
+    let { attrs } = node;
     if (alignment) {
       attrs = {
         ...attrs,
@@ -76,8 +76,8 @@ class TextAlignCommand extends UICommand {
   }
 
   isActive = (state: EditorState): boolean => {
-    const {selection, doc} = state;
-    const {from, to} = selection;
+    const { selection, doc } = state;
+    const { from, to } = selection;
     let keepLooking = true;
     let active = false;
     doc.nodesBetween(from, to, (node, pos) => {
@@ -91,7 +91,7 @@ class TextAlignCommand extends UICommand {
   };
 
   isEnabled = (state: EditorState): boolean => {
-    const {selection} = state;
+    const { selection } = state;
     return (
       selection instanceof TextSelection || selection instanceof AllSelection
     );
@@ -102,7 +102,7 @@ class TextAlignCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const {schema, selection} = state;
+    const { schema, selection } = state;
     const tr = setTextAlign(
       state.tr.setSelection(selection),
       schema,
@@ -114,7 +114,6 @@ class TextAlignCommand extends UICommand {
     } else {
       return false;
     }
-
   };
 
   // [FS] IRAD-1087 2020-10-01
@@ -125,7 +124,6 @@ class TextAlignCommand extends UICommand {
     from: number,
     to: number
   ): boolean => {
-
     const { schema } = state;
 
     tr = setTextAlign(

@@ -1,7 +1,7 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
-import type {MarkSpec} from './Types';
+import { Node } from 'prosemirror-model';
+import type { MarkSpec } from './Types';
 
 // [FS] IRAD-1061 2020-09-19
 // Now loaded locally, so that it work in closed network as well.
@@ -30,7 +30,7 @@ export const FONT_TYPE_NAMES = [
 // Preload fonts that are listed by default,
 // so that even if the font is not available locally, load from web.
 export function preLoadFonts() {
-  FONT_TYPE_NAMES.forEach(name => {
+  FONT_TYPE_NAMES.forEach((name) => {
     loadAndCacheFont(name);
   });
 }
@@ -56,7 +56,7 @@ const FontTypeMarkSpec: MarkSpec = {
   parseDOM: [
     {
       style: 'font-family',
-      getAttrs: name => {
+      getAttrs: (name) => {
         return {
           name: name ? name.replace(/[\"\']/g, '') : '',
         };
@@ -65,7 +65,7 @@ const FontTypeMarkSpec: MarkSpec = {
   ],
 
   toDOM(node: Node) {
-    const {name} = node.attrs;
+    const { name } = node.attrs;
     const attrs = {};
     if (name) {
       if (!RESOLVED_FONT_NAMES.has(name)) {

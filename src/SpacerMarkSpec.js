@@ -1,8 +1,8 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 
-import type {MarkSpec} from './Types';
+import type { MarkSpec } from './Types';
 
 export const DOM_ATTRIBUTE_SIZE = 'data-spacer-size';
 export const SPACER_SIZE_TAB = 'tab';
@@ -13,7 +13,7 @@ export const HAIR_SPACE_CHAR = '\u200A';
 
 const SpacerMarkSpec: MarkSpec = {
   attrs: {
-    size: {default: SPACER_SIZE_TAB},
+    size: { default: SPACER_SIZE_TAB },
   },
   defining: true,
   draggable: false,
@@ -25,7 +25,7 @@ const SpacerMarkSpec: MarkSpec = {
   parseDOM: [
     {
       tag: `span[${DOM_ATTRIBUTE_SIZE}]`,
-      getAttrs: el => {
+      getAttrs: (el) => {
         return {
           size: el.getAttribute(DOM_ATTRIBUTE_SIZE) || SPACER_SIZE_TAB,
         };
@@ -33,7 +33,7 @@ const SpacerMarkSpec: MarkSpec = {
     },
   ],
   toDOM(node: Node) {
-    const {size} = node.attrs;
+    const { size } = node.attrs;
     return [
       'span',
       {

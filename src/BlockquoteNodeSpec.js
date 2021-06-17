@@ -1,11 +1,11 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 
 import ParagraphNodeSpec from './ParagraphNodeSpec';
-import {getParagraphNodeAttrs, toParagraphDOM} from './ParagraphNodeSpec';
+import { getParagraphNodeAttrs, toParagraphDOM } from './ParagraphNodeSpec';
 
-import type {NodeSpec} from './Types';
+import type { NodeSpec } from './Types';
 
 // https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
 // :: NodeSpec A plain paragraph textblock. Represented in the DOM
@@ -13,7 +13,7 @@ import type {NodeSpec} from './Types';
 const BlockquoteNodeSpec: NodeSpec = {
   ...ParagraphNodeSpec,
   defining: true,
-  parseDOM: [{tag: 'blockquote', getAttrs}],
+  parseDOM: [{ tag: 'blockquote', getAttrs }],
   toDOM,
 };
 

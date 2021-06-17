@@ -1,23 +1,23 @@
 // @flow
 
-import {Fragment, Schema} from 'prosemirror-model';
-import {EditorState} from 'prosemirror-state';
-import {TextSelection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {findParentNodeOfType} from 'prosemirror-utils';
-import {EditorView} from 'prosemirror-view';
+import { Fragment, Schema } from 'prosemirror-model';
+import { EditorState } from 'prosemirror-state';
+import { TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { findParentNodeOfType } from 'prosemirror-utils';
+import { EditorView } from 'prosemirror-view';
 
-import {HARD_BREAK, LIST_ITEM} from './NodeNames';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { HARD_BREAK, LIST_ITEM } from './NodeNames';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 // This handles the case when user press SHIFT + ENTER key to insert a new line
 // into list item.
 function insertNewLine(tr: Transform, schema: Schema): Transform {
-  const {selection} = tr;
+  const { selection } = tr;
   if (!selection) {
     return tr;
   }
-  const {from, empty} = selection;
+  const { from, empty } = selection;
   if (!empty) {
     return tr;
   }
@@ -41,7 +41,7 @@ class ListItemInsertNewLineCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const {schema, selection} = state;
+    const { schema, selection } = state;
     const tr = insertNewLine(state.tr.setSelection(selection), schema);
     if (tr.docChanged) {
       dispatch && dispatch(tr);

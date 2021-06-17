@@ -1,6 +1,6 @@
 // @flow
 // [FS] IRAD-1085 2020-10-09
-import type {StyleProps, CSSStyle} from './Types';
+import type { StyleProps, CSSStyle } from './Types';
 import {
   RESERVED_STYLE_NONE,
   RESERVED_STYLE_NONE_NUMBERING,

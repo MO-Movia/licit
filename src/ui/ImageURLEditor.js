@@ -19,16 +19,20 @@ class ImageURLEditor extends React.PureComponent<any, any> {
   // To take care of the property type declaration.
   static propsTypes = {
     initialValue: PropTypes.object,
-	close: function(props:any, propName:string) {
-        const fn = props[propName];
-        if(!fn.prototype ||
-           (typeof fn.prototype.constructor !== 'function' &&
-            fn.prototype.constructor.length !== 1)) {
-            return new Error(propName + 'must be a function with 1 arg of type ImageLike');
-        }
-        return null;
-    }
-  }
+    close: function (props: any, propName: string) {
+      const fn = props[propName];
+      if (
+        !fn.prototype ||
+        (typeof fn.prototype.constructor !== 'function' &&
+          fn.prototype.constructor.length !== 1)
+      ) {
+        return new Error(
+          propName + 'must be a function with 1 arg of type ImageLike'
+        );
+      }
+      return null;
+    },
+  };
 
   state = {
     ...(this.props.initialValue || {}),
@@ -40,11 +44,11 @@ class ImageURLEditor extends React.PureComponent<any, any> {
   }
 
   render(): React.Element<any> {
-    const {src, validValue} = this.state;
+    const { src, validValue } = this.state;
     const preview = validValue ? (
       <div
         className="czi-image-url-editor-input-preview"
-        style={{backgroundImage: `url(${String(validValue.src)}`}}
+        style={{ backgroundImage: `url(${String(validValue.src)}` }}
       />
     ) : null;
 
@@ -94,10 +98,10 @@ class ImageURLEditor extends React.PureComponent<any, any> {
   };
 
   _didSrcChange = (): void => {
-    resolveImage(this.state.src).then(result => {
+    resolveImage(this.state.src).then((result) => {
       if (this.state.src === result.src && !this._unmounted) {
         const validValue = result.complete ? result : null;
-        this.setState({validValue});
+        this.setState({ validValue });
       }
     });
   };
@@ -107,7 +111,7 @@ class ImageURLEditor extends React.PureComponent<any, any> {
   };
 
   _insert = (): void => {
-    const {validValue} = this.state;
+    const { validValue } = this.state;
     this.props.close(validValue);
   };
 }

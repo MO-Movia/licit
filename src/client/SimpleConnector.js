@@ -1,13 +1,13 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {Schema} from 'prosemirror-model';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { Schema } from 'prosemirror-model';
+import { EditorView } from 'prosemirror-view';
 import ReactDOM from 'react-dom';
 
 export type SetStateCall = (
-  state: {editorState: EditorState},
+  state: { editorState: EditorState },
   callback: Function
 ) => void;
 
@@ -25,7 +25,7 @@ class SimpleConnector {
       const editorState = this._editorState.apply(transaction);
       // [FS] IRAD-1236 2020-03-05
       // The state property should not be directly mutated. Use the updateState method.
-      if(view) {
+      if (view) {
         view.updateState(editorState);
       }
 
@@ -47,8 +47,7 @@ class SimpleConnector {
 
   // FS IRAD-1040 2020-09-02
   // Send the modified schema to server
-  updateSchema = (schema: Schema) => {
-  };
+  updateSchema = (schema: Schema) => {};
 }
 
 export default SimpleConnector;

@@ -1,14 +1,14 @@
 // @flow
 
 import nullthrows from 'nullthrows';
-import {EditorState} from 'prosemirror-state';
-import {setCellAttr} from 'prosemirror-tables';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { setCellAttr } from 'prosemirror-tables';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
 import ColorEditor from './ui/ColorEditor';
-import {atAnchorRight} from './ui/PopUpPosition';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { atAnchorRight } from './ui/PopUpPosition';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './ui/createPopUp';
 
 const setCellBackgroundBlack = setCellAttr('background', '#000000');
@@ -16,7 +16,7 @@ const setCellBackgroundBlack = setCellAttr('background', '#000000');
 class TableCellColorCommand extends UICommand {
   _popUp = null;
 
-  shouldRespondToUIEvent = (e: (SyntheticEvent<> | MouseEvent)): boolean => {
+  shouldRespondToUIEvent = (e: SyntheticEvent<> | MouseEvent): boolean => {
     return e.type === UICommand.EventType.MOUSEENTER;
   };
 
@@ -28,7 +28,7 @@ class TableCellColorCommand extends UICommand {
     state: EditorState,
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView,
-    event: ?SyntheticEvent<>,
+    event: ?SyntheticEvent<>
   ): Promise<any> => {
     if (this._popUp) {
       return Promise.resolve(undefined);
@@ -39,7 +39,7 @@ class TableCellColorCommand extends UICommand {
     }
 
     const anchor = event ? event.currentTarget : null;
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._popUp = createPopUp(ColorEditor, null, {
         anchor,
         position: atAnchorRight,
@@ -48,7 +48,7 @@ class TableCellColorCommand extends UICommand {
             this._popUp = null;
             resolve(val);
           }
-        }
+        },
       });
     });
   };
@@ -57,7 +57,7 @@ class TableCellColorCommand extends UICommand {
     state: EditorState,
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView,
-    hex: ?string,
+    hex: ?string
   ): boolean => {
     if (dispatch && hex !== undefined) {
       const cmd = setCellAttr('background', hex);

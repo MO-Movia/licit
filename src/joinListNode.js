@@ -1,8 +1,8 @@
 // @flow
 
-import {Schema} from 'prosemirror-model';
-import {TextSelection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
+import { Schema } from 'prosemirror-model';
+import { TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
 
 import isListNode from './isListNode';
 import joinDown from './joinDown';
@@ -11,7 +11,7 @@ import joinUp from './joinUp';
 export default function joinListNode(
   tr: Transform,
   schema: Schema,
-  listNodePos: number,
+  listNodePos: number
 ): Transform {
   if (!tr.doc || !tr.selection) {
     return tr;
@@ -46,8 +46,8 @@ export default function joinListNode(
 
   const selection = TextSelection.create(
     tr.doc,
-    initialSelection.from + selectionOffset ,
-    initialSelection.to + selectionOffset,
+    initialSelection.from + selectionOffset,
+    initialSelection.to + selectionOffset
   );
 
   tr = tr.setSelection(selection);

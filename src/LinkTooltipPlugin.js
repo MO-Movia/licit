@@ -1,10 +1,10 @@
 // @flow
 
-import {EditorState, Plugin, PluginKey} from 'prosemirror-state';
-import {TextSelection} from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
+import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
+import { TextSelection } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
 
-import {MARK_LINK} from './MarkNames';
+import { MARK_LINK } from './MarkNames';
 import {
   hideSelectionPlaceholder,
   showSelectionPlaceholder,
@@ -14,7 +14,7 @@ import findNodesWithSameMark from './findNodesWithSameMark';
 import lookUpElement from './lookUpElement';
 import LinkTooltip from './ui/LinkTooltip';
 import LinkURLEditor from './ui/LinkURLEditor';
-import {atAnchorTopCenter} from './ui/PopUpPosition';
+import { atAnchorTopCenter } from './ui/PopUpPosition';
 import createPopUp from './ui/createPopUp';
 
 import './ui/czi-pop-up.css';
@@ -50,13 +50,13 @@ class LinkTooltipView {
       return;
     }
 
-    const {state} = view;
-    const {doc, selection, schema} = state;
+    const { state } = view;
+    const { doc, selection, schema } = state;
     const markType = schema.marks[MARK_LINK];
     if (!markType) {
       return;
     }
-    const {from, to} = selection;
+    const { from, to } = selection;
     const result = findNodesWithSameMark(doc, from, to, markType);
 
     if (!result) {
@@ -68,7 +68,7 @@ class LinkTooltipView {
       this.destroy();
       return;
     }
-    const anchorEl = lookUpElement(domFound.node, el => el.nodeName === 'A');
+    const anchorEl = lookUpElement(domFound.node, (el) => el.nodeName === 'A');
     if (!anchorEl) {
       this.destroy();
       return;
@@ -119,15 +119,15 @@ class LinkTooltipView {
       return;
     }
 
-    const {state} = view;
-    const {schema, doc, selection} = state;
-    const {from, to} = selection;
+    const { state } = view;
+    const { schema, doc, selection } = state;
+    const { from, to } = selection;
     const markType = schema.marks[MARK_LINK];
     const result = findNodesWithSameMark(doc, from, to, markType);
     if (!result) {
       return;
     }
-    let {tr} = state;
+    let { tr } = state;
     const linkSelection = TextSelection.create(
       tr.doc,
       result.from.pos,
@@ -138,12 +138,12 @@ class LinkTooltipView {
     tr = showSelectionPlaceholder(state, tr);
     view.dispatch(tr);
 
-    const href = result.mark.attrs.href ;
+    const href = result.mark.attrs.href;
     this._editor = createPopUp(
       LinkURLEditor,
-      {href},
+      { href },
       {
-        onClose: value => {
+        onClose: (value) => {
           this._editor = null;
           this._onEditEnd(view, selection, value);
         },
@@ -160,11 +160,11 @@ class LinkTooltipView {
     initialSelection: TextSelection,
     href: ?string
   ): void => {
-    const {state, dispatch} = view;
+    const { state, dispatch } = view;
     let tr = hideSelectionPlaceholder(state);
 
     if (href !== undefined) {
-      const {schema} = state;
+      const { schema } = state;
       const markType = schema.marks[MARK_LINK];
       if (markType) {
         const result = findNodesWithSameMark(
@@ -180,7 +180,7 @@ class LinkTooltipView {
             result.to.pos + 1
           );
           tr = tr.setSelection(linkSelection);
-          const attrs = href ? {href} : null;
+          const attrs = href ? { href } : null;
           tr = applyMark(tr, schema, markType, attrs);
 
           // [FS] IRAD-1005 2020-07-09

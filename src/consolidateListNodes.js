@@ -2,9 +2,9 @@
 
 import isOrderedListNode from './isOrderedListNode';
 import isListNode from './isListNode';
-import {Fragment} from 'prosemirror-model';
-import {Node} from 'prosemirror-model';
-import {Transform} from 'prosemirror-transform';
+import { Fragment } from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
+import { Transform } from 'prosemirror-transform';
 
 type JointInfo = {
   content: Fragment,
@@ -49,7 +49,7 @@ export default function consolidateListNodes(tr: Transform): Transform {
   while (true) {
     const jointInfo = traverseDocAndFindJointInfo(tr.doc, prevJointInfo);
     if (jointInfo) {
-      const {deleteFrom, deleteTo, insertAt, content} = jointInfo;
+      const { deleteFrom, deleteTo, insertAt, content } = jointInfo;
       tr = tr.delete(deleteFrom, deleteTo);
       tr = tr.insert(insertAt, content);
       prevJointInfo = jointInfo;
@@ -106,7 +106,7 @@ function linkOrderedListCounters(tr: Transform): Transform {
       willTraverseNodeChildren = false;
       const indent = node.attrs.indent || 0;
       const start = node.attrs.start || 1;
-      const {name, following} = node.attrs;
+      const { name, following } = node.attrs;
       if (name) {
         namedLists.add(name);
       }
@@ -177,7 +177,7 @@ function linkOrderedListCounters(tr: Transform): Transform {
           tr = setCounterLinked(tr, pos, counterIsLinked);
         }
       }
-      listsBefore.unshift({parentNode, indent, node});
+      listsBefore.unshift({ parentNode, indent, node });
     } else {
       // Not traversing within any list node. No lists need to be updated.
       listsBefore = null;
@@ -196,7 +196,7 @@ function setCounterLinked(
   const currentValue = node.attrs.counterReset || null;
   const nextValue = linked ? 'none' : null;
   if (nextValue !== currentValue) {
-    const nodeAttrs = {...node.attrs, counterReset: nextValue};
+    const nodeAttrs = { ...node.attrs, counterReset: nextValue };
     tr = tr.setNodeMarkup(pos, node.type, nodeAttrs, node.marks);
   }
   return tr;

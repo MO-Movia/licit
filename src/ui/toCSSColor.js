@@ -39,9 +39,7 @@ export function toCSSColor(source: any): string {
 
   let hex = '';
   try {
-    hex = Color(source)
-      .hex()
-      .toLowerCase();
+    hex = Color(source).hex().toLowerCase();
     ColorMaping[source] = hex;
   } catch (ex) {
     console.warn('unable to convert to hex', source);

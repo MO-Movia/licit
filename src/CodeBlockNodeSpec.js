@@ -8,14 +8,14 @@ const PRE_DOM = ['pre', ['code', 0]];
 // `<code>` element inside of it.
 const CodeBlockNodeSpec = {
   attrs: {
-    id: {default: null},
+    id: { default: null },
   },
   content: 'inline*',
   group: 'block',
   marks: '_',
   code: true,
   defining: true,
-  parseDOM: [{tag: 'pre', preserveWhitespace: 'full'}],
+  parseDOM: [{ tag: 'pre', preserveWhitespace: 'full' }],
   toDOM() {
     return PRE_DOM;
   },

@@ -11,7 +11,7 @@ import {
   showCursorPlaceholder,
 } from './CursorPlaceholderPlugin';
 import { IMAGE } from './NodeNames';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './ui/createPopUp';
 
 import type { ImageLike } from './Types';
@@ -68,11 +68,11 @@ class ImageSourceCommand extends UICommand {
       dispatch(showCursorPlaceholder(state));
     }
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const props = { runtime: view ? view.runtime : null };
       this._popUp = createPopUp(this.getEditor(), props, {
         modal: true,
-        onClose: val => {
+        onClose: (val) => {
           if (this._popUp) {
             this._popUp = null;
             resolve(val);

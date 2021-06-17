@@ -10,7 +10,8 @@
 }
 
 .czi-image-upload-placeholder-child {
-  animation: cziImageUploadPlaceholder 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+  animation: cziImageUploadPlaceholder 1.2s cubic-bezier(0, 0.5, 0.5, 1)
+    infinite;
   background: #ccc;
   border-radius: 3px;
   left: 6px;

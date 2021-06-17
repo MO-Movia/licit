@@ -44,13 +44,13 @@ function onResizeObserve(entries: Entries): void {
 function handleResizeObserverEntry(entry: ResizeObserverEntry): void {
   const node = entry.target;
   const callbacks = nodesObserving.get(node);
-  const executeCallback = cb => cb(entry);
+  const executeCallback = (cb) => cb(entry);
   callbacks && callbacks.forEach(executeCallback);
 }
 
 export function observe(
   node: HTMLElement,
-  callback: ResizeObserverEntry => void
+  callback: (ResizeObserverEntry) => void
 ): void {
   const el: any = node;
   const observer = instance || (instance = new ResizeObserver(onResizeObserve));
@@ -77,7 +77,7 @@ export function unobserve(node: HTMLElement, callback?: ResizeCallback): void {
     // Remove the passed in callback from the callbacks of the observed node
     // And, if no more callbacks then stop observing the node
     const callbacks = nodesObserving.has(el)
-      ? nullthrows(nodesObserving.get(el)).filter(cb => cb !== callback)
+      ? nullthrows(nodesObserving.get(el)).filter((cb) => cb !== callback)
       : null;
     if (callbacks && callbacks.length) {
       nodesObserving.set(el, callbacks);

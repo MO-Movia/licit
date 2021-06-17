@@ -1,6 +1,6 @@
 // @flow
 
-import {Step} from 'prosemirror-transform';
+import { Step } from 'prosemirror-transform';
 import EditorSchema from './EditorSchema';
 
 type RebaseResult = {
@@ -11,26 +11,26 @@ type RebaseResult = {
 export default function rebaseDocWithSteps(
   clientID: string,
   docJSON: Object,
-  stepsJSON: Array<Object>,
+  stepsJSON: Array<Object>
 ): Promise<RebaseResult> {
   return new Promise((resolve, reject) => {
     // TODO: Move this into a separate server request.
     let docNode = EditorSchema.nodeFromJSON(docJSON);
 
-    const steps = stepsJSON.map(step => {
+    const steps = stepsJSON.map((step) => {
       const result = Step.fromJSON(EditorSchema, step);
       result.clientID = clientID;
       return result;
     });
 
-    steps.forEach(step => {
+    steps.forEach((step) => {
       const result = step.apply(docNode);
       docNode = result.doc;
     });
 
     const newDocJSON = docNode.toJSON();
 
-    const newStepsJSON = steps.map(step => {
+    const newStepsJSON = steps.map((step) => {
       return step.toJSON();
     });
 

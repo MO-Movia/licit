@@ -9,7 +9,7 @@ import * as React from 'react';
 
 import { MARK_FONT_TYPE } from './MarkNames';
 import applyMark from './applyMark';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 function setFontType(tr: Transform, schema: Schema, name: string): Transform {
   const markType = schema.marks[MARK_FONT_TYPE];
@@ -35,7 +35,9 @@ class FontTypeCommand extends UICommand {
   constructor(name: string) {
     super();
     this._name = name;
-    this._label = name ? <span style={{ fontFamily: name }}>{name}</span> : null;
+    this._label = name ? (
+      <span style={{ fontFamily: name }}>{name}</span>
+    ) : null;
   }
 
   renderLabel = (state: EditorState): any => {
@@ -72,7 +74,7 @@ class FontTypeCommand extends UICommand {
     view: ?EditorView
   ): boolean => {
     const { schema } = state;
-     // commnted selection because selection removes the storedMarks;
+    // commnted selection because selection removes the storedMarks;
     // {selection}
 
     // const tr = setFontType(
@@ -81,11 +83,7 @@ class FontTypeCommand extends UICommand {
     //   this._name
     // );
 
-    const tr = setFontType(
-      state.tr,
-      schema,
-      this._name
-    );
+    const tr = setFontType(state.tr, schema, this._name);
     if (tr.docChanged || tr.storedMarksSet) {
       // If selection is empty, the color is added to `storedMarks`, which
       // works like `toggleMark`
@@ -104,7 +102,6 @@ class FontTypeCommand extends UICommand {
     from: number,
     to: number
   ): Transform => {
-
     const { schema } = state;
     tr = setFontType(
       tr.setSelection(TextSelection.create(tr.doc, from, to)),

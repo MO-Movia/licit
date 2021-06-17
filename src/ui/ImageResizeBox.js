@@ -193,7 +193,7 @@ class ImageResizeBox extends React.PureComponent<any, any> {
 
     const boxID = this._id;
 
-    const controls = Object.keys(ResizeDirection).map(key => {
+    const controls = Object.keys(ResizeDirection).map((key) => {
       return (
         <ImageResizeBoxControl
           boxID={boxID}

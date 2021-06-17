@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
-import {EditorView} from 'prosemirror-view';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { EditorView } from 'prosemirror-view';
 import uuid from './uuid';
 import './listType.css';
 
@@ -26,10 +26,10 @@ class PasteMenu extends React.PureComponent<any, any> {
     children.push(
       <button
         className="pastemenu"
-        id='paste'
-        key='paste'
+        id="paste"
+        key="paste"
         onClick={(e) => this._onUIEnter('paste')}
-        value='paste'
+        value="paste"
       >
         Paste
       </button>
@@ -37,10 +37,10 @@ class PasteMenu extends React.PureComponent<any, any> {
     children.push(
       <button
         className="pastemenu"
-        id='keepTextOnly'
-        key='keepTextOnly'
+        id="keepTextOnly"
+        key="keepTextOnly"
         onClick={(e) => this._onUIEnter('keepTextOnly')}
-        value='keepTextOnly'
+        value="keepTextOnly"
       >
         Keep Text Only
       </button>
