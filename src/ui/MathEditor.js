@@ -18,14 +18,18 @@ class MathEditor extends React.PureComponent<any, any> {
     initialValue: PropTypes.string,
     close: function (props: any, propName: string) {
       const fn = props[propName];
-      if (!fn.prototype ||
+      if (
+        !fn.prototype ||
         (typeof fn.prototype.constructor !== 'function' &&
-          fn.prototype.constructor.length !== 1)) {
-        return new Error(propName + 'must be a function with 1 arg of type string');
+          fn.prototype.constructor.length !== 1)
+      ) {
+        return new Error(
+          propName + 'must be a function with 1 arg of type string'
+        );
       }
       return null;
-    }
-  }
+    },
+  };
 
   state = {
     initialValue: this.props.initialValue,

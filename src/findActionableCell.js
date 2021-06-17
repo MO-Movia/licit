@@ -1,11 +1,11 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
-import {EditorState, TextSelection} from 'prosemirror-state';
-import {CellSelection, TableMap} from 'prosemirror-tables';
-import {findParentNodeOfType} from 'prosemirror-utils';
+import { Node } from 'prosemirror-model';
+import { EditorState, TextSelection } from 'prosemirror-state';
+import { CellSelection, TableMap } from 'prosemirror-tables';
+import { findParentNodeOfType } from 'prosemirror-utils';
 
-import {TABLE_CELL, TABLE_HEADER} from './NodeNames';
+import { TABLE_CELL, TABLE_HEADER } from './NodeNames';
 
 type Result = {
   node: Node,
@@ -13,7 +13,7 @@ type Result = {
 };
 
 function findActionableCellFromSelection(selection: CellSelection): ?Result {
-  const {$anchorCell} = selection;
+  const { $anchorCell } = selection;
   const start = $anchorCell.start(-1);
   const table = $anchorCell.node(-1);
   const tableMap = TableMap.get(table);
@@ -41,7 +41,7 @@ function findActionableCellFromSelection(selection: CellSelection): ?Result {
 }
 
 export default function findActionableCell(state: EditorState): ?Result {
-  const {doc, selection, schema} = state;
+  const { doc, selection, schema } = state;
   const tdType = schema.nodes[TABLE_CELL];
   const thType = schema.nodes[TABLE_HEADER];
   if (!tdType && !thType) {
@@ -51,7 +51,7 @@ export default function findActionableCell(state: EditorState): ?Result {
   let userSelection = selection;
 
   if (userSelection instanceof TextSelection) {
-    const {from, to} = selection;
+    const { from, to } = selection;
     if (from !== to) {
       return null;
     }

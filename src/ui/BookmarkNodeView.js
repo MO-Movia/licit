@@ -1,7 +1,7 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
-import {Decoration} from 'prosemirror-view';
+import { Node } from 'prosemirror-model';
+import { Decoration } from 'prosemirror-view';
 import * as React from 'react';
 
 import {
@@ -13,20 +13,20 @@ import Icon from './Icon';
 
 import './czi-bookmark-view.css';
 
-import type {NodeViewProps} from './CustomNodeView';
+import type { NodeViewProps } from './CustomNodeView';
 
 class BookmarkViewBody extends React.PureComponent<any, any> {
   props: NodeViewProps;
 
   render(): React.Element<any> {
-    const {id, visible} = this.props.node.attrs;
+    const { id, visible } = this.props.node.attrs;
     const icon = id && visible ? Icon.get('bookmark') : null;
     return <span onClick={this._onClick}>{icon}</span>;
   }
 
   _onClick = (e: SyntheticEvent<>): void => {
     e.preventDefault();
-    const {id} = this.props.node.attrs;
+    const { id } = this.props.node.attrs;
     const hash = '#' + id;
     if (window.location.hash !== hash) {
       window.location.hash = hash;
@@ -55,7 +55,7 @@ class BookmarkNodeView extends CustomNodeView {
   }
 
   _updateDOM(el: HTMLElement): void {
-    const {id, visible} = this.props.node.attrs;
+    const { id, visible } = this.props.node.attrs;
     el.setAttribute('id', id);
     el.setAttribute('title', id);
     el.setAttribute(ATTRIBUTE_BOOKMARK_ID, id);

@@ -10,7 +10,7 @@ export default function patchParagraphElements(doc: Document): void {
 }
 
 function patchParagraphElement(pElement: HTMLElement): void {
-  const {marginLeft} = pElement.style;
+  const { marginLeft } = pElement.style;
   if (marginLeft) {
     const indent = convertMarginLeftToIndentValue(marginLeft);
     if (indent) {

@@ -1,10 +1,10 @@
 // @flow
-import {EditorState, TextSelection, Selection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
-import {Node, Fragment, Schema} from 'prosemirror-model';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
-import {atViewportCenter} from './ui/PopUpPosition';
+import { EditorState, TextSelection, Selection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
+import { Node, Fragment, Schema } from 'prosemirror-model';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { atViewportCenter } from './ui/PopUpPosition';
 import createPopUp from './ui/createPopUp';
 import AlertInfo from './ui/AlertInfo';
 import CustomStyleEditor from './ui/CustomStyleEditor';
@@ -15,7 +15,7 @@ import TextAlignCommand from './TextAlignCommand';
 import FontTypeCommand from './FontTypeCommand';
 import FontSizeCommand from './FontSizeCommand';
 import TextLineSpacingCommand from './TextLineSpacingCommand';
-import {setTextAlign} from './TextAlignCommand';
+import { setTextAlign } from './TextAlignCommand';
 import ParagraphSpacingCommand from './ParagraphSpacingCommand';
 import IndentCommand from './IndentCommand';
 import {
@@ -27,7 +27,7 @@ import {
   getCustomStyleByLevel,
   isPreviousLevelExists,
 } from './customStyle';
-import type {StyleProps, EditorRuntime} from './Types';
+import type { StyleProps, EditorRuntime } from './Types';
 import {
   MARK_STRONG,
   MARK_EM,
@@ -39,8 +39,8 @@ import {
   MARK_TEXT_HIGHLIGHT,
   MARK_UNDERLINE,
 } from './MarkNames';
-import {PARAGRAPH} from './NodeNames';
-import {getLineSpacingValue} from './ui/toCSSLineSpacing';
+import { PARAGRAPH } from './NodeNames';
+import { getLineSpacingValue } from './ui/toCSSLineSpacing';
 import {
   RESERVED_STYLE_NONE,
   RESERVED_STYLE_NONE_NUMBERING,
@@ -211,8 +211,8 @@ class CustomStyleCommand extends UICommand {
   // [FS] IRAD-1053 2020-10-22
   // returns the applied style of a paragraph
   isCustomStyleApplied(editorState: EditorState) {
-    const {selection, doc} = editorState;
-    const {from, to} = selection;
+    const { selection, doc } = editorState;
+    const { from, to } = selection;
     let customStyleName = RESERVED_STYLE_NONE;
     doc.nodesBetween(from, to, (node, pos) => {
       if (node.attrs.styleName) {
@@ -259,8 +259,8 @@ class CustomStyleCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    let {tr} = state;
-    const {selection} = state;
+    let { tr } = state;
+    const { selection } = state;
     const startPos = selection.$from.before(1);
     const endPos = selection.$to.after(1) - 1;
     const node = getNode(state, startPos, endPos, tr);
@@ -350,8 +350,8 @@ class CustomStyleCommand extends UICommand {
   // [FS] IRAD-1053 2020-12-17
   // to clear the custom styles in the selected paragraph
   clearCustomStyles(tr: Transform<any>, editorState: EditorState) {
-    const {selection, doc} = editorState;
-    const {from, to} = selection;
+    const { selection, doc } = editorState;
+    const { from, to } = selection;
     let customStyleName = RESERVED_STYLE_NONE;
     doc.nodesBetween(from, to, (node, pos) => {
       if (node.attrs.styleName) {
@@ -369,9 +369,9 @@ class CustomStyleCommand extends UICommand {
   }
 
   removeMarks(marks: [], tr: Transform, node: Node) {
-    const {selection} = tr;
-    let {from, to} = selection;
-    const {empty} = selection;
+    const { selection } = tr;
+    let { from, to } = selection;
+    const { empty } = selection;
     if (empty) {
       from = selection.$from.before(1);
       to = selection.$to.after(1);
@@ -387,7 +387,7 @@ class CustomStyleCommand extends UICommand {
 
   // shows the create style popup
   editWindow(state: EditorState, view: EditorView, mode: number) {
-    const {dispatch} = view;
+    const { dispatch } = view;
     let tr = state.tr;
     const doc = state.doc;
 
@@ -431,7 +431,7 @@ class CustomStyleCommand extends UICommand {
                       // Issue fix: Created custom style Numbering not applied to paragraph.
                       tr = tr.setSelection(TextSelection.create(doc, 0, 0));
                       // Apply created styles to document
-                      const {selection} = state;
+                      const { selection } = state;
                       const startPos = selection.$from.before(1);
                       const endPos = selection.$to.after(1);
                       const node = getNode(state, startPos, endPos, tr);
@@ -476,7 +476,7 @@ class CustomStyleCommand extends UICommand {
     if (runtime && typeof runtime.getStylesAsync === 'function') {
       runtime.getStylesAsync().then((result) => {
         if (styleName) {
-          const {dispatch, state} = editorView;
+          const { dispatch, state } = editorView;
           let tr;
           result.forEach((obj) => {
             if (styleName === obj.styleName) {
@@ -603,11 +603,11 @@ function onLoadRemoveAllMarksExceptOverridden(
           // [FS] IRAD-1292 2021-06-03
           // Issue fix: On reload citation word not showing highlighted with custom style applied.
           if (!(mark.attrs && mark.attrs.hasCitation)) {
-          tasks.push({
-            child,
-            pos,
-            mark,
-          });
+            tasks.push({
+              child,
+              pos,
+              mark,
+            });
           }
         }
       });
@@ -641,7 +641,7 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
         case COLOR:
           markType = schema.marks[MARK_TEXT_COLOR];
           attrs = styleProp.styles[property]
-            ? {color: styleProp.styles[property]}
+            ? { color: styleProp.styles[property] }
             : null;
           marks.push(markType.create(attrs));
           break;
@@ -649,7 +649,7 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
         case FONTSIZE:
           markType = schema.marks[MARK_FONT_SIZE];
           attrs = styleProp.styles[property]
-            ? {pt: styleProp.styles[property]}
+            ? { pt: styleProp.styles[property] }
             : null;
           marks.push(markType.create(attrs));
           break;
@@ -657,7 +657,7 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
         case FONTNAME:
           markType = schema.marks[MARK_FONT_TYPE];
           attrs = styleProp.styles[property]
-            ? {name: styleProp.styles[property]}
+            ? { name: styleProp.styles[property] }
             : null;
           marks.push(markType.create(attrs));
           break;
@@ -665,7 +665,7 @@ export function getMarkByStyleName(styleName: string, schema: Schema) {
         case TEXTHL:
           markType = schema.marks[MARK_TEXT_HIGHLIGHT];
           attrs = styleProp.styles[property]
-            ? {highlightColor: styleProp.styles[property]}
+            ? { highlightColor: styleProp.styles[property] }
             : null;
           marks.push(markType.create(attrs));
           break;
@@ -823,9 +823,9 @@ function hasMismatchHeirarchy(
       const nodeStyleLevel = getStyleLevel(node.attrs.styleName);
       if (nodeStyleLevel) {
         if (pos < startPos) {
-          nodesBeforeSelection.push({pos, node});
+          nodesBeforeSelection.push({ pos, node });
         } else if (pos >= endPos) {
-          nodesAfterSelection.push({pos, node});
+          nodesAfterSelection.push({ pos, node });
         }
       }
     }
@@ -1226,7 +1226,7 @@ function addElementEx(
   for (let index = level; index > counter; index--) {
     tr = insertParagraph(nodeAttrs, startPos, tr, index, state);
   }
-  return {tr, level, counter};
+  return { tr, level, counter };
 }
 
 function addElement(
@@ -1253,7 +1253,7 @@ function addElementAfter(nodeAttrs, state, tr, startPos, nextLevel) {
   const element = addElementEx(nodeAttrs, state, tr, startPos, true, nextLevel);
   if (element) {
     tr = element.tr;
-    const {counter, level} = element;
+    const { counter, level } = element;
     if (level === counter) {
       tr = insertParagraph(nodeAttrs, startPos, tr, 1);
     }
@@ -1344,7 +1344,7 @@ function removeAllMarksExceptLink(
   tr: Transform,
   schema: Schema
 ) {
-  const {doc} = tr;
+  const { doc } = tr;
   const tasks = [];
   doc.nodesBetween(from, to, (node, pos) => {
     if (node.marks && node.marks.length) {
@@ -1374,7 +1374,7 @@ function handleRemoveMarks(
   schema: Schema
 ) {
   tasks.forEach((job) => {
-    const {mark} = job;
+    const { mark } = job;
     tr = tr.removeMark(from, to, mark.type);
   });
   tr = setTextAlign(tr, schema, null);
@@ -1389,7 +1389,7 @@ export function applyStyle(
   state: EditorState,
   tr: Transform
 ) {
-  const {selection} = state;
+  const { selection } = state;
   const startPos = selection.$from.before(1);
   const endPos = selection.$to.after(1) - 1;
   return applyStyleToEachNode(state, startPos, endPos, tr, style, styleName);
@@ -1433,7 +1433,7 @@ export function getNode(
       if (null == selectedNode) {
         selectedNode = node;
       }
-      selectedNodes.push({pos: startPos, node});
+      selectedNodes.push({ pos: startPos, node });
     }
   });
   return selectedNode;
@@ -1447,7 +1447,7 @@ export function updateDocument(
   styleName: string,
   style: StyleProps
 ) {
-  const {doc} = state;
+  const { doc } = state;
   doc.descendants(function (child, pos) {
     const contentLen = child.content.size;
     if (haveEligibleChildren(child, contentLen, styleName)) {
@@ -1472,7 +1472,7 @@ export function isCustomStyleAlreadyApplied(
   editorState: EditorState
 ) {
   let found = false;
-  const {doc} = editorState;
+  const { doc } = editorState;
   doc.nodesBetween(0, doc.nodeSize - 2, (node, pos) => {
     if (node.content && node.content.content && node.content.content.length) {
       const styleLevel = getStyleLevel(styleName);

@@ -1,14 +1,14 @@
 // @flow
 
 import nullthrows from 'nullthrows';
-import {EditorState} from 'prosemirror-state';
-import {setCellAttr} from 'prosemirror-tables';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { setCellAttr } from 'prosemirror-tables';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
 import ColorEditor from './ui/ColorEditor';
-import {atAnchorRight} from './ui/PopUpPosition';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { atAnchorRight } from './ui/PopUpPosition';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './ui/createPopUp';
 
 const setCellBorderBlack = setCellAttr('borderColor', '#000000');
@@ -39,11 +39,11 @@ class TableBorderColorCommand extends UICommand {
     }
 
     const anchor = event ? event.currentTarget : null;
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._popUp = createPopUp(ColorEditor, null, {
         anchor,
         position: atAnchorRight,
-        onClose: val => {
+        onClose: (val) => {
           if (this._popUp) {
             this._popUp = null;
             resolve(val);

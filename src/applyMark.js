@@ -1,13 +1,13 @@
 // @flow
 
-import {Mark, Schema} from 'prosemirror-model';
-import {Transform} from 'prosemirror-transform';
+import { Mark, Schema } from 'prosemirror-model';
+import { Transform } from 'prosemirror-transform';
 
 function markApplies(doc, ranges, type) {
   for (let i = 0; i < ranges.length; i++) {
-    const {$from, $to} = ranges[i];
+    const { $from, $to } = ranges[i];
     let can = $from.depth == 0 ? doc.type.allowsMarkType(type) : false;
-    doc.nodesBetween($from.pos, $to.pos, node => {
+    doc.nodesBetween($from.pos, $to.pos, (node) => {
       if (can) {
         return false;
       }
@@ -32,7 +32,7 @@ export default function applyMark(
   if (!tr.selection || !tr.doc || !markType) {
     return tr;
   }
-  const {empty, $cursor, ranges} = tr.selection;
+  const { empty, $cursor, ranges } = tr.selection;
   if ((empty && !$cursor) || !markApplies(tr.doc, ranges, markType)) {
     return tr;
   }
@@ -45,11 +45,11 @@ export default function applyMark(
 
   let has = false;
   for (let i = 0; !has && i < ranges.length; i++) {
-    const {$from, $to} = ranges[i];
+    const { $from, $to } = ranges[i];
     has = tr.doc.rangeHasMark($from.pos, $to.pos, markType);
   }
   for (let i = 0; i < ranges.length; i++) {
-    const {$from, $to} = ranges[i];
+    const { $from, $to } = ranges[i];
     // [FS] IRAD-1043 2020-10-27
     // No need to remove the applied custom styles when select the custom style mutiple times.
     if (has && !isCustomStyleApplied) {

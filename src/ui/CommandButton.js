@@ -1,12 +1,12 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import CustomButton from './CustomButton';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 class CommandButton extends React.PureComponent<any, any> {
   props: {
@@ -60,7 +60,7 @@ class CommandButton extends React.PureComponent<any, any> {
   };
 
   _execute = (value: any, event: SyntheticEvent<HTMLButtonElement>): void => {
-    const {command, editorState, dispatch, editorView} = this.props;
+    const { command, editorState, dispatch, editorView } = this.props;
     command.execute(editorState, dispatch, editorView, event);
   };
 }

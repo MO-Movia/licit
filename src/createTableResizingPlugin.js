@@ -1,8 +1,8 @@
 // @flow
 
-import {Plugin} from 'prosemirror-state';
-import {columnResizing} from 'prosemirror-tables';
-import {EditorView} from 'prosemirror-view';
+import { Plugin } from 'prosemirror-state';
+import { columnResizing } from 'prosemirror-tables';
+import { EditorView } from 'prosemirror-view';
 
 const TABLE_HANDLE_WIDTH = 10;
 const TABLE_CELL_MINWIDTH = 25;
@@ -33,8 +33,8 @@ function calculateMaxClientX(
   event: MouseEvent,
   targetTable: HTMLElement
 ): number {
-  const {clientX} = event;
-  const {left, width} = targetTable.getBoundingClientRect();
+  const { clientX } = event;
+  const { left, width } = targetTable.getBoundingClientRect();
   const offsetX = clientX - left;
   const colgroup = targetTable.querySelector('colgroup');
   const colsCount = colgroup ? colgroup.querySelectorAll('col').length : 0;
@@ -65,7 +65,7 @@ export default function createTableResizingPlugin(): Plugin {
     }
   };
 
-  const {mousedown} = plugin.props.handleDOMEvents;
+  const { mousedown } = plugin.props.handleDOMEvents;
 
   // This is a workaround to constraint the mousemove to prevent
   // the table become too wide.

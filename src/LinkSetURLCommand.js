@@ -1,11 +1,11 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {TextSelection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
-import {MARK_LINK} from './MarkNames';
+import { MARK_LINK } from './MarkNames';
 import {
   hideSelectionPlaceholder,
   showSelectionPlaceholder,
@@ -13,7 +13,7 @@ import {
 import applyMark from './applyMark';
 import findNodesWithSameMark from './findNodesWithSameMark';
 import LinkURLEditor from './ui/LinkURLEditor';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './ui/createPopUp';
 
 class LinkSetURLCommand extends UICommand {
@@ -29,7 +29,7 @@ class LinkSetURLCommand extends UICommand {
     if (!markType) {
       return false;
     }
-    const {from, to} = state.selection;
+    const { from, to } = state.selection;
     return from < to;
   };
 
@@ -47,21 +47,21 @@ class LinkSetURLCommand extends UICommand {
       dispatch(showSelectionPlaceholder(state));
     }
 
-    const {doc, schema, selection} = state;
+    const { doc, schema, selection } = state;
     const markType = schema.marks[MARK_LINK];
     if (!markType) {
       return Promise.resolve(undefined);
     }
-    const {from, to} = selection;
+    const { from, to } = selection;
     const result = findNodesWithSameMark(doc, from, to, markType);
     const href = result ? result.mark.attrs.href : null;
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._popUp = createPopUp(
         LinkURLEditor,
-        {href},
+        { href },
         {
           modal: true,
-          onClose: val => {
+          onClose: (val) => {
             if (this._popUp) {
               this._popUp = null;
               resolve(val);
@@ -79,13 +79,13 @@ class LinkSetURLCommand extends UICommand {
     href: ?string
   ): boolean => {
     if (dispatch) {
-      const {selection, schema} = state;
-      let {tr} = state;
+      const { selection, schema } = state;
+      let { tr } = state;
       tr = view ? hideSelectionPlaceholder(view.state) : tr;
       tr = tr.setSelection(selection);
       if (href !== undefined) {
         const markType = schema.marks[MARK_LINK];
-        const attrs = href ? {href} : null;
+        const attrs = href ? { href } : null;
         tr = applyMark(
           tr.setSelection(state.selection),
           schema,

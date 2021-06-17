@@ -4,7 +4,10 @@ import Keymap from 'browserkeymap';
 
 import browser from './browser';
 
-import {makeKeyMap, makeKeyMapWithCommon} from '@modusoperandi/licit-doc-attrs-step';
+import {
+  makeKeyMap,
+  makeKeyMapWithCommon,
+} from '@modusoperandi/licit-doc-attrs-step';
 
 // https://tinyurl.com/ybwf3wex
 

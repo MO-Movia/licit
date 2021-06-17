@@ -4,12 +4,12 @@
 // Need to add Icons instead of label
 
 import cx from 'classnames';
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import CustomButton from './CustomButton';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './createPopUp';
 import uuid from './uuid';
 import CustomMenuUI from './CustomMenuUI';
@@ -18,8 +18,8 @@ import './custom-dropdown.css';
 class CustomMenuButton extends React.PureComponent<any, any> {
   props: {
     className?: ?string,
-    commandGroups: Array<{[string]: UICommand}>,
-    staticCommand: Array<{[string]: UICommand}>,
+    commandGroups: Array<{ [string]: UICommand }>,
+    staticCommand: Array<{ [string]: UICommand }>,
     disabled?: ?boolean,
     dispatch: (tr: Transform) => void,
     editorState: EditorState,
@@ -38,7 +38,7 @@ class CustomMenuButton extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const {className, label, icon} = this.props;
+    const { className, label, icon } = this.props;
     // const enabled =
     //   !disabled &&
     //   commandGroups.some((group, ii) => {
@@ -55,7 +55,7 @@ class CustomMenuButton extends React.PureComponent<any, any> {
     //     });
     //   });
 
-    const {expanded} = this.state;
+    const { expanded } = this.state;
     const buttonClassName = cx(className, {
       'czi-custom-menu-button': true,
       expanded,
@@ -114,13 +114,13 @@ class CustomMenuButton extends React.PureComponent<any, any> {
   };
 
   _onCommand = (): void => {
-    this.setState({expanded: false});
+    this.setState({ expanded: false });
     this._hideMenu();
   };
 
   _onClose = (): void => {
     if (this._menu) {
-      this.setState({expanded: false});
+      this.setState({ expanded: false });
       this._menu = null;
     }
   };

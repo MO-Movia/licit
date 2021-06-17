@@ -1,20 +1,20 @@
 // @flow
 
-import {Schema} from 'prosemirror-model';
-import {Transform} from 'prosemirror-transform';
+import { Schema } from 'prosemirror-model';
+import { Transform } from 'prosemirror-transform';
 
-import {BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH} from './NodeNames';
+import { BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
 import compareNumber from './compareNumber';
 import isInsideListItem from './isInsideListItem';
 import isListNode from './isListNode';
-import {unwrapNodesFromList} from './toggleList';
+import { unwrapNodesFromList } from './toggleList';
 
 export default function toggleBlockquote(
   tr: Transform,
   schema: Schema
 ): Transform {
-  const {nodes} = schema;
-  const {selection, doc} = tr;
+  const { nodes } = schema;
+  const { selection, doc } = tr;
   const heading = nodes[HEADING];
   const blockquote = nodes[BLOCKQUOTE];
   const paragraph = nodes[PARAGRAPH];
@@ -24,7 +24,7 @@ export default function toggleBlockquote(
     return tr;
   }
 
-  const {from, to} = tr.selection;
+  const { from, to } = tr.selection;
   let startWithBlockQuote = null;
   const poses = [];
   doc.nodesBetween(from, to, (node, pos, parentNode) => {
@@ -44,7 +44,7 @@ export default function toggleBlockquote(
   poses
     .sort(compareNumber)
     .reverse()
-    .forEach(pos => {
+    .forEach((pos) => {
       tr = setBlockquoteNode(tr, schema, pos);
     });
   return tr;
@@ -55,7 +55,7 @@ function setBlockquoteNode(
   schema: Schema,
   pos: number
 ): Transform {
-  const {nodes} = schema;
+  const { nodes } = schema;
   const heading = nodes[HEADING];
   const paragraph = nodes[PARAGRAPH];
   const blockquote = nodes[BLOCKQUOTE];
@@ -76,8 +76,8 @@ function setBlockquoteNode(
   } else if (isListNode(node)) {
     // Toggle list
     if (blockquote) {
-      tr = unwrapNodesFromList(tr, schema, pos, paragraphNode => {
-        const {content, marks, attrs} = paragraphNode;
+      tr = unwrapNodesFromList(tr, schema, pos, (paragraphNode) => {
+        const { content, marks, attrs } = paragraphNode;
         return blockquote.create(attrs, content, marks);
       });
     }

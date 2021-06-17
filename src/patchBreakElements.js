@@ -9,7 +9,7 @@ export default function patchBreakElements(doc: Document): void {
 }
 
 function patchBreakElement(brElement: HTMLElement): void {
-  const {ownerDocument, parentElement} = brElement;
+  const { ownerDocument, parentElement } = brElement;
   if (!ownerDocument || !parentElement) {
     return;
   }

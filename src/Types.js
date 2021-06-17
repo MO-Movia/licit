@@ -1,9 +1,9 @@
 // @flow
 
 import * as React from 'react';
-import {EditorView} from 'prosemirror-view';
+import { EditorView } from 'prosemirror-view';
 export type NodeSpec = {
-  attrs?: ?{[key: string]: any},
+  attrs?: ?{ [key: string]: any },
   content?: ?string,
   draggable?: ?boolean,
   group?: ?string,
@@ -14,7 +14,7 @@ export type NodeSpec = {
 };
 
 export type MarkSpec = {
-  attrs?: ?{[key: string]: any},
+  attrs?: ?{ [key: string]: any },
   name?: ?string,
   parseDOM: Array<any>,
   toDOM: (node: any) => Array<any>,

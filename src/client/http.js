@@ -46,21 +46,21 @@ function makePlain(html) {
 }
 
 export function GET(url) {
-  return req({url, method: 'GET'});
+  return req({ url, method: 'GET' });
 }
 
 export function POST(url, body, type) {
-  return req({url, method: 'POST', body, headers: {'Content-Type': type}});
+  return req({ url, method: 'POST', body, headers: { 'Content-Type': type } });
 }
 
 // [FS] IRAD-1128 2021-02-03
 // http DELETE request overrided
 export function DELETE(url, type) {
-  return req({url, method: 'DELETE', headers: {'Content-Type': type}});
+  return req({ url, method: 'DELETE', headers: { 'Content-Type': type } });
 }
 
 // [FS] IRAD-1128 2021-02-03
 // http PATCH request overrided
 export function PATCH(url, body, type) {
-  return req({url, method: 'PATCH', body, headers: {'Content-Type': type}});
+  return req({ url, method: 'PATCH', body, headers: { 'Content-Type': type } });
 }

@@ -3,8 +3,8 @@
 import Color from 'color';
 
 const ColorMaping = {
-  'transparent': '',
-  'inherit': '',
+  transparent: '',
+  inherit: '',
 };
 
 export default function toHexColor(source: any): string {

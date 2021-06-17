@@ -20,7 +20,7 @@ export type PopUpParams = {
   modal?: ?boolean,
   onClose?: ?(val: any) => void,
   position?: ?PositionHandler,
-  IsChildDialog?:boolean,
+  IsChildDialog?: boolean,
 };
 
 export type PopUpProps = {
@@ -46,7 +46,7 @@ class PopUp extends React.PureComponent<any, any> {
     const { View, viewProps, close } = this.props;
     return (
       <div data-pop-up-id={this._id} id={this._id}>
-        <View {...viewProps || dummy} close={close} />
+        <View {...(viewProps || dummy)} close={close} />
       </div>
     );
   }

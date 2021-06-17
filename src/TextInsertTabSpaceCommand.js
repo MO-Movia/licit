@@ -9,10 +9,14 @@ import { MARK_SPACER } from './MarkNames';
 import { HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
 import { HAIR_SPACE_CHAR, SPACER_SIZE_TAB } from './SpacerMarkSpec';
 import applyMark from './applyMark';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { getStyleLevel } from './CustomStyleCommand';
 
-function insertTabSpace(state: EditorState, tr: Transform, schema: Schema): Transform {
+function insertTabSpace(
+  state: EditorState,
+  tr: Transform,
+  schema: Schema
+): Transform {
   const { selection } = tr;
   if (!selection.empty || !(selection instanceof TextSelection)) {
     return tr;
@@ -44,7 +48,7 @@ function insertTabSpace(state: EditorState, tr: Transform, schema: Schema): Tran
   }
 
   if (found.node.type === paragraph && found.pos === from - 1 && styleLevel) {
-     return tr;
+    return tr;
   }
   const textNode = schema.text(HAIR_SPACE_CHAR);
   tr = tr.insert(to, Fragment.from(textNode));

@@ -1,9 +1,9 @@
 // @flow
 
-import {EditorView} from 'prosemirror-view';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
-import type {DirectEditorProps, EditorRuntime} from '../Types';
+import type { DirectEditorProps, EditorRuntime } from '../Types';
 
 // https://github.com/ProseMirror/prosemirror-view/blob/master/src/index.js
 class CustomEditorView extends EditorView {

@@ -1,12 +1,12 @@
 // @flow
 
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
-import {AllSelection, TextSelection} from 'prosemirror-state';
-import {BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH} from './NodeNames';
-import {EditorState} from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
-import {Schema} from 'prosemirror-model';
-import {Transform} from 'prosemirror-transform';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { AllSelection, TextSelection } from 'prosemirror-state';
+import { BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import { Schema } from 'prosemirror-model';
+import { Transform } from 'prosemirror-transform';
 
 export function setParagraphSpacing(
   tr: Transform,
@@ -14,7 +14,7 @@ export function setParagraphSpacing(
   paragraphSpacing: ?string,
   isAfter: ?boolean
 ): Transform {
-  const {selection, doc} = tr;
+  const { selection, doc } = tr;
   if (!selection || !doc) {
     return tr;
   }
@@ -26,7 +26,7 @@ export function setParagraphSpacing(
     return tr;
   }
 
-  const {from, to} = selection;
+  const { from, to } = selection;
   const paragraph = schema.nodes[PARAGRAPH];
   const heading = schema.nodes[HEADING];
   const listItem = schema.nodes[LIST_ITEM];
@@ -64,8 +64,8 @@ export function setParagraphSpacing(
   }
 
   tasks.forEach((job) => {
-    const {node, pos, nodeType} = job;
-    let {attrs} = node;
+    const { node, pos, nodeType } = job;
+    let { attrs } = node;
     if (isAfter) {
       attrs = {
         ...attrs,
@@ -102,7 +102,7 @@ class ParagraphSpacingCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const {schema, selection} = state;
+    const { schema, selection } = state;
     const tr = setParagraphSpacing(
       state.tr.setSelection(selection),
       schema,

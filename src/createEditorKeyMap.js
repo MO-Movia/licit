@@ -1,13 +1,16 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
 import * as EditorCommands from './EditorCommands';
 import * as EditorKeyMap from './EditorKeyMap';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
-import type {UserKeyCommand, UserKeyMap} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import type {
+  UserKeyCommand,
+  UserKeyMap,
+} from '@modusoperandi/licit-doc-attrs-step';
 
 const {
   KEY_BACK_DELETE,
@@ -22,7 +25,7 @@ const {
   KEY_TOGGLE_BOLD,
   KEY_TOGGLE_ITALIC,
   KEY_TOGGLE_UNDERLINE,
-  KEY_UNDO
+  KEY_UNDO,
 } = EditorKeyMap;
 
 const {

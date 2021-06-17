@@ -12,7 +12,7 @@ export default function patchAnchorElements(doc: Document): void {
 }
 
 function patchAnchorElement(node: HTMLElement): void {
-  const {id} = node;
+  const { id } = node;
   if (id && node.childElementCount === 0) {
     // This looks like a bookmark generated from Google Doc, will render
     // this as BookmarkNode.

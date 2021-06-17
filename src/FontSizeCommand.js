@@ -1,6 +1,6 @@
 // @flow
 
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import applyMark from './applyMark';
 import isTextStyleMarkCommandEnabled from './isTextStyleMarkCommandEnabled';
 import { EditorState, TextSelection } from 'prosemirror-state';
@@ -60,9 +60,12 @@ class FontSizeCommand extends UICommand {
     from: number,
     to: number
   ): Transform => {
-
     const { schema } = state;
-    tr = setFontSize(tr.setSelection(TextSelection.create(tr.doc, from, to)), schema, this._pt);
+    tr = setFontSize(
+      tr.setSelection(TextSelection.create(tr.doc, from, to)),
+      schema,
+      this._pt
+    );
     return tr;
   };
 }

@@ -1,7 +1,7 @@
 // @xflow
 
-import {Node} from 'prosemirror-model';
-import {Decoration, EditorView} from 'prosemirror-view';
+import { Node } from 'prosemirror-model';
+import { Decoration, EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -45,7 +45,7 @@ function onMutation(mutations: any, observer: MutationObserver): void {
     }
   }
 
-  mountingViews.forEach(view => mountedViews.add(view));
+  mountingViews.forEach((view) => mountedViews.add(view));
 
   if (mountedViews.size === 0) {
     observer.disconnect();
@@ -122,8 +122,11 @@ class CustomNodeView {
       // [FS] IRAD-1060 2020-09-10
       // Observe the editorview's dom insteadof root document so that
       // if multiple instances of editor in a page shouldn't cross-talk
-      mutationObserver.observe(/*document*/editorView.dom, {childList: true, subtree: true});
-      selectionObserver.observe(/*document*/editorView.dom);
+      mutationObserver.observe(/*document*/ editorView.dom, {
+        childList: true,
+        subtree: true,
+      });
+      selectionObserver.observe(/*document*/ editorView.dom);
     }
   }
 
@@ -174,10 +177,10 @@ class CustomNodeView {
   }
 
   __renderReactComponent(): void {
-    const {editorView, getPos} = this.props;
+    const { editorView, getPos } = this.props;
 
     if (editorView.state && editorView.state.selection) {
-      const {from} = editorView.state.selection;
+      const { from } = editorView.state.selection;
       const pos = getPos();
       this.props.selected = this._selected;
       this.props.focused = editorView.focused && pos === from;

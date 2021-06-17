@@ -56,7 +56,6 @@ class EditorFrameset extends React.PureComponent<any, any> {
       embedded: embedded,
     });
 
-
     const toolbarHeader =
       toolbarPlacement === 'header' || !toolbarPlacement ? toolbar : null;
     const toolbarBody = toolbarPlacement === 'body' && toolbar;

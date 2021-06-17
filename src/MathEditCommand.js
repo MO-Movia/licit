@@ -1,10 +1,10 @@
 // @flow
 
-import {Fragment, Schema} from 'prosemirror-model';
-import {EditorState} from 'prosemirror-state';
-import {TextSelection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { Fragment, Schema } from 'prosemirror-model';
+import { EditorState } from 'prosemirror-state';
+import { TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 // eslint-disable-next-line no-unused-vars
 import * as React from 'react';
 
@@ -12,17 +12,17 @@ import {
   hideCursorPlaceholder,
   showCursorPlaceholder,
 } from './CursorPlaceholderPlugin';
-import {MATH} from './NodeNames';
+import { MATH } from './NodeNames';
 import MathEditor from './ui/MathEditor';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './ui/createPopUp';
 
 function insertMath(tr: Transform, schema: Schema, latex: ?string): Transform {
-  const {selection} = tr;
+  const { selection } = tr;
   if (!selection) {
     return tr;
   }
-  const {from, to} = selection;
+  const { from, to } = selection;
   if (from !== to) {
     return tr;
   }
@@ -47,7 +47,7 @@ class MathEditCommand extends UICommand {
 
   isEnabled = (state: EditorState, view: ?EditorView): boolean => {
     const tr = state;
-    const {selection} = tr;
+    const { selection } = tr;
     if (selection instanceof TextSelection) {
       return selection.from === selection.to;
     }
@@ -68,14 +68,14 @@ class MathEditCommand extends UICommand {
       dispatch(showCursorPlaceholder(state));
     }
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const props = {
         runtime: view ? view.runtime : null,
         initialValue: null,
       };
       this._popUp = createPopUp(MathEditor, props, {
         modal: true,
-        onClose: val => {
+        onClose: (val) => {
           if (this._popUp) {
             this._popUp = null;
             resolve(val);
@@ -92,8 +92,8 @@ class MathEditCommand extends UICommand {
     latex: ?string
   ): boolean => {
     if (dispatch) {
-      const {selection, schema} = state;
-      let {tr} = state;
+      const { selection, schema } = state;
+      let { tr } = state;
       tr = view ? hideCursorPlaceholder(view.state) : tr;
       tr = tr.setSelection(selection);
       if (latex) {

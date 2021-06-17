@@ -1,12 +1,12 @@
 // @flow
 
-import {Schema} from 'prosemirror-model';
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { Schema } from 'prosemirror-model';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
 import splitListItem from './splitListItem';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 class ListSplitCommand extends UICommand {
   constructor(schema: Schema) {
@@ -18,7 +18,7 @@ class ListSplitCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const {selection, schema} = state;
+    const { selection, schema } = state;
     const tr = splitListItem(state.tr.setSelection(selection), schema);
     if (tr.docChanged) {
       dispatch && dispatch(tr);

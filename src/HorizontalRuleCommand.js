@@ -1,19 +1,19 @@
 // @flow
 
-import {Fragment, Schema} from 'prosemirror-model';
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { Fragment, Schema } from 'prosemirror-model';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
-import {HORIZONTAL_RULE} from './NodeNames';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { HORIZONTAL_RULE } from './NodeNames';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 function insertHorizontalRule(tr: Transform, schema: Schema): Transform {
-  const {selection} = tr;
+  const { selection } = tr;
   if (!selection) {
     return tr;
   }
-  const {from, to} = selection;
+  const { from, to } = selection;
   if (from !== to) {
     return tr;
   }
@@ -35,7 +35,7 @@ class HorizontalRuleCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const {selection, schema} = state;
+    const { selection, schema } = state;
     const tr = insertHorizontalRule(state.tr.setSelection(selection), schema);
     if (tr.docChanged) {
       dispatch && dispatch(tr);

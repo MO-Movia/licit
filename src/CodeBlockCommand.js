@@ -1,14 +1,14 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {findParentNodeOfType} from 'prosemirror-utils';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { findParentNodeOfType } from 'prosemirror-utils';
+import { EditorView } from 'prosemirror-view';
 
-import {CODE_BLOCK} from './NodeNames';
+import { CODE_BLOCK } from './NodeNames';
 import noop from './noop';
 import toggleCodeBlock from './toggleCodeBlock';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 class CodeBlockCommand extends UICommand {
   isActive = (state: EditorState): boolean => {
@@ -21,8 +21,8 @@ class CodeBlockCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const {selection, schema} = state;
-    let {tr} = state;
+    const { selection, schema } = state;
+    let { tr } = state;
     tr = tr.setSelection(selection);
     tr = toggleCodeBlock(tr, schema);
     if (tr.docChanged) {

@@ -1,7 +1,7 @@
 // @flow
 
 import ColorEditor from './ui/ColorEditor';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import applyMark from './applyMark';
 import createPopUp from './ui/createPopUp';
 import findNodesWithSameMark from './findNodesWithSameMark';
@@ -13,7 +13,6 @@ import { MARK_TEXT_COLOR } from './MarkNames';
 import { Transform } from 'prosemirror-transform';
 
 class TextColorCommand extends UICommand {
-
   _popUp = null;
   _color = '';
 
@@ -45,13 +44,13 @@ class TextColorCommand extends UICommand {
     const { from, to } = selection;
     const result = findNodesWithSameMark(doc, from, to, markType);
     const hex = result ? result.mark.attrs.color : null;
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._popUp = createPopUp(
         ColorEditor,
         { hex },
         {
           anchor,
-          onClose: val => {
+          onClose: (val) => {
             if (this._popUp) {
               this._popUp = null;
               resolve(val);
@@ -72,12 +71,7 @@ class TextColorCommand extends UICommand {
       const { schema } = state;
       const markType = schema.marks[MARK_TEXT_COLOR];
       const attrs = color ? { color } : null;
-      const tr = applyMark(
-        state.tr,
-        schema,
-        markType,
-        attrs
-      );
+      const tr = applyMark(state.tr, schema, markType, attrs);
       if (tr.docChanged || tr.storedMarksSet) {
         // If selection is empty, the color is added to `storedMarks`, which
         // works like `toggleMark`
@@ -89,7 +83,6 @@ class TextColorCommand extends UICommand {
     return false;
   };
 
-
   // [FS] IRAD-1087 2020-09-30
   // Method to execute custom styling implementation of Text color
   executeCustom = (
@@ -98,14 +91,19 @@ class TextColorCommand extends UICommand {
     from: number,
     to: number
   ): Transform => {
-
     const { schema } = state;
     const markType = schema.marks[MARK_TEXT_COLOR];
     const attrs = { color: this._color };
     const storedmarks = tr.storedMarks;
     // [FS] IRAD-1043 2020-10-27
     // Issue fix on removing the  custom style if user click on the same style menu multiple times
-    tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, from, to)), schema, markType, attrs, true);
+    tr = applyMark(
+      tr.setSelection(TextSelection.create(tr.doc, from, to)),
+      schema,
+      markType,
+      attrs,
+      true
+    );
     tr.storedMarks = storedmarks;
     return tr;
   };

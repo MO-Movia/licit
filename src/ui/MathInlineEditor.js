@@ -41,7 +41,7 @@ class MathInlineEditor extends React.PureComponent<any, any> {
   render(): React.Element<any> {
     const { align, latex } = this.props.value || {};
     const onClick = this._onClick;
-    const buttons = Object.keys(MathAlignValues).map(key => {
+    const buttons = Object.keys(MathAlignValues).map((key) => {
       const { value, text } = MathAlignValues[key];
       return (
         <CustomButton
@@ -84,7 +84,7 @@ class MathInlineEditor extends React.PureComponent<any, any> {
     this._popUp = createPopUp(MathEditor, props, {
       autoDismiss: false,
       modal: true,
-      onClose: latex => {
+      onClose: (latex) => {
         if (this._popUp) {
           this._popUp = null;
           if (latex !== undefined) {

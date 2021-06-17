@@ -30,7 +30,7 @@ const BulletListNodeSpec: NodeSpec = {
           : MIN_INDENT_LEVEL;
         return {
           indent,
-          listStyleType
+          listStyleType,
         };
       },
     },

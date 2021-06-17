@@ -1,6 +1,6 @@
 // @flow
 
-import {tableEditing} from 'prosemirror-tables';
+import { tableEditing } from 'prosemirror-tables';
 
 import TableCellMenuPlugin from './TableCellMenuPlugin';
 import TableResizePlugin from './TableResizePlugin';

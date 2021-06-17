@@ -52,7 +52,7 @@ export default function toggleCodeBlock(
     poses
       .sort(compareNumber)
       .reverse()
-      .forEach(pos => {
+      .forEach((pos) => {
         tr = setCodeBlockNodeEnabled(
           tr,
           schema,

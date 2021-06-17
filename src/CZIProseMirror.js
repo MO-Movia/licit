@@ -1,10 +1,10 @@
 // @flow
 
-import {EditorView} from 'prosemirror-view';
+import { EditorView } from 'prosemirror-view';
 
 import convertToJSON from './convertToJSON';
 import CustomEditorView from './ui/CustomEditorView';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 const commandsRegistery = new Map<any, any>();
 const viewsRegistery = new Map<any, any>();

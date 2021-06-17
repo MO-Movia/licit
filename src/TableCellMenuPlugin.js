@@ -1,12 +1,12 @@
 // @flow
 
-import {EditorState, Plugin, PluginKey} from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
+import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
 /* eslint-disable-next-line */
 import * as React from 'react';
 
 import findActionableCell from './findActionableCell';
-import {atAnchorTopRight} from './ui/PopUpPosition';
+import { atAnchorTopRight } from './ui/PopUpPosition';
 import TableCellMenu from './ui/TableCellMenu';
 import bindScrollHandler from './ui/bindScrollHandler';
 import createPopUp from './ui/createPopUp';
@@ -24,7 +24,7 @@ class TableCellTooltipView {
   }
 
   update(view: EditorView, lastState: EditorState): void {
-    const {state, readOnly} = view;
+    const { state, readOnly } = view;
     const result = findActionableCell(state);
 
     if (!result || readOnly) {

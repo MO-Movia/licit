@@ -7,7 +7,7 @@ import FontSizeMarkSpec from './FontSizeMarkSpec';
 import FontTypeMarkSpec from './FontTypeMarkSpec';
 import LinkMarkSpec from './LinkMarkSpec';
 import * as MarkNames from './MarkNames';
-import {DOC, PARAGRAPH, TEXT} from './NodeNames';
+import { DOC, PARAGRAPH, TEXT } from './NodeNames';
 import ParagraphNodeSpec from './ParagraphNodeSpec';
 import SpacerMarkSpec from './SpacerMarkSpec';
 import StrikeMarkSpec from './StrikeMarkSpec';
@@ -37,7 +37,7 @@ const {
   MARK_TEXT_SELECTION,
   MARK_UNDERLINE,
   MARK_SPACER,
-  } = MarkNames;
+} = MarkNames;
 
 // These nodes are required to build basic marks.
 const nodes = {
@@ -64,7 +64,7 @@ const marks = {
   [MARK_TEXT_HIGHLIGHT]: TextHighlightMarkSpec,
   [MARK_TEXT_SELECTION]: TextSelectionMarkSpec,
   [MARK_UNDERLINE]: TextUnderlineMarkSpec,
-  };
+};
 
 const schema = new Schema({ nodes, marks });
 const EditorMarks = schema.spec.marks;

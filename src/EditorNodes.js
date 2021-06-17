@@ -1,6 +1,6 @@
 // @flow
 
-import {Schema} from 'prosemirror-model';
+import { Schema } from 'prosemirror-model';
 import BlockquoteNodeSpec from './BlockquoteNodeSpec';
 import BookmarkNodeSpec from './BookmarkNodeSpec';
 import BulletListNodeSpec from './BulletListNodeSpec';
@@ -55,6 +55,6 @@ const nodes = {
 };
 
 const marks = {};
-const schema = new Schema({nodes, marks});
+const schema = new Schema({ nodes, marks });
 const EditorNodes = schema.spec.nodes.append(TableNodesSpecs);
 export default EditorNodes;

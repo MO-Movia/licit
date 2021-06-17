@@ -5,11 +5,14 @@ import { Transform } from 'prosemirror-transform';
 import { setTextAlign } from './TextAlignCommand';
 import { setTextLineSpacing } from './TextLineSpacingCommand';
 import { setParagraphSpacing } from './ParagraphSpacingCommand';
-import {RESERVED_STYLE_NONE} from './ParagraphNodeSpec';
+import { RESERVED_STYLE_NONE } from './ParagraphNodeSpec';
 
 // [FS] IRAD-1053 2020-11-13
 // Issue fix: Line spacing and paragraph spacing not removed when select Remove style.
-export function removeTextAlignAndLineSpacing(tr: Transform, schema: Schema): Transform {
+export function removeTextAlignAndLineSpacing(
+  tr: Transform,
+  schema: Schema
+): Transform {
   tr = setTextAlign(tr, schema, null);
   // to remove the applied line spacing
   tr = setTextLineSpacing(tr, schema, null);

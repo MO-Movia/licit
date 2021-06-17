@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 
 import clamp from './clamp';
 import htmlElementToRect from './htmlElementToRect';
-import {fromHTMlElement, fromXY, isIntersected} from './rects';
+import { fromHTMlElement, fromXY, isIntersected } from './rects';
 
 import './czi-table-grid-size-editor.css';
 
@@ -23,7 +23,7 @@ const MAX_SIZE = 7;
 
 class GridCell extends React.PureComponent<any, any> {
   render(): React.Element<any> {
-    const {x, y, selected} = this.props;
+    const { x, y, selected } = this.props;
     const style = {
       left: x + 'px',
       top: y + 'px',
@@ -63,7 +63,7 @@ class TableGridSizeEditor extends React.PureComponent<any, any> {
   }
 
   render(): React.Element<any> {
-    const {rows, cols} = this.state;
+    const { rows, cols } = this.state;
     let rr = Math.max(5, rows);
     let cc = Math.max(5, cols);
     if (rr === rows) {
@@ -100,7 +100,7 @@ class TableGridSizeEditor extends React.PureComponent<any, any> {
       h = y + GUTTER_SIZE;
       ii++;
     }
-    const bodyStyle = {width: w + 'px', height: h + 'px'};
+    const bodyStyle = { width: w + 'px', height: h + 'px' };
 
     return (
       <div className="czi-table-grid-size-editor" ref={this._onRef}>
@@ -169,9 +169,9 @@ class TableGridSizeEditor extends React.PureComponent<any, any> {
     const y = my - this._ey;
     const rr = clamp(1, Math.ceil(y / (CELL_SIZE + GUTTER_SIZE)), MAX_SIZE);
     const cc = clamp(1, Math.ceil(x / (CELL_SIZE + GUTTER_SIZE)), MAX_SIZE);
-    const {rows, cols} = this.state;
+    const { rows, cols } = this.state;
     if (rows !== rr || cols !== cc) {
-      this.setState({rows: rr, cols: cc});
+      this.setState({ rows: rr, cols: cc });
     }
   };
 

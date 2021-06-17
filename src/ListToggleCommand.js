@@ -1,15 +1,15 @@
 // @flow
 
-import {EditorState, TextSelection} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {findParentNodeOfType} from 'prosemirror-utils';
-import {EditorView} from 'prosemirror-view';
+import { EditorState, TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { findParentNodeOfType } from 'prosemirror-utils';
+import { EditorView } from 'prosemirror-view';
 
-import {BULLET_LIST, ORDERED_LIST, PARAGRAPH, IMAGE} from './NodeNames';
+import { BULLET_LIST, ORDERED_LIST, PARAGRAPH, IMAGE } from './NodeNames';
 import noop from './noop';
 import toggleList from './toggleList';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
-import {getCustomStyleByName} from './customStyle';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { getCustomStyleByName } from './customStyle';
 import isNodeSelectionForNodeType from './isNodeSelectionForNodeType';
 
 export class ListToggleCommand extends UICommand {
@@ -43,9 +43,9 @@ export class ListToggleCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const {selection, schema} = state;
+    const { selection, schema } = state;
     const nodeType = schema.nodes[this._ordered ? ORDERED_LIST : BULLET_LIST];
-    let {tr} = state;
+    let { tr } = state;
     tr = tr.setSelection(selection);
     if (!nodeType) {
       return tr;
@@ -73,7 +73,7 @@ export class ListToggleCommand extends UICommand {
   };
 
   _findList(state: EditorState, type: string): ?Object {
-    const {nodes} = state.schema;
+    const { nodes } = state.schema;
     const list = nodes[type];
     const findList = list ? findParentNodeOfType(list) : noop;
     return findList(state.selection);
@@ -88,7 +88,7 @@ export class ListToggleCommand extends UICommand {
     from: number,
     to: number
   ): boolean => {
-    const {schema} = state;
+    const { schema } = state;
     const nodeType = schema.nodes[this._ordered ? ORDERED_LIST : BULLET_LIST];
     if (!nodeType) {
       return tr;
@@ -103,7 +103,7 @@ export class ListToggleCommand extends UICommand {
 // Disable the List when menu when the cursor is in custom numbered style
 export function hasCustomNumberedList(state: EditorState) {
   let isNumberedList = false;
-  const {selection, schema} = state;
+  const { selection, schema } = state;
   const text = schema.nodes[PARAGRAPH];
   const result = findParentNodeOfType(text)(selection);
   if (result && result.node.attrs) {
@@ -124,7 +124,7 @@ export function hasCustomNumberedList(state: EditorState) {
 // [FS] IRAD-1317 2021-05-06
 // To disable the list menu in toolbar when select an image
 export function hasImageNode(state: EditorState) {
-  const {selection, schema} = state;
+  const { selection, schema } = state;
   const imageNodeType = schema.nodes[IMAGE];
   return imageNodeType && isNodeSelectionForNodeType(selection, imageNodeType);
 }

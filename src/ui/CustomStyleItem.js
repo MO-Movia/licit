@@ -2,14 +2,14 @@
 
 import './czi-custom-button.css';
 import * as React from 'react';
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import './custom-dropdown.css';
-import {getCustomStyleByName, getCustomStyle} from '../customStyle';
+import { getCustomStyleByName, getCustomStyle } from '../customStyle';
 import PointerSurface from './PointerSurface';
-import type {PointerSurfaceProps} from './PointerSurface';
+import type { PointerSurfaceProps } from './PointerSurface';
 import Icon from './Icon';
 import cx from 'classnames';
 class CustomStyleItem extends React.PureComponent<any, any> {
@@ -28,7 +28,7 @@ class CustomStyleItem extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const {label, hasText, ...pointerProps} = this.props;
+    const { label, hasText, ...pointerProps } = this.props;
     let text = '';
     let customStyle;
     text = this.sampleText(pointerProps.command._customStyle.styles);
@@ -52,11 +52,11 @@ class CustomStyleItem extends React.PureComponent<any, any> {
         id="container1"
         tag={label}
       >
-        <div style={{width: '140px', height: 'auto'}}>
+        <div style={{ width: '140px', height: 'auto' }}>
           <PointerSurface
             {...pointerProps}
             className={klass}
-            style={{display: 'inline-block', width: '140px'}}
+            style={{ display: 'inline-block', width: '140px' }}
           >
             {label}
           </PointerSurface>
@@ -110,8 +110,8 @@ class CustomStyleItem extends React.PureComponent<any, any> {
         </div>
         <div
           className="arrow-right"
-          style={{width: '50px'}}
-          style={hasText ? {display: 'block'} : {display: 'none'}}
+          style={{ width: '50px' }}
+          style={hasText ? { display: 'block' } : { display: 'none' }}
         >
           {/* Need to change the below icon to downarroe */}
           <PointerSurface {...pointerProps} className={klass + ' edit-icon'}>

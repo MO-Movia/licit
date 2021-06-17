@@ -93,7 +93,12 @@ export const BRACKETS = {
   description: 'Brackets',
   cmd: 'cmd',
 };
-export const CENT = {label: '¢', latex: '¢', description: 'Cent', cmd: 'write'};
+export const CENT = {
+  label: '¢',
+  latex: '¢',
+  description: 'Cent',
+  cmd: 'write',
+};
 export const COS = {
   label: '\\cos',
   latex: '\\cos',
@@ -139,7 +144,12 @@ export const DOTM = {
   cmd: 'write',
 };
 
-export const EQUAL = {label: '=', latex: '=', description: 'Equal', cmd: 'cmd'};
+export const EQUAL = {
+  label: '=',
+  latex: '=',
+  description: 'Equal',
+  cmd: 'cmd',
+};
 export const FRAC = {
   label: '\\frac {x}{y}',
   latex: '\\frac',

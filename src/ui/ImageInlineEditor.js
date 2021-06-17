@@ -11,7 +11,7 @@ export type PropValue = {
 
 type Key = 'NONE' | 'LEFT' | 'CENTER' | 'RIGHT';
 
-const ImageAlignValues: {[key: Key]: PropValue} = {
+const ImageAlignValues: { [key: Key]: PropValue } = {
   NONE: {
     value: null,
     text: 'Inline',
@@ -43,8 +43,8 @@ class ImageInlineEditor extends React.PureComponent<any, any> {
   render(): React.Element<any> {
     const align = this.props.value ? this.props.value.align : null;
     const onClick = this._onClick;
-    const buttons = Object.keys(ImageAlignValues).map(key => {
-      const {value, text} = ImageAlignValues[key];
+    const buttons = Object.keys(ImageAlignValues).map((key) => {
+      const { value, text } = ImageAlignValues[key];
       return (
         <CustomButton
           active={align === value}
@@ -60,7 +60,7 @@ class ImageInlineEditor extends React.PureComponent<any, any> {
   }
 
   _onClick = (align: ?string): void => {
-    this.props.onSelect({align: align});
+    this.props.onSelect({ align: align });
   };
 }
 

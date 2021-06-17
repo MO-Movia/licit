@@ -1,8 +1,8 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 
-import type {MarkSpec} from './Types';
+import type { MarkSpec } from './Types';
 
 const TextSelectionMarkSpec: MarkSpec = {
   attrs: {
@@ -17,7 +17,7 @@ const TextSelectionMarkSpec: MarkSpec = {
   ],
 
   toDOM(node: Node) {
-    return ['czi-text-selection', {class: 'czi-text-selection'}, 0];
+    return ['czi-text-selection', { class: 'czi-text-selection' }, 0];
   },
 };
 

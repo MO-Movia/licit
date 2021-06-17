@@ -1,10 +1,10 @@
 // @flow
 
-import {InputRule} from 'prosemirror-inputrules';
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
+import { InputRule } from 'prosemirror-inputrules';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
 
-import {BLOCKQUOTE} from './NodeNames';
+import { BLOCKQUOTE } from './NodeNames';
 import toggleBlockquote from './toggleBlockquote';
 
 // Given a blockquote node type, returns an input rule that turns `"> "`
@@ -17,8 +17,8 @@ function handleBlockQuoteInputRule(
   start: any,
   end: any
 ): Transform {
-  const {schema} = state;
-  let {tr} = state;
+  const { schema } = state;
+  let { tr } = state;
   const nodeType = schema.nodes[BLOCKQUOTE];
   if (!nodeType) {
     return tr;

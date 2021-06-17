@@ -4,10 +4,10 @@ import CustomMenuButton from './CustomMenuButton';
 import HeadingCommand from '../HeadingCommand';
 import CustomStyleCommand from '../CustomStyleCommand';
 import * as React from 'react';
-import {EditorState} from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
-import {Transform} from 'prosemirror-transform';
-import {Node} from 'prosemirror-model';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import { Transform } from 'prosemirror-transform';
+import { Node } from 'prosemirror-model';
 import {
   RESERVED_STYLE_NONE,
   RESERVED_STYLE_NONE_NUMBERING,
@@ -84,9 +84,9 @@ class HeadingCommandMenuButton extends React.PureComponent<any, any> {
   }
 
   render(): React.Element<any> {
-    const {dispatch, editorState, editorView} = this.props;
-    const {selection, doc} = editorState;
-    const {from, to} = selection;
+    const { dispatch, editorState, editorView } = this.props;
+    const { selection, doc } = editorState;
+    const { from, to } = selection;
     let customStyleName;
     let selectedStyleCount = 0;
     // [FS] IRAD-1088 2020-10-05

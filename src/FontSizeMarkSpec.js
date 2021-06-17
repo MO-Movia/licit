@@ -22,9 +22,9 @@ const FontSizeMarkSpec: MarkSpec = {
     const { pt } = node.attrs;
     const domAttrs = pt
       ? {
-        style: `font-size: ${pt}pt;`,
-        class: 'czi-font-size-mark',
-      }
+          style: `font-size: ${pt}pt;`,
+          class: 'czi-font-size-mark',
+        }
       : null;
 
     return ['span', domAttrs, 0];

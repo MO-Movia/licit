@@ -2,10 +2,10 @@
 import clamp from './ui/clamp';
 import convertToCSSPTValue from './convertToCSSPTValue';
 import toCSSLineSpacing from './ui/toCSSLineSpacing';
-import {Node} from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 
-import type {NodeSpec} from './Types';
-import {getCustomStyleByName} from './customStyle';
+import type { NodeSpec } from './Types';
+import { getCustomStyleByName } from './customStyle';
 
 // This assumes that every 36pt maps to one indent level.
 export const INDENT_MARGIN_PT_SIZE = 36;
@@ -159,7 +159,11 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
       if (styleProps.styles.indent) {
         indentOverriden = styleProps.styles.indent;
       }
-      styleLevel = parseInt(styleProps.styles.styleLevel);
+      // [FS] IRAD-1462 2021-06-17
+      // FIX:  Numbering applied for paragraph even though the custom style not selected numbering(but set level)
+      styleLevel = styleProps.styles.hasNumbering
+        ? parseInt(styleProps.styles.styleLevel)
+        : 0;
       style += refreshCounters(styleLevel);
     }
   } else if (styleName && styleName.includes(RESERVED_STYLE_NONE_NUMBERING)) {
@@ -179,7 +183,7 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
     style += `padding-bottom: ${paddingBottom};`;
   }
 
-  return {style, styleLevel, indentOverriden};
+  return { style, styleLevel, indentOverriden };
 }
 
 // [FS] IRAD-1202 2021-02-15
@@ -207,9 +211,9 @@ function refreshCounters(styleLevel) {
 }
 
 function toDOM(node: Node): Array<any> {
-  const {indent, id, styleName} = node.attrs;
+  const { indent, id, styleName } = node.attrs;
   const attrs = {};
-  const {style, styleLevel, indentOverriden} = getStyle(node.attrs);
+  const { style, styleLevel, indentOverriden } = getStyle(node.attrs);
 
   style && (attrs.style = style);
   if (styleLevel) {
