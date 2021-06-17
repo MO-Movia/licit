@@ -201,8 +201,13 @@ class Editor extends React.PureComponent<any, any> {
         console.error('editor schema changed.');
       }
 
-      const { runtime, editorState, placeholder, readOnly, disabled } =
-        this.props;
+      const {
+        runtime,
+        editorState,
+        placeholder,
+        readOnly,
+        disabled,
+      } = this.props;
       const { isPrinting } = this.state;
       const state = editorState || EDITOR_EMPTY_STATE;
       view.runtime = runtime;

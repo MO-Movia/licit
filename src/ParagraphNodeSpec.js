@@ -154,7 +154,11 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
       if (styleProps.styles.indent) {
         indentOverriden = styleProps.styles.indent;
       }
-      styleLevel = parseInt(styleProps.styles.styleLevel);
+      // [FS] IRAD-1462 2021-06-17
+      // FIX:  Numbering applied for paragraph even though the custom style not selected numbering(but set level)
+      styleLevel = styleProps.styles.hasNumbering
+        ? parseInt(styleProps.styles.styleLevel)
+        : 0;
       style += refreshCounters(styleLevel);
     }
   } else if (styleName && styleName.includes(RESERVED_STYLE_NONE_NUMBERING)) {

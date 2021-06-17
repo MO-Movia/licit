@@ -17,7 +17,7 @@ export default function convertFromJSON(
   let editorSchema = schema || defaultSchema;
 
   // [FS][IRAD-???? 2020-08-17]
-  // Loads plugins and its curresponding schema in editor
+  // Loads plugins and its corresponding schema in editor
   const effectivePlugins = defaultPlugins;
 
   if (plugins) {
