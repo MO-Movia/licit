@@ -1,6 +1,6 @@
 // @flow
 
-import {EditorView} from 'prosemirror-view';
+import { EditorView } from 'prosemirror-view';
 
 import {
   BACKSPACE,
@@ -24,8 +24,8 @@ export default function handleEditorKeyDown(
   view: EditorView,
   event: KeyboardEvent
 ): boolean {
-  const {selection, tr} = view.state;
-  const {from, to} = selection;
+  const { selection, tr } = view.state;
+  const { from, to } = selection;
   if (from === to - 1) {
     const node = tr.doc.nodeAt(from);
     if (node.isAtom && !node.isText && node.isLeaf) {

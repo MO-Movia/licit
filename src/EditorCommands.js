@@ -16,7 +16,7 @@ import LinkSetURLCommand from './LinkSetURLCommand';
 import ListItemInsertNewLineCommand from './ListItemInsertNewLineCommand';
 import ListItemMergeCommand from './ListItemMergeCommand';
 import ListSplitCommand from './ListSplitCommand';
-import {ListToggleCommand} from './ListToggleCommand';
+import { ListToggleCommand } from './ListToggleCommand';
 import * as MarkNames from './MarkNames';
 import MarkToggleCommand from './MarkToggleCommand';
 import MarksClearCommand from './MarksClearCommand';

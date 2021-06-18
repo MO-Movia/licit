@@ -1,7 +1,7 @@
 // @flow
 
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import createEmptyEditorState from '../createEmptyEditorState';
@@ -11,10 +11,10 @@ import EditorToolbar from './EditorToolbar';
 import Frag from './Frag';
 import uuid from './uuid';
 
-import type {EditorFramesetProps} from './EditorFrameset';
-import type {EditorProps} from './Editor';
+import type { EditorFramesetProps } from './EditorFrameset';
+import type { EditorProps } from './Editor';
 
-type Props = EditorFramesetProps & EditorProps & {children?: ?any};
+type Props = EditorFramesetProps & EditorProps & { children?: ?any };
 
 type State = {
   editorView: ?EditorView,
@@ -55,12 +55,12 @@ class RichTextEditor extends React.PureComponent<any, any> {
       width,
     } = this.props;
 
-    let {editorState, runtime} = this.props;
+    let { editorState, runtime } = this.props;
 
     editorState = editorState || createEmptyEditorState();
     runtime = runtime || EMPTY_EDITOR_RUNTIME;
 
-    const {editorView} = this.state;
+    const { editorView } = this.state;
 
     const toolbar =
       !!readOnly === true ? null : (
@@ -107,7 +107,7 @@ class RichTextEditor extends React.PureComponent<any, any> {
   }
 
   _dispatchTransaction = (tr: Transform): void => {
-    const {onChange, editorState} = this.props;
+    const { onChange, editorState } = this.props;
     // [FS] IRAD-1171 2021-02-04
     // To bring selection on editor in read-only mode.
     // Removed force return when readOnly flag is true
@@ -123,8 +123,8 @@ class RichTextEditor extends React.PureComponent<any, any> {
 
   _onReady = (editorView: EditorView): void => {
     if (editorView !== this.state.editorView) {
-      this.setState({editorView});
-      const {onReady} = this.props;
+      this.setState({ editorView });
+      const { onReady } = this.props;
       onReady && onReady(editorView);
     }
   };

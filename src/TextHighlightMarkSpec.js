@@ -1,16 +1,16 @@
 // @flow
 
-import {Node} from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 
-import {isTransparent, toCSSColor} from './ui/toCSSColor';
+import { isTransparent, toCSSColor } from './ui/toCSSColor';
 
-import type {MarkSpec} from './Types';
+import type { MarkSpec } from './Types';
 
 const TextHighlightMarkSpec: MarkSpec = {
   attrs: {
-    highlightColor: {default: ''},
-    hasCitation: {default: false},
-    pos: {default: null},
+    highlightColor: { default: '' },
+    hasCitation: { default: false },
+    pos: { default: null },
   },
   inline: true,
   group: 'inline',
@@ -18,7 +18,7 @@ const TextHighlightMarkSpec: MarkSpec = {
     {
       tag: 'span[style*=background-color]',
       getAttrs: (dom: HTMLElement) => {
-        const {backgroundColor, zIndex, opacity} = dom.style;
+        const { backgroundColor, zIndex, opacity } = dom.style;
         const color = toCSSColor(backgroundColor);
         return {
           highlightColor: isTransparent(color) ? '' : color,
@@ -30,7 +30,7 @@ const TextHighlightMarkSpec: MarkSpec = {
   ],
 
   toDOM(node: Node) {
-    const {highlightColor, hasCitation, pos} = node.attrs;
+    const { highlightColor, hasCitation, pos } = node.attrs;
     let style = '';
     const empty = '';
     // [FS] IRAD-1361 2021-05-18
@@ -44,7 +44,7 @@ const TextHighlightMarkSpec: MarkSpec = {
     if (hasCitation) {
       style += `background-color: ${empty};z-index: 1;opacity :${pos}`;
     }
-    return ['span', {style}, 0];
+    return ['span', { style }, 0];
   },
 };
 

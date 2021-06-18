@@ -63,7 +63,7 @@ export default class SelectionObserver {
   }
 
   disconnect(): void {
-    this._observables.forEach(obj => {
+    this._observables.forEach((obj) => {
       const el = obj.target;
       el.removeEventListener('click', this._check, false);
       el.removeEventListener('selectionchange', this._check, false);
@@ -77,7 +77,7 @@ export default class SelectionObserver {
       return;
     }
 
-    if (this._observables.some(obj => obj.target === el)) {
+    if (this._observables.some((obj) => obj.target === el)) {
       // Already observed.
       return;
     }
@@ -98,7 +98,7 @@ export default class SelectionObserver {
 
   _onClick = (): void => {
     const callback = this._callback;
-    this._observables = this._observables.map(obj => {
+    this._observables = this._observables.map((obj) => {
       const { target } = obj;
       return {
         target,
@@ -111,7 +111,7 @@ export default class SelectionObserver {
   _check = (): void => {
     let changed = false;
     const callback = this._callback;
-    this._observables = this._observables.map(obj => {
+    this._observables = this._observables.map((obj) => {
       const { target, selection } = obj;
       const $selection = resolveSelectionValue(target);
       if (selection === $selection) {

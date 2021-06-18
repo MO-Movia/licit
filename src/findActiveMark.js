@@ -1,6 +1,6 @@
 // @flow
 
-import {Mark, MarkType, Node} from 'prosemirror-model';
+import { Mark, MarkType, Node } from 'prosemirror-model';
 
 export default function findActiveMark(
   doc: Node,

@@ -1,7 +1,7 @@
 // @flow
 
-import {Selection, NodeSelection} from 'prosemirror-state';
-import {NodeType} from 'prosemirror-model';
+import { Selection, NodeSelection } from 'prosemirror-state';
+import { NodeType } from 'prosemirror-model';
 
 // Whether the selection is a node for the node type provided.
 export default function isNodeSelectionForNodeType(

@@ -1,10 +1,10 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {findParentNodeOfType} from 'prosemirror-utils';
+import { EditorState } from 'prosemirror-state';
+import { findParentNodeOfType } from 'prosemirror-utils';
 
-import {MARK_FONT_SIZE} from '../MarkNames';
-import {HEADING} from '../NodeNames';
+import { MARK_FONT_SIZE } from '../MarkNames';
+import { HEADING } from '../NodeNames';
 import findActiveMark from '../findActiveMark';
 
 // This should map to `--czi-content-font-size` at `czi-editor.css`.
@@ -21,7 +21,7 @@ const MAP_HEADING_LEVEL_TO_FONT_PT_SIZE = {
 };
 
 export default function findActiveFontSize(state: EditorState): string {
-  const {schema, doc, selection, tr} = state;
+  const { schema, doc, selection, tr } = state;
   const markType = schema.marks[MARK_FONT_SIZE];
   const heading = schema.nodes[HEADING];
   const defaultSize = String(FONT_PT_SIZE_DEFAULT);
@@ -29,7 +29,7 @@ export default function findActiveFontSize(state: EditorState): string {
     return defaultSize;
   }
 
-  const {from, to, empty} = selection;
+  const { from, to, empty } = selection;
   if (empty) {
     const storedMarks =
       tr.storedMarks ||
@@ -38,7 +38,7 @@ export default function findActiveFontSize(state: EditorState): string {
         selection.$cursor.marks &&
         selection.$cursor.marks()) ||
       [];
-    const sm = storedMarks.find(m => m.type === markType);
+    const sm = storedMarks.find((m) => m.type === markType);
     return sm ? String(sm.attrs.pt || defaultSize) : defaultSize;
   }
 

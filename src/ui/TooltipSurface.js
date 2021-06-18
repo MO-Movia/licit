@@ -5,12 +5,12 @@ import './czi-animations.css';
 
 import * as React from 'react';
 import createPopUp from './createPopUp';
-import {atAnchorBottomCenter} from './PopUpPosition';
+import { atAnchorBottomCenter } from './PopUpPosition';
 import uuid from './uuid';
 
 class TooltipView extends React.PureComponent<any, any> {
   render(): React.Element<any> {
-    const {tooltip} = this.props;
+    const { tooltip } = this.props;
     return (
       <div className="czi-tooltip-view czi-animation-fade-in">{tooltip}</div>
     );
@@ -31,7 +31,7 @@ class TooltipSurface extends React.PureComponent<any, any> {
   }
 
   render(): React.Element<any> {
-    const {tooltip, children} = this.props;
+    const { tooltip, children } = this.props;
     return (
       <span
         aria-label={tooltip}
@@ -50,10 +50,10 @@ class TooltipSurface extends React.PureComponent<any, any> {
 
   _onMouseEnter = (): void => {
     if (!this._popUp) {
-      const {tooltip} = this.props;
+      const { tooltip } = this.props;
       this._popUp = createPopUp(
         TooltipView,
-        {tooltip},
+        { tooltip },
         {
           anchor: document.getElementById(this._id),
           onClose: this._onClose,

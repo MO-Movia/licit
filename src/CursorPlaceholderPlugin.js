@@ -1,12 +1,12 @@
 // @flow
 
-import {EditorState, Plugin, PluginKey} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {Decoration, DecorationSet} from 'prosemirror-view';
+import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { Decoration, DecorationSet } from 'prosemirror-view';
 
 import './ui/czi-cursor-placeholder.css';
 
-const PLACE_HOLDER_ID = {name: 'CursorPlaceholderPlugin'};
+const PLACE_HOLDER_ID = { name: 'CursorPlaceholderPlugin' };
 
 let singletonInstance = null;
 
@@ -41,7 +41,7 @@ const SPEC = {
     },
   },
   props: {
-    decorations: state => {
+    decorations: (state) => {
       const plugin = singletonInstance;
       return plugin ? plugin.getState(state) : null;
     },
@@ -74,7 +74,7 @@ function findCursorPlaceholderPos(state: EditorState): ?number {
 
 export function showCursorPlaceholder(state: EditorState): Transform {
   const plugin = singletonInstance;
-  let {tr} = state;
+  let { tr } = state;
   if (!plugin || !tr.selection) {
     return tr;
   }
@@ -97,7 +97,7 @@ export function showCursorPlaceholder(state: EditorState): Transform {
 
 export function hideCursorPlaceholder(state: EditorState): Transform {
   const plugin = singletonInstance;
-  let {tr} = state;
+  let { tr } = state;
   if (!plugin) {
     return tr;
   }

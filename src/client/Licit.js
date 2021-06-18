@@ -1,9 +1,9 @@
 // @flow
 import applyDevTools from 'prosemirror-dev-tools';
-import {EditorState, TextSelection, Plugin} from 'prosemirror-state';
-import {Node} from 'prosemirror-model';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState, TextSelection, Plugin } from 'prosemirror-state';
+import { Node } from 'prosemirror-model';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import convertFromJSON from '../convertFromJSON';
@@ -11,15 +11,15 @@ import RichTextEditor from '../ui/RichTextEditor';
 import uuid from '../uuid';
 import SimpleConnector from './SimpleConnector';
 import CollabConnector from './CollabConnector';
-import {EMPTY_DOC_JSON} from '../createEmptyEditorState';
-import type {EditorRuntime} from '../Types';
+import { EMPTY_DOC_JSON } from '../createEmptyEditorState';
+import type { EditorRuntime } from '../Types';
 import createPopUp from '../ui/createPopUp';
-import {atViewportCenter} from '../ui/PopUpPosition';
+import { atViewportCenter } from '../ui/PopUpPosition';
 import AlertInfo from '../ui/AlertInfo';
-import {SetDocAttrStep} from '@modusoperandi/licit-doc-attrs-step';
+import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
 import './licit.css';
 import DefaultEditorPlugins from '../buildEditorPlugins';
-import {Schema} from 'prosemirror-model';
+import { Schema } from 'prosemirror-model';
 import EditorMarks from '../EditorMarks';
 import EditorNodes from '../EditorNodes';
 
@@ -61,7 +61,7 @@ class Licit extends React.Component<any, any> {
 
   constructor(props: any, context: any) {
     super(props, context);
-    this.state = {loaded: false};
+    this.state = { loaded: false };
     setTimeout(this.loadStyles.bind(this), 100, props);
   }
 
@@ -257,8 +257,8 @@ class Licit extends React.Component<any, any> {
   }
 
   setContent = (content: any = {}): void => {
-    const {doc, schema} = this._connector.getState();
-    let {tr} = this._connector.getState();
+    const { doc, schema } = this._connector.getState();
+    let { tr } = this._connector.getState();
     const document = content
       ? schema.nodeFromJSON(content)
       : schema.nodeFromJSON(EMPTY_DOC_JSON);
@@ -360,8 +360,8 @@ class Licit extends React.Component<any, any> {
     }
   }
 
-  _onChange = (data: {state: EditorState, transaction: Transform}): void => {
-    const {transaction} = data;
+  _onChange = (data: { state: EditorState, transaction: Transform }): void => {
+    const { transaction } = data;
 
     /*
      ** ProseMirror Debug Tool's Snapshot creates a new state and sets that to editor view's state.
@@ -433,7 +433,7 @@ class Licit extends React.Component<any, any> {
   _onReady = (editorView: EditorView): void => {
     // [FS][06-APR-2020][IRAD-922]
     // Showing focus in the editor.
-    const {state, dispatch} = editorView;
+    const { state, dispatch } = editorView;
     this._editorView = editorView;
     const tr = state.tr;
     const doc = state.doc;

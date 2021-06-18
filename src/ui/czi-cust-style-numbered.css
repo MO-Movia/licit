@@ -82,69 +82,56 @@ html {
 }
 
 .ProseMirror p[data-style-level='3']::before {
-  content:
-    counter(C1, decimal) '.' counter(C2, decimal) '.'
+  content: counter(C1, decimal) '.' counter(C2, decimal) '.'
     counter(C3, decimal) ' ';
   font-weight: var(--czi-counter-bold);
 }
 
 .ProseMirror p[data-style-level='4']::before {
-  content:
-    counter(C1, decimal) '.' counter(C2, decimal) '.'
+  content: counter(C1, decimal) '.' counter(C2, decimal) '.'
     counter(C3, decimal) '.' counter(C4, decimal) ' ';
   font-weight: var(--czi-counter-bold);
 }
 
 .ProseMirror p[data-style-level='5']::before {
-  content:
-    counter(C1, decimal) '.' counter(C2, decimal) '.'
-    counter(C3, decimal) '.' counter(C4, decimal) '.'
-    counter(C5, decimal) ' ';
+  content: counter(C1, decimal) '.' counter(C2, decimal) '.'
+    counter(C3, decimal) '.' counter(C4, decimal) '.' counter(C5, decimal) ' ';
   font-weight: var(--czi-counter-bold);
 }
 
 .ProseMirror p[data-style-level='6']::before {
-  content:
-    counter(C1, decimal) '.' counter(C2, decimal) '.'
-    counter(C3, decimal) '.' counter(C4, decimal) '.'
-    counter(C5, decimal) '.' counter(C6, decimal) ' ';
+  content: counter(C1, decimal) '.' counter(C2, decimal) '.'
+    counter(C3, decimal) '.' counter(C4, decimal) '.' counter(C5, decimal) '.'
+    counter(C6, decimal) ' ';
   font-weight: var(--czi-counter-bold);
 }
 
 .ProseMirror p[data-style-level='7']::before {
-  content:
-    counter(C1, decimal) '.' counter(C2, decimal) '.'
-    counter(C3, decimal) '.' counter(C4, decimal) '.'
-    counter(C5, decimal) '.' counter(C6, decimal) '.'
-    counter(C7, decimal) ' ';
+  content: counter(C1, decimal) '.' counter(C2, decimal) '.'
+    counter(C3, decimal) '.' counter(C4, decimal) '.' counter(C5, decimal) '.'
+    counter(C6, decimal) '.' counter(C7, decimal) ' ';
   font-weight: var(--czi-counter-bold);
 }
 
 .ProseMirror p[data-style-level='8']::before {
-  content:
-    counter(C1, decimal) '.' counter(C2, decimal) '.'
-    counter(C3, decimal) '.' counter(C4, decimal) '.'
-    counter(C5, decimal) '.' counter(C6, decimal) '.'
-    counter(C7, decimal) '.' counter(C8, decimal) ' ';
+  content: counter(C1, decimal) '.' counter(C2, decimal) '.'
+    counter(C3, decimal) '.' counter(C4, decimal) '.' counter(C5, decimal) '.'
+    counter(C6, decimal) '.' counter(C7, decimal) '.' counter(C8, decimal) ' ';
   font-weight: var(--czi-counter-bold);
 }
 
 .ProseMirror p[data-style-level='9']::before {
-  content:
-    counter(C1, decimal) '.' counter(C2, decimal) '.'
-    counter(C3, decimal) '.' counter(C4, decimal) '.'
-    counter(C5, decimal) '.' counter(C6, decimal) '.'
-    counter(C7, decimal) '.' counter(C8, decimal) '.'
+  content: counter(C1, decimal) '.' counter(C2, decimal) '.'
+    counter(C3, decimal) '.' counter(C4, decimal) '.' counter(C5, decimal) '.'
+    counter(C6, decimal) '.' counter(C7, decimal) '.' counter(C8, decimal) '.'
     counter(C9, decimal) ' ';
   font-weight: var(--czi-counter-bold);
 }
 
 .ProseMirror p[data-style-level='10']::before {
-  content:
-    counter(C1, decimal) '.' counter(C2, decimal) '.'
-    counter(C3, decimal) '.' counter(C4, decimal) '.'
-    counter(C5, decimal) '.' counter(C6, decimal) '.'
-    counter(C7, decimal) '.' counter(C8, decimal) '.'
+  content: counter(C1, decimal) '.' counter(C2, decimal) '.'
+    counter(C3, decimal) '.' counter(C4, decimal) '.' counter(C5, decimal) '.'
+    counter(C6, decimal) '.' counter(C7, decimal) '.' counter(C8, decimal) '.'
     counter(C9, decimal) '.' counter(C10, decimal) ' ';
   font-weight: var(--czi-counter-bold);
 }

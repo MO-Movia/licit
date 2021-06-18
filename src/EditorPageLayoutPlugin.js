@@ -1,8 +1,8 @@
 // @flow
 
-import {EditorState, Plugin, PluginKey} from 'prosemirror-state';
+import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
 
-import {ATTRIBUTE_LAYOUT, LAYOUT} from './DocNodeSpec';
+import { ATTRIBUTE_LAYOUT, LAYOUT } from './DocNodeSpec';
 
 const SPEC = {
   // [FS] IRAD-1005 2020-07-07
@@ -14,12 +14,12 @@ const SPEC = {
 };
 
 function renderAttributes(editorState: EditorState): Object {
-  const {doc} = editorState;
+  const { doc } = editorState;
   const attrs: Object = {
     class: 'czi-prosemirror-editor',
   };
 
-  const {width, padding, layout} = doc.attrs;
+  const { width, padding, layout } = doc.attrs;
 
   let style = '';
   let computedLayout;

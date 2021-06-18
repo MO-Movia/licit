@@ -1,11 +1,9 @@
-
 // temp view for custom style have to check this view is needed?
 
 import { EditorView } from 'prosemirror-view';
 import { EditorState } from 'prosemirror-state';
 
 export class StyleView {
-
   constructor(editorView: EditorView) {
     this.update(editorView, null);
   }
@@ -15,11 +13,7 @@ export class StyleView {
       this.destroy();
       return;
     }
-
   }
 
-  destroy() {
-
-  }
-
+  destroy() {}
 }

@@ -2,10 +2,10 @@
 import clamp from './ui/clamp';
 import convertToCSSPTValue from './convertToCSSPTValue';
 import toCSSLineSpacing from './ui/toCSSLineSpacing';
-import {Node} from 'prosemirror-model';
+import { Node } from 'prosemirror-model';
 
-import type {NodeSpec} from './Types';
-import {getCustomStyleByName} from './customStyle';
+import type { NodeSpec } from './Types';
+import { getCustomStyleByName } from './customStyle';
 
 // This assumes that every 36pt maps to one indent level.
 export const INDENT_MARGIN_PT_SIZE = 36;
@@ -183,7 +183,7 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
     style += `padding-bottom: ${paddingBottom};`;
   }
 
-  return {style, styleLevel, indentOverriden};
+  return { style, styleLevel, indentOverriden };
 }
 
 // [FS] IRAD-1202 2021-02-15
@@ -211,9 +211,9 @@ function refreshCounters(styleLevel) {
 }
 
 function toDOM(node: Node): Array<any> {
-  const {indent, id, styleName} = node.attrs;
+  const { indent, id, styleName } = node.attrs;
   const attrs = {};
-  const {style, styleLevel, indentOverriden} = getStyle(node.attrs);
+  const { style, styleLevel, indentOverriden } = getStyle(node.attrs);
 
   style && (attrs.style = style);
   if (styleLevel) {

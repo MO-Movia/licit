@@ -1,7 +1,7 @@
 // @flow
 
 import ColorEditor from './ui/ColorEditor';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import applyMark from './applyMark';
 import createPopUp from './ui/createPopUp';
 import findNodesWithSameMark from './findNodesWithSameMark';
@@ -44,13 +44,13 @@ class TextHighlightCommand extends UICommand {
     const result = findNodesWithSameMark(doc, from, to, markType);
     const hex = result ? result.mark.attrs.highlightColor : null;
     const anchor = event ? event.currentTarget : null;
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._popUp = createPopUp(
         ColorEditor,
         { hex },
         {
           anchor,
-          onClose: val => {
+          onClose: (val) => {
             if (this._popUp) {
               this._popUp = null;
               resolve(val);
@@ -93,11 +93,15 @@ class TextHighlightCommand extends UICommand {
     from: number,
     to: number
   ): Transform => {
-
     const { schema } = state;
     const markType = schema.marks[MARK_TEXT_HIGHLIGHT];
     const attrs = { highlightColor: this._color };
-    tr = applyMark(tr.setSelection(TextSelection.create(tr.doc, from, to)), schema, markType, attrs);
+    tr = applyMark(
+      tr.setSelection(TextSelection.create(tr.doc, from, to)),
+      schema,
+      markType,
+      attrs
+    );
 
     return tr;
   };

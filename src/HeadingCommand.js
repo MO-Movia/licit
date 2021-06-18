@@ -1,14 +1,14 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {findParentNodeOfType} from 'prosemirror-utils';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { findParentNodeOfType } from 'prosemirror-utils';
+import { EditorView } from 'prosemirror-view';
 
-import {HEADING} from './NodeNames';
+import { HEADING } from './NodeNames';
 import noop from './noop';
 import toggleHeading from './toggleHeading';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 class HeadingCommand extends UICommand {
   _level: number;
@@ -27,7 +27,7 @@ class HeadingCommand extends UICommand {
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView
   ): boolean => {
-    const {schema, selection} = state;
+    const { schema, selection } = state;
     const tr = toggleHeading(
       state.tr.setSelection(selection),
       schema,

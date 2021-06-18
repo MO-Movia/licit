@@ -19,7 +19,7 @@ const PARAM_CHART_LABEL = 'chl';
 // set of characters that can be safely converted into math quations.
 
 function patchGoogleEquationElement(el: HTMLElement): void {
-  const {ownerDocument, parentElement} = el;
+  const { ownerDocument, parentElement } = el;
   if (!ownerDocument || !parentElement) {
     return;
   }
@@ -41,7 +41,7 @@ function getGoogleEquationContent(src: ?string): ?string {
   if (!src) {
     return null;
   }
-  const {host, pathname, query} = url.parse(src);
+  const { host, pathname, query } = url.parse(src);
   if (host !== 'www.google.com' || pathname !== '/chart') {
     return null;
   }

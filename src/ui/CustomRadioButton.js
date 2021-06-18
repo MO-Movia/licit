@@ -7,7 +7,7 @@ import cx from 'classnames';
 import uuid from './uuid';
 import preventEventDefault from './preventEventDefault';
 
-import type {PointerSurfaceProps} from './PointerSurface';
+import type { PointerSurfaceProps } from './PointerSurface';
 
 class CustomRadioButton extends React.PureComponent<any, any> {
   props: PointerSurfaceProps & {

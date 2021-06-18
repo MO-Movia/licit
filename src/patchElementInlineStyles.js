@@ -4,7 +4,7 @@ import hyphenize from './hyphenize';
 
 const BLOCK_TAG_SELECTOR = 'p,h1,h2,h3,h4,h5,h6,li'.replace(
   /\w+/g,
-  m => `${m}[style]`
+  (m) => `${m}[style]`
 );
 
 export default function patchElementInlineStyles(doc: Document): void {
@@ -38,7 +38,7 @@ const INLINE_ELEMENT_NODE_NAMES = new Set([
 ]);
 
 function patchBlockElement(el: HTMLElement): void {
-  INLINE_STYLE_NAMES.forEach(name => patchBlockElementStyle(el, name));
+  INLINE_STYLE_NAMES.forEach((name) => patchBlockElementStyle(el, name));
 }
 
 // Move the specified inline style of the element to its child nodes. This
@@ -71,8 +71,8 @@ function patchBlockElementStyle(
   elementStyle[inlineStyleName] = '';
 
   const childNodes = Array.from(element.childNodes);
-  childNodes.forEach(node => {
-    const {nodeType, style, nodeName, ownerDocument, parentElement} = node;
+  childNodes.forEach((node) => {
+    const { nodeType, style, nodeName, ownerDocument, parentElement } = node;
 
     if (nodeType === NODE_TYPE_ELEMENT) {
       if (INLINE_ELEMENT_NODE_NAMES.has(nodeName)) {

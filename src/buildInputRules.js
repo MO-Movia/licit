@@ -9,7 +9,7 @@ import {
   textblockTypeInputRule,
   wrappingInputRule,
 } from 'prosemirror-inputrules';
-import {NodeType, Schema} from 'prosemirror-model';
+import { NodeType, Schema } from 'prosemirror-model';
 
 import blockQuoteInputRule from './blockQuoteInputRule';
 
@@ -23,7 +23,7 @@ function orderedListRule(nodeType: NodeType): InputRule {
   return wrappingInputRule(
     /^(\d+)\.\s$/,
     nodeType,
-    match => ({order: +match[1]}),
+    (match) => ({ order: +match[1] }),
     (match, node) => node.childCount + node.attrs.order == +match[1]
   );
 }
@@ -52,7 +52,7 @@ function headingRule(nodeType: NodeType, maxLevel: number): InputRule {
   return textblockTypeInputRule(
     new RegExp('^(#{1,' + maxLevel + '})\\s$'),
     nodeType,
-    match => ({level: match[1].length})
+    (match) => ({ level: match[1].length })
   );
 }
 
@@ -77,5 +77,5 @@ export default function buildInputRules(schema: Schema) {
   if ((type = schema.nodes.heading)) {
     rules.push(headingRule(type, 6));
   }
-  return inputRules({rules});
+  return inputRules({ rules });
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {configure, shallow} from 'enzyme';
+import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import Licit from './Licit';
 import RichTextEditor from '../ui/RichTextEditor';
@@ -22,8 +22,8 @@ describe('<Licit />', () => {
     dispatch: noop,
     state: {
       doc: {
-        content: {size: 10},
-        resolve: () => ({min: () => 0, max: () => 10}),
+        content: { size: 10 },
+        resolve: () => ({ min: () => 0, max: () => 10 }),
       },
       tr: {
         setSelection: () => fakeEditorView.state.tr,
@@ -39,7 +39,7 @@ describe('<Licit />', () => {
       content: [
         {
           type: 'paragraph',
-          content: [{type: 'text', text: ' '}],
+          content: [{ type: 'text', text: ' ' }],
         },
       ],
     };

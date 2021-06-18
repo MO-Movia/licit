@@ -1,12 +1,12 @@
 // @flow
 
-import {EditorState, Plugin, PluginKey} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {Decoration, DecorationSet} from 'prosemirror-view';
+import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { Decoration, DecorationSet } from 'prosemirror-view';
 
 import './ui/czi-selection-placeholder.css';
 
-const PLACE_HOLDER_ID = {name: 'SelectionPlaceholderPlugin'};
+const PLACE_HOLDER_ID = { name: 'SelectionPlaceholderPlugin' };
 
 let singletonInstance = null;
 
@@ -49,7 +49,7 @@ const SPEC = {
     },
   },
   props: {
-    decorations: state => {
+    decorations: (state) => {
       const plugin = singletonInstance;
       return plugin ? plugin.getState(state) : null;
     },

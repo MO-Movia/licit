@@ -32,7 +32,10 @@ function showModalMask(IsChildDialog: ?boolean): void {
     // To handle child dialog window
     if (IsChildDialog) {
       element.className = 'czi-pop-up-modal-mask child-modal';
-      element.setAttribute('data-mask-type', 'czi-pop-up-modal-mask child-modal');
+      element.setAttribute(
+        'data-mask-type',
+        'czi-pop-up-modal-mask child-modal'
+      );
     } else {
       element.className = 'czi-pop-up-modal-mask';
       element.setAttribute('data-mask-type', 'czi-pop-up-modal-mask');
@@ -169,7 +172,7 @@ export default function createPopUp(
     modalsCount++;
   }
 
-  const closePopUp = value => {
+  const closePopUp = (value) => {
     if (!handle) {
       return;
     }
@@ -191,7 +194,7 @@ export default function createPopUp(
 
   handle = {
     close: closePopUp,
-    update: nextViewProps => {
+    update: (nextViewProps) => {
       currentViewProps = nextViewProps;
       render(currentViewProps || emptyObj, popUpParams || emptyObj);
     },

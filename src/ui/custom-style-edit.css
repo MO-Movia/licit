@@ -424,7 +424,7 @@ label {
   width: 25px;
 }
 
-div[disabled="disabled"] {
+div[disabled='disabled'] {
   opacity: 0.4;
   pointer-events: none;
 }

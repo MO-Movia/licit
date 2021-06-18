@@ -140,10 +140,10 @@ class PopUpManager {
       if (body && bodyRect && this._positions.get(bridge) !== positionKey) {
         const ax = anchorRect
           ? clamp(
-            0,
-            anchorRect.x - x + anchorRect.w / 2,
-            bodyRect.w - anchorRect.w / 2
-          )
+              0,
+              anchorRect.x - x + anchorRect.w / 2,
+              bodyRect.w - anchorRect.w / 2
+            )
           : 0;
         this._positions.set(bridge, positionKey);
         const bodyStyle = body.style;

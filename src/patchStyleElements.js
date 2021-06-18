@@ -80,7 +80,7 @@ export default function patchStyleElements(doc: Document): void {
         }
       });
       if (selectorText.indexOf(',') > -1) {
-        selectorText.split(/\s*,\s*/).forEach(st => {
+        selectorText.split(/\s*,\s*/).forEach((st) => {
           buildSelectorTextToCSSText(selectorTextToCSSTexts, st, cssText);
         });
       } else {
@@ -104,10 +104,10 @@ function buildElementToCSSTexts(
   elementToCSSTexts: Map<HTMLElement, Array<string>>,
   bag: SelectorTextToCSSText
 ): Map<HTMLElement, Array<string>> {
-  const {selectorText, cssText, beforeContent} = bag;
+  const { selectorText, cssText, beforeContent } = bag;
   const els = Array.from(doc.querySelectorAll(selectorText));
 
-  els.forEach(el => {
+  els.forEach((el) => {
     const style = el.style;
     if (!style || !(el instanceof HTMLElement)) {
       return;

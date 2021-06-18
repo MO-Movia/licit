@@ -1,20 +1,20 @@
 // @flow
 
-import {EditorState} from 'prosemirror-state';
+import { EditorState } from 'prosemirror-state';
 
-import {MARK_FONT_TYPE} from '../MarkNames';
+import { MARK_FONT_TYPE } from '../MarkNames';
 import findActiveMark from '../findActiveMark';
 
 // This should map to `--czi-content-font-size` at `czi-editor.css`.
 export const FONT_TYPE_NAME_DEFAULT = 'Arial';
 
 export default function findActiveFontType(state: EditorState): string {
-  const {schema, doc, selection, tr} = state;
+  const { schema, doc, selection, tr } = state;
   const markType = schema.marks[MARK_FONT_TYPE];
   if (!markType) {
     return FONT_TYPE_NAME_DEFAULT;
   }
-  const {from, to, empty} = selection;
+  const { from, to, empty } = selection;
 
   if (empty) {
     const storedMarks =
@@ -24,7 +24,7 @@ export default function findActiveFontType(state: EditorState): string {
         selection.$cursor.marks &&
         selection.$cursor.marks()) ||
       [];
-    const sm = storedMarks.find(m => m.type === markType);
+    const sm = storedMarks.find((m) => m.type === markType);
     return (sm && sm.attrs.name) || FONT_TYPE_NAME_DEFAULT;
   }
 

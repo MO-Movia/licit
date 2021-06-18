@@ -1,14 +1,14 @@
 // @flow
 
 import cx from 'classnames';
-import {EditorState} from 'prosemirror-state';
-import {Transform} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import CommandMenu from './CommandMenu';
 import CustomButton from './CustomButton';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import createPopUp from './createPopUp';
 import uuid from './uuid';
 
@@ -17,7 +17,7 @@ import './czi-custom-menu-button.css';
 class CommandMenuButton extends React.PureComponent<any, any> {
   props: {
     className?: ?string,
-    commandGroups: Array<{[string]: UICommand}>,
+    commandGroups: Array<{ [string]: UICommand }>,
     disabled?: ?boolean,
     dispatch: (tr: Transform) => void,
     editorState: EditorState,
@@ -25,7 +25,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
     icon?: string | React.Element<any> | null,
     label?: string | React.Element<any> | null,
     title?: ?string,
-    parent?: ?React.Element<any> // the parent command button
+    parent?: ?React.Element<any>, // the parent command button
   };
 
   _menu = null;
@@ -49,12 +49,12 @@ class CommandMenuButton extends React.PureComponent<any, any> {
     const enabled =
       !disabled &&
       commandGroups.some((group, ii) => {
-        return Object.keys(group).some(label => {
+        return Object.keys(group).some((label) => {
           const command = group[label];
           let disabledVal = true;
           try {
             disabledVal =
-              !editorView || !command.isEnabled(editorState,editorView, label);
+              !editorView || !command.isEnabled(editorState, editorView, label);
           } catch (ex) {
             disabledVal = false;
           }
@@ -62,7 +62,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
         });
       });
 
-    const {expanded} = this.state;
+    const { expanded } = this.state;
     const buttonClassName = cx(className, {
       'czi-custom-menu-button': true,
       expanded,
@@ -116,13 +116,13 @@ class CommandMenuButton extends React.PureComponent<any, any> {
   };
 
   _onCommand = (): void => {
-    this.setState({expanded: false});
+    this.setState({ expanded: false });
     this._hideMenu();
   };
 
   _onClose = (): void => {
     if (this._menu) {
-      this.setState({expanded: false});
+      this.setState({ expanded: false });
       this._menu = null;
     }
   };

@@ -5,7 +5,7 @@ import { EditorState } from 'prosemirror-state';
 import { Plugin } from 'prosemirror-state';
 import createEmptyEditorState from './createEmptyEditorState';
 
-import {COMMAND_GROUPS} from './ui/EditorToolbarConfig';
+import { COMMAND_GROUPS } from './ui/EditorToolbarConfig';
 
 export default function convertFromJSON(
   json: Object | string,
@@ -14,11 +14,10 @@ export default function convertFromJSON(
   plugins: ?Array<Plugin>,
   defaultPlugins: Array<Plugin>
 ): EditorState {
-
   let editorSchema = schema || defaultSchema;
 
   // [FS][IRAD-???? 2020-08-17]
-  // Loads plugins and its curresponding schema in editor
+  // Loads plugins and its corresponding schema in editor
   const effectivePlugins = defaultPlugins;
 
   if (plugins) {
@@ -29,11 +28,11 @@ export default function convertFromJSON(
           editorSchema = p.getEffectiveSchema(editorSchema);
         }
 
-        if(p.initKeyCommands) {
+        if (p.initKeyCommands) {
           effectivePlugins.push(p.initKeyCommands());
         }
 
-        if(p.initButtonCommands) {
+        if (p.initButtonCommands) {
           COMMAND_GROUPS.push(p.initButtonCommands());
         }
       }
@@ -46,7 +45,12 @@ export default function convertFromJSON(
       console.error('convertFromJSON:', ex);
       // [FS] IRAD-1455 2021-06-16
       // Use the effectivePlugins, editor hangs, b'coz of missing default core plugins
-      return createEmptyEditorState(schema, defaultSchema, plugins, defaultPlugins);
+      return createEmptyEditorState(
+        schema,
+        defaultSchema,
+        plugins,
+        defaultPlugins
+      );
     }
   }
 
@@ -54,7 +58,12 @@ export default function convertFromJSON(
     console.error('convertFromJSON: invalid object', json);
     // [FS] IRAD-1455 2021-06-16
     // Use the effectivePlugins, editor hangs, b'coz of missing default core plugins
-    return createEmptyEditorState(schema, defaultSchema, plugins, defaultPlugins);
+    return createEmptyEditorState(
+      schema,
+      defaultSchema,
+      plugins,
+      defaultPlugins
+    );
   }
 
   // [FS] IRAD-1067 2020-09-19

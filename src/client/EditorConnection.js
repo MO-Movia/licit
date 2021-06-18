@@ -6,14 +6,14 @@ import {
   receiveTransaction,
   sendableSteps,
 } from 'prosemirror-collab';
-import {Plugin, EditorState} from 'prosemirror-state';
-import {Step} from 'prosemirror-transform';
-import {EditorView} from 'prosemirror-view';
+import { Plugin, EditorState } from 'prosemirror-state';
+import { Step } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 import uuid from '../uuid';
-import {GET, POST} from './http';
+import { GET, POST } from './http';
 // [FS] IRAD-1040 2020-09-02
-import {Schema} from 'prosemirror-model';
-import {stringify} from 'flatted';
+import { Schema } from 'prosemirror-model';
+import { stringify } from 'flatted';
 
 function badVersion(err: Object) {
   return err.status == 400 && /invalid version/i.test(String(err));
@@ -182,25 +182,25 @@ class EditorConnection {
         if (err.status == 410 || badVersion(err)) {
           // Too far behind. Revert to server state
           this.report.failure(err);
-          this.dispatch({type: 'restart'});
+          this.dispatch({ type: 'restart' });
         } else if (err) {
-          this.dispatch({type: 'recover', error: err});
+          this.dispatch({ type: 'recover', error: err });
         }
       }
     );
   }
 
-  sendable(editState: EditorState): ?{steps: Array<Step>} {
+  sendable(editState: EditorState): ?{ steps: Array<Step> } {
     const steps = sendableSteps(editState);
     if (steps) {
-      return {steps};
+      return { steps };
     }
     return null;
   }
 
   // Send the given steps to the server
   send(editState: EditorState, sendable: Object) {
-    const {steps} = sendable;
+    const { steps } = sendable;
     const json = JSON.stringify({
       version: getVersion(editState),
       steps: steps ? steps.steps.map((s) => s.toJSON()) : [],
@@ -229,12 +229,12 @@ class EditorConnection {
           // The client's document conflicts with the server's version.
           // Poll for changes and then try again.
           this.backOff = 0;
-          this.dispatch({type: 'poll'});
+          this.dispatch({ type: 'poll' });
         } else if (badVersion(err)) {
           this.report.failure(err);
-          this.dispatch({type: 'restart'});
+          this.dispatch({ type: 'restart' });
         } else {
-          this.dispatch({type: 'recover', error: err});
+          this.dispatch({ type: 'recover', error: err });
         }
       }
     );
@@ -267,7 +267,7 @@ class EditorConnection {
     this.backOff = newBackOff;
     setTimeout(() => {
       if (this.state.comm == 'recover') {
-        this.dispatch({type: 'poll'});
+        this.dispatch({ type: 'poll' });
       }
     }, this.backOff);
   }

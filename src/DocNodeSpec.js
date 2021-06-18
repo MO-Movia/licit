@@ -20,7 +20,7 @@ export function getAttrs(el: HTMLElement): Object {
     padding: null,
   };
 
-  const {width, maxWidth, padding} = el.style || {};
+  const { width, maxWidth, padding } = el.style || {};
   const ww = convertToCSSPTValue(width) || convertToCSSPTValue(maxWidth);
   const pp = convertToCSSPTValue(padding);
   if (ww) {
@@ -52,12 +52,12 @@ export function getAttrs(el: HTMLElement): Object {
 
 const DocNodeSpec = {
   attrs: {
-    layout: {default: null},
-    padding: {default: null},
-    width: {default: null},
+    layout: { default: null },
+    padding: { default: null },
+    width: { default: null },
     // [FS] IRAD-1202 2021-02-15
     // Counter flags for Numbering
-    counterFlags: {default: null},
+    counterFlags: { default: null },
   },
   content: 'block+',
 };

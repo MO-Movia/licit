@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import sanitizeURL from '../sanitizeURL';
 import CustomButton from './CustomButton';
-import {ENTER} from './KeyCodes';
+import { ENTER } from './KeyCodes';
 import preventEventDefault from './preventEventDefault';
 
 import './czi-form.css';
@@ -14,30 +14,33 @@ import './czi-image-url-editor.css';
 const BAD_CHARACTER_PATTER = /\s/;
 
 class LinkURLEditor extends React.PureComponent<any, any> {
-
   // [FS] IRAD-1005 2020-07-07
   // Upgrade outdated packages.
   // To take care of the property type declaration.
   static propsTypes = {
     href: PropTypes.string,
-	close: function(props:any, propName:string) {
-        const fn = props[propName];
-        if(!fn.prototype ||
-           (typeof fn.prototype.constructor !== 'function' &&
-            fn.prototype.constructor.length !== 1)) {
-            return new Error(propName + 'must be a function with 1 arg of type string');
-        }
-        return null;
-    }
-  }
+    close: function (props: any, propName: string) {
+      const fn = props[propName];
+      if (
+        !fn.prototype ||
+        (typeof fn.prototype.constructor !== 'function' &&
+          fn.prototype.constructor.length !== 1)
+      ) {
+        return new Error(
+          propName + 'must be a function with 1 arg of type string'
+        );
+      }
+      return null;
+    },
+  };
 
   state = {
     url: this.props.href,
   };
 
   render(): React.Element<any> {
-    const {href} = this.props;
-    const {url} = this.state;
+    const { href } = this.props;
+    const { url } = this.state;
 
     const error = url ? BAD_CHARACTER_PATTER.test(url) : false;
 
@@ -98,7 +101,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
   };
 
   _apply = (): void => {
-    const {url} = this.state;
+    const { url } = this.state;
     if (url && !BAD_CHARACTER_PATTER.test(url)) {
       this.props.close(sanitizeURL(url));
     }

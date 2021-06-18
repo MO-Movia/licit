@@ -1,7 +1,7 @@
 // [FS] IRAD-1052 2020-10-30
 // Plugin to handle custom style on load
-import {Plugin, PluginKey} from 'prosemirror-state';
-import {Node} from 'prosemirror-model';
+import { Plugin, PluginKey } from 'prosemirror-state';
+import { Node } from 'prosemirror-model';
 import {
   updateOverrideFlag,
   applyLatestStyle,
@@ -9,7 +9,7 @@ import {
   ATTR_OVERRIDDEN,
   getStyleLevel,
 } from './CustomStyleCommand';
-import {findParentNodeClosestToPos} from 'prosemirror-utils';
+import { findParentNodeClosestToPos } from 'prosemirror-utils';
 import {
   MARK_STRONG,
   MARK_EM,
@@ -21,9 +21,9 @@ import {
   MARK_TEXT_HIGHLIGHT,
   MARK_UNDERLINE,
 } from './MarkNames';
-import {getCustomStyleByName, getCustomStyleByLevel} from './customStyle';
-import {RESERVED_STYLE_NONE} from './ParagraphNodeSpec';
-import {getLineSpacingValue} from './ui/toCSSLineSpacing';
+import { getCustomStyleByName, getCustomStyleByLevel } from './customStyle';
+import { RESERVED_STYLE_NONE } from './ParagraphNodeSpec';
+import { getLineSpacingValue } from './ui/toCSSLineSpacing';
 const ALLOWED_MARKS = [
   MARK_STRONG,
   MARK_EM,
@@ -163,9 +163,9 @@ function manageHierarchyOnDelete(prevState, nextState, tr, view) {
       // seperating  the nodes to two arrays, ie selection before and after
       nextNodes.forEach((element) => {
         if (element.pos >= selectedPos) {
-          nodesAfterSelection.push({pos: element.pos, node: element.node});
+          nodesAfterSelection.push({ pos: element.pos, node: element.node });
         } else {
-          nodesBeforeSelection.push({pos: element.pos, node: element.node});
+          nodesBeforeSelection.push({ pos: element.pos, node: element.node });
         }
       });
       // for backspace and delete to get the correct node position
@@ -365,7 +365,7 @@ function isDocChanged(transactions) {
 }
 
 function updateStyleOverrideFlag(state, tr) {
-  const retObj = {modified: false};
+  const retObj = { modified: false };
   if (!tr) {
     tr = state.tr;
   }
@@ -499,7 +499,7 @@ function getContent(type, schema) {
 // [FS] IRAD-1145 2021-01-22
 // apply first word/sentence bold style
 function applyLineStyle(prevState, nextState, tr) {
-  const {selection, schema} = nextState;
+  const { selection, schema } = nextState;
   const currentPos = selection.$cursor
     ? selection.$cursor.pos
     : selection.$to.pos;
@@ -511,7 +511,7 @@ function applyLineStyle(prevState, nextState, tr) {
   );
 
   if (para) {
-    const {pos, node} = para;
+    const { pos, node } = para;
     // Check styleName is available for node
     if (node.attrs && node.attrs.styleName) {
       const styleProp = getCustomStyleByName(node.attrs.styleName);
@@ -596,7 +596,7 @@ function handlePasteCustomStyle(view, event, slice) {
     const node = slice.content.content[0];
     const newattrs = Object.assign({}, node.attrs);
     newattrs.id = null === newattrs.id ? '' : null;
-    let {tr} = view.state;
+    let { tr } = view.state;
     const resPos = tr.doc.resolve(view.state.tr.curSelection.from);
     if (resPos && resPos.parentOffset === 0) {
       tr = tr.setNodeMarkup(

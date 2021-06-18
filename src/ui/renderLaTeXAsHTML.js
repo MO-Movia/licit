@@ -12,7 +12,7 @@ const cached: Object = {};
 
 const CSS_FONT = 'KaTeX_Main';
 
-(async function() {
+(async function () {
   const fontSupported = await canUseCSSFont(CSS_FONT);
   if (!fontSupported) {
     // [FS] IRAD-1061 2020-09-19

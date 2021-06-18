@@ -1,11 +1,11 @@
 // @flow
 
-import type {MarkSpec} from './Types';
+import type { MarkSpec } from './Types';
 
 const CODE_DOM = ['code', 0];
 
 const CodeMarkSpec: MarkSpec = {
-  parseDOM: [{tag: 'code'}],
+  parseDOM: [{ tag: 'code' }],
   toDOM() {
     return CODE_DOM;
   },
