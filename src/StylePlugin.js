@@ -90,7 +90,7 @@ export default class StylePlugin extends Plugin {
             tr = updateStyleOverrideFlag(nextState, tr);
             tr = manageHierarchyOnDelete(prevState, nextState, tr, this.view);
           }
-          tr = applyLineStyle(prevState, nextState, tr);
+
           this.firstTime = false;
           // custom style for next line
           if (this.view && ENTERKEYCODE === this.view.lastKeyCode) {
@@ -102,7 +102,9 @@ export default class StylePlugin extends Plugin {
             );
           }
         }
-
+        // [FS] IRAD-1468 2021-06-18
+        // Fix: bold first sentence custom style not showing after reload editor.
+        tr = applyLineStyle(prevState, nextState, tr);
         return tr;
       },
     });
