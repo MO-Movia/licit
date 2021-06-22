@@ -62,24 +62,26 @@ class Licit extends React.Component<any, any> {
   constructor(props: any, context: any) {
     super(props, context);
     this.state = { loaded: false };
-    setTimeout(this.loadStyles.bind(this), 100, props);
+    setTimeout((p) => this.loadStyles(p), 100, props);
   }
 
-  loadStyles(props: any) {
-    const runtime = props.runtime || null;
-    // ATTN: Custom styles MUST be loaded before rendering Licit
-    if (runtime && typeof runtime.getStylesAsync === 'function') {
-      runtime.fetchStyles().then(
-        (result) => {
-          this.initialize(props);
-        },
-        (error) => {
-          // Here Licit is loaded without style list.
-          console.log('Failed to load custom styles: ' + error);
-          this.initialize(props);
-        }
-      );
+  /**
+   * Ensures that custom styles are loaded from server before the underlying
+   * editor is rendered.  This is a band-aid method, and is necessary here
+   * because other parts of the editor attempt to use styles synchronously.
+   *
+   * @param {*} props Editor properties passed to constructor
+   */
+  async loadStyles(props: any): Promise<void> {
+    // Only load styles if there's a method to load them.
+    if (props.runtime && props.runtime.getStylesAsync) {
+      // Force preload of styles before every editor instance is created.
+      await props.runtime.getStylesAsync().catch((error) => {
+        // Log the failure, but proceed to display editor without any styles.
+        console.warn('Failed to load custom styles:', error);
+      });
     }
+    this.initialize(props);
   }
 
   initialize(props: any) {
@@ -155,6 +157,7 @@ class Licit extends React.Component<any, any> {
 
     // FS IRAD-989 2020-18-06
     // updating properties should automatically render the changes
+
     this.setState({
       docID,
       data,
@@ -170,10 +173,12 @@ class Licit extends React.Component<any, any> {
       runtime,
       loaded,
     });
+
     // FS IRAD-1040 2020-26-08
     // Get the modified schema from editorstate and send it to collab server
     if (this._connector.updateSchema) {
-      this._connector.updateSchema(this.state.editorState.schema);
+      // Use known editorState to update schema.
+      this._connector.updateSchema(editorState.schema);
     }
   }
 
