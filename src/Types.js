@@ -183,10 +183,6 @@ export type EditorRuntime = {
   getStylesAsync: () => Promise<StyleProps[]>,
 
   /**
-   * Gets array of styles from the service
-   */
-  fetchStyles: () => Promise<StyleProps[]>,
-  /**
    * Renames an existing style from the service.
    * @param oldStyleName
    * @param newStyleName

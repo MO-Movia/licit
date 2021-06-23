@@ -2,9 +2,9 @@
 
 // This implements the interface of `EditorRuntime`.
 // To  run  editor directly:
-import type {ImageLike, StyleProps, Citation} from '../../src/Types';
-import {POST, GET, DELETE, PATCH} from '../../src/client/http';
-import {setStyles, setCitations} from '../../src/customStyle';
+import type { ImageLike, StyleProps, Citation } from '../../src/Types';
+import { POST, GET, DELETE, PATCH } from '../../src/client/http';
+import { setStyles, setCitations } from '../../src/customStyle';
 
 // When use it in a componet:
 
@@ -19,10 +19,14 @@ const CITATION_URI = 'http://greathints.com:3003';
 const TYPE_JSON = 'application/json; charset=utf-8';
 
 class CustomLicitRuntime {
-  // keep styles locally
-  styleProps: StyleProps[] = [];
+  /**
+   * Cached styles fetched from the service to avoid saturating
+   * service with HTTP requests.
+   * @private
+   */
+  stylePromise: Promise<StyleProps[]> = null;
+
   citations: Citation[] = [];
-  loaded: boolean = false;
   // Image Proxy
   canProxyImageSrc(): boolean {
     return false;
@@ -73,123 +77,110 @@ class CustomLicitRuntime {
   }
 
   /**
-   * Save or update a style on the service.
+   * Save or update a style.
    *
    * @param style Style to update.
+   * @return Updated array of styles.
    */
   async saveStyle(style: StyleProps): Promise<StyleProps[]> {
-    const url = this.buildRoute('styles');
-    await new Promise((resolve, reject) => {
-      POST(url, JSON.stringify(style), TYPE_JSON).then(
-        (data) => {
-          // Refresh from server after save
-          this.fetchStyles().then(
-            (result) => {
-              resolve(result);
-            },
-            (error) => {
-              reject(this.styleProps);
-            }
-          );
-        },
-        (err) => {
-          reject(this.styleProps);
-        }
-      );
-    });
+    try {
+      const json = JSON.stringify(style);
+      const url = this.buildRoute('styles');
+      // Issue HTTP request and save style to service.
+      await POST(url, json, TYPE_JSON);
+    } catch (error) {
+      // Log error to console, but otherwise ignore it. In the place in the
+      // editor where this method is called, there is no accommodation for
+      // handling errors.
+      console.error('Failed to save style', style, error);
+    }
 
-    return this.styleProps;
+    // Refresh styles from service. This becomes the new cache.
+    this.stylePromise = this.fetchStyles();
+    return this.stylePromise;
   }
 
   /**
-   * Returns styles to editor
+   * Fetch list of styles.
+   *
+   * @returns Array of styles or empty array
    */
-  async getStylesAsync(): Promise<StyleProps[]> {
-    if (!this.loaded) {
-      this.fetchStyles();
-      this.loaded = true;
+  getStylesAsync(): Promise<StyleProps[]> {
+    if (!this.stylePromise) {
+      this.stylePromise = this.fetchStyles();
     }
-    return this.styleProps;
+    return this.stylePromise;
   }
 
   /**
    * Renames an existing style on the service.
    *
-   * @param oldStyleName name of style to rename
-   * @param newStyleName new name to apply to style
+   * @param oldName name of style to rename
+   * @param newName new name to apply to style
    */
-  async renameStyle(oldStyleName: string, newStyleName: string) {
-    const obj = {
-      oldName: oldStyleName,
-      newName: newStyleName,
-    };
-    const url = this.buildRoute('styles/rename');
-    await new Promise((resolve, reject) => {
-      PATCH(url, JSON.stringify(obj), TYPE_JSON).then(
-        (data) => {
-          // Refresh from server after rename
-          this.fetchStyles().then(
-            (result) => {
-              resolve(result);
-            },
-            (error) => {
-              reject(null);
-            }
-          );
-        },
-        (err) => {
-          reject(null);
-        }
-      );
-    });
+  async renameStyle(oldName: string, newName: string): Promise<StyleProps[]> {
+    try {
+      const json = JSON.stringify({ oldName, newName });
+      const url = this.buildRoute('styles/rename');
+      await PATCH(url, json, TYPE_JSON);
+    } catch (error) {
+      // Log error to console, but otherwise ignore it. In the place in the
+      // editor where this method is called, there is no accommodation for
+      // handling errors.
+      console.error('Failed to rename style', oldName, newName, error);
+    }
 
-    return this.styleProps;
+    // Refresh styles from service. This becomes the new cache.
+    this.stylePromise = this.fetchStyles();
+    return this.stylePromise;
   }
 
   /**
-   * Remove an existing style from the service
+   * Remove an existing style from the service.
    * @param styleName Name of style to delete
    */
   async removeStyle(styleName: string): Promise<StyleProps[]> {
-    const url = this.buildRoute('styles', encodeURIComponent(styleName));
-    await new Promise((resolve, reject) => {
-      DELETE(url, 'text/plain').then(
-        (data) => {
-          // Refresh from server after remove
-          this.fetchStyles().then(
-            (result) => {
-              resolve(result);
-            },
-            (error) => {
-              reject(null);
-            }
-          );
-        },
-        (err) => {}
-      );
-    });
-    return this.styleProps;
+    try {
+      const url = this.buildRoute('styles', encodeURIComponent(styleName));
+      // Issue the HTTP request to delete the named style.
+      await DELETE(url, 'text/plain');
+    } catch (error) {
+      // Log error to console, but otherwise ignore it. In the place in the
+      // editor where this method is called, there is no accommodation for
+      // handling errors.
+      console.error('Failed to delete style', styleName, error);
+    }
+
+    // Refresh styles from service. This becomes the new cache.
+    this.stylePromise = this.fetchStyles();
+    return this.stylePromise;
   }
 
-  fetchStyles(): Promise<StyleProps[]> {
-    const url = this.buildRoute('styles');
-    return new Promise((resolve, reject) => {
-      // No post processing required since same array format is saved.
-      //
-      // Until it's known how to deal with request errors, they will be
-      // rejected and sent to editor as-is.
-      GET(url).then(
-        (data) => {
-          const styles = JSON.parse(data);
-          this.styleProps = styles;
-          setStyles(styles);
-          resolve(styles);
-        },
-        (err) => {
-          reject(null);
-        }
-      );
-    });
+  /**
+   * Issue HTTP request to fetch styles from service.  Used internally by
+   * runtime, but should not be used externally.
+   *
+   * @returns StyleProps array or empty array on error.
+   * @private
+   */
+  async fetchStyles(): Promise<StyleProps[]> {
+    let styles: StyleProps[];
+    try {
+      styles = JSON.parse(await GET(this.buildRoute('styles')));
+    } catch (error) {
+      // HTTP request or parsing of response failed.
+      // In either case, log an error and treat as if an empty array was
+      // returned.
+      styles = [];
+      console.error('Failed to fetch styles from service', error);
+    }
+
+    // TODO: remove this side effect!
+    // Runtime should not be making calls into editor code!
+    setStyles(styles);
+
+    // Return the styles.
+    return styles;
   }
 
   /**
