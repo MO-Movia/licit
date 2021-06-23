@@ -76,25 +76,37 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
       case 'strong':
         this.setState({
           styles: { ...this.state.styles, strong: !this.state.styles.strong },
-        });
+        },
+          () => {
+            this.buildStyle();
+          });
         break;
 
       case 'em':
         this.setState({
           styles: { ...this.state.styles, em: !this.state.styles.em },
-        });
+        },
+          () => {
+            this.buildStyle();
+          });
         break;
 
       case 'strike':
         this.setState({
           styles: { ...this.state.styles, strike: !this.state.styles.strike },
-        });
+        },
+          () => {
+            this.buildStyle();
+          });
         break;
 
       case 'super':
         this.setState({
           styles: { ...this.state.styles, super: !this.state.styles.super },
-        });
+        },
+          () => {
+            this.buildStyle();
+          });
         break;
 
       case 'underline':
@@ -103,7 +115,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
             ...this.state.styles,
             underline: !this.state.styles.underline,
           },
-        });
+        },
+          () => {
+            this.buildStyle();
+          });
         break;
       case 'name':
         if (undefined !== event) {
@@ -119,7 +134,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                   ? event.target.value
                   : this.state.styles.nextLineStyleName,
             },
-          });
+          },
+            () => {
+              this.buildStyle();
+            });
         }
         break;
 
@@ -127,7 +145,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         if (undefined !== event) {
           this.setState({
             description: event.target.value,
-          });
+          },
+            () => {
+              this.buildStyle();
+            });
         }
         break;
 
@@ -138,7 +159,10 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
               ...this.state.styles,
               paragraphSpacingBefore: event.target.value,
             },
-          });
+          },
+            () => {
+              this.buildStyle();
+            });
         }
         break;
 
@@ -149,14 +173,17 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
               ...this.state.styles,
               paragraphSpacingAfter: event.target.value,
             },
-          });
+          },
+            () => {
+              this.buildStyle();
+            });
         }
         break;
 
       default:
         break;
     }
-    this.buildStyle();
+
   }
 
   // Build styles to display the example piece
