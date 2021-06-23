@@ -9,7 +9,6 @@ import {
   ATTR_OVERRIDDEN,
   getStyleLevel,
 } from './CustomStyleCommand';
-import { findParentNodeClosestToPos } from 'prosemirror-utils';
 import {
   MARK_STRONG,
   MARK_EM,
@@ -90,7 +89,7 @@ export default class StylePlugin extends Plugin {
             tr = updateStyleOverrideFlag(nextState, tr);
             tr = manageHierarchyOnDelete(prevState, nextState, tr, this.view);
           }
-          tr = applyLineStyle(prevState, nextState, tr);
+
           this.firstTime = false;
           // custom style for next line
           if (this.view && ENTERKEYCODE === this.view.lastKeyCode) {
@@ -102,7 +101,6 @@ export default class StylePlugin extends Plugin {
             );
           }
         }
-
         return tr;
       },
     });
@@ -495,100 +493,6 @@ function getContent(type, schema) {
 
   return content;
 }
-
-// [FS] IRAD-1145 2021-01-22
-// apply first word/sentence bold style
-function applyLineStyle(prevState, nextState, tr) {
-  const { selection, schema } = nextState;
-  const currentPos = selection.$cursor
-    ? selection.$cursor.pos
-    : selection.$to.pos;
-  const para = findParentNodeClosestToPos(
-    nextState.doc.resolve(currentPos),
-    (node) => {
-      return node.type === schema.nodes.paragraph;
-    }
-  );
-
-  if (para) {
-    const { pos, node } = para;
-    // Check styleName is available for node
-    if (node.attrs && node.attrs.styleName) {
-      const styleProp = getCustomStyleByName(node.attrs.styleName);
-      if (
-        null !== styleProp &&
-        styleProp.styles &&
-        styleProp.styles.boldPartial
-      ) {
-        if (!tr) {
-          tr = nextState.tr;
-        }
-        tr = addMarksToLine(
-          tr,
-          nextState,
-          node,
-          pos,
-          styleProp.styles.boldSentence
-        );
-      }
-    }
-  }
-  return tr;
-}
-
-// get text content from selected node
-function getNodeText(node: Node) {
-  let textContent = '';
-  node.descendants(function (child: Node, pos: number, parent: Node) {
-    if ('text' === child.type.name) {
-      textContent = `${textContent}${child.text}`;
-    }
-  });
-  return textContent;
-}
-
-// add bold marks to node
-function addMarksToLine(tr, state, node, pos, boldSentence) {
-  const markType = state.schema.marks[MARK_STRONG];
-  let textContent = getNodeText(node);
-  const endPos = textContent.length;
-  let content = '';
-  let counter = 0;
-  if (boldSentence) {
-    content = textContent.split('.');
-  } else {
-    content = textContent.split(' ');
-  }
-  if ('' !== content[0]) {
-    textContent = content[0];
-  } else {
-    if (content.length > 1) {
-      for (let index = 0; index < content.length; index++) {
-        if ('' === content[index]) {
-          counter++;
-        } else {
-          textContent = content[index];
-          index = content.length;
-        }
-      }
-    }
-  }
-
-  tr = tr.addMark(
-    pos,
-    pos + textContent.length + 1 + counter,
-    markType.create(null)
-  );
-  if (content.length > 1) {
-    tr = tr.removeMark(
-      pos + textContent.length + 1 + counter,
-      pos + endPos + 1,
-      markType
-    );
-  }
-  return tr;
-}
-
 // Handles the styleName attribute on copy/paste
 function handlePasteCustomStyle(view, event, slice) {
   const selectionHead = view.state.tr.curSelection.$head;

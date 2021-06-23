@@ -1312,7 +1312,10 @@ export function applyLatestStyle(
   endPos: number,
   style: ?StyleProps
 ) {
-  return applyStyleEx(style, styleName, state, tr, node, startPos, endPos);
+  tr = applyStyleEx(style, styleName, state, tr, node, startPos, endPos);
+  // apply bold first word/sentence custom style
+  tr = applyLineStyle(state, tr, node, startPos);
+  return tr;
 }
 
 function isAllowedNode(node) {
@@ -1416,7 +1419,120 @@ export function applyStyleToEachNode(
   const newattrs = Object.assign({}, _node ? _node.attrs : {});
   newattrs['styleName'] = styleName;
   tr = createEmptyElement(state, tr, _node, from, to, newattrs);
+  tr = applyLineStyle(state, tr, null, 0);
   return tr;
+}
+// [FS] IRAD-1468 2021-06-18
+// Fix: bold first sentence custom style not showing after reload editor.
+function applyLineStyle(state, tr, node, startPos) {
+  if (node) {
+    if (node.attrs && node.attrs.styleName && RESERVED_STYLE_NONE !== node.attrs.styleName) {
+      const styleProp = getCustomStyleByName(node.attrs.styleName);
+      if (
+        null !== styleProp &&
+        styleProp.styles &&
+        styleProp.styles.boldPartial
+      ) {
+        if (!tr) {
+          tr = state.tr;
+        }
+        tr = addMarksToLine(
+          tr,
+          state,
+          node,
+          startPos,
+          styleProp.styles.boldSentence
+        );
+      }
+    }
+  } else {
+    const {selection} = state;
+    let {from, to} = selection;
+    from = selection.$from.before(1);
+    to = selection.$to.after(1);
+    // [FS] IRAD-1168 2021-06-21
+    // FIX: multi-select paragraphs and apply a style with the bold the first sentence,
+    // only the last selected paragraph have bold first sentence.
+    tr.doc.nodesBetween(from, to, (node, pos) => {
+      if (node.content && node.content.content && node.content.content.length) {
+        // Check styleName is available for node
+        if (
+          node.attrs &&
+          node.attrs.styleName &&
+          'None' !== node.attrs.styleName
+        ) {
+          const styleProp = getCustomStyleByName(node.attrs.styleName);
+          if (
+            null !== styleProp &&
+            styleProp.styles &&
+            styleProp.styles.boldPartial
+          ) {
+            if (!tr) {
+              tr = state.tr;
+            }
+            tr = addMarksToLine(
+              tr,
+              state,
+              node,
+              pos,
+              styleProp.styles.boldSentence
+            );
+          }
+        }
+      }
+    });
+  }
+  return tr;
+}
+// add bold marks to node
+function addMarksToLine(tr, state, node, pos, boldSentence) {
+  const markType = state.schema.marks[MARK_STRONG];
+  let textContent = getNodeText(node);
+  const endPos = textContent.length;
+  let content = '';
+  let counter = 0;
+  if (boldSentence) {
+    content = textContent.split('.');
+  } else {
+    content = textContent.split(' ');
+  }
+  if ('' !== content[0]) {
+    textContent = content[0];
+  } else {
+    if (content.length > 1) {
+      for (let index = 0; index < content.length; index++) {
+        if ('' === content[index]) {
+          counter++;
+        } else {
+          textContent = content[index];
+          index = content.length;
+        }
+      }
+    }
+  }
+  tr = tr.addMark(
+    pos,
+    pos + textContent.length + 1 + counter,
+    markType.create(null)
+  );
+  if (content.length > 1) {
+    tr = tr.removeMark(
+      pos + textContent.length + 1 + counter,
+      pos + endPos + 1,
+      markType
+    );
+  }
+  return tr;
+}
+// get text content from selected node
+function getNodeText(node: Node) {
+  let textContent = '';
+  node.descendants(function (child: Node, pos: number, parent: Node) {
+    if ('text' === child.type.name) {
+      textContent = `${textContent}${child.text}`;
+    }
+  });
+  return textContent;
 }
 
 //to get the selected node
