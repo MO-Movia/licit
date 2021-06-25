@@ -235,6 +235,9 @@ class CustomStyleCommand extends UICommand {
     let tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
 
     hasMismatchHeirarchy(state, tr, node, startPos, endPos);
+    // [FS] IRAD-1480 2021-06-25
+    // Indenting not remove when clear style is applied
+    newattrs = Object.assign({}, node ? node.attrs : {});
     newattrs['styleName'] = RESERVED_STYLE_NONE;
     newattrs['id'] = '';
     tr = tr.setNodeMarkup(startPos, undefined, newattrs);
