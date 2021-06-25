@@ -1614,13 +1614,11 @@ export function isLevelUpdated(
   style: StyleProps
 ) {
   let bOK = false;
-  const currentLevel = getStyleLevel(styleName);
-  if (
-    style.styles &&
-    (undefined === style.styles.styleLevel ||
-      style.styles.styleLevel === currentLevel)
-  ) {
-    bOK = true;
+  // [FS] IRAD-1478 2021-06-24
+  // this custom style (with numbering) already applied in editor  
+  if (isCustomStyleAlreadyApplied(styleName, state)) {
+    // now need to check if user edits the numbering level , if yes then block modify the style
+    bOK = (style.styles.styleLevel !== getStyleLevel(styleName));
   }
   return bOK;
 }

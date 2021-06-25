@@ -361,7 +361,7 @@ class CustomMenuUI extends React.PureComponent<any, any> {
                 // [FS] IRAD-1350 2021-05-19
                 // blocks edit if the style is already applied in editor
                 if (
-                  isLevelUpdated(this.props.editorState, val.styleName, val)
+                  !isLevelUpdated(this.props.editorState, val.styleName, val)
                 ) {
                   runtime.saveStyle(val).then((result) => {
                     if (result) {
