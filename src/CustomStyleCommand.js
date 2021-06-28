@@ -237,7 +237,7 @@ class CustomStyleCommand extends UICommand {
     hasMismatchHeirarchy(state, tr, node, startPos, endPos);
     // [FS] IRAD-1480 2021-06-25
     // Indenting not remove when clear style is applied
-    newattrs = Object.assign({}, node ? node.attrs : {});
+    newattrs = node.attrs;
     newattrs['styleName'] = RESERVED_STYLE_NONE;
     newattrs['id'] = '';
     tr = tr.setNodeMarkup(startPos, undefined, newattrs);
@@ -353,7 +353,10 @@ class CustomStyleCommand extends UICommand {
   // to clear the custom styles in the selected paragraph
   clearCustomStyles(tr: Transform<any>, editorState: EditorState) {
     const { selection, doc } = editorState;
-    const { from, to } = selection;
+    // [FS] IRAD-1495 2021-06-25
+    // FIX: Clear style not working on multi select paragraph
+    const from = selection.$from.before(1);
+    const to = selection.$to.after(1) - 1;
     let customStyleName = RESERVED_STYLE_NONE;
     doc.nodesBetween(from, to, (node, pos) => {
       if (node.attrs.styleName) {
@@ -372,12 +375,10 @@ class CustomStyleCommand extends UICommand {
 
   removeMarks(marks: [], tr: Transform, node: Node) {
     const { selection } = tr;
-    let { from, to } = selection;
-    const { empty } = selection;
-    if (empty) {
-      from = selection.$from.before(1);
-      to = selection.$to.after(1);
-    }
+    // [FS] IRAD-1495 2021-06-25
+    // FIX: Clear style not working on multi select paragraph
+    const from = selection.$from.before(1);
+    const to = selection.$to.after(1);
 
     // reset the custom style name to NONE after remove the styles
     clearCustomStyleAttribute(node);
@@ -1622,7 +1623,9 @@ export function isLevelUpdated(
   if (isCustomStyleAlreadyApplied(styleName, state)) {
     // now need to check if user edits the numbering level , if yes then block modify the style
     const currentLevel = getStyleLevel(styleName);
-    if (style.styles && (undefined === style.styles.styleLevel ||
+    // [FS] IRAD-1496 2021-06-25
+    // Fix: warning message not showing if deselect numbering and save
+    if (style.styles && (currentLevel > 0 && !style.styles.hasNumbering) || (undefined === style.styles.styleLevel ||
       style.styles.styleLevel !== currentLevel)) {
       bOK = true;
     }
