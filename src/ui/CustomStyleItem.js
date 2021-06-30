@@ -31,7 +31,9 @@ class CustomStyleItem extends React.PureComponent<any, any> {
     const { label, hasText, ...pointerProps } = this.props;
     let text = '';
     let customStyle;
-    text = this.sampleText(pointerProps.command._customStyle.styles);
+    // [FS] IRAD-1410 2021-06-28
+    // The numbering in custom style drop menu not showing properly
+    text = 'AaBbCcDd';
     const level = this.sampleLevel(pointerProps.command._customStyle.styles);
     const hasBoldPartial = this.hasBoldPartial(
       pointerProps.command._customStyle.styles
@@ -123,22 +125,6 @@ class CustomStyleItem extends React.PureComponent<any, any> {
     );
   }
 
-  // temp method to clear sample text for new and clear command menu item
-  sampleText(styles: any): string {
-    let text = 'AaBbCcDd';
-    if (!this.props.hasText) {
-      text = '';
-    }
-    if (this.props.hasText && styles && styles.hasNumbering && '' !== text) {
-      let level = '';
-      for (let i = 0; i < parseInt(styles.styleLevel); i++) {
-        level = level + '1.';
-      }
-      const sampletext = parseInt(styles.styleLevel) <= 4 ? 'AaBbCcDd' : 'AaBb';
-      text = level + '' + sampletext;
-    }
-    return text;
-  }
   // [FS] IRAD-1394 2021-05-25
   // To show Numbering in dropdown menu sample text
   sampleLevel(styles: any): string {
