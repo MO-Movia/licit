@@ -72,91 +72,61 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
 
   // To set the selected style values
   onStyleClick(style: string, event: any) {
+    let state = null;
     switch (style) {
+      // simple toggles where style matches the key to change.
       case 'strong':
-        this.setState({
-          styles: { ...this.state.styles, strong: !this.state.styles.strong },
-        });
-        break;
 
       case 'em':
-        this.setState({
-          styles: { ...this.state.styles, em: !this.state.styles.em },
-        });
-        break;
 
       case 'strike':
-        this.setState({
-          styles: { ...this.state.styles, strike: !this.state.styles.strike },
-        });
-        break;
 
       case 'super':
-        this.setState({
-          styles: { ...this.state.styles, super: !this.state.styles.super },
-        });
-        break;
 
       case 'underline':
-        this.setState({
-          styles: {
-            ...this.state.styles,
-            underline: !this.state.styles.underline,
-          },
-        });
+        // copy the current style values, and flip the matching value
+        state = { styles: { ...this.state.styles } };
+        state.styles[style] = !state.styles[style];
         break;
       case 'name':
-        if (undefined !== event) {
-          const styleName = this.state.styleName;
-          this.setState({
-            styleName: event.target.value,
-            // [FS] IRAD-1285 2021-03-29
-            // Issue fix : The selected Next Line style option removes when enter style name.
-            styles: {
-              ...this.state.styles,
-              nextLineStyleName:
-                this.state.styles.nextLineStyleName === styleName
-                  ? event.target.value
-                  : this.state.styles.nextLineStyleName,
-            },
-          });
+        if (event) {
+          const oldName = this.state.styleName;
+          const newName = event.target.value;
+          state = { styleName: newName, styles: null };
+          state.styles = { ...this.state.styles };
+          if (this.state.styles.nextLineStyleName === oldName) {
+            // Update next line style as well.
+            state.styles.nextLineStyleName = newName;
+          }
         }
         break;
 
       case 'description':
-        if (undefined !== event) {
-          this.setState({
-            description: event.target.value,
-          });
+        if (event) {
+          state = { description: event.target.value };
         }
         break;
 
       case 'before':
-        if (undefined !== event) {
-          this.setState({
-            styles: {
-              ...this.state.styles,
-              paragraphSpacingBefore: event.target.value,
-            },
-          });
+        if (event) {
+          state = { paragraphSpacingBefore: event.target.value };
         }
         break;
 
       case 'after':
-        if (undefined !== event) {
-          this.setState({
-            styles: {
-              ...this.state.styles,
-              paragraphSpacingAfter: event.target.value,
-            },
-          });
+        if (event) {
+          state = { paragraphSpacingAfter: event.target.value };
         }
         break;
 
       default:
         break;
     }
-    this.buildStyle();
+
+    // save changes and update
+    if (state) {
+      this.setState(state, () => this.buildStyle());
+    }
   }
 
   // Build styles to display the example piece
