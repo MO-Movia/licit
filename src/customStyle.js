@@ -110,7 +110,8 @@ export function getCustomStyle(customStyle: any) {
       case 'strong':
         // [FS] IRAD-1137 2021-1-22
         // Deselected Bold, Italics and Underline are not removed from the example style near style name
-        if (customStyle[property]) {
+        if(!customStyle.boldPartial && customStyle[property])
+        {
           style.fontWeight = 'bold';
         }
         break;

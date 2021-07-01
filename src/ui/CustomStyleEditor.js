@@ -209,6 +209,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
           sampleDiv.innerHTML = `<strong>${content[0]}</strong> ${SAMPLE_TEXT}`;
         }
         textSample = sampleDiv.innerHTML;
+        // [FS] IRAD-1473 2021-06-30
+        // Style Example not showing properly when select Bold and Bold First Sentence
+        style.fontWeight = 'normal';
       }
       if (this.state.styles.styleLevel && this.state.styles.hasNumbering) {
         // [FS] IRAD-1137 2021-01-11
