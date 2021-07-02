@@ -540,6 +540,10 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
   }
 
   overridden = !same;
+  if (overridden && undefined === mark.attrs[ATTR_OVERRIDDEN]) {
+    const newAttr = mark.attrs[ATTR_OVERRIDDEN];
+    mark.attrs[ATTR_OVERRIDDEN] = newAttr;
+  }
 
   if (
     undefined !== mark.attrs[ATTR_OVERRIDDEN] &&
@@ -603,15 +607,11 @@ function onLoadRemoveAllMarksExceptOverridden(
         // [FS] IRAD-1311 2021-05-06
         // Issue fix: Applied URL is removed when applying number style and refresh.
         if (!mark.attrs[ATTR_OVERRIDDEN] && 'link' !== mark.type.name) {
-          // [FS] IRAD-1292 2021-06-03
-          // Issue fix: On reload citation word not showing highlighted with custom style applied.
-          if (!(mark.attrs && mark.attrs.hasCitation)) {
-            tasks.push({
-              child,
-              pos,
-              mark,
-            });
-          }
+          tasks.push({
+            child,
+            pos,
+            mark,
+          });
         }
       });
     }
@@ -1351,13 +1351,11 @@ function removeAllMarksExceptLink(
     if (node.marks && node.marks.length) {
       node.marks.some((mark) => {
         if ('link' !== mark.type.name) {
-          if (!(mark.attrs && mark.attrs.hasCitation)) {
-            tasks.push({
-              node,
-              pos,
-              mark,
-            });
-          }
+          tasks.push({
+            node,
+            pos,
+            mark,
+          });
         }
       });
       return true;

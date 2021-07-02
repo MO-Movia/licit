@@ -78,7 +78,7 @@ export default class StylePlugin extends Plugin {
       },
       appendTransaction: (transactions, prevState, nextState) => {
         let tr = null;
-
+        this.getEffectiveSchema(nextState.schema);
         if (!this.loaded) {
           this.loaded = true;
           // do this only once when the document is loaded.
@@ -89,6 +89,7 @@ export default class StylePlugin extends Plugin {
             tr = updateStyleOverrideFlag(nextState, tr);
             tr = manageHierarchyOnDelete(prevState, nextState, tr, this.view);
           }
+          tr = applyStyleForEmptyParagraph(nextState, tr);
 
           this.firstTime = false;
           // custom style for next line
@@ -257,6 +258,27 @@ function nodeAssignment(state) {
   return nodes;
 }
 
+// [FS] IRAD-1474 2021-07-01
+// Select multiple paragraph with empty paragraph and apply style not working.
+function applyStyleForEmptyParagraph(nextState, tr) {
+  const startPos = nextState.selection.$from.before(1);
+  const endPos = nextState.selection.$to.after(1) - 1;
+  if (null === tr) {
+    tr = nextState.tr;
+  }
+  const node = nextState.tr.doc.nodeAt(startPos);
+  if (RESERVED_STYLE_NONE !== node.attrs.styleName) {
+    if (
+      node.content &&
+      node.content.content &&
+      node.content.content[0].marks &&
+      0 === node.content.content[0].marks.length
+    ) {
+      tr = applyLatestStyle(node.attrs.styleName, nextState, tr, node, startPos, endPos);
+    }
+  }
+  return tr;
+}
 // Continious Numbering for custom style
 function applyStyleForNextParagraph(prevState, nextState, tr, view) {
   let modified = false;

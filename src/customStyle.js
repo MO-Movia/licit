@@ -56,11 +56,6 @@ export function setStyles(style: StyleProps[]) {
   customStyles = style;
 }
 
-// [FS] IRAD-1252 2021-03-12
-// store citations in cache
-export function setCitations(citation: any) {
-  return citation;
-}
 
 // get a style by Level
 export function getCustomStyleByLevel(level: number) {
