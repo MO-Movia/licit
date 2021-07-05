@@ -1420,7 +1420,7 @@ export function applyStyleToEachNode(
 }
 // [FS] IRAD-1468 2021-06-18
 // Fix: bold first sentence custom style not showing after reload editor.
-export function applyLineStyle(state, tr, node, startPos) {
+export function applyLineStyle(state: EditorState, tr: Transform, node: Node, startPos: number) {
   if (node) {
     if (node.attrs && node.attrs.styleName && RESERVED_STYLE_NONE !== node.attrs.styleName) {
       const styleProp = getCustomStyleByName(node.attrs.styleName);
