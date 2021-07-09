@@ -25,7 +25,9 @@ export function isCustomStyleExists(styleName: string) {
   let bOK = false;
   if (isValidStyleName(styleName)) {
     for (const style of customStyles) {
-      if (styleName === style.styleName) {
+      // [FS] IRAD-1432 2021-07-08
+      // FIX: Able to add same style name
+      if (styleName.toUpperCase() === style.styleName.toUpperCase()) {
         bOK = true;
         return bOK;
       }
@@ -105,8 +107,7 @@ export function getCustomStyle(customStyle: any) {
       case 'strong':
         // [FS] IRAD-1137 2021-1-22
         // Deselected Bold, Italics and Underline are not removed from the example style near style name
-        if(!customStyle.boldPartial && customStyle[property])
-        {
+        if (!customStyle.boldPartial && customStyle[property]) {
           style.fontWeight = 'bold';
         }
         break;

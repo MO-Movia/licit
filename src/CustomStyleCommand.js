@@ -2,7 +2,7 @@
 import { EditorState, TextSelection, Selection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
-import { Node, Fragment, Schema } from 'prosemirror-model';
+import { Node, Fragment, Schema, Mark } from 'prosemirror-model';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { atViewportCenter } from './ui/PopUpPosition';
 import createPopUp from './ui/createPopUp';
@@ -359,7 +359,7 @@ class CustomStyleCommand extends UICommand {
     const to = selection.$to.after(1) - 1;
     let customStyleName = RESERVED_STYLE_NONE;
     doc.nodesBetween(from, to, (node, pos) => {
-      if (node.attrs.styleName) {
+      if (node.attrs.styleName && RESERVED_STYLE_NONE !== node.attrs.styleName) {
         customStyleName = node.attrs.styleName;
         const storedmarks = getMarkByStyleName(
           customStyleName,
@@ -506,7 +506,7 @@ class CustomStyleCommand extends UICommand {
   }
 }
 
-function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
+function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj, state) {
   let same = false;
   let overridden = false;
 
@@ -540,9 +540,10 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
   }
 
   overridden = !same;
+  // [FS] IRAD-1475 2021-07-05
+  // FIX: Unable to apply tool bar format after applying a style
   if (overridden && undefined === mark.attrs[ATTR_OVERRIDDEN]) {
-    const newAttr = mark.attrs[ATTR_OVERRIDDEN];
-    mark.attrs[ATTR_OVERRIDDEN] = newAttr;
+    addMarkAttribute(mark, state);
   }
 
   if (
@@ -565,13 +566,45 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
   return tr;
 }
 
+function addMarkAttribute(mark: Mark, state: EditorState) {
+  const NEWATTRS = [ATTR_OVERRIDDEN];
+  const existingAttr = getAnExistingAttribute(state.schema);
+  const requiredAttrs = [...NEWATTRS];
+  requiredAttrs.forEach((key) => {
+    if (mark.attrs) {
+      let newAttr = mark.attrs[key];
+      if (!newAttr) {
+        if (existingAttr) {
+          newAttr = Object.assign(
+            Object.create(Object.getPrototypeOf(existingAttr)),
+            existingAttr
+          );
+          newAttr.default = false;
+        } else {
+          newAttr = {};
+          newAttr.hasDefault = true;
+          newAttr.default = false;
+        }
+        mark.attrs[key] = newAttr;
+      }
+    }
+  });
+}
+function getAnExistingAttribute(schema) {
+  let existingAttr = null;
+  try {
+    existingAttr = schema['marks']['link']['attrs']['href'];
+  } catch (err) { }
+  return existingAttr;
+}
 export function updateOverrideFlag(
   styleName: string,
   tr: Transform,
   node: Node,
   startPos: Number,
   endPos: Number,
-  retObj: any
+  retObj: any,
+  state: EditorState
 ) {
   const styleProp = getCustomStyleByName(styleName);
   if (styleProp && styleProp.styles) {
@@ -584,7 +617,8 @@ export function updateOverrideFlag(
             tr,
             startPos,
             endPos,
-            retObj
+            retObj,
+            state
           );
         });
       }

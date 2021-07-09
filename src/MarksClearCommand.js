@@ -1,7 +1,6 @@
 // @flow
 
-import { EditorState } from 'prosemirror-state';
-import { AllSelection, TextSelection } from 'prosemirror-state';
+import { EditorState, AllSelection, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 

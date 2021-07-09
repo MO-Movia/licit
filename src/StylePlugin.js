@@ -24,7 +24,7 @@ import {
 import { getCustomStyleByName, getCustomStyleByLevel } from './customStyle';
 import { RESERVED_STYLE_NONE } from './ParagraphNodeSpec';
 import { getLineSpacingValue } from './ui/toCSSLineSpacing';
-import {findParentNodeClosestToPos} from 'prosemirror-utils';
+import { findParentNodeClosestToPos } from 'prosemirror-utils';
 const ALLOWED_MARKS = [
   MARK_STRONG,
   MARK_EM,
@@ -80,9 +80,9 @@ export default class StylePlugin extends Plugin {
       },
       appendTransaction: (transactions, prevState, nextState) => {
         let tr = null;
-        this.getEffectiveSchema(nextState.schema);
         if (!this.loaded) {
           this.loaded = true;
+          tr = updateStyleOverrideFlag(nextState, tr);
           // do this only once when the document is loaded.
           tr = applyStyles(nextState, tr);
         } else if (isDocChanged(transactions)) {
@@ -433,7 +433,8 @@ function updateStyleOverrideFlag(state, tr) {
         child,
         startPos,
         endPos,
-        retObj
+        retObj,
+        state
       );
     }
   });
@@ -481,7 +482,7 @@ function getAnExistingAttribute(schema) {
 
   try {
     existingAttr = schema['marks']['link']['attrs']['href'];
-  } catch (err) {}
+  } catch (err) { }
 
   return existingAttr;
 }
