@@ -73,9 +73,6 @@ export default class StylePlugin extends Plugin {
             this.view = view;
           },
         },
-        handlePaste(view, event, slice) {
-          return handlePasteCustomStyle(view, event, slice);
-        },
         nodeViews: [],
       },
       appendTransaction: (transactions, prevState, nextState) => {
@@ -91,7 +88,7 @@ export default class StylePlugin extends Plugin {
             tr = updateStyleOverrideFlag(nextState, tr);
             tr = manageHierarchyOnDelete(prevState, nextState, tr, this.view);
           }
-          tr = applyLineStyleForBoldPartial(nextState, tr);
+
           tr = applyStyleForEmptyParagraph(nextState, tr);
 
           this.firstTime = false;
@@ -104,6 +101,7 @@ export default class StylePlugin extends Plugin {
               this.view
             );
           }
+          tr = applyLineStyleForBoldPartial(nextState, tr);
         }
         return tr;
       },
@@ -282,7 +280,7 @@ function applyLineStyleForBoldPartial(nextState, tr) {
     // Check styleName is available for node
     if (node.attrs && node.attrs.styleName && RESERVED_STYLE_NONE !== node.attrs.styleName) {
       const style = getCustomStyleByName(node.attrs.styleName);
-      if (null !== style && style.styles.boldPartial) {
+      if (null !== style && style.styles && style.styles.boldPartial) {
         tr = applyLineStyle(nextState, tr, node, pos);
       }
     }
@@ -547,24 +545,4 @@ function getContent(type, schema) {
   }
 
   return content;
-}
-// Handles the styleName attribute on copy/paste
-function handlePasteCustomStyle(view, event, slice) {
-  const selectionHead = view.state.tr.curSelection.$head;
-  if (selectionHead && slice.content.content) {
-    const node = slice.content.content[0];
-    const newattrs = Object.assign({}, node.attrs);
-    newattrs.id = null === newattrs.id ? '' : null;
-    let { tr } = view.state;
-    const resPos = tr.doc.resolve(view.state.tr.curSelection.from);
-    if (resPos && resPos.parentOffset === 0) {
-      tr = tr.setNodeMarkup(
-        view.state.tr.curSelection.from - 1,
-        undefined,
-        newattrs
-      );
-      view.dispatch(tr);
-    }
-  }
-  return false;
 }
