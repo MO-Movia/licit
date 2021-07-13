@@ -240,6 +240,9 @@ class CustomStyleCommand extends UICommand {
     newattrs = node.attrs;
     newattrs['styleName'] = RESERVED_STYLE_NONE;
     newattrs['id'] = '';
+    // [FS] IRAD-1414 2021-07-12
+    // FIX: Applied number/bullet list removes when 'Clear Style'
+    newattrs['indent'] = 0;
     tr = tr.setNodeMarkup(startPos, undefined, newattrs);
     tr = removeTextAlignAndLineSpacing(tr, state.schema);
     tr = createEmptyElement(

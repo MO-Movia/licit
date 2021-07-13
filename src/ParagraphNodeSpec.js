@@ -168,7 +168,7 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
     }
   } else if (styleName && styleName.includes(RESERVED_STYLE_NONE_NUMBERING)) {
     const indices = styleName.split(RESERVED_STYLE_NONE_NUMBERING);
-    if (indices && 2 == indices.length) {
+    if (indices && 2 === indices.length) {
       styleLevel = parseInt(indices[1]);
     }
     if (styleLevel) {
