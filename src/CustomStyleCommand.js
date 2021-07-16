@@ -556,8 +556,6 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj, state) 
   ) {
     mark.attrs[ATTR_OVERRIDDEN] = overridden;
 
-    tr = tr.removeMark(startPos, endPos, mark);
-    tr = tr.addMark(startPos, endPos, mark);
     retObj.modified = true;
   }
   /*
@@ -635,7 +633,8 @@ function onLoadRemoveAllMarksExceptOverridden(
   schema: Schema,
   from: number,
   to: number,
-  tr: Transform
+  tr: Transform,
+  state: EditorState
 ) {
   const tasks = [];
   node.descendants(function (child: Node, pos: number, parent: Node) {
@@ -654,7 +653,7 @@ function onLoadRemoveAllMarksExceptOverridden(
     }
   });
 
-  return handleRemoveMarks(tr, tasks, from, to, schema);
+  return handleRemoveMarks(tr, tasks, from, to, schema, null, state);
 }
 
 export function getMarkByStyleName(styleName: string, schema: Schema) {
@@ -739,12 +738,13 @@ function applyStyleEx(
       state.schema,
       startPos,
       endPos,
-      tr
+      tr,
+      state
     );
   } else {
     // [FS] IRAD-1087 2020-11-02
     // Issue fix: applied link is missing after applying a custom style.
-    tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema);
+    tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema, styleProp, state);
   }
 
   if (loading) {
@@ -1380,7 +1380,9 @@ function removeAllMarksExceptLink(
   from: number,
   to: number,
   tr: Transform,
-  schema: Schema
+  schema: Schema,
+  styleProp: StyleProps,
+  state: EditorState
 ) {
   const { doc } = tr;
   const tasks = [];
@@ -1399,7 +1401,7 @@ function removeAllMarksExceptLink(
     }
     return true;
   });
-  return handleRemoveMarks(tr, tasks, from, to, schema);
+  return handleRemoveMarks(tr, tasks, from, to, schema, styleProp, state);
 }
 
 function handleRemoveMarks(
@@ -1407,11 +1409,27 @@ function handleRemoveMarks(
   tasks: any,
   from: number,
   to: number,
-  schema: Schema
+  schema: Schema,
+  styleProp: StyleProps,
+  state: EditorState
 ) {
   tasks.forEach((job) => {
     const { mark } = job;
-    tr = tr.removeMark(from, to, mark.type);
+    const retObj = { modified: false };
+    if (styleProp && MARK_TEXT_HIGHLIGHT === mark.type.name) {
+      tr = compareMarkWithStyle(
+        mark,
+        styleProp.styles,
+        tr,
+        from,
+        to,
+        retObj,
+        state
+      );
+    }
+    if (!mark.attrs[ATTR_OVERRIDDEN]) {
+      tr = tr.removeMark(from, to, mark.type);
+    }
   });
   tr = setTextAlign(tr, schema, null);
   return tr;
