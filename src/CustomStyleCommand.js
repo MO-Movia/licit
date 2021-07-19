@@ -1381,7 +1381,7 @@ function removeAllMarksExceptLink(
   to: number,
   tr: Transform,
   schema: Schema,
-  styleProp: StyleProps,
+  styleProp: ?StyleProps,
   state: EditorState
 ) {
   const { doc } = tr;
@@ -1410,7 +1410,7 @@ function handleRemoveMarks(
   from: number,
   to: number,
   schema: Schema,
-  styleProp: StyleProps,
+  styleProp: ?StyleProps,
   state: EditorState
 ) {
   tasks.forEach((job) => {
