@@ -5,11 +5,10 @@ import { Transform } from 'prosemirror-transform';
 import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
 
-import { BULLET_LIST, ORDERED_LIST, PARAGRAPH, IMAGE } from './NodeNames';
+import { BULLET_LIST, ORDERED_LIST, IMAGE } from './NodeNames';
 import noop from './noop';
 import toggleList from './toggleList';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { getCustomStyleByName } from './customStyle';
 import isNodeSelectionForNodeType from './isNodeSelectionForNodeType';
 
 export class ListToggleCommand extends UICommand {
@@ -34,7 +33,7 @@ export class ListToggleCommand extends UICommand {
 
   isEnabled = (state: EditorState, view: ?EditorView): boolean => {
     let bOK = false;
-    bOK = hasCustomNumberedList(state) || hasImageNode(state);
+    bOK = hasImageNode(state);
     return !bOK;
   };
 
@@ -66,46 +65,7 @@ export class ListToggleCommand extends UICommand {
     return findList(state.selection);
   }
 
-  // [FS] IRAD-1087 2020-11-11
-  // New method to execute new styling implementation for List
-  //only x.x.x is handled here need to handle indent
-  executeCustom = (
-    state: EditorState,
-    tr: Transform,
-    from: number,
-    to: number
-  ): boolean => {
-    const { schema } = state;
-    const nodeType = schema.nodes[this._ordered ? ORDERED_LIST : BULLET_LIST];
-    if (!nodeType) {
-      return tr;
-    }
-    // tr = tr.setSelection(TextSelection.create(tr.doc, from, to));
-    tr = toggleList(tr, schema, nodeType, this._orderedListType);
-    return tr;
-  };
-}
 
-// [FS] IRAD-1216 2020-02-24
-// Disable the List when menu when the cursor is in custom numbered style
-export function hasCustomNumberedList(state: EditorState) {
-  let isNumberedList = false;
-  const { selection, schema } = state;
-  const text = schema.nodes[PARAGRAPH];
-  const result = findParentNodeOfType(text)(selection);
-  if (result && result.node.attrs) {
-    if (result.node.attrs.styleName && 'None' !== result.node.attrs.styleName) {
-      const style = getCustomStyleByName(result.node.attrs.styleName);
-      if (
-        style &&
-        style.styles &&
-        style.styles.styleLevel &&
-        style.styles.hasNumbering
-      )
-        isNumberedList = true;
-    }
-  }
-  return isNumberedList;
 }
 
 // [FS] IRAD-1317 2021-05-06

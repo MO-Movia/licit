@@ -9,12 +9,6 @@ import { BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
 import { Fragment, Schema } from 'prosemirror-model';
 import { MAX_INDENT_LEVEL, MIN_INDENT_LEVEL } from './ParagraphNodeSpec';
 import { Transform } from 'prosemirror-transform';
-import { getCustomStyleByLevel } from './customStyle';
-import {
-  getStyleLevel,
-  applyLatestStyle,
-  allowCustomLevelIndent,
-} from './CustomStyleCommand';
 import { EditorView } from 'prosemirror-view';
 
 export default function updateIndentLevel(
@@ -191,7 +185,7 @@ function setNodeIndentMarkup(
   delta: number,
   view: EditorView
 ): Transform {
-  let retVal = true;
+  const retVal = true;
   if (!tr.doc) {
     return tr;
   }
@@ -204,50 +198,7 @@ function setNodeIndentMarkup(
     (node.attrs.indent || 0) + delta,
     MAX_INDENT_LEVEL
   );
-  const styleLevel = getStyleLevel(node.attrs.styleName);
-  if (styleLevel) {
-    //FIX:  Normal Indent is not working along with custom style numbering
-    const nextLevel = parseInt(styleLevel) + delta;
-    const startPos = tr.selection.$from.before(1);
-    const endPos = tr.selection.$to.after(1);
 
-    const style = getCustomStyleByLevel(nextLevel);
-    let isTabKey = false;
-    let applyNext = false;
-    if (style) {
-      // [FS] IRAD-1387 2021-05-25
-      // avoid executing the apply style on changing the cursor position
-      if (view && view.lastKeyCode === 9) {
-        isTabKey = true;
-      }
-      if (delta === 1 && nextLevel - parseInt(styleLevel) === 1) {
-        applyNext = true;
-      } else if (delta === -1 && parseInt(styleLevel) - nextLevel === 1) {
-        applyNext = true;
-      }
-      if (view && view.dispatch && applyNext) {
-        applyNext = true;
-      } else if (isTabKey && applyNext) {
-        applyNext = true;
-      }
-      if (
-        applyNext &&
-        allowCustomLevelIndent(tr, startPos, style.styleName, delta)
-      ) {
-        tr = applyLatestStyle(
-          style.styleName,
-          state,
-          tr,
-          node,
-          startPos,
-          endPos
-        );
-      } else {
-        retVal = false;
-      }
-    }
-    return { tr, docChanged: retVal };
-  }
   if (indent === node.attrs.indent) {
     return { tr, docChanged: false };
   }

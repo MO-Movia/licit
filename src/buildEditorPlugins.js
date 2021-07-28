@@ -15,7 +15,6 @@ import SelectionPlaceholderPlugin from './SelectionPlaceholderPlugin';
 import TablePlugins from './TablePlugins';
 import buildInputRules from './buildInputRules';
 import createEditorKeyMap from './createEditorKeyMap';
-import StylePlugin from './StylePlugin';
 
 // Creates the default plugin for the editor.
 export default class DefaultEditorPlugins {
@@ -29,7 +28,6 @@ export default class DefaultEditorPlugins {
       new ImageUploadPlaceholderPlugin(),
       new LinkTooltipPlugin(),
       new SelectionPlaceholderPlugin(),
-      new StylePlugin(),
       this.setPluginKey(buildInputRules(schema), 'InputRules'),
       this.setPluginKey(dropCursor(), 'DropCursor'),
       this.setPluginKey(gapCursor(), 'GapCursor'),

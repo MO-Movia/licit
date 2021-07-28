@@ -3,7 +3,7 @@
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import applyMark from './applyMark';
 import isTextStyleMarkCommandEnabled from './isTextStyleMarkCommandEnabled';
-import { EditorState, TextSelection } from 'prosemirror-state';
+import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { MARK_FONT_SIZE } from './MarkNames';
 import { Schema } from 'prosemirror-model';
@@ -52,22 +52,6 @@ class FontSizeCommand extends UICommand {
     return false;
   };
 
-  // [FS] IRAD-1087 2020-10-01
-  // Method to execute custom styling implementation of font size
-  executeCustom = (
-    state: EditorState,
-    tr: Transform,
-    from: number,
-    to: number
-  ): Transform => {
-    const { schema } = state;
-    tr = setFontSize(
-      tr.setSelection(TextSelection.create(tr.doc, from, to)),
-      schema,
-      this._pt
-    );
-    return tr;
-  };
 }
 
 export default FontSizeCommand;

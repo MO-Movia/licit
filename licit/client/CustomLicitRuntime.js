@@ -4,7 +4,6 @@
 // To  run  editor directly:
 import type { ImageLike, StyleProps } from '../../src/Types';
 import { POST, GET, DELETE, PATCH } from '../../src/client/http';
-import { setStyles } from '../../src/customStyle';
 
 // When use it in a componet:
 
@@ -23,7 +22,7 @@ class CustomLicitRuntime {
    * service with HTTP requests.
    * @private
    */
-  stylePromise: Promise<StyleProps[]> = null;
+  stylePromise: Promise<StyleProps[]>;
 
   // Image Proxy
   canProxyImageSrc(): boolean {
@@ -172,10 +171,6 @@ class CustomLicitRuntime {
       styles = [];
       console.error('Failed to fetch styles from service', error);
     }
-
-    // TODO: remove this side effect!
-    // Runtime should not be making calls into editor code!
-    setStyles(styles);
 
     // Return the styles.
     return styles;

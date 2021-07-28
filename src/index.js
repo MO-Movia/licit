@@ -8,4 +8,3 @@ export { default as uuid } from './ui/uuid';
 export { default as Licit } from './client/Licit.js';
 export { ImageLike, EditorRuntime, StyleProps } from './Types';
 export { GET, POST, DELETE, PATCH } from './client/http';
-export { setStyles } from './customStyle';
