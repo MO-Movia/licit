@@ -2,7 +2,7 @@
 import { EditorState, TextSelection, Selection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
-import { Node, Fragment, Schema } from 'prosemirror-model';
+import { Node, Fragment, Schema, Mark } from 'prosemirror-model';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { atViewportCenter } from './ui/PopUpPosition';
 import createPopUp from './ui/createPopUp';
@@ -235,8 +235,15 @@ class CustomStyleCommand extends UICommand {
     let tr = this.clearCustomStyles(state.tr.setSelection(selection), state);
 
     hasMismatchHeirarchy(state, tr, node, startPos, endPos);
+
+    // [FS] IRAD-1480 2021-06-25
+    // Indenting not remove when clear style is applied
+    newattrs = node.attrs;
     newattrs['styleName'] = RESERVED_STYLE_NONE;
     newattrs['id'] = '';
+    // [FS] IRAD-1414 2021-07-12
+    // FIX: Applied number/bullet list removes when 'Clear Style'
+    newattrs['indent'] = 0;
     tr = tr.setNodeMarkup(startPos, undefined, newattrs);
     tr = removeTextAlignAndLineSpacing(tr, state.schema);
     tr = createEmptyElement(
@@ -350,10 +357,13 @@ class CustomStyleCommand extends UICommand {
   // to clear the custom styles in the selected paragraph
   clearCustomStyles(tr: Transform<any>, editorState: EditorState) {
     const { selection, doc } = editorState;
-    const { from, to } = selection;
+    // [FS] IRAD-1495 2021-06-25
+    // FIX: Clear style not working on multi select paragraph
+    const from = selection.$from.before(1);
+    const to = selection.$to.after(1) - 1;
     let customStyleName = RESERVED_STYLE_NONE;
     doc.nodesBetween(from, to, (node, pos) => {
-      if (node.attrs.styleName) {
+      if (node.attrs.styleName && RESERVED_STYLE_NONE !== node.attrs.styleName) {
         customStyleName = node.attrs.styleName;
         const storedmarks = getMarkByStyleName(
           customStyleName,
@@ -369,12 +379,10 @@ class CustomStyleCommand extends UICommand {
 
   removeMarks(marks: [], tr: Transform, node: Node) {
     const { selection } = tr;
-    let { from, to } = selection;
-    const { empty } = selection;
-    if (empty) {
-      from = selection.$from.before(1);
-      to = selection.$to.after(1);
-    }
+    // [FS] IRAD-1495 2021-06-25
+    // FIX: Clear style not working on multi select paragraph
+    const from = selection.$from.before(1);
+    const to = selection.$to.after(1);
 
     // reset the custom style name to NONE after remove the styles
     clearCustomStyleAttribute(node);
@@ -502,7 +510,7 @@ class CustomStyleCommand extends UICommand {
   }
 }
 
-function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
+function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj, state) {
   let same = false;
   let overridden = false;
 
@@ -536,6 +544,11 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
   }
 
   overridden = !same;
+  // [FS] IRAD-1475 2021-07-05
+  // FIX: Unable to apply tool bar format after applying a style
+  if (overridden && undefined === mark.attrs[ATTR_OVERRIDDEN]) {
+    addMarkAttribute(mark, state);
+  }
 
   if (
     undefined !== mark.attrs[ATTR_OVERRIDDEN] &&
@@ -544,8 +557,6 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
   ) {
     mark.attrs[ATTR_OVERRIDDEN] = overridden;
 
-    tr = tr.removeMark(startPos, endPos, mark);
-    tr = tr.addMark(startPos, endPos, mark);
     retObj.modified = true;
   }
   /*
@@ -557,13 +568,45 @@ function compareMarkWithStyle(mark, style, tr, startPos, endPos, retObj) {
   return tr;
 }
 
+function addMarkAttribute(mark: Mark, state: EditorState) {
+  const NEWATTRS = [ATTR_OVERRIDDEN];
+  const existingAttr = getAnExistingAttribute(state.schema);
+  const requiredAttrs = [...NEWATTRS];
+  requiredAttrs.forEach((key) => {
+    if (mark.attrs) {
+      let newAttr = mark.attrs[key];
+      if (!newAttr) {
+        if (existingAttr) {
+          newAttr = Object.assign(
+            Object.create(Object.getPrototypeOf(existingAttr)),
+            existingAttr
+          );
+          newAttr.default = false;
+        } else {
+          newAttr = {};
+          newAttr.hasDefault = true;
+          newAttr.default = false;
+        }
+        mark.attrs[key] = newAttr;
+      }
+    }
+  });
+}
+function getAnExistingAttribute(schema) {
+  let existingAttr = null;
+  try {
+    existingAttr = schema['marks']['link']['attrs']['href'];
+  } catch (err) { }
+  return existingAttr;
+}
 export function updateOverrideFlag(
   styleName: string,
   tr: Transform,
   node: Node,
   startPos: Number,
   endPos: Number,
-  retObj: any
+  retObj: any,
+  state: EditorState
 ) {
   const styleProp = getCustomStyleByName(styleName);
   if (styleProp && styleProp.styles) {
@@ -576,7 +619,8 @@ export function updateOverrideFlag(
             tr,
             startPos,
             endPos,
-            retObj
+            retObj,
+            state
           );
         });
       }
@@ -590,7 +634,8 @@ function onLoadRemoveAllMarksExceptOverridden(
   schema: Schema,
   from: number,
   to: number,
-  tr: Transform
+  tr: Transform,
+  state: EditorState
 ) {
   const tasks = [];
   node.descendants(function (child: Node, pos: number, parent: Node) {
@@ -599,21 +644,17 @@ function onLoadRemoveAllMarksExceptOverridden(
         // [FS] IRAD-1311 2021-05-06
         // Issue fix: Applied URL is removed when applying number style and refresh.
         if (!mark.attrs[ATTR_OVERRIDDEN] && 'link' !== mark.type.name) {
-          // [FS] IRAD-1292 2021-06-03
-          // Issue fix: On reload citation word not showing highlighted with custom style applied.
-          if (!(mark.attrs && mark.attrs.hasCitation)) {
-            tasks.push({
-              child,
-              pos,
-              mark,
-            });
-          }
+          tasks.push({
+            child,
+            pos,
+            mark,
+          });
         }
       });
     }
   });
 
-  return handleRemoveMarks(tr, tasks, from, to, schema);
+  return handleRemoveMarks(tr, tasks, from, to, schema, null, state);
 }
 
 export function getMarkByStyleName(styleName: string, schema: Schema) {
@@ -698,12 +739,13 @@ function applyStyleEx(
       state.schema,
       startPos,
       endPos,
-      tr
+      tr,
+      state
     );
   } else {
     // [FS] IRAD-1087 2020-11-02
     // Issue fix: applied link is missing after applying a custom style.
-    tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema);
+    tr = removeAllMarksExceptLink(startPos, endPos, tr, state.schema, styleProp, state);
   }
 
   if (loading) {
@@ -1339,7 +1381,9 @@ function removeAllMarksExceptLink(
   from: number,
   to: number,
   tr: Transform,
-  schema: Schema
+  schema: Schema,
+  styleProp: ?StyleProps,
+  state: EditorState
 ) {
   const { doc } = tr;
   const tasks = [];
@@ -1347,20 +1391,18 @@ function removeAllMarksExceptLink(
     if (node.marks && node.marks.length) {
       node.marks.some((mark) => {
         if ('link' !== mark.type.name) {
-          if (!(mark.attrs && mark.attrs.hasCitation)) {
-            tasks.push({
-              node,
-              pos,
-              mark,
-            });
-          }
+          tasks.push({
+            node,
+            pos,
+            mark,
+          });
         }
       });
       return true;
     }
     return true;
   });
-  return handleRemoveMarks(tr, tasks, from, to, schema);
+  return handleRemoveMarks(tr, tasks, from, to, schema, styleProp, state);
 }
 
 function handleRemoveMarks(
@@ -1368,11 +1410,27 @@ function handleRemoveMarks(
   tasks: any,
   from: number,
   to: number,
-  schema: Schema
+  schema: Schema,
+  styleProp: ?StyleProps,
+  state: EditorState
 ) {
   tasks.forEach((job) => {
     const { mark } = job;
-    tr = tr.removeMark(from, to, mark.type);
+    const retObj = { modified: false };
+    if (styleProp && MARK_TEXT_HIGHLIGHT === mark.type.name) {
+      tr = compareMarkWithStyle(
+        mark,
+        styleProp.styles,
+        tr,
+        from,
+        to,
+        retObj,
+        state
+      );
+    }
+    if (!mark.attrs[ATTR_OVERRIDDEN]) {
+      tr = tr.removeMark(from, to, mark.type);
+    }
   });
   tr = setTextAlign(tr, schema, null);
   return tr;
@@ -1418,7 +1476,7 @@ export function applyStyleToEachNode(
 }
 // [FS] IRAD-1468 2021-06-18
 // Fix: bold first sentence custom style not showing after reload editor.
-function applyLineStyle(state, tr, node, startPos) {
+export function applyLineStyle(state: EditorState, tr: Transform, node: Node, startPos: number) {
   if (node) {
     if (node.attrs && node.attrs.styleName && RESERVED_STYLE_NONE !== node.attrs.styleName) {
       const styleProp = getCustomStyleByName(node.attrs.styleName);
@@ -1614,13 +1672,17 @@ export function isLevelUpdated(
   style: StyleProps
 ) {
   let bOK = false;
-  const currentLevel = getStyleLevel(styleName);
-  if (
-    style.styles &&
-    (undefined === style.styles.styleLevel ||
-      style.styles.styleLevel === currentLevel)
-  ) {
-    bOK = true;
+  // [FS] IRAD-1478 2021-06-24
+  // this custom style (with numbering) already applied in editor
+  if (isCustomStyleAlreadyApplied(styleName, state)) {
+    // now need to check if user edits the numbering level , if yes then block modify the style
+    const currentLevel = getStyleLevel(styleName);
+    // [FS] IRAD-1496 2021-06-25
+    // Fix: warning message not showing if deselect numbering and save
+    if (style && style.styles && (currentLevel > 0 && !style.styles.hasNumbering) || (style.styles && undefined === style.styles.styleLevel ||
+      (style && style.styles && style.styles.styleLevel !== currentLevel))) {
+      bOK = true;
+    }
   }
   return bOK;
 }

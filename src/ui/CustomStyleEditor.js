@@ -69,25 +69,21 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
   componentWillUnmount(): void {
     this._unmounted = true;
   }
-
   // To set the selected style values
   onStyleClick(style: string, event: any) {
     let state = null;
     switch (style) {
       // simple toggles where style matches the key to change.
       case 'strong':
-
       case 'em':
-
       case 'strike':
-
       case 'super':
-
       case 'underline':
         // copy the current style values, and flip the matching value
         state = { styles: { ...this.state.styles } };
         state.styles[style] = !state.styles[style];
         break;
+
       case 'name':
         if (event) {
           const oldName = this.state.styleName;
@@ -107,18 +103,20 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
         }
         break;
 
+      // [FS] IRAD-1497 2021-06-30
+      // Not able to set paragraph spacing before and after.
       case 'before':
         if (event) {
-          state = { paragraphSpacingBefore: event.target.value };
+          state = { styles: { ...this.state.styles } };
+          state.styles['paragraphSpacingBefore'] = event.target.value;
         }
         break;
-
       case 'after':
         if (event) {
-          state = { paragraphSpacingAfter: event.target.value };
+          state = { styles: { ...this.state.styles } };
+          state.styles['paragraphSpacingAfter'] = event.target.value;
         }
         break;
-
       default:
         break;
     }
@@ -211,6 +209,9 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
           sampleDiv.innerHTML = `<strong>${content[0]}</strong> ${SAMPLE_TEXT}`;
         }
         textSample = sampleDiv.innerHTML;
+        // [FS] IRAD-1473 2021-06-30
+        // Style Example not showing properly when select Bold and Bold First Sentence
+        style.fontWeight = 'normal';
       }
       if (this.state.styles.styleLevel && this.state.styles.hasNumbering) {
         // [FS] IRAD-1137 2021-01-11
@@ -1111,7 +1112,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
                     <input
                       checked={
                         this.state.styles.nextLineStyleName ===
-                          this.state.styleName && !this.state.otherStyleSelected
+                        this.state.styleName && !this.state.otherStyleSelected
                       }
                       name="nextlinestyle"
                       onChange={this.onNextLineStyleSelected.bind(this, 1)}
@@ -1255,7 +1256,7 @@ class CustomStyleEditor extends React.PureComponent<any, any> {
     const { runtime } = this.props.editorView;
     if (runtime && typeof runtime.saveStyle === 'function') {
       delete val.editorView;
-      runtime.saveStyle(val).then((result) => {});
+      runtime.saveStyle(val).then((result) => { });
     }
   }
 

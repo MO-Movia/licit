@@ -1,7 +1,6 @@
 // @flow
 
 import * as React from 'react';
-import { EditorView } from 'prosemirror-view';
 export type NodeSpec = {
   attrs?: ?{ [key: string]: any },
   content?: ?string,
@@ -91,55 +90,7 @@ export type CSSStyle = {
   lineHeight: ?string, //css line-height property
 };
 
-// [FS] IRAD-1250 2021-03-08
-// citation object to save in the server
-export type Citation = {
-  overallDocumentCapco: string,
-  author?: string,
-  referenceId?: string,
-  publishedDate?: string,
-  documentTitleCapco?: string,
-  documentTitle?: string,
-  hyperLink?: string,
-  dateAccessed?: string,
-};
 
-export type CitationProps = {
-  citationUseObject: {
-    align?: string,
-    boldNumbering?: boolean,
-    boldPartial?: boolean,
-    boldSentence?: boolean,
-    fontName?: string,
-    fontSize?: string,
-    strong?: boolean,
-    em?: boolean,
-    underline?: boolean,
-    color?: string,
-    textHighlight?: string,
-    hasNumbering?: boolean,
-    paragraphSpacingAfter?: string,
-    paragraphSpacingBefore?: string,
-    styleLevel?: string,
-    lineHeight?: string,
-    isLevelbased?: boolean,
-    indent?: string,
-  },
-  citationObject: {
-    overallDocumentCapco: string,
-    author?: string,
-    referenceId?: string,
-    publishedDate?: string,
-    documentTitleCapco?: string,
-    documentTitle?: string,
-    hyperLink?: string,
-    dateAccessed?: string,
-  },
-  sourceText: string,
-  mode: number,
-  editorView: EditorView,
-  isCitationObject: Boolean,
-};
 
 /**
  * Styles to display in Preview text
@@ -198,18 +149,7 @@ export type EditorRuntime = {
    */
   removeStyle: (name: string) => Promise<StyleProps[]>,
 
-  // Save or update a citation on the service
-  saveCitation: (citation: Citation) => Promise<Citation[]>,
-  /**
-   * Gets array of citations from the service
-   */
-  getCitationsAsync: () => Promise<Citation[]>,
-  /**
-   * Delete an existing citation from the service.
-   * @param name
-   */
 
-  removeCitation: (referenceId: string) => Promise<Citation[]>,
 };
 
 export type EditorState = any;

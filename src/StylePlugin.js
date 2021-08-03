@@ -8,6 +8,7 @@ import {
   getMarkByStyleName,
   ATTR_OVERRIDDEN,
   getStyleLevel,
+  applyLineStyle
 } from './CustomStyleCommand';
 import {
   MARK_STRONG,
@@ -23,6 +24,7 @@ import {
 import { getCustomStyleByName, getCustomStyleByLevel } from './customStyle';
 import { RESERVED_STYLE_NONE } from './ParagraphNodeSpec';
 import { getLineSpacingValue } from './ui/toCSSLineSpacing';
+import { findParentNodeClosestToPos } from 'prosemirror-utils';
 const ALLOWED_MARKS = [
   MARK_STRONG,
   MARK_EM,
@@ -71,16 +73,13 @@ export default class StylePlugin extends Plugin {
             this.view = view;
           },
         },
-        handlePaste(view, event, slice) {
-          return handlePasteCustomStyle(view, event, slice);
-        },
         nodeViews: [],
       },
       appendTransaction: (transactions, prevState, nextState) => {
         let tr = null;
-
         if (!this.loaded) {
           this.loaded = true;
+          tr = updateStyleOverrideFlag(nextState, tr);
           // do this only once when the document is loaded.
           tr = applyStyles(nextState, tr);
         } else if (isDocChanged(transactions)) {
@@ -89,6 +88,8 @@ export default class StylePlugin extends Plugin {
             tr = updateStyleOverrideFlag(nextState, tr);
             tr = manageHierarchyOnDelete(prevState, nextState, tr, this.view);
           }
+
+          tr = applyStyleForEmptyParagraph(nextState, tr);
 
           this.firstTime = false;
           // custom style for next line
@@ -100,6 +101,7 @@ export default class StylePlugin extends Plugin {
               this.view
             );
           }
+          tr = applyLineStyleForBoldPartial(nextState, tr);
         }
         return tr;
       },
@@ -257,6 +259,56 @@ function nodeAssignment(state) {
   return nodes;
 }
 
+// [FS] IRAD-1481 2021-07-02
+// FIX: Style with First Word Bold and Continue is not showing properly when entering text in a new paragraph
+function applyLineStyleForBoldPartial(nextState, tr) {
+  const { selection, schema } = nextState;
+  const currentPos = selection.$cursor
+    ? selection.$cursor.pos
+    : selection.$to.pos;
+  const para = findParentNodeClosestToPos(
+    nextState.doc.resolve(currentPos),
+    (node) => {
+      return node.type === schema.nodes.paragraph;
+    }
+  );
+  if (para) {
+    const { pos, node } = para;
+    if (!tr) {
+      tr = nextState.tr;
+    }
+    // Check styleName is available for node
+    if (node.attrs && node.attrs.styleName && RESERVED_STYLE_NONE !== node.attrs.styleName) {
+      const style = getCustomStyleByName(node.attrs.styleName);
+      if (null !== style && style.styles && style.styles.boldPartial) {
+        tr = applyLineStyle(nextState, tr, node, pos);
+      }
+    }
+  }
+  return tr;
+}
+// [FS] IRAD-1474 2021-07-01
+// Select multiple paragraph with empty paragraph and apply style not working.
+function applyStyleForEmptyParagraph(nextState, tr) {
+  const startPos = nextState.selection.$from.before(1);
+  const endPos = nextState.selection.$to.after(1) - 1;
+  if (null === tr) {
+    tr = nextState.tr;
+  }
+  const node = nextState.tr.doc.nodeAt(startPos);
+  if (RESERVED_STYLE_NONE !== node.attrs.styleName) {
+    if (
+      node.content &&
+      node.content.content &&
+      0 < node.content.content.length &&
+      node.content.content[0].marks &&
+      0 === node.content.content[0].marks.length
+    ) {
+      tr = applyLatestStyle(node.attrs.styleName, nextState, tr, node, startPos, endPos);
+    }
+  }
+  return tr;
+}
 // Continious Numbering for custom style
 function applyStyleForNextParagraph(prevState, nextState, tr, view) {
   let modified = false;
@@ -379,7 +431,8 @@ function updateStyleOverrideFlag(state, tr) {
         child,
         startPos,
         endPos,
-        retObj
+        retObj,
+        state
       );
     }
   });
@@ -427,7 +480,7 @@ function getAnExistingAttribute(schema) {
 
   try {
     existingAttr = schema['marks']['link']['attrs']['href'];
-  } catch (err) {}
+  } catch (err) { }
 
   return existingAttr;
 }
@@ -492,24 +545,4 @@ function getContent(type, schema) {
   }
 
   return content;
-}
-// Handles the styleName attribute on copy/paste
-function handlePasteCustomStyle(view, event, slice) {
-  const selectionHead = view.state.tr.curSelection.$head;
-  if (selectionHead && slice.content.content) {
-    const node = slice.content.content[0];
-    const newattrs = Object.assign({}, node.attrs);
-    newattrs.id = null === newattrs.id ? '' : null;
-    let { tr } = view.state;
-    const resPos = tr.doc.resolve(view.state.tr.curSelection.from);
-    if (resPos && resPos.parentOffset === 0) {
-      tr = tr.setNodeMarkup(
-        view.state.tr.curSelection.from - 1,
-        undefined,
-        newattrs
-      );
-      view.dispatch(tr);
-    }
-  }
-  return false;
 }
