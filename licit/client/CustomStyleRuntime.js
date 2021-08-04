@@ -5,7 +5,12 @@
 import type { Style } from '../../src/StyleRuntime';
 import { POST, GET, DELETE, PATCH } from '../../src/client/http';
 
-const STYLES_URI = 'http://localhost:3000';
+// When use it in a componet:
+/*
+ import type {Style} from '@modusoperandi/licit';
+ import {POST } from '@modusoperandi/licit';
+ */
+const STYLES_URI = 'http://greathints.com:3000';
 const TYPE_JSON = 'application/json; charset=utf-8';
 
 class CustomStyleRuntime {

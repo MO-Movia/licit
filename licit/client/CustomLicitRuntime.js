@@ -2,25 +2,18 @@
 
 // This implements the interface of `EditorRuntime`.
 // To  run  editor directly:
-import type { ImageLike, StyleProps } from '../../src/Types';
+import type { ImageLike } from '../../src/Types';
 import { POST } from '../../src/client/http';
 
 // When use it in a componet:
 
 /*
- import type {ImageLike, StyleProps} from '@modusoperandi/licit';
+ import type {ImageLike} from '@modusoperandi/licit';
  import {POST } from '@modusoperandi/licit';
- import {setStyles} from '@modusoperandi/licit';
  */
 
 
 class CustomLicitRuntime {
-  /**
-   * Cached styles fetched from the service to avoid saturating
-   * service with HTTP requests.
-   * @private
-   */
-  stylePromise: Promise<StyleProps[]>;
 
   // Image Proxy
   canProxyImageSrc(): boolean {
