@@ -8,7 +8,7 @@ import { POST, GET, DELETE, PATCH } from '../../src/client/http';
 // When use it in a componet:
 /*
  import type {Style} from '@modusoperandi/licit';
- import {POST } from '@modusoperandi/licit';
+ import {POST, GET, DELETE, PATCH } from '@modusoperandi/licit';
  */
 const STYLES_URI = 'http://greathints.com:3000';
 const TYPE_JSON = 'application/json; charset=utf-8';
