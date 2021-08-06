@@ -117,16 +117,12 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
       `--czi-content-line-height: ${cssLineSpacing};`;
   }
 
-
   if (paddingTop && !EMPTY_CSS_VALUE.has(paddingTop)) {
     style += `padding-top: ${paddingTop};`;
   }
   if (paddingBottom && !EMPTY_CSS_VALUE.has(paddingBottom)) {
     style += `padding-bottom: ${paddingBottom};`;
   }
-
-
-
   return { style };
 
 }
