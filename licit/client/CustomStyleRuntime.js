@@ -2,12 +2,12 @@
 
 // This implements the interface of `StyleRuntime`.
 // To  run  editor directly:
-import type { Style } from '../../src/StyleRuntime';
+import type { Style } from '@modusoperandi/licit-customstyles';
 import { POST, GET, DELETE, PATCH } from '../../src/client/http';
 
 // When use it in a componet:
 /*
- import type {Style} from '@modusoperandi/licit';
+ import type {Style} from '@modusoperandi/licit-customstyles';
  import {POST, GET, DELETE, PATCH } from '@modusoperandi/licit';
  */
 const STYLES_URI = 'http://greathints.com:3000';
