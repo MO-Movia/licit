@@ -58,7 +58,7 @@ class EditorToolbar extends React.PureComponent<any, any> {
         //  p => p.buttonGroup
         // but changing it now would mean finding every plugin that was
         // implemented this way.
-        .map((p) => p.initButtonCommands && initButtonCommands())
+        .map((p) => p.initButtonCommands && p.initButtonCommands())
         .filter(Boolean)
     )
       .map(this._renderButtonsGroup)
@@ -128,8 +128,12 @@ class EditorToolbar extends React.PureComponent<any, any> {
     label: string,
     commandGroups: Array<{ [string]: UICommand }>
   ): React.Element<any> => {
-    const { editorState, editorView, disabled, dispatchTransaction } =
-      this.props;
+    const {
+      editorState,
+      editorView,
+      disabled,
+      dispatchTransaction,
+    } = this.props;
     const { icon, title } = parseLabel(label);
     return (
       <CommandMenuButton
@@ -147,8 +151,12 @@ class EditorToolbar extends React.PureComponent<any, any> {
   };
 
   _renderButton = (label: string, command: UICommand): React.Element<any> => {
-    const { disabled, editorState, editorView, dispatchTransaction } =
-      this.props;
+    const {
+      disabled,
+      editorState,
+      editorView,
+      dispatchTransaction,
+    } = this.props;
     const { icon, title } = parseLabel(label);
 
     return (
