@@ -49,6 +49,21 @@ class EditorToolbar extends React.PureComponent<any, any> {
         value={expanded}
       />
     ) : null;
+
+    // Start with static button controls and append any button groups
+    // supplied by plugins
+    const commandGroups = COMMAND_GROUPS.concat(
+      (this.props.editorState.plugins || [])
+        // This should have been a simple property instead of a function:
+        //  p => p.buttonGroup
+        // but changing it now would mean finding every plugin that was
+        // implemented this way.
+        .map((p) => p.initButtonCommands && p.initButtonCommands())
+        .filter(Boolean)
+    )
+      .map(this._renderButtonsGroup)
+      .filter(Boolean);
+
     return (
       <div className={className}>
         <div className="czi-editor-toolbar-flex">
@@ -58,7 +73,7 @@ class EditorToolbar extends React.PureComponent<any, any> {
               ref={this._onBodyRef}
             >
               <i className="czi-editor-toolbar-wrapped-anchor" />
-              {COMMAND_GROUPS.map(this._renderButtonsGroup)}
+              {commandGroups}
               <div className="czi-editor-toolbar-background">
                 <div className="czi-editor-toolbar-background-line" />
                 <div className="czi-editor-toolbar-background-line" />
