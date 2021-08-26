@@ -185,7 +185,8 @@ Please refer *licit\client\index.js* for getting more detailed idea on passing p
 
 |Property Name| Description|Default Value|
 |--|--|--|
-|docID  |Id of the collaborative document. *docID "0"* means collaboration disabled. Based on the value of *docID* decides the collaboration communication |0
+| docID  |Id of the collaborative document. *docID* empty means collaboration disabled. Based on the value of *docID* decides the collaboration communication |
+| collabServiceURL|URL of the collaboration service.|
 | debug|Show/hide prosemirror dev tools|false
 | width|Width of the editor|100%
 | height|Height of the editor|100%
