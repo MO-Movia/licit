@@ -6,6 +6,5 @@ export { default as uuid } from './ui/uuid';
 // [FS] IRAD-978 2020-06-05
 // Export Licit as a component
 export { default as Licit } from './client/Licit.js';
-export { ImageLike, EditorRuntime, StyleProps } from './Types';
+export { ImageLike, EditorRuntime } from './Types';
 export { GET, POST, DELETE, PATCH } from './client/http';
-export { setStyles } from './customStyle';

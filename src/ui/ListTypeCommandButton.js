@@ -7,7 +7,6 @@ import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import {
   ListToggleCommand,
-  hasCustomNumberedList,
   hasImageNode,
 } from '../ListToggleCommand';
 import ListTypeButton from './ListTypeButton';
@@ -66,7 +65,7 @@ class ListTypeCommandButton extends React.PureComponent<any, any> {
       // [FS] IRAD-1317 2021-05-06
       // To disable the list menu when select an image
       disabled =
-        hasCustomNumberedList(editorState) || hasImageNode(editorState);
+       hasImageNode(editorState);
       disabled = editorView.disabled || disabled ? true : false;
     }
     return (

@@ -116,23 +116,7 @@ class TextAlignCommand extends UICommand {
     }
   };
 
-  // [FS] IRAD-1087 2020-10-01
-  // New method to execute new styling implementation  text align
-  executeCustom = (
-    state: EditorState,
-    tr: Transform,
-    from: number,
-    to: number
-  ): boolean => {
-    const { schema } = state;
 
-    tr = setTextAlign(
-      tr.setSelection(TextSelection.create(tr.doc, from, to)),
-      schema,
-      this._alignment
-    );
-    return tr;
-  };
 }
 
 export default TextAlignCommand;

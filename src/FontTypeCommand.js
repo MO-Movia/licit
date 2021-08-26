@@ -94,23 +94,7 @@ class FontTypeCommand extends UICommand {
     return false;
   };
 
-  // [FS] IRAD-1087 2020-10-01
-  // Method to execute custom styling implementation of font type
-  executeCustom = (
-    state: EditorState,
-    tr: Transform,
-    from: number,
-    to: number
-  ): Transform => {
-    const { schema } = state;
-    tr = setFontType(
-      tr.setSelection(TextSelection.create(tr.doc, from, to)),
-      schema,
-      this._name
-    );
 
-    return tr;
-  };
 }
 
 export default FontTypeCommand;

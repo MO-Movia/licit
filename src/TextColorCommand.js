@@ -7,7 +7,7 @@ import createPopUp from './ui/createPopUp';
 import findNodesWithSameMark from './findNodesWithSameMark';
 import isTextStyleMarkCommandEnabled from './isTextStyleMarkCommandEnabled';
 import nullthrows from 'nullthrows';
-import { EditorState, TextSelection } from 'prosemirror-state';
+import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { MARK_TEXT_COLOR } from './MarkNames';
 import { Transform } from 'prosemirror-transform';
@@ -81,31 +81,6 @@ class TextColorCommand extends UICommand {
       }
     }
     return false;
-  };
-
-  // [FS] IRAD-1087 2020-09-30
-  // Method to execute custom styling implementation of Text color
-  executeCustom = (
-    state: EditorState,
-    tr: Transform,
-    from: number,
-    to: number
-  ): Transform => {
-    const { schema } = state;
-    const markType = schema.marks[MARK_TEXT_COLOR];
-    const attrs = { color: this._color };
-    const storedmarks = tr.storedMarks;
-    // [FS] IRAD-1043 2020-10-27
-    // Issue fix on removing the  custom style if user click on the same style menu multiple times
-    tr = applyMark(
-      tr.setSelection(TextSelection.create(tr.doc, from, to)),
-      schema,
-      markType,
-      attrs,
-      true
-    );
-    tr.storedMarks = storedmarks;
-    return tr;
   };
 }
 

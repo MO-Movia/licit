@@ -5,7 +5,6 @@ import toCSSLineSpacing from './ui/toCSSLineSpacing';
 import { Node } from 'prosemirror-model';
 
 import type { NodeSpec } from './Types';
-import { getCustomStyleByName } from './customStyle';
 
 // This assumes that every 36pt maps to one indent level.
 export const INDENT_MARGIN_PT_SIZE = 36;
@@ -15,7 +14,7 @@ export const ATTRIBUTE_INDENT = 'data-indent';
 export const ATTRIBUTE_STYLE_LEVEL = 'data-style-level';
 export const RESERVED_STYLE_NONE = 'None';
 export const RESERVED_STYLE_NONE_NUMBERING = RESERVED_STYLE_NONE + '-@#$-';
-const cssVal = new Set<string>(['', '0%', '0pt', '0px']);
+const cssVal = new Set < string > (['', '0%', '0pt', '0px']);
 
 export const EMPTY_CSS_VALUE = cssVal;
 
@@ -48,9 +47,6 @@ const ParagraphNodeSpec: NodeSpec = {
     // TODO: Add UI to let user edit / clear padding.
     paddingTop: {
       default: null,
-    },
-    styleName: {
-      default: RESERVED_STYLE_NONE,
     },
   },
   content: 'inline*',
@@ -87,7 +83,6 @@ function getAttrs(dom: HTMLElement): Object {
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
 
   const id = dom.getAttribute('id') || '';
-  const styleName = dom.getAttribute('styleName') || null;
   return {
     align,
     indent,
@@ -95,7 +90,6 @@ function getAttrs(dom: HTMLElement): Object {
     paddingTop,
     paddingBottom,
     id,
-    styleName,
   };
 }
 
@@ -105,14 +99,11 @@ function getStyle(attrs: Object) {
     attrs.lineSpacing,
     attrs.paddingTop,
     attrs.paddingBottom,
-    attrs.styleName
   );
 }
 
-function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
+function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
   let style = '';
-  let styleLevel = 0;
-  let indentOverriden = '';
   if (align && align !== 'left') {
     style += `text-align: ${align};`;
   }
@@ -126,111 +117,30 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom, styleName) {
       `--czi-content-line-height: ${cssLineSpacing};`;
   }
 
-  //to get the styles of the corresponding style name
-  const styleProps = getCustomStyleByName(styleName);
-  if (null !== styleProps && styleProps.styles) {
-    // [FS] IRAD-1100 2020-11-04
-    // Add in leading and trailing spacing (before and after a paragraph)
-    if (styleProps.styles.paragraphSpacingAfter) {
-      style += `margin-bottom: ${styleProps.styles.paragraphSpacingAfter}pt !important;`;
-    }
-    if (styleProps.styles.paragraphSpacingBefore) {
-      style += `margin-top: ${styleProps.styles.paragraphSpacingBefore}pt !important;`;
-    }
-    if (styleProps.styles.styleLevel) {
-      if (styleProps.styles.strong) {
-        style += 'font-weight: bold;';
-      }
-      if (styleProps.styles.boldNumbering) {
-        style += ' --czi-counter-bold: bold;';
-      }
-      if (styleProps.styles.em) {
-        style += 'font-style: italic;';
-      }
-      if (styleProps.styles.color) {
-        style += `color: ${styleProps.styles.color};`;
-      }
-      if (styleProps.styles.fontSize) {
-        style += `font-size: ${styleProps.styles.fontSize}pt;`;
-      }
-      if (styleProps.styles.fontName) {
-        style += `font-family: ${styleProps.styles.fontName};`;
-      }
-      if (styleProps.styles.indent) {
-        indentOverriden = styleProps.styles.indent;
-      }
-      // [FS] IRAD-1462 2021-06-17
-      // FIX:  Numbering applied for paragraph even though the custom style not selected numbering(but set level)
-      styleLevel = styleProps.styles.hasNumbering
-        ? parseInt(styleProps.styles.styleLevel)
-        : 0;
-      style += refreshCounters(styleLevel);
-    }
-  } else if (styleName && styleName.includes(RESERVED_STYLE_NONE_NUMBERING)) {
-    const indices = styleName.split(RESERVED_STYLE_NONE_NUMBERING);
-    if (indices && 2 === indices.length) {
-      styleLevel = parseInt(indices[1]);
-    }
-    if (styleLevel) {
-      style += refreshCounters(styleLevel);
-    }
-  }
-
   if (paddingTop && !EMPTY_CSS_VALUE.has(paddingTop)) {
     style += `padding-top: ${paddingTop};`;
   }
   if (paddingBottom && !EMPTY_CSS_VALUE.has(paddingBottom)) {
     style += `padding-bottom: ${paddingBottom};`;
   }
+  return { style };
 
-  return { style, styleLevel, indentOverriden };
-}
-
-// [FS] IRAD-1202 2021-02-15
-function refreshCounters(styleLevel) {
-  let latestCounters = '';
-  let cssCounterReset = '';
-  let setCounterReset = false;
-
-  // set style counters in window variables,
-  // so that it is remapped later to add to document attribute via transaction.
-  for (let index = 1; index <= styleLevel; index++) {
-    const counterVar = 'set-cust-style-counter-' + index;
-    const setCounterVal = window[counterVar];
-    if (!setCounterVal) {
-      cssCounterReset += `C${index} `;
-      setCounterReset = true;
-    }
-    window[counterVar] = true;
-  }
-
-  if (setCounterReset) {
-    latestCounters = `counter-increment: ${cssCounterReset};`;
-  }
-  return latestCounters;
 }
 
 function toDOM(node: Node): Array<any> {
-  const { indent, id, styleName } = node.attrs;
+  const { indent, id } = node.attrs;
   const attrs = {};
-  const { style, styleLevel, indentOverriden } = getStyle(node.attrs);
+  const { style } = getStyle(node.attrs);
 
   style && (attrs.style = style);
-  if (styleLevel) {
-    attrs[ATTRIBUTE_STYLE_LEVEL] = String(styleLevel);
-  }
 
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);
-  }
-  if ('' !== indentOverriden) {
-    attrs[ATTRIBUTE_INDENT] = String(indentOverriden);
   }
   if (id) {
     attrs.id = id;
   }
 
-  attrs.styleName = styleName;
   return ['p', attrs, 0];
 }
 
