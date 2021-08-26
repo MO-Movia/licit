@@ -9,7 +9,7 @@ import EditorConnection from './EditorConnection';
 import Reporter from './Reporter';
 import ReactDOM from 'react-dom';
 
-type IdStrict = number;
+type IdStrict = string;
 
 class CollabConnector extends SimpleConnector {
   _clientID: string;
@@ -23,23 +23,18 @@ class CollabConnector extends SimpleConnector {
     setState: SetStateCall,
     config: {
       docID: IdStrict,
+      collabServiceURL: string,
     },
     schema: Schema,
     plugins: Array<Plugin>
   ) {
     super(editorState, setState);
-    const { docID } = config;
+    const { docID, collabServiceURL } = config;
     this._docID = docID;
 
-    // [FS][11-MAR-2020]
-    // Modified the scripts to ensure not to always replace 3001 with 3002 to run both servers together,
-    // instead used running hostname and configured port.
-    const url =
-      window.location.protocol +
-      '//' +
-      window.location.hostname +
-      ':3002/docs/' +
-      docID;
+    // [FS] IRAD-1553 2021-08-26
+    // Configurable Collaboration Service URL.
+    const url = collabServiceURL + '/docs/' + docID;
     this._connection = new EditorConnection(
       setState,
       new Reporter(),

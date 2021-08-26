@@ -339,9 +339,10 @@ function main(): void {
   const runtime = new CustomLicitRuntime();
   ReactDOM.render(
     <Licit
+      collabServiceURL={'http://localhost:3002'}
       data={docJSON}
       debug={true}
-      docID={0}
+      docID={'0000-0000-0000-0000'}
       embedded={false}
       height={'100vh'}
       onChange={onChangeCB}
