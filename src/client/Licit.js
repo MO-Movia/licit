@@ -61,26 +61,6 @@ class Licit extends React.Component<any, any> {
 
   constructor(props: any, context: any) {
     super(props, context);
-    this.state = { loaded: false };
-    setTimeout((p) => this.loadStyles(p), 100, props);
-  }
-
-  /**
-   * Ensures that custom styles are loaded from server before the underlying
-   * editor is rendered.  This is a band-aid method, and is necessary here
-   * because other parts of the editor attempt to use styles synchronously.
-   *
-   * @param {*} props Editor properties passed to constructor
-   */
-  async loadStyles(props: any): Promise<void> {
-    // Only load styles if there's a method to load them.
-    if (props.runtime && props.runtime.getStylesAsync) {
-      // Force preload of styles before every editor instance is created.
-      await props.runtime.getStylesAsync().catch((error) => {
-        // Log the failure, but proceed to display editor without any styles.
-        console.warn('Failed to load custom styles:', error);
-      });
-    }
     this.initialize(props);
   }
 
@@ -89,7 +69,7 @@ class Licit extends React.Component<any, any> {
     this._editorView = null;
     this._skipSCU = true;
 
-    const noop = function () {};
+    const noop = function () { };
 
     // [FS] IRAD-981 2020-06-10
     // Component's configurations.
@@ -143,22 +123,21 @@ class Licit extends React.Component<any, any> {
     const setState = this.setState.bind(this);
     this._connector = collaborative
       ? new CollabConnector(
-          editorState,
-          setState,
-          {
-            docID,
-          },
-          this._defaultEditorSchema,
-          this._defaultEditorPlugins
-        )
+        editorState,
+        setState,
+        {
+          docID,
+        },
+        this._defaultEditorSchema,
+        this._defaultEditorPlugins
+      )
       : new SimpleConnector(editorState, setState);
 
-    const loaded = true;
 
     // FS IRAD-989 2020-18-06
     // updating properties should automatically render the changes
 
-    this.setState({
+    this.state ={
       docID,
       data,
       editorState,
@@ -171,8 +150,7 @@ class Licit extends React.Component<any, any> {
       disabled,
       embedded,
       runtime,
-      loaded,
-    });
+    };
 
     // FS IRAD-1040 2020-26-08
     // Get the modified schema from editorstate and send it to collab server
@@ -275,8 +253,8 @@ class Licit extends React.Component<any, any> {
     // set the value for object metadata  and objectId
     tr = this.isNodeHasAttribute(document, ATTR_OBJMETADATA)
       ? tr.step(
-          new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)
-        )
+        new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)
+      )
       : tr;
     tr = this.isNodeHasAttribute(document, ATTR_OBJID)
       ? tr.step(new SetDocAttrStep(ATTR_OBJID, document.attrs.objectId))
@@ -318,14 +296,14 @@ class Licit extends React.Component<any, any> {
         // create new connector
         this._connector = collabEditing
           ? new CollabConnector(
-              editorState,
-              setState,
-              {
-                docID,
-              },
-              this._defaultEditorSchema,
-              this._defaultEditorPlugins
-            )
+            editorState,
+            setState,
+            {
+              docID,
+            },
+            this._defaultEditorSchema,
+            this._defaultEditorPlugins
+          )
           : new SimpleConnector(editorState, setState);
       }
     }
@@ -334,35 +312,31 @@ class Licit extends React.Component<any, any> {
   }
 
   render(): React.Element<any> {
-    if (this.state.loaded) {
-      const {
-        editorState,
-        width,
-        height,
-        readOnly,
-        disabled,
-        embedded,
-        runtime,
-      } = this.state;
-      // [FS] IRAD-978 2020-06-05
-      // Using 100vw & 100vh (100% viewport) is not ideal for a component which is expected to be a part of a page,
-      // so changing it to 100%  width & height which will occupy the area relative to its parent.
-      return (
-        <RichTextEditor
-          disabled={disabled}
-          editorState={editorState}
-          embedded={embedded}
-          height={height}
-          onChange={this._onChange}
-          onReady={this._onReady}
-          readOnly={readOnly}
-          runtime={runtime}
-          width={width}
-        />
-      );
-    } else {
-      return <div>Loading Styles...</div>;
-    }
+    const {
+      editorState,
+      width,
+      height,
+      readOnly,
+      disabled,
+      embedded,
+      runtime,
+    } = this.state;
+    // [FS] IRAD-978 2020-06-05
+    // Using 100vw & 100vh (100% viewport) is not ideal for a component which is expected to be a part of a page,
+    // so changing it to 100%  width & height which will occupy the area relative to its parent.
+    return (
+      <RichTextEditor
+        disabled={disabled}
+        editorState={editorState}
+        embedded={embedded}
+        height={height}
+        onChange={this._onChange}
+        onReady={this._onReady}
+        readOnly={readOnly}
+        runtime={runtime}
+        width={width}
+      />
+    );
   }
 
   _onChange = (data: { state: EditorState, transaction: Transform }): void => {
