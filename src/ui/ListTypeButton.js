@@ -8,10 +8,10 @@ import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
-import CustomButton from './CustomButton';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import createPopUp from './createPopUp';
-import uuid from './uuid';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
+import { uuid } from '@modusoperandi/licit-ui-commands';
 import ListTypeMenu from './ListTypeMenu';
 import './czi-custom-menu-button.css';
 

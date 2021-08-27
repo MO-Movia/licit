@@ -4,10 +4,10 @@ import { Schema } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
 
 import { BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
-import compareNumber from './compareNumber';
-import isInsideListItem from './isInsideListItem';
-import isListNode from './isListNode';
-import { unwrapNodesFromList } from './toggleList';
+import { compareNumber } from '@modusoperandi/licit-ui-commands';
+import { isInsideListItem } from '@modusoperandi/licit-ui-commands';
+import { isListNode } from '@modusoperandi/licit-ui-commands';
+import { unwrapNodesFromList } from '@modusoperandi/licit-ui-commands';
 
 export default function toggleBlockquote(
   tr: Transform,

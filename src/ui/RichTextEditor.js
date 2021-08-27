@@ -9,7 +9,7 @@ import Editor from './Editor';
 import EditorFrameset from './EditorFrameset';
 import EditorToolbar from './EditorToolbar';
 import Frag from './Frag';
-import uuid from './uuid';
+import { uuid } from '@modusoperandi/licit-ui-commands';
 
 import type { EditorFramesetProps } from './EditorFrameset';
 import type { EditorProps } from './Editor';

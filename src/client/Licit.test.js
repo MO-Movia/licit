@@ -3,7 +3,7 @@ import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import Licit from './Licit';
 import RichTextEditor from '../ui/RichTextEditor';
-import noop from '../noop';
+import { noop } from '@modusoperandi/licit-ui-commands';
 
 /**
  * Configure Jest to use react / enzyme

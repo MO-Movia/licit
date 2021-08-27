@@ -2,9 +2,9 @@
 
 import * as React from 'react';
 import { LAYOUT } from '../DocNodeSpec';
-import CustomButton from './CustomButton';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import CustomRadioButton from './CustomRadioButton';
-import preventEventDefault from './preventEventDefault';
+import { preventEventDefault } from '@modusoperandi/licit-ui-commands';
 
 import './czi-body-layout-editor.css';
 import './czi-form.css';
@@ -41,7 +41,7 @@ class DocLayoutEditor extends React.PureComponent<any, any> {
       ) {
         return new Error(
           propName +
-            'must be a function with 1 arg of type DocLayoutEditorValue'
+          'must be a function with 1 arg of type DocLayoutEditorValue'
         );
       }
       return null;

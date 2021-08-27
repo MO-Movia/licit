@@ -6,9 +6,9 @@ import { Transform } from 'prosemirror-transform';
 
 import { MARK_LINK } from './MarkNames';
 import { BLOCKQUOTE, CODE_BLOCK, HEADING, PARAGRAPH } from './NodeNames';
-import { clearMarks } from './clearMarks';
-import compareNumber from './compareNumber';
-import isListNode from './isListNode';
+import { clearMarks } from '@modusoperandi/licit-ui-commands';
+import { compareNumber } from '@modusoperandi/licit-ui-commands';
+import { isListNode } from '@modusoperandi/licit-ui-commands';
 
 export default function toggleCodeBlock(
   tr: Transform,

@@ -4,9 +4,9 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 
 import sanitizeURL from '../sanitizeURL';
-import CustomButton from './CustomButton';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import { ENTER } from './KeyCodes';
-import preventEventDefault from './preventEventDefault';
+import { preventEventDefault } from '@modusoperandi/licit-ui-commands';
 
 import './czi-form.css';
 import './czi-image-url-editor.css';

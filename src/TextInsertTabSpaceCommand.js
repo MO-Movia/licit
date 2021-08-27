@@ -8,7 +8,7 @@ import { EditorView } from 'prosemirror-view';
 import { MARK_SPACER } from './MarkNames';
 import { HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
 import { HAIR_SPACE_CHAR, SPACER_SIZE_TAB } from './SpacerMarkSpec';
-import applyMark from './applyMark';
+import { applyMark } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 function insertTabSpace(

@@ -1,11 +1,11 @@
 // @flow
 
 import './czi-inline-editor.css';
-import CustomButton from './CustomButton';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import CustomEditorView from './CustomEditorView';
 import MathEditor from './MathEditor';
 import * as React from 'react';
-import createPopUp from './createPopUp';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 
 const MathAlignValues = {
   NONE: {

@@ -1,7 +1,7 @@
 // @flow
 
 import CommandMenuButton from './CommandMenuButton';
-import FontTypeCommand from '../FontTypeCommand';
+import {FontTypeCommand} from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
 import findActiveFontType from './findActiveFontType';
 import { EditorState } from 'prosemirror-state';

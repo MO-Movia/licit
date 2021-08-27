@@ -1,13 +1,13 @@
 // @flow
 
 import './czi-custom-radio-button.css';
-import PointerSurface from './PointerSurface';
+import { PointerSurface } from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
 import cx from 'classnames';
-import uuid from './uuid';
-import preventEventDefault from './preventEventDefault';
+import { uuid } from '@modusoperandi/licit-ui-commands';
+import { preventEventDefault } from '@modusoperandi/licit-ui-commands';
 
-import type { PointerSurfaceProps } from './PointerSurface';
+import type { PointerSurfaceProps } from '@modusoperandi/licit-ui-commands';;
 
 class CustomRadioButton extends React.PureComponent<any, any> {
   props: PointerSurfaceProps & {

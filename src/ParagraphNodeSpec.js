@@ -1,7 +1,7 @@
 // @flow
-import clamp from './ui/clamp';
+import { clamp } from '@modusoperandi/licit-ui-commands';
 import convertToCSSPTValue from './convertToCSSPTValue';
-import toCSSLineSpacing from './ui/toCSSLineSpacing';
+import { toCSSLineSpacing } from '@modusoperandi/licit-ui-commands';
 import { Node } from 'prosemirror-model';
 
 import type { NodeSpec } from './Types';

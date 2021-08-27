@@ -31,7 +31,7 @@ import MathNodeView from './MathNodeView';
 import handleEditorDrop from './handleEditorDrop';
 import handleEditorKeyDown from './handleEditorKeyDown';
 import handleEditorPaste from './handleEditorPaste';
-import uuid from './uuid';
+import { uuid } from '@modusoperandi/licit-ui-commands';
 import './czi-editor.css';
 import type { EditorRuntime } from '../Types';
 

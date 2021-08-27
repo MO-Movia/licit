@@ -8,13 +8,13 @@ import * as React from 'react';
 
 import convertFromJSON from '../convertFromJSON';
 import RichTextEditor from '../ui/RichTextEditor';
-import uuid from '../uuid';
+import { uuid } from '@modusoperandi/licit-ui-commands';
 import SimpleConnector from './SimpleConnector';
 import CollabConnector from './CollabConnector';
 import { EMPTY_DOC_JSON } from '../createEmptyEditorState';
 import type { EditorRuntime } from '../Types';
-import createPopUp from '../ui/createPopUp';
-import { atViewportCenter } from '../ui/PopUpPosition';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
+import { atViewportCenter } from '@modusoperandi/licit-ui-commands';
 import AlertInfo from '../ui/AlertInfo';
 import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
 import './licit.css';
@@ -137,7 +137,7 @@ class Licit extends React.Component<any, any> {
     // FS IRAD-989 2020-18-06
     // updating properties should automatically render the changes
 
-    this.state ={
+    this.state = {
       docID,
       data,
       editorState,

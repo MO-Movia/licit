@@ -4,7 +4,7 @@ import { EditorState, AllSelection, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 
-import { clearMarks, clearHeading } from './clearMarks';
+import { clearMarks, clearHeading } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 class MarksClearCommand extends UICommand {
