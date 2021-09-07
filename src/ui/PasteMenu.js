@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { EditorView } from 'prosemirror-view';
-import { uuid } from '@modusoperandi/licit-ui-commands';
+import uuid from './uuid';
 import './listType.css';
 
 // [FS] IRAD-1076 2020-10-15

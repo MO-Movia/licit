@@ -8,7 +8,7 @@ import * as React from 'react';
 
 import convertFromJSON from '../convertFromJSON';
 import RichTextEditor from '../ui/RichTextEditor';
-import { uuid } from '@modusoperandi/licit-ui-commands';
+import uuid from '../uuid';
 import SimpleConnector from './SimpleConnector';
 import CollabConnector from './CollabConnector';
 import { EMPTY_DOC_JSON } from '../createEmptyEditorState';

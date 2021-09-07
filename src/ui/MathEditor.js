@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import MathQuillEditor from './mathquill-editor/MathQuillEditor';
 import { preventEventDefault } from '@modusoperandi/licit-ui-commands';
-import { uuid } from '@modusoperandi/licit-ui-commands';
+import uuid from './uuid';
 
 import './czi-form.css';
 

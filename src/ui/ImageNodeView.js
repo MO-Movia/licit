@@ -17,7 +17,7 @@ import { atAnchorBottomCenter } from '@modusoperandi/licit-ui-commands';
 import ResizeObserver from './ResizeObserver';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import resolveImage from './resolveImage';
-import { uuid } from '@modusoperandi/licit-ui-commands';
+import uuid from './uuid';
 
 import './czi-image-view.css';
 

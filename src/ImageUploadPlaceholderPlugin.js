@@ -8,7 +8,7 @@ import { Decoration, DecorationSet } from 'prosemirror-view';
 import { EditorView } from 'prosemirror-view';
 
 import { IMAGE } from './NodeNames';
-import { uuid } from '@modusoperandi/licit-ui-commands';
+import uuid from './ui/uuid';
 
 import './ui/czi-image-upload-placeholder.css';
 

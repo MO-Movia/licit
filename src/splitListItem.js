@@ -1,6 +1,6 @@
 // @flow
 
-import { uuid } from '@modusoperandi/licit-ui-commands';
+import uuid from './ui/uuid';
 import { Fragment, Schema } from 'prosemirror-model';
 import { TextSelection } from 'prosemirror-state';
 import { Transform, canSplit } from 'prosemirror-transform';

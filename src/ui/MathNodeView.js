@@ -7,7 +7,7 @@ import * as React from 'react';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import cx from 'classnames';
 import renderLaTeXAsHTML from './renderLaTeXAsHTML';
-import { uuid } from '@modusoperandi/licit-ui-commands';
+import uuid from './uuid';
 import { Decoration } from 'prosemirror-view';
 import { FRAMESET_BODY_CLASSNAME } from './EditorFrameset';
 import { Node } from 'prosemirror-model';

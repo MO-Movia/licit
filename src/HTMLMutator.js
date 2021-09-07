@@ -1,7 +1,7 @@
 // @flow
 
 import nullthrows from 'nullthrows';
-import { uuid } from '@modusoperandi/licit-ui-commands';
+import uuid from './ui/uuid';
 
 // Utility Class that allows developer to insert HTML snippets then updates
 // document's innerHTML accordingly.

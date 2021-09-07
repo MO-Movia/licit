@@ -5,7 +5,7 @@ import nullthrows from 'nullthrows';
 import * as React from 'react';
 
 import { clamp } from '@modusoperandi/licit-ui-commands';
-import { uuid } from '@modusoperandi/licit-ui-commands';
+import uuid from './uuid';
 
 import './czi-image-resize-box.css';
 

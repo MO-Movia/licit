@@ -9,7 +9,7 @@ import {
 import { Plugin, EditorState } from 'prosemirror-state';
 import { Step } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
-import { uuid } from '@modusoperandi/licit-ui-commands';
+import uuid from '../uuid';
 import { GET, POST } from './http';
 // [FS] IRAD-1040 2020-09-02
 import { Schema } from 'prosemirror-model';

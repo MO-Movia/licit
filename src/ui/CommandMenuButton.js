@@ -10,7 +10,7 @@ import CommandMenu from './CommandMenu';
 import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
-import { uuid } from '@modusoperandi/licit-ui-commands';
+import uuid from './uuid';
 
 import './czi-custom-menu-button.css';
 

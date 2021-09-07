@@ -2,7 +2,7 @@
 
 import HTMLMutator from './HTMLMutator';
 import nullthrows from 'nullthrows';
-import { uuid } from '@modusoperandi/licit-ui-commands';
+import uuid from './ui/uuid';
 
 import { ATTRIBUTE_LIST_STYLE_TYPE } from './ListItemNodeSpec';
 import {
