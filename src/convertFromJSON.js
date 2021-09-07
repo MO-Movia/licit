@@ -5,8 +5,6 @@ import { EditorState } from 'prosemirror-state';
 import { Plugin } from 'prosemirror-state';
 import createEmptyEditorState from './createEmptyEditorState';
 
-import { COMMAND_GROUPS } from './ui/EditorToolbarConfig';
-
 export default function convertFromJSON(
   json: Object | string,
   schema: ?Schema,
@@ -30,10 +28,6 @@ export default function convertFromJSON(
 
         if (p.initKeyCommands) {
           effectivePlugins.push(p.initKeyCommands());
-        }
-
-        if (p.initButtonCommands) {
-          COMMAND_GROUPS.push(p.initButtonCommands());
         }
       }
     }

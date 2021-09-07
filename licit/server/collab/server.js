@@ -17,6 +17,7 @@ import '@modusoperandi/licit-doc-attrs-step';
 import * as Flatted from 'flatted';
 
 const TXT_PLAIN = 'text/plain';
+const DOCS = 'docs';
 
 const router = new Router();
 // [FS] IRAD-1040 2020-09-02
@@ -147,12 +148,12 @@ function handle(method, url, f, readFlatted = false) {
 
 // The root endpoint outputs a list of the collaborative
 // editing document instances.
-handle('GET', ['docs'], () => {
+handle('GET', [DOCS], () => {
   return Output.json(instanceInfo());
 });
 
 // Output the current state of a document instance.
-handle('GET', ['docs', null], (id, req) => {
+handle('GET', [DOCS, null], (id, req) => {
   const inst = getInstance(id, reqIP(req));
   return Output.json({
     doc_json: inst.doc.toJSON(),
@@ -218,7 +219,7 @@ function outputEvents(inst, data) {
 // An endpoint for a collaborative document instance which
 // returns all events between a given version and the server's
 // current version of the document.
-handle('GET', ['docs', null, 'events'], (id, req, resp) => {
+handle('GET', [DOCS, null, 'events'], (id, req, resp) => {
   const version = nonNegInteger(req.query.version);
 
   const inst = getInstance(id, reqIP(req));
@@ -242,7 +243,7 @@ function reqIP(request) {
 }
 
 // The event submission endpoint, which a client sends an event to.
-handle('POST', ['docs', null, 'events'], (data, id, req) => {
+handle('POST', [DOCS, null, 'events'], (data, id, req) => {
   const version = nonNegInteger(data.version);
   const steps = data.steps.map((s) => Step.fromJSON(effectiveSchema, s));
   const result = getInstance(id, reqIP(req)).addEvents(
@@ -258,7 +259,7 @@ handle('POST', ['docs', null, 'events'], (data, id, req) => {
 // set the effective schema from client to work the plugins collaboratively
 handle(
   'POST',
-  ['docs', null, 'schema'],
+  [DOCS, null, 'schema'],
   (data, id, req) => {
     const updatedSchema = Flatted.stringify(data);
     // Do a string comparison to see if they are same or not.

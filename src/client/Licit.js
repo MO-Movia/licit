@@ -27,10 +27,11 @@ const ATTR_OBJID = 'objectId';
 const ATTR_OBJMETADATA = 'objectMetaData';
 /**
  * LICIT properties:
- *  docID {number} [0] Collaborative Doument ID
+ *  docID {string} [] Collaborative Doument ID
+ *  collabServiceURL {string} [/collaboration-service] Collaboration Service URL
  *  debug {boolean} [false] To enable/disable ProseMirror Debug Tools, available only in development.
  *  width {string} [100%] Width of the editor.
- *  height {height} [100%] Height of the editor.
+ *  height {string} [100%] Height of the editor.
  *  readOnly {boolean} [false] To enable/disable editing mode.
  *  onChange {@callback} [null] Fires after each significant change.
  *      @param data {JSON} Modified document data.
@@ -73,8 +74,13 @@ class Licit extends React.Component<any, any> {
 
     // [FS] IRAD-981 2020-06-10
     // Component's configurations.
-    const docID = props.docID || 0; // 0 < means collaborative.
-    const collaborative = 0 < docID;
+    // [FS] IRAD-1552 2021-08-26
+    // Collaboration server / client should allow string values for document identifiers.
+    const docID = props.docID || ''; // Empty means collaborative.
+    const collaborative = docID !== '';
+    // [FS] IRAD-1553 2021-08-26
+    // Configurable Collaboration Service URL.
+    const collabServiceURL = props.collabServiceURL || '/collaboration-service';
     const debug = props.debug || false;
     // Default width and height to undefined
     const width = props.width || undefined;
@@ -123,22 +129,23 @@ class Licit extends React.Component<any, any> {
     const setState = this.setState.bind(this);
     this._connector = collaborative
       ? new CollabConnector(
-        editorState,
-        setState,
-        {
-          docID,
-        },
-        this._defaultEditorSchema,
-        this._defaultEditorPlugins
-      )
+          editorState,
+          setState,
+          {
+            docID,
+            collabServiceURL,
+          },
+          this._defaultEditorSchema,
+          this._defaultEditorPlugins
+        )
       : new SimpleConnector(editorState, setState);
-
 
     // FS IRAD-989 2020-18-06
     // updating properties should automatically render the changes
 
     this.state = {
       docID,
+      collabServiceURL,
       data,
       editorState,
       width,
@@ -289,21 +296,24 @@ class Licit extends React.Component<any, any> {
 
       if (this.state.docID !== nextState.docID) {
         // Collaborative mode changed
-        const collabEditing = nextState.docID != 0;
+        const collabEditing = nextState.docID !== '';
         const editorState = this._connector.getState();
         const setState = this.setState.bind(this);
-        const docID = nextState.docID || 1;
+        const docID = nextState.docID || '';
+        const collabServiceURL =
+          nextState.collabServiceURL || '/collaboration-service';
         // create new connector
         this._connector = collabEditing
           ? new CollabConnector(
-            editorState,
-            setState,
-            {
-              docID,
-            },
-            this._defaultEditorSchema,
-            this._defaultEditorPlugins
-          )
+              editorState,
+              setState,
+              {
+                docID,
+                collabServiceURL,
+              },
+              this._defaultEditorSchema,
+              this._defaultEditorPlugins
+            )
           : new SimpleConnector(editorState, setState);
       }
     }
