@@ -6,7 +6,7 @@ import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
 
 import { BULLET_LIST, ORDERED_LIST, IMAGE } from './NodeNames';
-import { noop } from '@modusoperandi/licit-doc-attrs-step';
+import { noop } from '@modusoperandi/licit-ui-commands';
 import { toggleList } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { isNodeSelectionForNodeType } from '@modusoperandi/licit-ui-commands';
