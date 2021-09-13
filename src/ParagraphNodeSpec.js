@@ -1,7 +1,7 @@
 // @flow
-import { clamp } from '@modusoperandi/licit-ui-commands';
+
 import convertToCSSPTValue from './convertToCSSPTValue';
-import { toCSSLineSpacing } from '@modusoperandi/licit-ui-commands';
+import toCSSLineSpacing from './ui/toCSSLineSpacing';
 import { Node } from 'prosemirror-model';
 
 import type { NodeSpec } from './Types';
@@ -150,11 +150,7 @@ export const getParagraphStyle = getStyle;
 
 export function convertMarginLeftToIndentValue(marginLeft: string): number {
   const ptValue = convertToCSSPTValue(marginLeft);
-  return clamp(
-    MIN_INDENT_LEVEL,
-    Math.floor(ptValue / INDENT_MARGIN_PT_SIZE),
-    MAX_INDENT_LEVEL
-  );
+  return Math.min(Math.max(Math.floor(ptValue / INDENT_MARGIN_PT_SIZE), MIN_INDENT_LEVEL), MAX_INDENT_LEVEL);
 }
 
 export default ParagraphNodeSpec;

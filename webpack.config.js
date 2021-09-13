@@ -68,11 +68,8 @@ var options = {
         ]
       },
       {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-        ],
+        test: /\.css$/,       
+        loader: 'style-loader!css-loader',
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i, 
@@ -86,8 +83,11 @@ var options = {
     ]
   },
   resolve: {
-    alias: {}
-  },
+    extensions: ['.js', '.jsx', '.css'], //An empty string is no longer required.
+    modules: [
+      'node_modules'
+    ]        
+},
   plugins: [
     new webpack.ProvidePlugin({
       // jQuery (for Mathquill)
