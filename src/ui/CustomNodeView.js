@@ -174,7 +174,7 @@ class CustomNodeView {
     // Called when the node view is removed from the editor or the whole
     // editor is destroyed.
     // sub-class may override this method.
-    // [FS] IRAD-1557 2021-09-13
+    // [FS] IRAD-1555 2021-09-13
     // When destroying the node view, remove from the set.
     // FIX: This solves the image missing issue. 
     pendingViews.delete(this);

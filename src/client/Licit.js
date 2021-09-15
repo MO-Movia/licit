@@ -1,5 +1,4 @@
 // @flow
-import applyDevTools from 'prosemirror-dev-tools';
 import { EditorState, TextSelection, Plugin } from 'prosemirror-state';
 import { Node } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
@@ -435,10 +434,13 @@ class Licit extends React.Component<any, any> {
     }
 
     if (this.state.debug) {
-      window.debugProseMirror = () => {
-        applyDevTools(editorView);
-      };
-      window.debugProseMirror();
+      // import dynamically
+      import('prosemirror-dev-tools').then((prosemirrorDevTools) => {
+        window.debugProseMirror = () => {
+          prosemirrorDevTools.applyDevTools(editorView);
+        };
+        window.debugProseMirror();
+      });
     }
   };
 
