@@ -1,5 +1,4 @@
 // @flow
-import applyDevTools from 'prosemirror-dev-tools';
 import { EditorState, TextSelection, Plugin } from 'prosemirror-state';
 import { Node } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
@@ -435,12 +434,25 @@ class Licit extends React.Component<any, any> {
     }
 
     if (this.state.debug) {
-      window.debugProseMirror = () => {
-        applyDevTools(editorView);
-      };
-      window.debugProseMirror();
+      // import dynamically
+      import('prosemirror-dev-tools').then((prosemirrorDevTools) => {
+        window.debugProseMirror = () => {
+          prosemirrorDevTools.applyDevTools(editorView);
+        };
+        window.debugProseMirror();
+      });
     }
   };
+
+  componentWillUnmount(): void {
+    // [FS] IRAD-1569 2021-09-15
+    // Unmount dev tools when component is destroyed,
+    // so that toggle effect is not occuring when the document is retrieved each time.
+    if (this.state.debug) {
+      // unmount dev
+      window.debugProseMirror();
+    }
+  }
 
   /**
    * LICIT properties:
