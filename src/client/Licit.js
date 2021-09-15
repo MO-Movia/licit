@@ -442,6 +442,16 @@ class Licit extends React.Component<any, any> {
     }
   };
 
+  componentWillUnmount(): void {
+    // [FS] IRAD-1569 2021-09-15
+    // Unmount dev tools when component is destroyed,
+    // so that toggle effect is not occuring when the document is retrieved each time.
+    if (this.state.debug) {
+      // unmount dev
+      window.debugProseMirror();
+    }
+  }
+
   /**
    * LICIT properties:
    *  docID {number} [0] Collaborative Doument ID
