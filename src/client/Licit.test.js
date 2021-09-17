@@ -15,7 +15,6 @@ configure({
 describe('<Licit />', () => {
   let wrapper;
   let licit;
-  let runtime;
 
   // Mocking the functions used in _onReady
   const fakeEditorView = {
@@ -64,57 +63,14 @@ describe('<Licit />', () => {
     });
   });
 
-  describe('loadStyles', () => {
-    let warn;
 
-    beforeEach(() => (warn = jest.spyOn(console, 'warn').mockReturnValue()));
-    afterEach(() => warn.mockRestore());
 
-    describe('when props does not contain a runtime', () => {
-      it('should invoke initialize', async () => {
-        // Mock runtime to not use styles.
-        runtime = {};
-        wrapper = shallow(<Licit runtime={runtime} />);
-        const spy = jest.spyOn(wrapper.instance(), 'initialize');
 
-        // wait 100ms for setTimeout inside constructor to complete
-        await new Promise((resolve) => setTimeout(resolve, 100));
 
-        expect(spy).toHaveBeenCalled();
-        expect(warn).not.toHaveBeenCalled();
-      });
-    });
 
-    describe('when styles are fetched successfully', () => {
-      it('should invoke initialize', async () => {
-        // Mock runtime to succeed.
-        runtime = { getStylesAsync: jest.fn().mockResolvedValue([]) };
-        wrapper = shallow(<Licit runtime={runtime} />);
-        const spy = jest.spyOn(wrapper.instance(), 'initialize');
 
-        // wait 100ms for setTimeout inside constructor to complete
-        await new Promise((resolve) => setTimeout(resolve, 100));
 
-        expect(runtime.getStylesAsync).toHaveBeenCalled();
-        expect(spy).toHaveBeenCalled();
-        expect(warn).not.toHaveBeenCalled();
-      });
-    });
 
-    describe('when style request fails', () => {
-      it('should invoke initialize', async () => {
-        // Mock runtime to fail.
-        runtime = { getStylesAsync: jest.fn().mockRejectedValue('boom') };
-        wrapper = shallow(<Licit runtime={runtime} />);
-        const spy = jest.spyOn(wrapper.instance(), 'initialize');
 
-        // wait 100ms for setTimeout inside constructor to complete
-        await new Promise((resolve) => setTimeout(resolve, 100));
 
-        expect(runtime.getStylesAsync).toHaveBeenCalled();
-        expect(spy).toHaveBeenCalled();
-        expect(warn).toHaveBeenCalled();
-      });
-    });
-  });
 });

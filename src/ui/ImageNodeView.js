@@ -291,7 +291,9 @@ class ImageViewBody extends React.PureComponent<any, any> {
     const clientHeight = document.getElementsByClassName(
       'czi-prosemirror-editor'
     )[0].offsetHeight;
-    if (originalSize.height > clientHeight) {
+    // [FS] IRAD-1556 2021-09-17
+    // Fix:Skewed image in editor
+    if (originalSize.height > clientHeight && clientHeight > SIZE_OVERFLOW) {
       originalSize.height = clientHeight - SIZE_OVERFLOW;
     }
     if (!originalSize.complete) {
