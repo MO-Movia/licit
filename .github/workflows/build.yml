@@ -27,3 +27,4 @@ jobs:
         fetch-depth: 2
     - run: npm ci
     - run: npm run build:dist
+    - run: npm run test
