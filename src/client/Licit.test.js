@@ -62,15 +62,4 @@ describe('<Licit />', () => {
       expect(licit.editorView).toBe(fakeEditorView);
     });
   });
-
-
-
-
-
-
-
-
-
-
-
 });
