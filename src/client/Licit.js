@@ -261,11 +261,12 @@ class Licit extends React.Component<any, any> {
   }
 
   setContent = (content: any = {}): void => {
-    const { doc, schema } = this._connector.getState();
-    let { tr } = this._connector.getState();
-    const document = content
-      ? schema.nodeFromJSON(content)
-      : schema.nodeFromJSON(EMPTY_DOC_JSON);
+    // [FS] IRAD-1571 2021-09-27
+    // dispatch a transaction that MUST start from the view’s current state;
+    const editorState = this._editorView.state;
+    const { doc, schema } = editorState;
+    let { tr } = editorState;
+    const document = schema.nodeFromJSON(content ? content : EMPTY_DOC_JSON);
 
     const selection = TextSelection.create(doc, 0, doc.content.size);
 
@@ -291,18 +292,14 @@ class Licit extends React.Component<any, any> {
       this._skipSCU = false;
       let dataChanged = false;
 
-      // Compare data, if found difference, update editorState
       // [FS] IRAD-1571 2021-09-27
-      // Need to compare the props and not state here which is incorrect and ends up in dataChanged = true always.
-      if (this.props.data !== nextProps.data) {
-        dataChanged = true;
-      } else if (null === nextState.data) {
-        if (
-          this.state.editorState.doc.textContent &&
-          0 < this.state.editorState.doc.textContent.trim().length
-        ) {
-          dataChanged = true;
-        }
+      // dispatch a transaction that MUST start from the view’s current state;
+      if (this.state.data !== nextState.data) {
+        const editorState = this._editorView.state;
+        const nextDoc = editorState.schema.nodeFromJSON(
+          nextState.data ? nextState.data : EMPTY_DOC_JSON
+        );
+        dataChanged = !nextDoc.eq(editorState.doc);
       }
 
       if (dataChanged) {
@@ -313,7 +310,7 @@ class Licit extends React.Component<any, any> {
       if (this.state.docID !== nextState.docID) {
         // Collaborative mode changed
         const collabEditing = nextState.docID !== '';
-        const editorState = this._connector.getState();
+        const editorState = this._editorView.state;
         const setState = this.setState.bind(this);
         const docID = nextState.docID || '';
         const collabServiceURL =
