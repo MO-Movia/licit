@@ -49,6 +49,7 @@ class Licit extends React.Component<any, any> {
   _skipSCU: boolean; // Flag to decide whether to skip shouldComponentUpdate
   _defaultEditorSchema: Schema;
   _defaultEditorPlugins: Array<Plugin>;
+  _devTools: Promise<any>;
 
   _popUp = null;
 
@@ -135,7 +136,9 @@ class Licit extends React.Component<any, any> {
             collabServiceURL,
           },
           this._defaultEditorSchema,
-          this._defaultEditorPlugins
+          this._defaultEditorPlugins,
+          // [FS] IRAD-1578 2021-09-27
+          this.onReady.bind(this)
         )
       : new SimpleConnector(editorState, setState);
 
@@ -163,6 +166,18 @@ class Licit extends React.Component<any, any> {
     if (this._connector.updateSchema) {
       // Use known editorState to update schema.
       this._connector.updateSchema(editorState.schema);
+    }
+  }
+
+  // [FS] IRAD-1578 2021-09-27
+  onReady(state: EditorState) {
+    const collabEditing = this.state.docID !== '';
+
+    if (collabEditing) {
+      this._editorView && this._editorView.focus();
+      if (this.state.onReadyCB) {
+        this.state.onReadyCB(this);
+      }
     }
   }
 
@@ -277,7 +292,9 @@ class Licit extends React.Component<any, any> {
       let dataChanged = false;
 
       // Compare data, if found difference, update editorState
-      if (this.state.data !== nextState.data) {
+      // [FS] IRAD-1571 2021-09-27
+      // Need to compare the props and not state here which is incorrect and ends up in dataChanged = true always.
+      if (this.props.data !== nextProps.data) {
         dataChanged = true;
       } else if (null === nextState.data) {
         if (
@@ -311,7 +328,9 @@ class Licit extends React.Component<any, any> {
                 collabServiceURL,
               },
               this._defaultEditorSchema,
-              this._defaultEditorPlugins
+              this._defaultEditorPlugins,
+              // [FS] IRAD-1578 2021-09-27
+              this.onReady.bind(this)
             )
           : new SimpleConnector(editorState, setState);
       }
@@ -427,19 +446,27 @@ class Licit extends React.Component<any, any> {
     const doc = state.doc;
     const trx = tr.setSelection(TextSelection.create(doc, 0, doc.content.size));
     dispatch(trx.scrollIntoView());
-    editorView.focus();
 
-    if (this.state.onReadyCB) {
+    // [FS] IRAD-1578 2021-09-27
+    // In collab mode, fire onRead only after getting the response from collab server.
+    if (this.state.onReadyCB && this.state.docID === '') {
+      editorView.focus();
       this.state.onReadyCB(this);
     }
 
-    if (this.state.debug) {
-      // import dynamically
-      import('prosemirror-dev-tools').then((prosemirrorDevTools) => {
-        window.debugProseMirror = () => {
-          prosemirrorDevTools.applyDevTools(editorView);
-        };
-        window.debugProseMirror();
+    // [FS] IRAD-1575 2021-09-27
+    if (this.state.debug && !this._devTools) {
+      this._devTools = new Promise(async (resolve) => {
+        try {
+          // Method is exported as both the default and named, Using named
+          // for clarity and future proofing.
+          const { applyDevTools } = await import('prosemirror-dev-tools');
+          // Attach debug tools to current editor instance.
+          applyDevTools(editorView);
+          resolve(() => applyDevTools(editorView));
+        } catch (error) {
+          resolve();
+        }
       });
     }
   };
@@ -448,9 +475,11 @@ class Licit extends React.Component<any, any> {
     // [FS] IRAD-1569 2021-09-15
     // Unmount dev tools when component is destroyed,
     // so that toggle effect is not occuring when the document is retrieved each time.
-    if (this.state.debug) {
-      // unmount dev
-      window.debugProseMirror();
+    if (this._devTools) {
+      // Call the applyDevTools method again to trigger DOM removal
+      // prosemirror-dev-tools has outstanding pull-requests that affect
+      // dom removal. this may need to be addressed once those have been merged.
+      this._devTools.then((removeDevTools) => removeDevTools());
     }
   }
 
