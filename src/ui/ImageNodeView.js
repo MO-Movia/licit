@@ -42,8 +42,6 @@ const DEFAULT_ORIGINAL_SIZE = {
   width: 0,
 };
 
-const SIZE_OVERFLOW = 100;
-
 // Get the maxWidth that the image could be resized to.
 function getMaxResizeWidth(el: any): number {
   // Ideally, the image should bot be wider then its containing element.
@@ -285,16 +283,6 @@ class ImageViewBody extends React.PureComponent<any, any> {
     if (this.props.node.attrs.src !== src) {
       // src had changed.
       return;
-    }
-    // [FS] IRAD-992 2020-06-25
-    // Fix:Image exceeds the canvas
-    const clientHeight = document.getElementsByClassName(
-      'czi-prosemirror-editor'
-    )[0].offsetHeight;
-    // [FS] IRAD-1556 2021-09-17
-    // Fix:Skewed image in editor
-    if (originalSize.height > clientHeight && clientHeight > SIZE_OVERFLOW) {
-      originalSize.height = clientHeight - SIZE_OVERFLOW;
     }
     if (!originalSize.complete) {
       originalSize.width = MIN_SIZE;
