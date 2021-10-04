@@ -4,6 +4,7 @@ import { Node } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
+import { stringify } from 'flatted';
 
 import convertFromJSON from '../convertFromJSON';
 import RichTextEditor from '../ui/RichTextEditor';
@@ -294,7 +295,9 @@ class Licit extends React.Component<any, any> {
 
       // [FS] IRAD-1571 2021-09-27
       // dispatch a transaction that MUST start from the view’s current state;
-      if (this.state.data !== nextState.data) {
+      // [FS] IRAD-1589 2021-10-04
+      // Do a proper circular JSON comparison.
+      if (stringify(this.state.data) !== stringify(nextState.data)) {
         const editorState = this._editorView.state;
         const nextDoc = editorState.schema.nodeFromJSON(
           nextState.data ? nextState.data : EMPTY_DOC_JSON
