@@ -4,6 +4,7 @@ import { Node } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
+import ReactDOM from 'react-dom';
 import { stringify } from 'flatted';
 
 import convertFromJSON from '../convertFromJSON';
@@ -51,6 +52,7 @@ class Licit extends React.Component<any, any> {
   _defaultEditorSchema: Schema;
   _defaultEditorPlugins: Array<Plugin>;
   _devTools: Promise<any>;
+  _applyDevTools: any;
 
   _popUp = null;
 
@@ -293,6 +295,18 @@ class Licit extends React.Component<any, any> {
       this._skipSCU = false;
       let dataChanged = false;
 
+      // [FS] IRAD-1571 2021-10-08
+      // Since the debug lies outside the editor,
+      // any change to debug tool must be refreshed here.
+      if (this.state.debug !== nextState.debug) {
+        // change in debug flag.
+        if (nextState.debug) {
+          this.initDevTool(true, this._editorView);
+        } else {
+          this.destroyDevTool();
+        }
+      }
+
       // [FS] IRAD-1571 2021-09-27
       // dispatch a transaction that MUST start from the view’s current state;
       // [FS] IRAD-1589 2021-10-04
@@ -454,24 +468,48 @@ class Licit extends React.Component<any, any> {
       this.state.onReadyCB(this);
     }
 
-    // [FS] IRAD-1575 2021-09-27
-    if (this.state.debug && !this._devTools) {
-      this._devTools = new Promise(async (resolve) => {
-        try {
-          // Method is exported as both the default and named, Using named
-          // for clarity and future proofing.
-          const { applyDevTools } = await import('prosemirror-dev-tools');
-          // Attach debug tools to current editor instance.
-          applyDevTools(editorView);
-          resolve(() => applyDevTools(editorView));
-        } catch (error) {
-          resolve();
-        }
-      });
-    }
+    this.initDevTool(this.state.debug, editorView);
   };
 
-  componentWillUnmount(): void {
+  initDevTool(debug: boolean, editorView: EditorView): void {
+    // [FS] IRAD-1575 2021-09-27
+    if (debug) {
+      if (!this._devTools) {
+        this._devTools = new Promise(async (resolve, reject) => {
+          try {
+            // Method is exported as both the default and named, Using named
+            // for clarity and future proofing.
+            const { applyDevTools } = await import('prosemirror-dev-tools');
+            // got the pm dev tools instance.
+            this._applyDevTools = applyDevTools;
+            // Attach debug tools to current editor instance.
+            this._applyDevTools(editorView);
+            resolve(() => {
+              // [FS] IRAD-1571 2021-10-08
+              // Prosemirror Dev Tools handles as if one only instance is used in a page and
+              // hence handling removal here gracefully.
+              const place = document.querySelector(
+                '.'.concat('__prosemirror-dev-tools__')
+              );
+              if (place) {
+                ReactDOM.unmountComponentAtNode(place);
+                place.innerHTML = '';
+              }
+            });
+          } catch (error) {
+            reject();
+          }
+        });
+      }
+
+      // Attach debug tools to current editor instance.
+      if (this._devTools && this._applyDevTools) {
+        this._applyDevTools(editorView);
+      }
+    }
+  }
+
+  destroyDevTool(): void {
     // [FS] IRAD-1569 2021-09-15
     // Unmount dev tools when component is destroyed,
     // so that toggle effect is not occuring when the document is retrieved each time.
@@ -481,6 +519,10 @@ class Licit extends React.Component<any, any> {
       // dom removal. this may need to be addressed once those have been merged.
       this._devTools.then((removeDevTools) => removeDevTools());
     }
+  }
+
+  componentWillUnmount(): void {
+    this.destroyDevTool();
   }
 
   /**
