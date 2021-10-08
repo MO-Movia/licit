@@ -295,18 +295,6 @@ class Licit extends React.Component<any, any> {
       this._skipSCU = false;
       let dataChanged = false;
 
-      // [FS] IRAD-1571 2021-10-08
-      // Since the debug lies outside the editor,
-      // any change to debug tool must be refreshed here.
-      if (this.state.debug !== nextState.debug) {
-        // change in debug flag.
-        if (nextState.debug) {
-          this.initDevTool(true, this._editorView);
-        } else {
-          this.destroyDevTool();
-        }
-      }
-
       // [FS] IRAD-1571 2021-09-27
       // dispatch a transaction that MUST start from the view’s current state;
       // [FS] IRAD-1589 2021-10-04
@@ -541,6 +529,18 @@ class Licit extends React.Component<any, any> {
    *  embedded {boolean} [false] Disable/Enable inline behaviour.
    */
   setProps = (props: any): void => {
+    // [FS] IRAD-1571 2021-10-08
+    // Since the debug lies outside the editor,
+    // any change to debug tool must be refreshed here.
+    if (this.state.debug !== props.debug) {
+      // change in debug flag.
+      if (props.debug) {
+        this.initDevTool(true, this._editorView);
+      } else {
+        this.destroyDevTool();
+      }
+    }
+
     if (this.state.readOnly) {
       // It should be possible to load content into the editor in readonly as well.
       // It should not be necessary to make the component writable any time during the process
