@@ -27,7 +27,7 @@ jobs:
         fetch-depth: 2
     - run: npm ci
     - run: npm run build:dist
-    - run: npm run test
+    - run: npm run test -- --coverage
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
