@@ -26,7 +26,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/MO-Movia/licit)
 [![Coverage](https://codecov.io/gh/MO-Movia/licit/branch/main/graph/badge.svg?token=40H9P8IZRC)](https://codecov.io/gh/MO-Movia/licit)
 ![Website](https://img.shields.io/website?down_color=red&down_message=Offline&up_color=green&up_message=Online&url=http://www.greathints.com)
-![Dependencies](https://david-dm.org/MO-Movia/licit.svg)
+# ![Dependencies](https://david-dm.org/MO-Movia/licit.svg)
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
