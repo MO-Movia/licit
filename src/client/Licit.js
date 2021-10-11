@@ -308,37 +308,50 @@ class Licit extends React.Component<any, any> {
       }
 
       if (dataChanged) {
+        // FS IRAD-1592 2021-11-10
+        // Release here quickly, so that update doesn't care about at this point.
         // data changed, so update document content
-        this.setContent(nextState.data);
+        setTimeout(this.setContent.bind(this, nextState.data), 1);
       }
 
       if (this.state.docID !== nextState.docID) {
-        // Collaborative mode changed
-        const collabEditing = nextState.docID !== '';
-        const editorState = this._editorView.state;
-        const setState = this.setState.bind(this);
-        const docID = nextState.docID || '';
-        const collabServiceURL =
-          nextState.collabServiceURL || '/collaboration-service';
-        // create new connector
-        this._connector = collabEditing
-          ? new CollabConnector(
-              editorState,
-              setState,
-              {
-                docID,
-                collabServiceURL,
-              },
-              this._defaultEditorSchema,
-              this._defaultEditorPlugins,
-              // [FS] IRAD-1578 2021-09-27
-              this.onReady.bind(this)
-            )
-          : new SimpleConnector(editorState, setState);
+        setTimeout(this.setDocID.bind(this, nextState), 1);
       }
     }
 
     return true;
+  }
+
+  setDocID(nextState: any) {
+    // Collaborative mode changed
+    const collabEditing = nextState.docID !== '';
+    const editorState = this._editorView.state;
+    const setState = this.setState.bind(this);
+    const docID = nextState.docID || '';
+    const collabServiceURL =
+      nextState.collabServiceURL || '/collaboration-service';
+    // create new connector
+    this._connector = collabEditing
+      ? new CollabConnector(
+          editorState,
+          setState,
+          {
+            docID,
+            collabServiceURL,
+          },
+          this._defaultEditorSchema,
+          this._defaultEditorPlugins,
+          // [FS] IRAD-1578 2021-09-27
+          this.onReady.bind(this)
+        )
+      : new SimpleConnector(editorState, setState);
+
+    // FS IRAD-1592 2021-11-10
+    // Notify collab server
+    if (this._connector.updateSchema) {
+      // Use known editorState to update schema.
+      this._connector.updateSchema(editorState.schema);
+    }
   }
 
   render(): React.Element<any> {
