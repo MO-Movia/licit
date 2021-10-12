@@ -271,6 +271,10 @@ class Licit extends React.Component<any, any> {
     let { tr } = editorState;
     const document = schema.nodeFromJSON(content ? content : EMPTY_DOC_JSON);
 
+    // [FS] IRAD-1593 2021-10-12
+    // Reset lastKeyCode since the content is set dynamically and so lastKeyCode is invalid now.
+    this._editorView.lastKeyCode = null;
+
     const selection = TextSelection.create(doc, 0, doc.content.size);
 
     tr = tr.setSelection(selection).replaceSelectionWith(document, false);
