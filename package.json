@@ -89,7 +89,7 @@
   },
   "dependencies": {
     "@modusoperandi/licit-doc-attrs-step": "^0.1.1",
-    "@modusoperandi/licit-ui-commands": "file:packages/modusoperandi-licit-ui-commands-0.0.1.tgz",
+    "@modusoperandi/licit-ui-commands": "file:modusoperandi-licit-ui-commands-0.0.1.tgz",
     "body-parser": "^1.19.0",
     "browserkeymap": "2.0.2",
     "classnames": "2.3.1",
