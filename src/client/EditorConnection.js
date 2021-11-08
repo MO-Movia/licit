@@ -106,7 +106,7 @@ class EditorConnection {
 
     if (newEditState) {
       let sendable;
-      if (newEditState.doc.content.size > 40000) {
+      if (newEditState.doc.content.size > 4000000000000) {
         if (this.state.comm !== 'detached') {
           this.report.failure('Document too big. Detached.');
         }
@@ -132,19 +132,23 @@ class EditorConnection {
     }
   };
 
+  dispatchData(data: any) {
+    this.report.success();
+    this.backOff = 0;
+    this.dispatch({
+      type: 'loaded',
+      doc: this.getEffectiveSchema().nodeFromJSON(data),
+      version: data.version,
+      users: data.users,
+    });
+  }
+
   // Load the document from the server and start up
   start(): void {
     this.run(GET(this.url)).then(
       (data) => {
         data = JSON.parse(data);
-        this.report.success();
-        this.backOff = 0;
-        this.dispatch({
-          type: 'loaded',
-          doc: this.getEffectiveSchema().nodeFromJSON(data.doc_json),
-          version: data.version,
-          users: data.users,
-        });
+        this.dispatchData(data.doc_json);
       },
       (err) => {
         this.report.failure(err);
@@ -242,7 +246,7 @@ class EditorConnection {
 
   // [FS] IRAD-1040 2020-09-02
   // Send the modified schema to server
-  updateSchema(schema: Schema) {
+  updateSchema(schema: Schema, input: any) {
     // to avoid cyclic reference error, use flatted string.
     const schemaFlatted = stringify(schema);
     this.run(POST(this.url + '/schema/', schemaFlatted, 'text/plain')).then(
@@ -250,7 +254,7 @@ class EditorConnection {
         console.log("collab server's schema updated");
         // [FS] IRAD-1040 2020-09-08
         this.schema = schema;
-        this.start();
+        this.start(input);
       },
       (err) => {
         this.report.failure(err);

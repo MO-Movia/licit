@@ -168,7 +168,7 @@ class Licit extends React.Component<any, any> {
     // Get the modified schema from editorstate and send it to collab server
     if (this._connector.updateSchema) {
       // Use known editorState to update schema.
-      this._connector.updateSchema(editorState.schema);
+      this._connector.updateSchema(editorState.schema, data);
     }
   }
 
@@ -265,7 +265,7 @@ class Licit extends React.Component<any, any> {
 
   setContent = (content: any = {}): void => {
     // [FS] IRAD-1571 2021-09-27
-    // dispatch a transaction that MUST start from the view’s current state;
+    // dispatch a transaction that MUST start from the viewâ€™s current state;
     const editorState = this._editorView.state;
     const { doc, schema } = editorState;
     let { tr } = editorState;
@@ -293,30 +293,39 @@ class Licit extends React.Component<any, any> {
     this._editorView.dispatch(tr);
   };
 
+  hasDataChanged(nextData: any) {
+    let dataChanged = false;
+
+    // [FS] IRAD-1571 2021-09-27
+    // dispatch a transaction that MUST start from the viewâ€™s current state;
+    // [FS] IRAD-1589 2021-10-04
+    // Do a proper circular JSON comparison.
+    if (stringify(this.state.data) !== stringify(nextData)) {
+      const editorState = this._editorView.state;
+      const nextDoc = editorState.schema.nodeFromJSON(
+        nextData ? nextData : EMPTY_DOC_JSON
+      );
+      dataChanged = !nextDoc.eq(editorState.doc);
+    }
+
+    return dataChanged;
+  }
+
+  changeContent(data: any) {
+    if (this.hasDataChanged(data)) {
+      // FS IRAD-1592 2021-11-10
+      // Release here quickly, so that update doesn't care about at this point.
+      // data changed, so update document content
+      setTimeout(this.setContent.bind(this, data), 1);
+    }
+  }
+
   shouldComponentUpdate(nextProps: any, nextState: any) {
     // Only interested if properties are set from outside.
     if (!this._skipSCU) {
       this._skipSCU = false;
-      let dataChanged = false;
 
-      // [FS] IRAD-1571 2021-09-27
-      // dispatch a transaction that MUST start from the view’s current state;
-      // [FS] IRAD-1589 2021-10-04
-      // Do a proper circular JSON comparison.
-      if (stringify(this.state.data) !== stringify(nextState.data)) {
-        const editorState = this._editorView.state;
-        const nextDoc = editorState.schema.nodeFromJSON(
-          nextState.data ? nextState.data : EMPTY_DOC_JSON
-        );
-        dataChanged = !nextDoc.eq(editorState.doc);
-      }
-
-      if (dataChanged) {
-        // FS IRAD-1592 2021-11-10
-        // Release here quickly, so that update doesn't care about at this point.
-        // data changed, so update document content
-        setTimeout(this.setContent.bind(this, nextState.data), 1);
-      }
+      this.changeContent(nextState.data);
 
       if (this.state.docID !== nextState.docID) {
         setTimeout(this.setDocID.bind(this, nextState), 1);
@@ -334,6 +343,10 @@ class Licit extends React.Component<any, any> {
     const docID = nextState.docID || '';
     const collabServiceURL =
       nextState.collabServiceURL || '/collaboration-service';
+
+    if (this._connector) {
+      this._connector.cleanUp();
+    }
     // create new connector
     this._connector = collabEditing
       ? new CollabConnector(
