@@ -46,7 +46,7 @@ class AlertInfo extends React.PureComponent<any, any> {
       this.props.content ||
       'Unable to load the document. Have issues in Json format, please verify...';
     return (
-      <div className="alert">
+      <div className="licit-alert">
         <span className="closebtn" onClick={this._cancel}>
           &times;
         </span>
