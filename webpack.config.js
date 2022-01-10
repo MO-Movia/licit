@@ -2,11 +2,9 @@
 
 var webpack = require('webpack'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
-  FlowWebpackPlugin = require('flow-webpack-plugin'),
   HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   TerserPlugin = require('terser-webpack-plugin'),
-  
   WriteFilePlugin = require('write-file-webpack-plugin'),
   env = require('./utils/env'),
   fileSystem = require('fs'),
@@ -22,7 +20,7 @@ var isDev = env.NODE_ENV === 'development' || 0;
 var options = {
   mode: 'production',
   entry: {
-    licit: path.join(__dirname, 'licit', 'client', 'index.js'),
+    licit: path.join(__dirname, 'licit', 'client', 'index.tsx'),
   },
   output: {
     path: path.join(__dirname, 'bin'),
@@ -31,29 +29,9 @@ var options = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        options: {
-        // https://stackoverflow.com/questions/51860043/javascript-es6-typeerror-class-constructor-client-cannot-be-invoked-without-ne
-        // ES6 classes are supported in any recent Node version, they shouldn't be transpiled. es2015 should be excluded from Babel configuration, it's preferable to use env preset set to node target.
-          presets: [['@babel/preset-env', { 'targets': { 'node': true } }], '@babel/preset-react', '@babel/preset-flow'],
-          plugins: [
-            '@babel/plugin-proposal-class-properties',
-            '@babel/plugin-proposal-export-default-from',
-            [
-              '@babel/plugin-transform-runtime',
-              {
-                helpers: true,
-                regenerator: true,
-              },
-            ],
-            'flow-react-proptypes',
-            '@babel/plugin-proposal-object-rest-spread',
-            '@babel/plugin-transform-flow-strip-types',
-            '@babel/plugin-syntax-dynamic-import',
-          ],
-        },
       },
       {
         test: /\.(woff(2)?|ttf|otf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
@@ -69,10 +47,11 @@ var options = {
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-        ],
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(scss|sass)$/,
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i, 
@@ -86,15 +65,14 @@ var options = {
     ]
   },
   resolve: {
-    alias: {}
+    alias: {},
+    extensions: ['.ts','.tsx','.js','.json']
   },
   plugins: [
     new webpack.ProvidePlugin({
       // jQuery (for Mathquill)
       'window.jQuery': 'jquery',
     }),
-    // type checker 
-    ... (env.NODE_ENV === 'development') ? [new FlowWebpackPlugin({flowArgs: ['--show-all-errors']})] : [],
     // clean the web folder
     new CleanWebpackPlugin(),
     // expose and write the allowed env vars on the compiled bundle
@@ -105,14 +83,14 @@ var options = {
       template: path.join(__dirname, 'licit', 'index.html'),
       filename: 'index.html',
       chunks: ['licit'],
-      inlineSource: isDev ? '$^' : '.(js|css)$'
+      inlineSource: isDev ? '$^' : '.(ts|css)$'
     }),
     new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
     new WriteFilePlugin()
   ]
 };
 
-if (env.NODE_ENV === 'development') {
+if (isDev) {
   options.devtool = 'source-map';
 } else {
 // [FS] IRAD-1005 2020-07-10
@@ -122,5 +100,17 @@ if (env.NODE_ENV === 'development') {
     minimizer: [new TerserPlugin()],
   }
 }
+options.plugins.push(function () {
+  this.hooks.done.tapAsync('done', function (stats, callback) {
+    if (0 < stats.compilation.errors.length) {
+      console.log('\x1b[31m%s\x1b[0m', stats.compilation.errors);
+      // to error out and discontinue any sequential scripts.
+      process.exit(1);
+    } else {
+      callback();
+      process.exit(0);
+    }
+  });
+});
 
 module.exports = options;

@@ -1,5 +1,5 @@
 module.exports = {
-  'parser': 'babel-eslint',
+  'parser': '@typescript-eslint/parser',
   'parserOptions': {
     'sourceType': 'module',
     'allowImportExportEverywhere': false,
@@ -8,7 +8,10 @@ module.exports = {
       'jsx': true
     },
   },
-  'plugins': ['react'],
+  'plugins': ['@typescript-eslint','react'],
+  'extends': [
+    'plugin:@typescript-eslint/recommended'
+  ],
   'rules': {
     'react/jsx-sort-props': 'error',
     'react/jsx-uses-react': 'error',
@@ -70,7 +73,7 @@ module.exports = {
   'overrides': [
     {
       // enable jest globals in test files
-      files: '*.test.js',
+      files: '*.test.ts',
       plugins: ['jest'],
       env: {
         'jest/globals': true

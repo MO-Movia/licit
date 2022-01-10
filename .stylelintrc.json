@@ -1,14 +1,9 @@
 {
-  "extends": "stylelint-prettier",
+  "extends": "stylelint-config-standard",
   "rules": {
-    "selector-type-no-unknown": [
-      true,
-      {
-        "ignoreTypes": [
-          "nobr"
-        ]
-      }
-    ],
-    "no-descending-specificity": null
+    "selector-type-no-unknown": [true, {
+      "ignoreTypes": ["nobr"]
+    }],
+    "no-descending-specificity":null
   }
 }

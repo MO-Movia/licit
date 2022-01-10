@@ -9,14 +9,13 @@
       }
     ],
     "@babel/preset-react",
-    "@babel/preset-flow"
+    "@babel/preset-typescript"
   ],
   "plugins": [
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-proposal-export-default-from",
-    "flow-react-proptypes",
     "transform-react-remove-prop-types",
-    "@babel/plugin-transform-flow-strip-types",
+    "@babel/plugin-transform-typescript",
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-transform-parameters",
     [

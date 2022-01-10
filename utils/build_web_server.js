@@ -31,10 +31,10 @@ delete config.chromeExtensionBoilerplate;
 const compiler = webpack(config);
 
 const server =
-  new WebpackDevServer(compiler, {
+  new WebpackDevServer({
     hot: true,
-    contentBase: path.join(__dirname, '../bin'),
+    static: path.join(__dirname, '../bin'),
     headers: { 'Access-Control-Allow-Origin': '*' },
-  });
+  }, compiler);
 
-server.listen(env.PORT);
+server.start(env.PORT);

@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "outDir": "dist",
+    "pretty": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": [
+      "jest"
+    ],
+    "jsx": "react",
+  },
+  "typeAcquisition": {
+    "enable": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.test.ts"
+  ],
+}
