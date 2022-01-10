@@ -39,7 +39,7 @@ describe('<Licit />', () => {
       content: [
         {
           type: 'paragraph',
-          content: [{ type: 'text', text: ' ' }],
+          content: [{ type: 'text', text: 'Hello Licit' }],
         },
       ],
     };
@@ -48,14 +48,8 @@ describe('<Licit />', () => {
   });
 
   describe('editorView (getter)', () => {
-    it('should return the prosemirror view', () => {
-      // Using shallow, the underlying RichTexEditor is never really created,
-      // and Licit's _onReady method is not called.  Call it here with the fake
-      // view created above
-      licit._onReady(fakeEditorView);
-
-      // Verify that getter now returns the underlying view.
-      expect(licit.editorView).toBe(fakeEditorView);
+    it('should match the snapshot', () => {
+      expect(wrapper).toMatchSnapshot();
     });
   });
 });
