@@ -33,7 +33,8 @@ describe('<Licit />', () => {
   };
 
   beforeEach(() => {
-    wrapper = shallow(<Licit instanceId="001"/>);
+    const deps = [];
+    wrapper = shallow(<Licit instanceId="001" deps={deps}/>);
     licit = wrapper.instance();
   });
 
