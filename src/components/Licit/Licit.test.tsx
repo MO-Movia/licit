@@ -33,17 +33,7 @@ describe('<Licit />', () => {
   };
 
   beforeEach(() => {
-    // provide an empty document just to shut up that warning
-    const data = {
-      type: 'doc',
-      content: [
-        {
-          type: 'paragraph',
-          content: [{ type: 'text', text: 'Hello Licit' }],
-        },
-      ],
-    };
-    wrapper = shallow(<Licit data={data} />);
+    wrapper = shallow(<Licit instanceId="001"/>);
     licit = wrapper.instance();
   });
 

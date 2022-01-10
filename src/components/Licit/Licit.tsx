@@ -2,11 +2,17 @@ import React from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import './licit.scss'
+import Toolbar from "./extensions/toolbar/Toolbar";
+import PropTypes from 'prop-types';
 
-const Licit = () => {
+const Licit = ({ instanceId }) => {
+  
   const editor = useEditor({
     extensions: [
       StarterKit,
+	  Toolbar.extend({
+          name: "Toolbar-" + {instanceId},
+        }),
     ],
     content: `
       <h2>
@@ -45,6 +51,10 @@ const Licit = () => {
       <EditorContent editor={editor} width="50vw"/>
     </div>
   )
+}
+
+Licit.propTypes = {
+  instanceId: PropTypes.string
 }
 
 export default Licit
