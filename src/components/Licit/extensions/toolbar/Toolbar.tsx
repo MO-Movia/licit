@@ -1,14 +1,16 @@
-import { Extension } from "@tiptap/core";
-import { Plugin, PluginKey } from "prosemirror-state";
-import { EditorView } from "prosemirror-view"; 
-import { toggleMark, wrapIn } from "prosemirror-commands";
-import { EditorState, Transaction } from "prosemirror-state";
-import "./menu.css";
+import { Extension } from '@tiptap/core';
+import { Plugin, PluginKey } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import { toggleMark, wrapIn } from 'prosemirror-commands';
+import { EditorState, Transaction } from 'prosemirror-state';
+import './menu.css';
+import * as React from 'react';
+import ReactDOM from 'react-dom';
 
 // Helper function to create menu icons
 function icon(text, name) {
-  let span = document.createElement("span");
-  span.className = "ProseMirror-menuitem";
+  const span = document.createElement('span');
+  span.className = 'ProseMirror-menuitem';
   span.title = name;
   span.textContent = text;
   return span;
@@ -28,8 +30,10 @@ interface MyItem {
   dom: HTMLElement;
 }
 
+let csd = null;
+
 export const Toolbar = Extension.create({
-  name: "toolBar",
+  name: 'toolBar',
   // This is to invoke after all other extensions so that to prepare the toolbar correctly.
   priority: 99,
 
@@ -43,31 +47,37 @@ export const Toolbar = Extension.create({
     let items = [];
     items.push({
       command: toggleMark(schema.marks.bold),
-      dom: icon("B", "strong"),
+      dom: icon('B', 'strong'),
     });
     items.push({
       command: toggleMark(schema.marks.italic),
-      dom: icon("i", "em"),
+      dom: icon('i', 'em'),
     });
     items.push({
       command: wrapIn(schema.nodes.blockquote),
-      dom: icon(">", "blockquote"),
+      dom: icon('>', 'blockquote'),
     });
     this.editor.extensionManager.extensions.forEach((extension) => {
       let gmi = extension.config.getMenuItems;
       if (!gmi && extension.parent) {
         gmi = extension.parent.config.getMenuItems;
       }
+
       if (gmi) {
         items = items.concat(gmi.call(extension, schema));
+      }
+
+      if(extension.name === 'CustomStyle')
+      {
+        csd = extension.storage.menuItems;
       }
     });
 
     return [
       new Plugin({
-        key: new PluginKey("toolBar"),
+        key: new PluginKey('toolBar'),
         view(editorView) {
-          let menuView = new MenuView(items, editorView);
+          const menuView = new MenuView(items, editorView);
           editorView.dom.parentNode.insertBefore(menuView.dom, editorView.dom);
           return menuView;
         },
@@ -91,17 +101,26 @@ class MenuView {
     this.items = items;
     this.editorView = editorView;
 
-    this.dom = document.createElement("div");
-    this.dom.className = "menubar";
+    this.dom = document.createElement('div');
+    this.dom.className = 'menubar';
     items.forEach(({ dom }) => {
       //const dom = icon(item.text, item.tooltip);
       //item.dom = dom;
       this.dom.appendChild(dom);
     });
+    const d = document.createElement('div');
+    d.appendChild(document.createElement('br'));
+    d.appendChild(document.createElement('br'));
+    d.appendChild(document.createElement('br'));
+    d.appendChild(document.createElement('br'));
+    d.appendChild(document.createElement('br'));
+    this.dom.appendChild(d);
+    //ReactDOM.render(<CustomstyleDropDownCommand/>, d);
+    ReactDOM.render(React.createElement(csd, {dispatch: editorView.dispatch, editorState: editorView.state, editorView}), d);
     this.update();
 
     items.forEach(({ command, dom }) => {
-      dom.addEventListener("mousedown", (e) => {
+      dom.addEventListener('mousedown', (e) => {
         e.preventDefault();
         //editorView.focus();
         command(editorView.state, editorView.dispatch);
@@ -112,8 +131,8 @@ class MenuView {
   update() {
     //console.log("MenuView Update");
     this.items.forEach(({ command, dom }) => {
-      let active = command(this.editorView.state, null);
-      dom.style.display = active ? "" : "none";
+      const active = command(this.editorView.state, null);
+      dom.style.display = active ? '' : 'none';
     });
   }
 

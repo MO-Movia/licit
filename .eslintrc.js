@@ -10,7 +10,8 @@ module.exports = {
   },
   'plugins': ['@typescript-eslint','react'],
   'extends': [
-    'plugin:@typescript-eslint/recommended'
+    'plugin:@typescript-eslint/recommended',
+    'plugin:import/typescript'
   ],
   'rules': {
     'react/jsx-sort-props': 'error',
@@ -72,8 +73,8 @@ module.exports = {
   },
   'overrides': [
     {
+      files: ["*.ts", "*.tsx"],
       // enable jest globals in test files
-      files: '*.test.ts',
       plugins: ['jest'],
       env: {
         'jest/globals': true

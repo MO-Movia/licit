@@ -1,20 +1,20 @@
-import React from 'react'
-import { Extension } from "@tiptap/core";
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import './licit.scss'
-import Toolbar from "./extensions/toolbar/Toolbar";
+import React, { ReactElement } from 'react';
+import { Extension } from '@tiptap/core';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import './licit.scss';
+import Toolbar from './extensions/toolbar/Toolbar';
 import PropTypes from 'prop-types';
 
-const Licit = ({ instanceId, deps }) => {
-  
+const Licit = ({ instanceId: string, deps: Array<Extension> }): ReactElement => {
+
   const editor = useEditor({
     extensions: [
       StarterKit,
+      ...{deps},
       Toolbar.extend({
-          name: "Toolbar-" + {instanceId},
-        }),
-      ...deps
+          name: 'Toolbar-' + {instanceId},
+        })
     ],
     content: `
       <h2>
@@ -46,18 +46,18 @@ const Licit = ({ instanceId, deps }) => {
         — Mom
       </blockquote>
     `,
-  })
+  });
 
   return (
     <div>
       <EditorContent editor={editor} width="50vw"/>
     </div>
-  )
-}
+  );
+};
 
 Licit.propTypes = {
   instanceId: PropTypes.string,
   deps: PropTypes.arrayOf(PropTypes.instanceOf(Extension)),
-}
+};
 
-export default Licit
+export default Licit;
