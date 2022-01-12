@@ -14,7 +14,6 @@ describe('<Licit />', () => {
   let wrapper;
 
   beforeEach(() => {
-    const deps = [];
     wrapper = shallow(<Licit/>);
   });
 
