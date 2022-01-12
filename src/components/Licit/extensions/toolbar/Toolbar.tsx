@@ -108,15 +108,17 @@ class MenuView {
       //item.dom = dom;
       this.dom.appendChild(dom);
     });
-    const d = document.createElement('div');
-    d.appendChild(document.createElement('br'));
-    d.appendChild(document.createElement('br'));
-    d.appendChild(document.createElement('br'));
-    d.appendChild(document.createElement('br'));
-    d.appendChild(document.createElement('br'));
-    this.dom.appendChild(d);
-    //ReactDOM.render(<CustomstyleDropDownCommand/>, d);
-    ReactDOM.render(React.createElement(csd, {dispatch: editorView.dispatch, editorState: editorView.state, editorView}), d);
+    if(csd) {
+        const d = document.createElement('div');
+        d.appendChild(document.createElement('br'));
+        d.appendChild(document.createElement('br'));
+        d.appendChild(document.createElement('br'));
+        d.appendChild(document.createElement('br'));
+        d.appendChild(document.createElement('br'));
+        this.dom.appendChild(d);
+        //ReactDOM.render(<CustomstyleDropDownCommand/>, d);
+        ReactDOM.render(React.createElement(csd, {dispatch: editorView.dispatch, editorState: editorView.state, editorView}), d);
+    }
     this.update();
 
     items.forEach(({ command, dom }) => {

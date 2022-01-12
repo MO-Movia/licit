@@ -4,8 +4,11 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "lib": [
+      "es5",
+      "es6",
       "es2017",
-      "dom"
+      "dom",
+      "dom.iterable"
     ],
     "outDir": "dist",
     "pretty": false,

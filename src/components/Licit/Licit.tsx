@@ -6,12 +6,17 @@ import './licit.scss';
 import Toolbar from './extensions/toolbar/Toolbar';
 import PropTypes from 'prop-types';
 
-const Licit = ({ instanceId: string, deps: Array<Extension> }): ReactElement => {
+interface LicitProps {
+    instanceId: string;
+    deps: Extension[];
+}
+
+const Licit = ({ instanceId, deps }: LicitProps): ReactElement => {
 
   const editor = useEditor({
     extensions: [
       StarterKit,
-      ...{deps},
+      ...[...deps],
       Toolbar.extend({
           name: 'Toolbar-' + {instanceId},
         })
