@@ -4,65 +4,55 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import './licit.scss';
 import Toolbar from './extensions/toolbar/Toolbar';
-import PropTypes from 'prop-types';
+import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * LICIT properties:
+ *  docID {string} [] Collaborative Doument ID
+ *  collabServiceURL {string} [/collaboration-service] Collaboration Service URL
+ *  debug {boolean} [false] To enable/disable ProseMirror Debug Tools, available only in development.
+ *  width {string} [100%] Width of the editor.
+ *  height {string} [100%] Height of the editor.
+ *  readOnly {boolean} [false] To enable/disable editing mode.
+ *  onChange {@callback} [null] Fires after each significant change.
+ *      @param data {JSON} Modified document data.
+ *  onReady {@callback} [null] Fires when the editor is fully ready.
+ *      @param ref {LICIT} Rerefence of the editor.
+ *  data {JSON} [null] Document data to be loaded into the editor.
+ *  disabled {boolean} [false] Disable the editor.
+ *  embedded {boolean} [false] Disable/Enable inline behaviour.
+ *  plugins [plugins] External Plugins into the editor.
+ */
 interface LicitProps {
-    instanceId: string;
-    deps: Extension[];
+  docID?: string;
+  collabServiceURL?: string;
+  debug?: boolean;
+  width?: string;
+  height?: string;
+  readOnly?: boolean;
+  data?: string;
+  disabled?: boolean;
+  embedded?: boolean;
+  plugins?: Extension[];
 }
 
-const Licit = ({ instanceId, deps }: LicitProps): ReactElement => {
-
+const Licit = ({ plugins }: LicitProps): ReactElement => {
   const editor = useEditor({
     extensions: [
       StarterKit,
-      ...[...deps],
+      ...[...plugins],
       Toolbar.extend({
-          name: 'Toolbar-' + {instanceId},
-        })
+        name: 'LiciT-TBar-' + uuidv4(),
+      }),
     ],
-    content: `
-      <h2>
-        Hi there,
-      </h2>
-      <p>
-        this is a <em>basic</em> example of <strong>tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-      </p>
-      <ul>
-        <li>
-          That’s a bullet list with one …
-        </li>
-        <li>
-          … or two list items.
-        </li>
-      </ul>
-      <p>
-        Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
-      </p>
-      <pre><code class="language-css">body {
-  display: none;
-}</code></pre>
-      <p>
-        I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
-      </p>
-      <blockquote>
-        Wow, that’s amazing. Good work, boy! 👏
-        <br />
-        — Mom
-      </blockquote>
-    `,
+    content: '',
   });
 
   return (
     <div>
-      <EditorContent editor={editor} width="50vw"/>
+      <EditorContent editor={editor} width="50vw" />
     </div>
   );
-};
-
-Licit.propTypes = {
-  instanceId: PropTypes.string,
-  deps: PropTypes.arrayOf(PropTypes.instanceOf(Extension)),
 };
 
 export default Licit;

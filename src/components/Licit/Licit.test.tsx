@@ -15,7 +15,7 @@ describe('<Licit />', () => {
 
   beforeEach(() => {
     const deps = [];
-    wrapper = shallow(<Licit deps={deps} instanceId="001"/>);
+    wrapper = shallow(<Licit collabServiceURL={'http://localhost:3002'} debug={false} docID={'0000-0000-0000-0001'} height={''} plugins={deps} width={''}/>);
   });
 
   describe('editorView (getter)', () => {
