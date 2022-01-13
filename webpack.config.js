@@ -32,6 +32,24 @@ var options = {
         test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
+        options: {
+        // https://stackoverflow.com/questions/51860043/javascript-es6-typeerror-class-constructor-client-cannot-be-invoked-without-ne
+        // ES6 classes are supported in any recent Node version, they shouldn't be transpiled. es2015 should be excluded from Babel configuration, it's preferable to use env preset set to node target.
+          presets: [['@babel/preset-env', { 'targets': { 'node': true } }], '@babel/preset-react'],
+          plugins: [
+            '@babel/plugin-proposal-class-properties',
+            '@babel/plugin-proposal-export-default-from',
+            [
+              '@babel/plugin-transform-runtime',
+              {
+                helpers: true,
+                regenerator: true,
+              },
+            ],
+            '@babel/plugin-proposal-object-rest-spread',
+            '@babel/plugin-syntax-dynamic-import',
+          ],
+        },
       },
       {
         test: /\.(woff(2)?|ttf|otf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
