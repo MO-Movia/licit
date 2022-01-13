@@ -94,6 +94,9 @@
     "write-file-webpack-plugin": "4.5.1"
   },
   "dependencies": {
+    "@hocuspocus/provider": "^1.0.0-alpha.29",
+    "@tiptap/extension-collaboration": "^2.0.0-beta.33",
+    "@tiptap/extension-collaboration-cursor": "^2.0.0-beta.34",
     "@tiptap/react": "^2.0.0-beta.98",
     "@tiptap/starter-kit": "^2.0.0-beta.157",
     "body-parser": "^1.19.0",
@@ -120,7 +123,9 @@
     "stable": "0.1.8",
     "style-loader": "^1.2.1",
     "uuid": "8.2.0",
-    "webfontloader": "1.6.28"
+    "webfontloader": "1.6.28",
+    "y-indexeddb": "^9.0.6",
+    "yjs": "^13.5.24"
   },
   "importSort": {
     ".js": {

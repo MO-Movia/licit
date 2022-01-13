@@ -5,6 +5,11 @@ import StarterKit from '@tiptap/starter-kit';
 import './licit.scss';
 import Toolbar from './extensions/toolbar/Toolbar';
 import { v4 as uuidv4 } from 'uuid';
+import Collaboration from '@tiptap/extension-collaboration';
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
+import * as Y from 'yjs';
+import { HocuspocusProvider } from '@hocuspocus/provider';
+import { IndexeddbPersistence } from 'y-indexeddb';
 
 /**
  * LICIT properties:
@@ -36,11 +41,58 @@ interface LicitProps {
   plugins?: Extension[];
 }
 
-const Licit = ({ plugins }: LicitProps): ReactElement => {
+const Licit = ({ docID, plugins, width, height }: LicitProps): ReactElement => {
+  const instanceID = uuidv4();
+  let ydoc;
+  let provider;
+  let currentUser;
+
+  // Enable collaboration.
+  if (docID) {
+    ydoc = new Y.Doc();
+    provider = new HocuspocusProvider({
+      url: 'ws://127.0.0.1:1234',
+      name: docID,
+      document: ydoc,
+    });
+    const getRandomElement = (list) => {
+      return list[Math.floor(Math.random() * list.length)];
+    };
+    const getRandomColor = () => {
+      return getRandomElement([
+        '#958DF1',
+        '#F98181',
+        '#FBBC88',
+        '#FAF594',
+        '#70CFF8',
+        '#94FADB',
+        '#B9F18D',
+      ]);
+    };
+    currentUser = {
+      name: instanceID,
+      color: getRandomColor(),
+    };
+
+    // For offline editing, store the Y document in the browser
+    new IndexeddbPersistence(docID, ydoc);
+  }
+
   const editor = useEditor({
     extensions: [
       StarterKit,
-      ...[...plugins],
+      ...(docID
+        ? [
+            Collaboration.configure({
+              document: ydoc,
+            }),
+            CollaborationCursor.configure({
+              provider: provider,
+              user: currentUser,
+            }),
+          ]
+        : []),
+      ...(plugins ? [...plugins] : []),
       Toolbar.extend({
         name: 'LiciT-TBar-' + uuidv4(),
       }),
@@ -50,7 +102,7 @@ const Licit = ({ plugins }: LicitProps): ReactElement => {
 
   return (
     <div>
-      <EditorContent editor={editor} width="50vw" />
+      <EditorContent editor={editor} height={height} width={width} />
     </div>
   );
 };
