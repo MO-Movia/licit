@@ -46,9 +46,11 @@ const Licit = ({ docID, plugins, width, height, collabServiceURL }: LicitProps):
   let ydoc;
   let provider;
   let currentUser;
+  let collaboration = false;
 
   // Enable collaboration.
-  if (docID) {
+  if (docID && 0 < docID.length) {
+    collaboration = true;
     ydoc = new Y.Doc();
     provider = new HocuspocusProvider({
       url: collabServiceURL,
@@ -81,7 +83,7 @@ const Licit = ({ docID, plugins, width, height, collabServiceURL }: LicitProps):
   const editor = useEditor({
     extensions: [
       StarterKit,
-      ...(docID
+      ...(collaboration
         ? [
             Collaboration.configure({
               document: ydoc,
