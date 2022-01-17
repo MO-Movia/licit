@@ -181,14 +181,14 @@ export default {
 
   // A map from regular expressions to paths to transformers
   transform: {
-      "^.+\\.tsx?$": "babel-jest"
-    },
+   "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  // transformIgnorePatterns: [
-  //   "/node_modules/",
+  transformIgnorePatterns: [
+   "node_modules/(?!(y-protocols|lib0|@hocuspocus)/).+\\.js$"
   //   "\\.pnp\\.[^\\/]+$"
-  // ],
+  ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
