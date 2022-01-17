@@ -339,7 +339,7 @@ function main(): void {
   ReactDOM.render(
     <React.StrictMode>
     <Licit
-      collabServiceURL={'http://localhost:3002'}
+      collabServiceURL={'ws://127.0.0.1:1234'}
       data={docJSON}
       debug={true}
       docID={'0000-0000-0000-0000'}

@@ -41,7 +41,7 @@ interface LicitProps {
   plugins?: Extension[];
 }
 
-const Licit = ({ docID, plugins, width, height }: LicitProps): ReactElement => {
+const Licit = ({ docID, plugins, width, height, collabServiceURL }: LicitProps): ReactElement => {
   const instanceID = uuidv4();
   let ydoc;
   let provider;
@@ -51,7 +51,7 @@ const Licit = ({ docID, plugins, width, height }: LicitProps): ReactElement => {
   if (docID) {
     ydoc = new Y.Doc();
     provider = new HocuspocusProvider({
-      url: 'ws://127.0.0.1:1234',
+      url: collabServiceURL,
       name: docID,
       document: ydoc,
     });
