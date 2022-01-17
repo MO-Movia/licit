@@ -19,6 +19,7 @@
     "build:babel": "babel src --out-dir dist --extensions .ts",
     "build:dist": "npm run build:clean && npm run build:ts && npm run webpack && npm run build:babel && npm run build:css && npm run build:fonts && npm run build:bom",
     "webpack": "webpack",
+    "serve": "webpack serve",
     "lint:css": "stylelint \"**/*.css\" --fix",
     "lint:ts": "eslint \"src/**/*.ts[x]\" \"licit/**/*.ts[x]\" --fix",
     "start": "node scripts/webserver.js",

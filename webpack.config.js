@@ -26,6 +26,15 @@ var options = {
     path: path.join(__dirname, 'bin'),
     filename: '[name].bundle.js'
   },
+  devServer: {
+    port: env.PORT,
+    contentBase: path.join(__dirname, 'bin'),
+    stats: {
+      colors: true
+    },
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    hot: true,
+  },
   module: {
     rules: [
       {
@@ -126,7 +135,7 @@ options.plugins.push(function () {
       process.exit(1);
     } else {
       callback();
-      process.exit(0);
+      //process.exit(0);
     }
   });
 });
