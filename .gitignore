@@ -8,3 +8,4 @@ servers
 dist
 src/coverage
 *.tgz
+coverage
