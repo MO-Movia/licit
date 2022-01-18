@@ -28,7 +28,7 @@ import { IndexeddbPersistence } from 'y-indexeddb';
  *  embedded {boolean} [false] Disable/Enable inline behaviour.
  *  plugins [plugins] External Plugins into the editor.
  */
-interface LicitProps {
+export interface LicitProps {
   docID?: string;
   collabServiceURL?: string;
   debug?: boolean;
