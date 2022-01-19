@@ -9,3 +9,4 @@ dist
 src/coverage
 *.tgz
 coverage
+.scannerwork
