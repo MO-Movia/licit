@@ -148,7 +148,14 @@ class EditorConnection {
     this.run(GET(this.url)).then(
       (data) => {
         data = JSON.parse(data);
-        this.dispatchData(data.doc_json);
+        this.report.success();
+        this.backOff = 0;
+        this.dispatch({
+          type: 'loaded',
+          doc: this.getEffectiveSchema().nodeFromJSON(data.doc_json),
+          version: data.version,
+          users: data.users,
+        });
       },
       (err) => {
         this.report.failure(err);
