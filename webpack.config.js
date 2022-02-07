@@ -3,11 +3,10 @@
 var webpack = require('webpack'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   FlowWebpackPlugin = require('flow-webpack-plugin'),
-  HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   TerserPlugin = require('terser-webpack-plugin'),
-  
-  WriteFilePlugin = require('write-file-webpack-plugin'),
+ 
+
   env = require('./utils/env'),
   fileSystem = require('fs'),
   path = require('path');
@@ -107,9 +106,7 @@ var options = {
       chunks: ['licit'],
       inlineSource: isDev ? '$^' : '.(js|css)$'
     }),
-    new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
-    new WriteFilePlugin()
-  ]
+   ]
 };
 
 if (env.NODE_ENV === 'development') {
