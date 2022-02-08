@@ -114,7 +114,7 @@
     "prosemirror-state": "^1.3.4",
     "prosemirror-tables": "^1.1.1",
     "prosemirror-transform": "^1.2.9",
-    "prosemirror-utils": "0.9.6",
+    "prosemirror-utils": "file:packages/prosemirror-utils-1.0.0-0.tgz",
     "prosemirror-view": "^1.17.3",
     "query-string": "6.13.1",
     "react": "^16.13.1",

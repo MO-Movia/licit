@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const FlowWebpackPlugin = require('flow-webpack-plugin');
-const WriteFilePlugin = require('write-file-webpack-plugin');
 const env = require('./env');
 const path = require('path');
 
@@ -53,7 +52,6 @@ const config = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV)
     }),
-    new WriteFilePlugin(),
   ],
   // to enable debug
   //devtool: 'source-map'
