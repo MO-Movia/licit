@@ -9,6 +9,9 @@
     "type": "git",
     "url": "git+https://github.com/MO-Movia/licit.git"
   },
+    "bundleDependencies": [
+    "prosemirror-utils"
+  ],
   "scripts": {
     "test": "jest",
     "build:bom": "cyclonedx-bom -o dist/bom.xml",
