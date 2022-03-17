@@ -158,7 +158,6 @@ class Editor extends React.PureComponent<any, any> {
 
       // Reference: http://prosemirror.net/examples/basic/
       const view = (this._editorView = new CustomEditorView(editorNode, {
-        clipboardSerializer: DOMSerializer.fromSchema(schema),
         dispatchTransaction,
         editable: this._isEditable,
         nodeViews: boundNodeViews,
