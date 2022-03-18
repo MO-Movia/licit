@@ -1,7 +1,7 @@
 // @flow
 
 import cx from 'classnames';
-import { DOMSerializer, Schema } from 'prosemirror-model';
+import { Schema } from 'prosemirror-model';
 import { EditorState, Transaction } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
