@@ -401,18 +401,7 @@ class Licit extends React.Component<any, any> {
 
       if (transaction.docChanged) {
         const docJson = transaction.doc.toJSON();
-        let isEmpty = false;
-
-        if (docJson.content && docJson.content.length === 1) {
-          if (
-            !docJson.content[0].content ||
-            (docJson.content[0].content &&
-              docJson.content[0].content[0].text &&
-              '' === docJson.content[0].content[0].text.trim())
-          ) {
-            isEmpty = true;
-          }
-        }
+        const isEmpty = this.isDocEmpty(docJson);
 
         // setCFlags is/was always the opposite of isEmpty.
         if (isEmpty) {
@@ -430,6 +419,27 @@ class Licit extends React.Component<any, any> {
       }
     }
   };
+
+  isDocEmpty(docJson: Object) {
+    let isEmpty = false;
+
+    if (docJson.content && docJson.content.length === 1) {
+      if (
+        !docJson.content[0].content ||
+        (docJson.content[0].content &&
+          // [FS] IRAD-1710 2022-03-04
+          // Empty if no content OR when the one & only text content is empty.
+          1 === docJson.content[0].content.length &&
+          'text' === docJson.content[0].content[0].type &&
+          docJson.content[0].content[0].text &&
+          '' === docJson.content[0].content[0].text)
+      ) {
+        isEmpty = true;
+      }
+    }
+    return isEmpty;
+  }
+
   // [FS] IRAD-1173 2021-02-25
   // Bug fix: Transaction mismatch error when a dialog is opened and keep typing.
   closeOpenedPopupModels() {
@@ -446,8 +456,14 @@ class Licit extends React.Component<any, any> {
     this._editorView = editorView;
     const tr = state.tr;
     const doc = state.doc;
-    const trx = tr.setSelection(TextSelection.create(doc, 0, doc.content.size));
-    dispatch(trx.scrollIntoView());
+
+    // [FS] IRAD-1710 2022-03-04
+    if (!this.isDocEmpty(doc.toJSON())) {
+      const trx = tr.setSelection(
+        TextSelection.create(doc, 0, doc.content.size)
+      );
+      dispatch(trx.scrollIntoView());
+    }
 
     // [FS] IRAD-1578 2021-09-27
     // In collab mode, fire onRead only after getting the response from collab server.
