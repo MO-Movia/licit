@@ -73,7 +73,7 @@ class Licit extends React.Component<any, any> {
     this._editorView = null;
     this._skipSCU = true;
 
-    const noop = function () {};
+    const noop = function () { };
 
     // [FS] IRAD-981 2020-06-10
     // Component's configurations.
@@ -132,17 +132,17 @@ class Licit extends React.Component<any, any> {
     const setState = this.setState.bind(this);
     this._connector = collaborative
       ? new CollabConnector(
-          editorState,
-          setState,
-          {
-            docID,
-            collabServiceURL,
-          },
-          this._defaultEditorSchema,
-          this._defaultEditorPlugins,
-          // [FS] IRAD-1578 2021-09-27
-          this.onReady.bind(this)
-        )
+        editorState,
+        setState,
+        {
+          docID,
+          collabServiceURL,
+        },
+        this._defaultEditorSchema,
+        this._defaultEditorPlugins,
+        // [FS] IRAD-1578 2021-09-27
+        this.onReady.bind(this)
+      )
       : new SimpleConnector(editorState, setState);
 
     // FS IRAD-989 2020-18-06
@@ -265,7 +265,7 @@ class Licit extends React.Component<any, any> {
 
   setContent = (content: any = {}): void => {
     // [FS] IRAD-1571 2021-09-27
-    // dispatch a transaction that MUST start from the view’s current state;
+    // dispatch a transaction that MUST start from the viewï¿½s current state;
     const editorState = this._editorView.state;
     const { doc, schema } = editorState;
     let { tr } = editorState;
@@ -278,8 +278,8 @@ class Licit extends React.Component<any, any> {
     // set the value for object metadata  and objectId
     tr = this.isNodeHasAttribute(document, ATTR_OBJMETADATA)
       ? tr.step(
-          new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)
-        )
+        new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)
+      )
       : tr;
     tr = this.isNodeHasAttribute(document, ATTR_OBJID)
       ? tr.step(new SetDocAttrStep(ATTR_OBJID, document.attrs.objectId))
@@ -296,7 +296,7 @@ class Licit extends React.Component<any, any> {
       let dataChanged = false;
 
       // [FS] IRAD-1571 2021-09-27
-      // dispatch a transaction that MUST start from the view’s current state;
+      // dispatch a transaction that MUST start from the viewï¿½s current state;
       // [FS] IRAD-1589 2021-10-04
       // Do a proper circular JSON comparison.
       if (stringify(this.state.data) !== stringify(nextState.data)) {
@@ -323,17 +323,17 @@ class Licit extends React.Component<any, any> {
         // create new connector
         this._connector = collabEditing
           ? new CollabConnector(
-              editorState,
-              setState,
-              {
-                docID,
-                collabServiceURL,
-              },
-              this._defaultEditorSchema,
-              this._defaultEditorPlugins,
-              // [FS] IRAD-1578 2021-09-27
-              this.onReady.bind(this)
-            )
+            editorState,
+            setState,
+            {
+              docID,
+              collabServiceURL,
+            },
+            this._defaultEditorSchema,
+            this._defaultEditorPlugins,
+            // [FS] IRAD-1578 2021-09-27
+            this.onReady.bind(this)
+          )
           : new SimpleConnector(editorState, setState);
       }
     }

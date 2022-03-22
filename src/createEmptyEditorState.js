@@ -12,14 +12,8 @@ export const EMPTY_DOC_JSON = {
   type: 'doc',
   content: [
     {
-      type: 'paragraph',
-      content: [
-        {
-          type: 'text',
-          text: ' ',
-        },
-      ],
-    },
+      type: 'paragraph'
+    },// [FS] IRAD-1710 2022-03-04 - No text content needed
   ],
 };
 
