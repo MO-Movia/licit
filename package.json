@@ -9,6 +9,9 @@
     "type": "git",
     "url": "git+https://github.com/MO-Movia/licit.git"
   },
+  "bundleDependencies": [
+    "prosemirror-utils"
+  ],
   "scripts": {
     "test": "jest",
     "build:bom": "cyclonedx-bom -o dist/bom.xml",
@@ -78,7 +81,6 @@
     "lint-staged": "^10.4.0",
     "mkdirp": "^1.0.4",
     "prettier": "^2.1.2",
-    "react-test-renderer": "^17.0.1",
     "stylelint": "^13.7.2",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-prettier": "^1.2.0",
@@ -112,11 +114,11 @@
     "prosemirror-history": "1.1.3",
     "prosemirror-inputrules": "1.1.3",
     "prosemirror-keymap": "^1.1.4",
-    "prosemirror-model": "^1.13.1",
+    "prosemirror-model": "^1.16.1",
     "prosemirror-state": "^1.3.4",
     "prosemirror-tables": "^1.1.1",
     "prosemirror-transform": "^1.2.9",
-    "prosemirror-utils": "0.9.6",
+    "prosemirror-utils": "file:prosemirror-utils-1.0.0-0.tgz",
     "prosemirror-view": "^1.17.3",
     "query-string": "6.13.1",
     "react": "^16.13.1",
