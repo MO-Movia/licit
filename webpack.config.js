@@ -56,15 +56,8 @@ var options = {
       },
       {
         test: /\.(woff(2)?|ttf|otf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: 'fonts/'
-            }
-          }
-        ]
+        type: 'asset/resource',
+       
       },
       {
         test: /\.css$/,
@@ -74,8 +67,9 @@ var options = {
         ],
       },
       {
-        test: /\.(jpe?g|png|gif|svg)$/i, 
-        loader: 'file-loader'
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        type: 'asset/resource',
+
       },
       {
         test: /\.html$/,
@@ -85,7 +79,10 @@ var options = {
     ]
   },
   resolve: {
-    alias: {}
+    alias: {},
+    fallback: {
+      url: require.resolve("url/")
+    }
   },
   plugins: [
     new webpack.ProvidePlugin({
@@ -106,7 +103,7 @@ var options = {
       chunks: ['licit'],
       inlineSource: isDev ? '$^' : '.(js|css)$'
     }),
-   ]
+  ]
 };
 
 if (env.NODE_ENV === 'development') {
