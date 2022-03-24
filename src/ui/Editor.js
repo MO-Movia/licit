@@ -1,7 +1,7 @@
 // @flow
 
 import cx from 'classnames';
-import { DOMSerializer, Schema } from 'prosemirror-model';
+import { Schema } from 'prosemirror-model';
 import { EditorState, Transaction } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
@@ -158,7 +158,6 @@ class Editor extends React.PureComponent<any, any> {
 
       // Reference: http://prosemirror.net/examples/basic/
       const view = (this._editorView = new CustomEditorView(editorNode, {
-        clipboardSerializer: DOMSerializer.fromSchema(schema),
         dispatchTransaction,
         editable: this._isEditable,
         nodeViews: boundNodeViews,

@@ -459,7 +459,9 @@ class Licit extends React.Component<any, any> {
 
     // [FS] IRAD-1710 2022-03-04
     if (!this.isDocEmpty(doc.toJSON())) {
-      const trx = tr.setSelection(TextSelection.create(doc, 0, doc.content.size));
+      const trx = tr.setSelection(
+        TextSelection.create(doc, 0, doc.content.size)
+      );
       dispatch(trx.scrollIntoView());
     }
 

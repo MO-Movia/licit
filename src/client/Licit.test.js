@@ -16,6 +16,17 @@ describe('<Licit />', () => {
   let wrapper;
   let licit;
 
+  // provide an empty document just to shut up that warning
+  const data = {
+    type: 'doc',
+    content: [
+      {
+        type: 'paragraph',
+        content: [{ type: 'text', text: ' ' }],
+      },
+    ],
+  };
+
   // Mocking the functions used in _onReady
   const fakeEditorView = {
     focus: noop,
@@ -24,6 +35,7 @@ describe('<Licit />', () => {
       doc: {
         content: { size: 10 },
         resolve: () => ({ min: () => 0, max: () => 10 }),
+        toJSON: () => data,
       },
       tr: {
         setSelection: () => fakeEditorView.state.tr,
@@ -33,16 +45,6 @@ describe('<Licit />', () => {
   };
 
   beforeEach(() => {
-    // provide an empty document just to shut up that warning
-    const data = {
-      type: 'doc',
-      content: [
-        {
-          type: 'paragraph',
-          content: [{ type: 'text', text: ' ' }],
-        },
-      ],
-    };
     wrapper = shallow(<Licit data={data} />);
     licit = wrapper.instance();
   });
