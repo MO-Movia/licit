@@ -1,10 +1,11 @@
 // @flow
-import applyDevTools from 'prosemirror-dev-tools';
 import { EditorState, TextSelection, Plugin } from 'prosemirror-state';
 import { Node } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
+import ReactDOM from 'react-dom';
+import { stringify } from 'flatted';
 
 import convertFromJSON from '../convertFromJSON';
 import RichTextEditor from '../ui/RichTextEditor';
@@ -50,6 +51,8 @@ class Licit extends React.Component<any, any> {
   _skipSCU: boolean; // Flag to decide whether to skip shouldComponentUpdate
   _defaultEditorSchema: Schema;
   _defaultEditorPlugins: Array<Plugin>;
+  _devTools: Promise<any>;
+  _applyDevTools: any;
 
   _popUp = null;
 
@@ -129,15 +132,17 @@ class Licit extends React.Component<any, any> {
     const setState = this.setState.bind(this);
     this._connector = collaborative
       ? new CollabConnector(
-          editorState,
-          setState,
-          {
-            docID,
-            collabServiceURL,
-          },
-          this._defaultEditorSchema,
-          this._defaultEditorPlugins
-        )
+        editorState,
+        setState,
+        {
+          docID,
+          collabServiceURL,
+        },
+        this._defaultEditorSchema,
+        this._defaultEditorPlugins,
+        // [FS] IRAD-1578 2021-09-27
+        this.onReady.bind(this)
+      )
       : new SimpleConnector(editorState, setState);
 
     // FS IRAD-989 2020-18-06
@@ -164,6 +169,18 @@ class Licit extends React.Component<any, any> {
     if (this._connector.updateSchema) {
       // Use known editorState to update schema.
       this._connector.updateSchema(editorState.schema);
+    }
+  }
+
+  // [FS] IRAD-1578 2021-09-27
+  onReady(state: EditorState) {
+    const collabEditing = this.state.docID !== '';
+
+    if (collabEditing) {
+      this._editorView && this._editorView.focus();
+      if (this.state.onReadyCB) {
+        this.state.onReadyCB(this);
+      }
     }
   }
 
@@ -247,11 +264,12 @@ class Licit extends React.Component<any, any> {
   }
 
   setContent = (content: any = {}): void => {
-    const { doc, schema } = this._connector.getState();
-    let { tr } = this._connector.getState();
-    const document = content
-      ? schema.nodeFromJSON(content)
-      : schema.nodeFromJSON(EMPTY_DOC_JSON);
+    // [FS] IRAD-1571 2021-09-27
+    // dispatch a transaction that MUST start from the view's current state;
+    const editorState = this._editorView.state;
+    const { doc, schema } = editorState;
+    let { tr } = editorState;
+    const document = schema.nodeFromJSON(content ? content : EMPTY_DOC_JSON);
 
     const selection = TextSelection.create(doc, 0, doc.content.size);
 
@@ -277,16 +295,16 @@ class Licit extends React.Component<any, any> {
       this._skipSCU = false;
       let dataChanged = false;
 
-      // Compare data, if found difference, update editorState
-      if (this.state.data !== nextState.data) {
-        dataChanged = true;
-      } else if (null === nextState.data) {
-        if (
-          this.state.editorState.doc.textContent &&
-          0 < this.state.editorState.doc.textContent.trim().length
-        ) {
-          dataChanged = true;
-        }
+      // [FS] IRAD-1571 2021-09-27
+      // dispatch a transaction that MUST start from the view's current state;
+      // [FS] IRAD-1589 2021-10-04
+      // Do a proper circular JSON comparison.
+      if (stringify(this.state.data) !== stringify(nextState.data)) {
+        const editorState = this._editorView.state;
+        const nextDoc = editorState.schema.nodeFromJSON(
+          nextState.data ? nextState.data : EMPTY_DOC_JSON
+        );
+        dataChanged = !nextDoc.eq(editorState.doc);
       }
 
       if (dataChanged) {
@@ -297,7 +315,7 @@ class Licit extends React.Component<any, any> {
       if (this.state.docID !== nextState.docID) {
         // Collaborative mode changed
         const collabEditing = nextState.docID !== '';
-        const editorState = this._connector.getState();
+        const editorState = this._editorView.state;
         const setState = this.setState.bind(this);
         const docID = nextState.docID || '';
         const collabServiceURL =
@@ -305,15 +323,17 @@ class Licit extends React.Component<any, any> {
         // create new connector
         this._connector = collabEditing
           ? new CollabConnector(
-              editorState,
-              setState,
-              {
-                docID,
-                collabServiceURL,
-              },
-              this._defaultEditorSchema,
-              this._defaultEditorPlugins
-            )
+            editorState,
+            setState,
+            {
+              docID,
+              collabServiceURL,
+            },
+            this._defaultEditorSchema,
+            this._defaultEditorPlugins,
+            // [FS] IRAD-1578 2021-09-27
+            this.onReady.bind(this)
+          )
           : new SimpleConnector(editorState, setState);
       }
     }
@@ -381,18 +401,7 @@ class Licit extends React.Component<any, any> {
 
       if (transaction.docChanged) {
         const docJson = transaction.doc.toJSON();
-        let isEmpty = false;
-
-        if (docJson.content && docJson.content.length === 1) {
-          if (
-            !docJson.content[0].content ||
-            (docJson.content[0].content &&
-              docJson.content[0].content[0].text &&
-              '' === docJson.content[0].content[0].text.trim())
-          ) {
-            isEmpty = true;
-          }
-        }
+        const isEmpty = this.isDocEmpty(docJson);
 
         // setCFlags is/was always the opposite of isEmpty.
         if (isEmpty) {
@@ -410,6 +419,27 @@ class Licit extends React.Component<any, any> {
       }
     }
   };
+
+  isDocEmpty(docJson: Object) {
+    let isEmpty = false;
+
+    if (docJson.content && docJson.content.length === 1) {
+      if (
+        !docJson.content[0].content ||
+        (docJson.content[0].content &&
+          // [FS] IRAD-1710 2022-03-04
+          // Empty if no content OR when the one & only text content is empty.
+          1 === docJson.content[0].content.length &&
+          'text' === docJson.content[0].content[0].type &&
+          docJson.content[0].content[0].text &&
+          '' === docJson.content[0].content[0].text)
+      ) {
+        isEmpty = true;
+      }
+    }
+    return isEmpty;
+  }
+
   // [FS] IRAD-1173 2021-02-25
   // Bug fix: Transaction mismatch error when a dialog is opened and keep typing.
   closeOpenedPopupModels() {
@@ -426,21 +456,78 @@ class Licit extends React.Component<any, any> {
     this._editorView = editorView;
     const tr = state.tr;
     const doc = state.doc;
-    const trx = tr.setSelection(TextSelection.create(doc, 0, doc.content.size));
-    dispatch(trx.scrollIntoView());
-    editorView.focus();
 
-    if (this.state.onReadyCB) {
+    // [FS] IRAD-1710 2022-03-04
+    if (!this.isDocEmpty(doc.toJSON())) {
+      const trx = tr.setSelection(
+        TextSelection.create(doc, 0, doc.content.size)
+      );
+      dispatch(trx.scrollIntoView());
+    }
+
+    // [FS] IRAD-1578 2021-09-27
+    // In collab mode, fire onRead only after getting the response from collab server.
+    if (this.state.onReadyCB && this.state.docID === '') {
+      editorView.focus();
       this.state.onReadyCB(this);
     }
 
-    if (this.state.debug) {
-      window.debugProseMirror = () => {
-        applyDevTools(editorView);
-      };
-      window.debugProseMirror();
-    }
+    this.initDevTool(this.state.debug, editorView);
   };
+
+  initDevTool(debug: boolean, editorView: EditorView): void {
+    // [FS] IRAD-1575 2021-09-27
+    if (debug) {
+      if (!this._devTools) {
+        this._devTools = new Promise(async (resolve, reject) => {
+          try {
+            // Method is exported as both the default and named, Using named
+            // for clarity and future proofing.
+            const { applyDevTools } = await import('prosemirror-dev-tools');
+            // got the pm dev tools instance.
+            this._applyDevTools = applyDevTools;
+            // Attach debug tools to current editor instance.
+            this._applyDevTools(editorView);
+            resolve(() => {
+              // [FS] IRAD-1571 2021-10-08
+              // Prosemirror Dev Tools handles as if one only instance is used in a page and
+              // hence handling removal here gracefully.
+              const place = document.querySelector(
+                '.'.concat('__prosemirror-dev-tools__')
+              );
+              if (place) {
+                ReactDOM.unmountComponentAtNode(place);
+                place.innerHTML = '';
+              }
+            });
+          } catch (error) {
+            reject();
+          }
+        });
+      }
+
+      // Attach debug tools to current editor instance.
+      if (this._devTools && this._applyDevTools) {
+        this._applyDevTools(editorView);
+      }
+    }
+  }
+
+  destroyDevTool(): void {
+    // [FS] IRAD-1569 2021-09-15
+    // Unmount dev tools when component is destroyed,
+    // so that toggle effect is not occuring when the document is retrieved each time.
+    if (this._devTools) {
+      // Call the applyDevTools method again to trigger DOM removal
+      // prosemirror-dev-tools has outstanding pull-requests that affect
+      // dom removal. this may need to be addressed once those have been merged.
+      this._devTools.then((removeDevTools) => removeDevTools());
+    }
+  }
+
+  componentWillUnmount(): void {
+    this.destroyDevTool();
+  }
 
   /**
    * LICIT properties:
@@ -458,6 +545,18 @@ class Licit extends React.Component<any, any> {
    *  embedded {boolean} [false] Disable/Enable inline behaviour.
    */
   setProps = (props: any): void => {
+    // [FS] IRAD-1571 2021-10-08
+    // Since the debug lies outside the editor,
+    // any change to debug tool must be refreshed here.
+    if (this.state.debug !== props.debug) {
+      // change in debug flag.
+      if (props.debug) {
+        this.initDevTool(true, this._editorView);
+      } else {
+        this.destroyDevTool();
+      }
+    }
+
     if (this.state.readOnly) {
       // It should be possible to load content into the editor in readonly as well.
       // It should not be necessary to make the component writable any time during the process

@@ -26,7 +26,8 @@ class CollabConnector extends SimpleConnector {
       collabServiceURL: string,
     },
     schema: Schema,
-    plugins: Array<Plugin>
+    plugins: Array<Plugin>,
+    onReady: Function
   ) {
     super(editorState, setState);
     const { docID, collabServiceURL } = config;
@@ -36,7 +37,7 @@ class CollabConnector extends SimpleConnector {
     // Configurable Collaboration Service URL.
     const url = collabServiceURL + '/docs/' + docID;
     this._connection = new EditorConnection(
-      setState,
+      onReady,
       new Reporter(),
       url,
       plugins,

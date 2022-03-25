@@ -41,7 +41,7 @@ class DocLayoutEditor extends React.PureComponent<any, any> {
       ) {
         return new Error(
           propName +
-          'must be a function with 1 arg of type DocLayoutEditorValue'
+            'must be a function with 1 arg of type DocLayoutEditorValue'
         );
       }
       return null;
