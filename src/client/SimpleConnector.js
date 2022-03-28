@@ -47,7 +47,9 @@ class SimpleConnector {
 
   // FS IRAD-1040 2020-09-02
   // Send the modified schema to server
-  updateSchema = (schema: Schema) => {};
+  updateSchema = (schema: Schema, data: any) => {};
+
+  cleanUp = () => {};
 }
 
 export default SimpleConnector;

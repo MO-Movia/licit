@@ -73,7 +73,7 @@ class Licit extends React.Component<any, any> {
     this._editorView = null;
     this._skipSCU = true;
 
-    const noop = function () { };
+    const noop = function () {};
 
     // [FS] IRAD-981 2020-06-10
     // Component's configurations.
@@ -132,17 +132,17 @@ class Licit extends React.Component<any, any> {
     const setState = this.setState.bind(this);
     this._connector = collaborative
       ? new CollabConnector(
-        editorState,
-        setState,
-        {
-          docID,
-          collabServiceURL,
-        },
-        this._defaultEditorSchema,
-        this._defaultEditorPlugins,
-        // [FS] IRAD-1578 2021-09-27
-        this.onReady.bind(this)
-      )
+          editorState,
+          setState,
+          {
+            docID,
+            collabServiceURL,
+          },
+          this._defaultEditorSchema,
+          this._defaultEditorPlugins,
+          // [FS] IRAD-1578 2021-09-27
+          this.onReady.bind(this)
+        )
       : new SimpleConnector(editorState, setState);
 
     // FS IRAD-989 2020-18-06
@@ -168,7 +168,7 @@ class Licit extends React.Component<any, any> {
     // Get the modified schema from editorstate and send it to collab server
     if (this._connector.updateSchema) {
       // Use known editorState to update schema.
-      this._connector.updateSchema(editorState.schema);
+      this._connector.updateSchema(editorState.schema, data);
     }
   }
 
@@ -265,11 +265,15 @@ class Licit extends React.Component<any, any> {
 
   setContent = (content: any = {}): void => {
     // [FS] IRAD-1571 2021-09-27
-    // dispatch a transaction that MUST start from the view's current state;
+    // dispatch a transaction that MUST start from the view’s current state;
     const editorState = this._editorView.state;
     const { doc, schema } = editorState;
     let { tr } = editorState;
     const document = schema.nodeFromJSON(content ? content : EMPTY_DOC_JSON);
+
+    // [FS] IRAD-1593 2021-10-12
+    // Reset lastKeyCode since the content is set dynamically and so lastKeyCode is invalid now.
+    this._editorView.lastKeyCode = null;
 
     const selection = TextSelection.create(doc, 0, doc.content.size);
 
@@ -278,8 +282,8 @@ class Licit extends React.Component<any, any> {
     // set the value for object metadata  and objectId
     tr = this.isNodeHasAttribute(document, ATTR_OBJMETADATA)
       ? tr.step(
-        new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)
-      )
+          new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)
+        )
       : tr;
     tr = this.isNodeHasAttribute(document, ATTR_OBJID)
       ? tr.step(new SetDocAttrStep(ATTR_OBJID, document.attrs.objectId))
@@ -289,56 +293,82 @@ class Licit extends React.Component<any, any> {
     this._editorView.dispatch(tr);
   };
 
+  hasDataChanged(nextData: any) {
+    let dataChanged = false;
+
+    // [FS] IRAD-1571 2021-09-27
+    // dispatch a transaction that MUST start from the view’s current state;
+    // [FS] IRAD-1589 2021-10-04
+    // Do a proper circular JSON comparison.
+    if (stringify(this.state.data) !== stringify(nextData)) {
+      const editorState = this._editorView.state;
+      const nextDoc = editorState.schema.nodeFromJSON(
+        nextData ? nextData : EMPTY_DOC_JSON
+      );
+      dataChanged = !nextDoc.eq(editorState.doc);
+    }
+
+    return dataChanged;
+  }
+
+  changeContent(data: any) {
+    if (this.hasDataChanged(data)) {
+      // FS IRAD-1592 2021-11-10
+      // Release here quickly, so that update doesn't care about at this point.
+      // data changed, so update document content
+      setTimeout(this.setContent.bind(this, data), 1);
+    }
+  }
+
   shouldComponentUpdate(nextProps: any, nextState: any) {
     // Only interested if properties are set from outside.
     if (!this._skipSCU) {
       this._skipSCU = false;
-      let dataChanged = false;
 
-      // [FS] IRAD-1571 2021-09-27
-      // dispatch a transaction that MUST start from the view's current state;
-      // [FS] IRAD-1589 2021-10-04
-      // Do a proper circular JSON comparison.
-      if (stringify(this.state.data) !== stringify(nextState.data)) {
-        const editorState = this._editorView.state;
-        const nextDoc = editorState.schema.nodeFromJSON(
-          nextState.data ? nextState.data : EMPTY_DOC_JSON
-        );
-        dataChanged = !nextDoc.eq(editorState.doc);
-      }
-
-      if (dataChanged) {
-        // data changed, so update document content
-        this.setContent(nextState.data);
-      }
+      this.changeContent(nextState.data);
 
       if (this.state.docID !== nextState.docID) {
-        // Collaborative mode changed
-        const collabEditing = nextState.docID !== '';
-        const editorState = this._editorView.state;
-        const setState = this.setState.bind(this);
-        const docID = nextState.docID || '';
-        const collabServiceURL =
-          nextState.collabServiceURL || '/collaboration-service';
-        // create new connector
-        this._connector = collabEditing
-          ? new CollabConnector(
-            editorState,
-            setState,
-            {
-              docID,
-              collabServiceURL,
-            },
-            this._defaultEditorSchema,
-            this._defaultEditorPlugins,
-            // [FS] IRAD-1578 2021-09-27
-            this.onReady.bind(this)
-          )
-          : new SimpleConnector(editorState, setState);
+        setTimeout(this.setDocID.bind(this, nextState), 1);
       }
     }
 
     return true;
+  }
+
+  setDocID(nextState: any) {
+    // Collaborative mode changed
+    const collabEditing = nextState.docID !== '';
+    const editorState = this._editorView.state;
+    const setState = this.setState.bind(this);
+    const docID = nextState.docID || '';
+    const collabServiceURL =
+      nextState.collabServiceURL || '/collaboration-service';
+
+    if (this._connector) {
+      this._connector.cleanUp();
+    }
+    // create new connector
+    this._connector = collabEditing
+      ? new CollabConnector(
+          editorState,
+          setState,
+          {
+            docID,
+            collabServiceURL,
+          },
+          this._defaultEditorSchema,
+          this._defaultEditorPlugins,
+          // [FS] IRAD-1578 2021-09-27
+          this.onReady.bind(this)
+        )
+      : new SimpleConnector(editorState, setState);
+
+    // FS IRAD-1592 2021-11-10
+    // Notify collab server
+    if (this._connector.updateSchema) {
+      // Use known editorState to update schema.
+      this._connector.updateSchema(editorState.schema);
+    }
   }
 
   render(): React.Element<any> {
@@ -401,7 +431,18 @@ class Licit extends React.Component<any, any> {
 
       if (transaction.docChanged) {
         const docJson = transaction.doc.toJSON();
-        const isEmpty = this.isDocEmpty(docJson);
+        let isEmpty = false;
+
+        if (docJson.content && docJson.content.length === 1) {
+          if (
+            !docJson.content[0].content ||
+            (docJson.content[0].content &&
+              docJson.content[0].content[0].text &&
+              '' === docJson.content[0].content[0].text.trim())
+          ) {
+            isEmpty = true;
+          }
+        }
 
         // setCFlags is/was always the opposite of isEmpty.
         if (isEmpty) {
@@ -419,27 +460,6 @@ class Licit extends React.Component<any, any> {
       }
     }
   };
-
-  isDocEmpty(docJson: Object) {
-    let isEmpty = false;
-
-    if (docJson.content && docJson.content.length === 1) {
-      if (
-        !docJson.content[0].content ||
-        (docJson.content[0].content &&
-          // [FS] IRAD-1710 2022-03-04
-          // Empty if no content OR when the one & only text content is empty.
-          1 === docJson.content[0].content.length &&
-          'text' === docJson.content[0].content[0].type &&
-          docJson.content[0].content[0].text &&
-          '' === docJson.content[0].content[0].text)
-      ) {
-        isEmpty = true;
-      }
-    }
-    return isEmpty;
-  }
-
   // [FS] IRAD-1173 2021-02-25
   // Bug fix: Transaction mismatch error when a dialog is opened and keep typing.
   closeOpenedPopupModels() {
@@ -456,14 +476,8 @@ class Licit extends React.Component<any, any> {
     this._editorView = editorView;
     const tr = state.tr;
     const doc = state.doc;
-
-    // [FS] IRAD-1710 2022-03-04
-    if (!this.isDocEmpty(doc.toJSON())) {
-      const trx = tr.setSelection(
-        TextSelection.create(doc, 0, doc.content.size)
-      );
-      dispatch(trx.scrollIntoView());
-    }
+    const trx = tr.setSelection(TextSelection.create(doc, 0, doc.content.size));
+    dispatch(trx.scrollIntoView());
 
     // [FS] IRAD-1578 2021-09-27
     // In collab mode, fire onRead only after getting the response from collab server.

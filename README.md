@@ -11,7 +11,6 @@
 
 
 
-
 <h1 align="center">Licit Editor</h1>
 
 <div align="center">
