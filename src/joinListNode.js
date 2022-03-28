@@ -4,7 +4,7 @@ import { Schema } from 'prosemirror-model';
 import { TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 
-import isListNode from './isListNode';
+import { isListNode } from '@modusoperandi/licit-ui-commands';
 import joinDown from './joinDown';
 import joinUp from './joinUp';
 

@@ -11,6 +11,7 @@
 
 
 
+
 <h1 align="center">Licit Editor</h1>
 
 <div align="center">
@@ -59,7 +60,7 @@ Python(3.8.2)
 
 ### Install dependencies
 
- Build [licit-doc-attrs-step](https://github.com/MO-Movia/licit-doc-attrs-step) and copy _modusoperandi-licit-doc-attrs-step-0.0.1.tgz_ to the root folder.
+ Pack [licit-ui-components](https://github.com/MO-Movia/licit-ui-components/tree/initial) and copy _modusoperandi-licit-ui-commands-0.0.1.tgz_ to the root folder.
 ```
 cd licit
 npm install

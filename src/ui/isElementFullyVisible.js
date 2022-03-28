@@ -1,6 +1,6 @@
 // @flow
 
-import { fromHTMlElement } from './rects';
+import { fromHTMlElement } from '@modusoperandi/licit-ui-commands';
 
 export default function isElementFullyVisible(el: HTMLElement): boolean {
   const { x, y, w, h } = fromHTMlElement(el);

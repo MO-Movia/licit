@@ -4,14 +4,14 @@ import './czi-math-view.css';
 import CustomNodeView from './CustomNodeView';
 import MathInlineEditor from './MathInlineEditor';
 import * as React from 'react';
-import createPopUp from './createPopUp';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import cx from 'classnames';
 import renderLaTeXAsHTML from './renderLaTeXAsHTML';
 import uuid from './uuid';
 import { Decoration } from 'prosemirror-view';
 import { FRAMESET_BODY_CLASSNAME } from './EditorFrameset';
 import { Node } from 'prosemirror-model';
-import { atAnchorBottomCenter } from './PopUpPosition';
+import { atAnchorBottomCenter } from '@modusoperandi/licit-ui-commands';
 import { NodeSelection } from 'prosemirror-state';
 
 import type { NodeViewProps } from './CustomNodeView';

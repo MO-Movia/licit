@@ -7,9 +7,9 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import CommandMenu from './CommandMenu';
-import CustomButton from './CustomButton';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import createPopUp from './createPopUp';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid';
 
 import './czi-custom-menu-button.css';

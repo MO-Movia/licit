@@ -6,7 +6,7 @@ import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
 
 import { CODE_BLOCK } from './NodeNames';
-import noop from './noop';
+import { noop } from '@modusoperandi/licit-ui-commands';
 import toggleCodeBlock from './toggleCodeBlock';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
