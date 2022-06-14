@@ -13,9 +13,9 @@ import Icon from './Icon';
 import ImageInlineEditor from './ImageInlineEditor';
 import ImageResizeBox from './ImageResizeBox';
 import { MIN_SIZE } from './ImageResizeBox';
-import { atAnchorBottomCenter } from './PopUpPosition';
+import { atAnchorBottomCenter } from '@modusoperandi/licit-ui-commands';
 import ResizeObserver from './ResizeObserver';
-import createPopUp from './createPopUp';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import resolveImage from './resolveImage';
 import uuid from './uuid';
 

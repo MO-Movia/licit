@@ -10,11 +10,11 @@ import {
   hideSelectionPlaceholder,
   showSelectionPlaceholder,
 } from './SelectionPlaceholderPlugin';
-import applyMark from './applyMark';
-import findNodesWithSameMark from './findNodesWithSameMark';
+import { applyMark } from '@modusoperandi/licit-ui-commands';
+import { findNodesWithSameMark } from '@modusoperandi/licit-ui-commands';
 import LinkURLEditor from './ui/LinkURLEditor';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import createPopUp from './ui/createPopUp';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 
 class LinkSetURLCommand extends UICommand {
   _popUp = null;

@@ -3,8 +3,8 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-import CustomButton from './CustomButton';
-import preventEventDefault from './preventEventDefault';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
+import { preventEventDefault } from '@modusoperandi/licit-ui-commands';
 import resolveImage from './resolveImage';
 
 import './czi-form.css';

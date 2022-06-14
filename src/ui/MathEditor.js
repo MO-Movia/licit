@@ -3,9 +3,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-import CustomButton from './CustomButton';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import MathQuillEditor from './mathquill-editor/MathQuillEditor';
-import preventEventDefault from './preventEventDefault';
+import { preventEventDefault } from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid';
 
 import './czi-form.css';

@@ -1,11 +1,11 @@
 @import './styles0.css';
 @import './ui/czi-loading-indicator.css';
 @import './ui/czi-math-view.css';
-@import './ui/czi-pop-up.css';
+@import '@modusoperandi/licit-ui-commands/dist/ui/czi-pop-up.css';
 @import './ui/czi-selection-placeholder.css';
 @import './ui/czi-table-cell-menu.css';
 @import './ui/czi-table-grid-size-editor.css';
-@import './ui/czi-tooltip-surface.css';
+@import '@modusoperandi/licit-ui-commands/dist/ui/czi-tooltip-surface.css';
 @import './ui/mathquill-editor/czi-mathquill-editor.css';
 @import './ui/mathquill-editor/czi-mathquill-editor-symbols-panel.css';
 @import './client/licit.css';

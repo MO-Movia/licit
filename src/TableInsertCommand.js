@@ -7,10 +7,10 @@ import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import { Fragment } from 'prosemirror-model';
 import insertTable from './insertTable';
-import { atAnchorRight } from './ui/PopUpPosition';
+import { atAnchorRight } from '@modusoperandi/licit-ui-commands';
 import TableGridSizeEditor from './ui/TableGridSizeEditor';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import createPopUp from './ui/createPopUp';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import { PARAGRAPH } from './NodeNames';
 import type { TableGridSizeEditorValue } from './ui/TableGridSizeEditor';
 
