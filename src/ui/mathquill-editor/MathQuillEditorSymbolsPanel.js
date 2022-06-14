@@ -2,7 +2,7 @@
 
 import renderLaTeXAsHTML from '../renderLaTeXAsHTML';
 import './czi-mathquill-editor-symbols-panel.css';
-import CustomButton from '../CustomButton';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
 
 import type { MathQuillEditorSymbol } from './MathQuillEditorSymbols';

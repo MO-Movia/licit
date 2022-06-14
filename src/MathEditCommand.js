@@ -15,7 +15,7 @@ import {
 import { MATH } from './NodeNames';
 import MathEditor from './ui/MathEditor';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import createPopUp from './ui/createPopUp';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 
 function insertMath(tr: Transform, schema: Schema, latex: ?string): Transform {
   const { selection } = tr;

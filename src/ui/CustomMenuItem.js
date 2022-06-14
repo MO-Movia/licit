@@ -1,7 +1,7 @@
 // @flow
 
 import './czi-custom-menu-item.css';
-import CustomButton from './CustomButton';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
 
 class CustomMenuItemSeparator extends React.PureComponent<any, any> {

@@ -9,15 +9,15 @@ import {
   hideSelectionPlaceholder,
   showSelectionPlaceholder,
 } from './SelectionPlaceholderPlugin';
-import applyMark from './applyMark';
-import findNodesWithSameMark from './findNodesWithSameMark';
+import { applyMark } from '@modusoperandi/licit-ui-commands';
+import { findNodesWithSameMark } from '@modusoperandi/licit-ui-commands';
 import lookUpElement from './lookUpElement';
 import LinkTooltip from './ui/LinkTooltip';
 import LinkURLEditor from './ui/LinkURLEditor';
-import { atAnchorTopCenter } from './ui/PopUpPosition';
-import createPopUp from './ui/createPopUp';
+import { atAnchorTopCenter } from '@modusoperandi/licit-ui-commands';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 
-import './ui/czi-pop-up.css';
+import '@modusoperandi/licit-ui-commands/dist/ui/czi-pop-up.css';
 
 // https://prosemirror.net/examples/tooltip/
 const SPEC = {

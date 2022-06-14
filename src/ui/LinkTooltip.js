@@ -5,7 +5,7 @@ import * as React from 'react';
 import scrollIntoView from 'smooth-scroll-into-view-if-needed';
 
 import sanitizeURL from '../sanitizeURL';
-import CustomButton from './CustomButton';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 
 import './czi-link-tooltip.css';
 

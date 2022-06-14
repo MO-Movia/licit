@@ -6,13 +6,13 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import findActionableCell from './findActionableCell';
-import { atAnchorTopRight } from './ui/PopUpPosition';
+import { atAnchorTopRight } from '@modusoperandi/licit-ui-commands';
 import TableCellMenu from './ui/TableCellMenu';
 import bindScrollHandler from './ui/bindScrollHandler';
-import createPopUp from './ui/createPopUp';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import isElementFullyVisible from './ui/isElementFullyVisible';
 
-import './ui/czi-pop-up.css';
+import '@modusoperandi/licit-ui-commands/dist/ui/czi-pop-up.css';
 
 class TableCellTooltipView {
   _cellElement: null;

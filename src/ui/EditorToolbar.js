@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom';
 
 import CommandButton from './CommandButton';
 import CommandMenuButton from './CommandMenuButton';
-import CustomButton from './CustomButton';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import { COMMAND_GROUPS, parseLabel } from './EditorToolbarConfig';
 import Icon from './Icon';
 import ResizeObserver from './ResizeObserver';

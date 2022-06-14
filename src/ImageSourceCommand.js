@@ -12,7 +12,7 @@ import {
 } from './CursorPlaceholderPlugin';
 import { IMAGE } from './NodeNames';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import createPopUp from './ui/createPopUp';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 
 import type { ImageLike } from './Types';
 

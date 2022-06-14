@@ -51,6 +51,21 @@ class CollabConnector extends SimpleConnector {
     };
   }
 
+  cleanUp = () => {
+    // remove collab plugin
+    if (this._connection) {
+      const cpIdx = this._editorState.plugins.findIndex((plugin) => {
+        return 'collab$' === plugin.spec.key.key;
+      });
+
+      if (-1 != cpIdx) {
+        this._editorState.plugins.splice(cpIdx, 1);
+      }
+
+      this._connection.close();
+    }
+  };
+
   onEdit = (transaction: Transform): void => {
     if (!this._connection.ready) {
       console.warn('not ready');
@@ -63,8 +78,8 @@ class CollabConnector extends SimpleConnector {
 
   // FS IRAD-1040 2020-09-02
   // Send the modified schema to server
-  updateSchema = (schema: Schema) => {
-    this._connection.updateSchema(schema);
+  updateSchema = (schema: Schema, data: any) => {
+    this._connection.updateSchema(schema, data);
   };
 }
 
