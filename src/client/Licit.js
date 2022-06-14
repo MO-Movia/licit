@@ -265,7 +265,7 @@ class Licit extends React.Component<any, any> {
 
   setContent = (content: any = {}): void => {
     // [FS] IRAD-1571 2021-09-27
-    // dispatch a transaction that MUST start from the view’s current state;
+    // dispatch a transaction that MUST start from the viewÂ’s current state;
     const editorState = this._editorView.state;
     const { doc, schema } = editorState;
     let { tr } = editorState;
@@ -297,7 +297,7 @@ class Licit extends React.Component<any, any> {
     let dataChanged = false;
 
     // [FS] IRAD-1571 2021-09-27
-    // dispatch a transaction that MUST start from the view’s current state;
+    // dispatch a transaction that MUST start from the viewÂ’s current state;
     // [FS] IRAD-1589 2021-10-04
     // Do a proper circular JSON comparison.
     if (stringify(this.state.data) !== stringify(nextData)) {
