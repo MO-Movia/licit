@@ -11,6 +11,7 @@
 
 
 
+
 <h1 align="center">Licit Editor</h1>
 
 <div align="center">
@@ -208,18 +209,15 @@ Please refer *licit\client\index.js* for getting more detailed idea on passing p
 |--|--|--|
 |setProps | Update properties of the editor using an editor instance |<ul><li>props: Licit properties' object</li></ul>
 
-To set data to editor:
-In *licit\client\index.js*
+To set data to editor: 
 
-function onReadyCB(ref) {
-  const licitTimeout = setTimeout(setData.bind(ref), 1000);
-}
-function setData() {
-	const props = {};
-    Object.assign(props, this.props);
-	props.data = docJSON;
-  this.setProps(props);
-}
+> function setData() { 	const props = {};
+>     Object.assign(props, this.props);
+>     // here the *this.props* is the *ref* input from the onReadyCB(ref) (Please refer *licit\client\index.js* for onReadyCB(ref) method)
+> 	props.data = {
+> "type":"doc","attrs":{"layout":null,"padding":null,"width":null,"counterFlags":null},"content":[{"type":"paragraph","attrs":{"align":null,"color":null,"id":null,"indent":null,"lineSpacing":null,"paddingBottom":null,"paddingTop":null},"content":[{"type":"text","text":"Hello
+> World!!!"}]}]};
+>    this.setProps(props); }
 
 To load the styles:
 Either in *angular.json*, add
