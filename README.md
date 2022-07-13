@@ -204,6 +204,22 @@ Please refer *licit\client\index.js* for getting more detailed idea on passing p
 |onChange | Fires after each significant change |<ul><li>data: document JSON</li><li>isEmpty: true when empty</li><li>view: prosemirror view</li></ul>
 |onReady| Fires once when the editor is ready |licit reference
 
+|Method Name| Description|Parameter|
+|--|--|--|
+|setProps | Update properties of the editor using an editor instance |<ul><li>props: Licit properties' object</li></ul>
+
+To set data to editor:
+In *licit\client\index.js*
+
+function onReadyCB(ref) {
+  const licitTimeout = setTimeout(setData.bind(ref), 1000);
+}
+function setData() {
+	const props = {};
+    Object.assign(props, this.props);
+	props.data = docJSON;
+  this.setProps(props);
+}
 
 To load the styles:
 Either in *angular.json*, add

@@ -24,8 +24,6 @@ import { Schema } from 'prosemirror-model';
 import EditorMarks from '../EditorMarks';
 import EditorNodes from '../EditorNodes';
 
-const ATTR_OBJID = 'objectId';
-const ATTR_OBJMETADATA = 'objectMetaData';
 /**
  * LICIT properties:
  *  docID {string} [] Collaborative Doument ID
@@ -280,14 +278,10 @@ class Licit extends React.Component<any, any> {
     tr = tr.setSelection(selection).replaceSelectionWith(document, false);
     // [FS] IRAD-1092 2020-12-03
     // set the value for object metadata  and objectId
-    tr = this.isNodeHasAttribute(document, ATTR_OBJMETADATA)
-      ? tr.step(
-          new SetDocAttrStep(ATTR_OBJMETADATA, document.attrs.objectMetaData)
-        )
-      : tr;
-    tr = this.isNodeHasAttribute(document, ATTR_OBJID)
-      ? tr.step(new SetDocAttrStep(ATTR_OBJID, document.attrs.objectId))
-      : tr;
+    // Should update all document attributes.
+    Object.keys(document.attrs).forEach((attr) => {
+      tr = tr.step(new SetDocAttrStep(attr, document.attrs[attr]));
+    });
 
     this._skipSCU = true;
     this._editorView.dispatch(tr);
