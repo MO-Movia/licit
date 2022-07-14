@@ -1,7 +1,7 @@
 // @flow
 
-import {Step} from 'prosemirror-transform';
-import {Schema} from 'prosemirror-model';
+import { Step } from 'prosemirror-transform';
+import { Schema } from 'prosemirror-model';
 import Router from './route';
 import EditorSchema from '../../../src/EditorSchema';
 import {
@@ -41,7 +41,7 @@ function handleCollabRequest(req: any, resp: any) {
       resp.writeHead(200, headers);
       resp.end();
     } else {
-      resp.writeHead(404, {'Content-Type': TXT_PLAIN});
+      resp.writeHead(404, { 'Content-Type': TXT_PLAIN });
       resp.end('Not found');
     }
   }
@@ -153,8 +153,8 @@ handle('GET', [DOCS], () => {
 });
 
 // Output the current state of a document instance.
-handle('GET', [DOCS, null], (id, req) => {
-  const inst = getInstance(id, reqIP(req));
+handle('PUT', [DOCS, null], (data, id, req) => {
+  const inst = getInstance(id, reqIP(req), data);
   return Output.json({
     doc_json: inst.doc.toJSON(),
     users: inst.userCount,
@@ -275,7 +275,7 @@ handle(
       });
       setEditorSchema(effectiveSchema);
     }
-    return Output.json({result: 'success'});
+    return Output.json({ result: 'success' });
   },
   true
 );

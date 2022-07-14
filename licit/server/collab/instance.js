@@ -1,9 +1,9 @@
 // @flow
 
-const {readFileSync, writeFile} = require('fs');
+const { readFileSync, writeFile } = require('fs');
 
 // [FS] IRAD-1040 2020-09-02
-import {Schema} from 'prosemirror-model';
+import { Schema } from 'prosemirror-model';
 
 let _editorSchema: Schema = null;
 
@@ -65,7 +65,7 @@ export class Instance {
     }
     this.sendUpdates();
     scheduleSave();
-    return {version: this.version};
+    return { version: this.version };
   }
 
   sendUpdates() {
@@ -98,7 +98,7 @@ export class Instance {
 
     const steps: any[] = this.steps.slice(startIndex);
     const users = this.userCount;
-    return {steps: steps, users: users};
+    return { steps: steps, users: users };
   }
 
   collectUsers() {
@@ -156,7 +156,8 @@ function scheduleSave() {
 function doSave() {
   saveTimeout = null;
   const out = {};
-  for (const prop in instances) out[prop] = {doc: instances[prop].doc.toJSON()};
+  for (const prop in instances)
+    out[prop] = { doc: instances[prop].doc.toJSON() };
   writeFile(saveFile, JSON.stringify(out), () => {});
 }
 
@@ -182,8 +183,10 @@ export function initEditorSchema(effectiveSchema: Schema) {
   }
 }
 
-export function getInstance(id: any, ip: any) {
-  const inst = instances[id] || newInstance(id);
+export function getInstance(id: any, ip: any, doc: any) {
+  const inst =
+    instances[id] ||
+    newInstance(id, !doc ? undefined : _editorSchema.nodeFromJSON(doc));
   if (ip) inst.registerUser(ip);
   inst.lastActive = Date.now();
   return inst;
@@ -208,7 +211,7 @@ function newInstance(id: any, doc: any) {
 export function instanceInfo() {
   const found = [];
   for (const id in instances)
-    found.push({id: id, users: instances[id].userCount});
+    found.push({ id: id, users: instances[id].userCount });
   return found;
 }
 export class CustomError extends Error {
