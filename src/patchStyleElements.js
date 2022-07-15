@@ -1,6 +1,5 @@
 // @flow
 
-import stable from 'stable';
 import toCSSColor from './ui/toCSSColor';
 import { toCSSLineSpacing } from '@modusoperandi/licit-ui-commands';
 
@@ -94,7 +93,8 @@ export default function patchStyleElements(doc: Document): void {
   });
 
   // Sort selector by
-  stable(selectorTextToCSSTexts, sortBySpecificity)
+  selectorTextToCSSTexts
+    .sort(sortBySpecificity)
     .reduce(buildElementToCSSTexts.bind(null, doc), new Map<any, any>())
     .forEach(applyInlineStyleSheetCSSTexts);
 }

@@ -10,7 +10,7 @@ import { Plugin, EditorState } from 'prosemirror-state';
 import { Step } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import uuid from '../uuid';
-import { GET, POST } from './http';
+import { GET, POST, PUT } from './http';
 // [FS] IRAD-1040 2020-09-02
 import { Schema } from 'prosemirror-model';
 import { stringify } from 'flatted';
@@ -144,8 +144,8 @@ class EditorConnection {
   }
 
   // Load the document from the server and start up
-  start(): void {
-    this.run(GET(this.url)).then(
+  start(input: any): void {
+    this.run(PUT(this.url, JSON.stringify(input), 'application/json')).then(
       (data) => {
         data = JSON.parse(data);
         this.report.success();

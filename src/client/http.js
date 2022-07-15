@@ -53,6 +53,10 @@ export function POST(url, body, type) {
   return req({ url, method: 'POST', body, headers: { 'Content-Type': type } });
 }
 
+export function PUT(url, body, type) {
+  return req({ url, method: 'PUT', body, headers: { 'Content-Type': type } });
+}
+
 // [FS] IRAD-1128 2021-02-03
 // http DELETE request overrided
 export function DELETE(url, type) {
