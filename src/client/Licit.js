@@ -1,6 +1,6 @@
 // @flow
 import { EditorState, TextSelection, Plugin } from 'prosemirror-state';
-import { Node } from 'prosemirror-model';
+import { DOMSerializer, Node, Schema } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
@@ -14,15 +14,22 @@ import SimpleConnector from './SimpleConnector';
 import CollabConnector from './CollabConnector';
 import { EMPTY_DOC_JSON } from '../createEmptyEditorState';
 import type { EditorRuntime } from '../Types';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
-import { atViewportCenter } from '@modusoperandi/licit-ui-commands';
+import {
+  createPopUp,
+  atViewportCenter,
+} from '@modusoperandi/licit-ui-commands';
 import AlertInfo from '../ui/AlertInfo';
 import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
 import './licit.css';
 import DefaultEditorPlugins from '../buildEditorPlugins';
-import { Schema } from 'prosemirror-model';
 import EditorMarks from '../EditorMarks';
 import EditorNodes from '../EditorNodes';
+import convertFromHTML from '../convertFromHTML';
+
+export const DataType = Object.freeze({
+  JSON: Symbol('json'),
+  HTML: Symbol('html'),
+});
 
 /**
  * LICIT properties:
@@ -36,7 +43,8 @@ import EditorNodes from '../EditorNodes';
  *      @param data {JSON} Modified document data.
  *  onReady {@callback} [null] Fires when the editor is fully ready.
  *      @param ref {LICIT} Rerefence of the editor.
- *  data {JSON} [null] Document data to be loaded into the editor.
+ *  data {JSON|HTML} [null] Document data to be loaded into the editor.
+ *  dataType {JSON|HTML} [JSON] Document data to be loaded into the editor.
  *  disabled {boolean} [false] Disable the editor.
  *  embedded {boolean} [false] Disable/Enable inline behaviour.
  *  plugins [plugins] External Plugins into the editor.
@@ -91,7 +99,8 @@ class Licit extends React.Component<any, any> {
     const onReadyCB =
       typeof props.onReady === 'function' ? props.onReady : noop;
     const readOnly = props.readOnly || false;
-    const data = props.data || null;
+    let data = props.data || null;
+    const dataType = props.dataType || DataType.JSON;
     const disabled = props.disabled || false;
     const embedded = props.embedded || false; // [FS] IRAD-996 2020-06-30
     // [FS] 2020-07-03
@@ -107,25 +116,8 @@ class Licit extends React.Component<any, any> {
       this._defaultEditorSchema
     ).get();
 
-    let editorState = convertFromJSON(
-      data,
-      null,
-      this._defaultEditorSchema,
-      plugins,
-      this._defaultEditorPlugins
-    );
-    // [FS] IRAD-1067 2020-09-19
-    // The editorState will return null if the doc Json is mal-formed
-    if (null === editorState) {
-      editorState = convertFromJSON(
-        EMPTY_DOC_JSON,
-        null,
-        this._defaultEditorSchema,
-        plugins,
-        this._defaultEditorPlugins
-      );
-      this.showAlert();
-    }
+    const editorState = this.initEditorState(plugins, dataType, data);
+    data = editorState.doc;
 
     const setState = this.setState.bind(this);
     this._connector = collaborative
@@ -168,6 +160,66 @@ class Licit extends React.Component<any, any> {
       // Use known editorState to update schema.
       this._connector.updateSchema(editorState.schema, data);
     }
+  }
+
+  initEditorState(plugins: Array<Plugin>, dataType: DataType, data: any) {
+    let editorState = null;
+    const effectivePlugins = this.getEffectivePlugins(
+      this._defaultEditorSchema,
+      this._defaultEditorPlugins,
+      plugins
+    );
+    if (DataType.JSON === dataType) {
+      editorState = convertFromJSON(
+        data,
+        null,
+        effectivePlugins.schema,
+        effectivePlugins.plugins
+      );
+      // [FS] IRAD-1067 2020-09-19
+      // The editorState will return null if the doc Json is mal-formed
+      if (null === editorState) {
+        editorState = convertFromJSON(
+          EMPTY_DOC_JSON,
+          null,
+          effectivePlugins.schema,
+          effectivePlugins.plugins
+        );
+        this.showAlert();
+      }
+    } else {
+      editorState = convertFromHTML(
+        data,
+        effectivePlugins.schema,
+        effectivePlugins.plugins
+      );
+    }
+
+    return editorState;
+  }
+
+  getEffectivePlugins(
+    schema: Schema,
+    defaultPlugins: Array<Plugin>,
+    plugins: Array<Plugin>
+  ): { plugins: Array<Plugin>, schema: Schema } {
+    const effectivePlugins = defaultPlugins;
+
+    if (plugins) {
+      for (const p of plugins) {
+        if (!effectivePlugins.includes(p)) {
+          effectivePlugins.push(p);
+          if (p.getEffectiveSchema) {
+            schema = p.getEffectiveSchema(schema);
+          }
+
+          if (p.initKeyCommands) {
+            effectivePlugins.push(p.initKeyCommands());
+          }
+        }
+      }
+    }
+    return { plugins: effectivePlugins, schema };
   }
 
   // [FS] IRAD-1578 2021-09-27

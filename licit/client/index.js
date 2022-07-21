@@ -3,7 +3,7 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 
-import Licit from '../../src/client/Licit';
+import Licit, { DataType } from '../../src/client/Licit';
 import CustomLicitRuntime from './CustomLicitRuntime';
 
 function main(): void {
@@ -341,6 +341,7 @@ function main(): void {
     <Licit
       collabServiceURL={'http://localhost:3002'}
       data={docJSON}
+      dataType={DataType.JSON}
       debug={true}
       docID={'0000-0000-0000-0000'}
       embedded={false}
