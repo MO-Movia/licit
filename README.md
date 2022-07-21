@@ -11,7 +11,6 @@
 
 
 
-
 <h1 align="center">Licit Editor</h1>
 
 <div align="center">
@@ -193,7 +192,8 @@ Please refer *licit\client\index.js* for getting more detailed idea on passing p
 | width|Width of the editor|100%
 | height|Height of the editor|100%
 | readOnly |To enable/disable editing mode|false
-| data |Document data to be loaded into the editor|null
+| data |Document JSON/HTML data to be loaded into the editor|null
+| dataType |Document data type - JSON/HTML|JSON
 | disabled|To disable the editor|false
 | embedded|To disable/enable inline behavior of the editor|false
 | fitToContent|To disable/enable fit to content behavior of the editor|false

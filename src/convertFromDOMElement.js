@@ -11,8 +11,8 @@ import EditorSchema from './EditorSchema';
 
 export default function convertFromDOMElement(
   el: HTMLElement,
-  schema: ?Schema,
-  plugins: ?Array<Plugin>
+  schema: Schema,
+  plugins: Array<Plugin>
 ): EditorState {
   const effectiveSchema = schema || EditorSchema;
   const effectivePlugins = plugins || EditorPlugins;
