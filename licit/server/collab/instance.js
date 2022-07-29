@@ -183,11 +183,14 @@ export function initEditorSchema(effectiveSchema: Schema) {
   }
 }
 
-export function getInstance(id: any, ip: any, doc: any) {
+export function getInstance(id: any, ip: any, doc: any, version: any) {
   let inst = instances[id];
   if (inst) {
     if (doc) {
       inst.doc = _editorSchema.nodeFromJSON(doc);
+    }
+    if (version) {
+      inst.version = version;
     }
   } else {
     inst = newInstance(id, !doc ? undefined : _editorSchema.nodeFromJSON(doc));

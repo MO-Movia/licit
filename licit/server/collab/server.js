@@ -157,7 +157,8 @@ handle('PUT', [DOCS, null], (data, id, req) => {
   const inst = getInstance(
     id,
     reqIP(req),
-    req.query.dataDefined === 'false' ? null : data
+    req.query.dataDefined === 'false' ? null : data,
+    req.query.version
   );
   return Output.json({
     doc_json: inst.doc.toJSON(),

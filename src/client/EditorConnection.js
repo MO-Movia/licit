@@ -145,12 +145,12 @@ class EditorConnection {
 
   // Load the document from the server and start up
   start(input: any, dataDefined: boolean): void {
+    let query = '?dataDefined=' + dataDefined;
+    if (this.state.edit) {
+      query = query + '&version=' + getVersion(this.state.edit);
+    }
     this.run(
-      PUT(
-        this.url + '?dataDefined=' + dataDefined,
-        JSON.stringify(input),
-        'application/json'
-      )
+      PUT(this.url + query, JSON.stringify(input), 'application/json')
     ).then(
       (data) => {
         data = JSON.parse(data);
