@@ -319,11 +319,11 @@ class Licit extends React.Component<any, any> {
     return node.attrs && node.attrs[attrName];
   }
 
-  getDocument(content: any, editorState: EditorState) {
+  getDocument(content: any, editorState: EditorState, dataType: DataType) {
     let document = null;
     const { schema } = editorState;
 
-    if (DataType.JSON === this.state.dataType || this.skipDataTypeCheck) {
+    if (DataType.JSON === dataType || this.skipDataTypeCheck) {
       document = schema.nodeFromJSON(content ? content : EMPTY_DOC_JSON);
     } else {
       const tempEState = convertFromHTML(
@@ -337,14 +337,14 @@ class Licit extends React.Component<any, any> {
     return document;
   }
 
-  setContent = (content: any = {}): void => {
+  setContent = (content: any = {}, dataType: DataType): void => {
     this.skipDataTypeCheck = false;
     // [FS] IRAD-1571 2021-09-27
     // dispatch a transaction that MUST start from the views current state;
     const editorState = this._editorView.state;
     const { doc } = editorState;
     let { tr } = editorState;
-    const document = this.getDocument(content, editorState);
+    const document = this.getDocument(content, editorState, dataType);
     this.skipDataTypeCheck = true;
     this._connector._dataDefined = !!this.props.data;
     this._connector.updateContent(document.toJSON());
@@ -367,7 +367,7 @@ class Licit extends React.Component<any, any> {
     this._editorView.dispatch(tr);
   };
 
-  hasDataChanged(nextData: any) {
+  hasDataChanged(nextData: any, nextDataType: DataType) {
     let dataChanged = false;
 
     // [FS] IRAD-1571 2021-09-27
@@ -376,19 +376,19 @@ class Licit extends React.Component<any, any> {
     // Do a proper circular JSON comparison.
     if (stringify(this.state.data) !== stringify(nextData)) {
       const editorState = this._editorView.state;
-      const nextDoc = this.getDocument(nextData, editorState);
+      const nextDoc = this.getDocument(nextData, editorState, nextDataType);
       dataChanged = !nextDoc.eq(editorState.doc);
     }
 
     return dataChanged;
   }
 
-  changeContent(data: any) {
-    if (this.hasDataChanged(data)) {
+  changeContent(data: any, dataType: DataType) {
+    if (this.hasDataChanged(data, dataType)) {
       // FS IRAD-1592 2021-11-10
       // Release here quickly, so that update doesn't care about at this point.
       // data changed, so update document content
-      setTimeout(this.setContent.bind(this, data), 1);
+      setTimeout(this.setContent.bind(this, data, dataType), 1);
     }
   }
 
@@ -397,7 +397,7 @@ class Licit extends React.Component<any, any> {
     if (!this._skipSCU) {
       this._skipSCU = false;
 
-      this.changeContent(nextState.data);
+      this.changeContent(nextState.data, nextState.dataType);
 
       if (this.state.docID !== nextState.docID) {
         setTimeout(this.setDocID.bind(this, nextState), 1);
