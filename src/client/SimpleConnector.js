@@ -49,6 +49,8 @@ class SimpleConnector {
   // Send the modified schema to server
   updateSchema = (schema: Schema, data: any) => {};
 
+  updateContent = (data: any) => {};
+
   cleanUp = () => {};
 }
 

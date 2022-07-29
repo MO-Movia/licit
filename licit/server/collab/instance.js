@@ -184,9 +184,14 @@ export function initEditorSchema(effectiveSchema: Schema) {
 }
 
 export function getInstance(id: any, ip: any, doc: any) {
-  const inst =
-    instances[id] ||
-    newInstance(id, !doc ? undefined : _editorSchema.nodeFromJSON(doc));
+  let inst = instances[id];
+  if (inst) {
+    if (doc) {
+      inst.doc = _editorSchema.nodeFromJSON(doc);
+    }
+  } else {
+    inst = newInstance(id, !doc ? undefined : _editorSchema.nodeFromJSON(doc));
+  }
   if (ip) inst.registerUser(ip);
   inst.lastActive = Date.now();
   return inst;

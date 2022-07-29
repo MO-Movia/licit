@@ -107,6 +107,9 @@ class Licit extends React.Component<any, any> {
     // Handle Image Upload from Angular App
     const runtime = props.runtime || null;
     const plugins = props.plugins || null;
+    // This flag decides whether DataType.HTML check is needed when
+    // changing document. If it forcefully done, it is not needed, otherwise needed.
+    this.skipDataTypeCheck = false;
 
     this._defaultEditorSchema = new Schema({
       nodes: EditorNodes,
@@ -152,6 +155,7 @@ class Licit extends React.Component<any, any> {
       disabled,
       embedded,
       runtime,
+      dataType,
     };
 
     // FS IRAD-1040 2020-26-08
@@ -313,13 +317,34 @@ class Licit extends React.Component<any, any> {
     return node.attrs && node.attrs[attrName];
   }
 
+  getDocument(content: any, editorState: EditorState) {
+    let document = null;
+    const { schema } = editorState;
+
+    if (DataType.JSON === this.state.dataType || this.skipDataTypeCheck) {
+      document = schema.nodeFromJSON(content ? content : EMPTY_DOC_JSON);
+    } else {
+      const tempEState = convertFromHTML(
+        content ? content : '',
+        schema,
+        editorState.plugins
+      );
+      document = tempEState.doc;
+    }
+
+    return document;
+  }
+
   setContent = (content: any = {}): void => {
+    this.skipDataTypeCheck = false;
     // [FS] IRAD-1571 2021-09-27
     // dispatch a transaction that MUST start from the views current state;
     const editorState = this._editorView.state;
-    const { doc, schema } = editorState;
+    const { doc } = editorState;
     let { tr } = editorState;
-    const document = schema.nodeFromJSON(content ? content : EMPTY_DOC_JSON);
+    const document = this.getDocument(content, editorState);
+    this.skipDataTypeCheck = true;
+    this._connector.updateContent(document.toJSON());
 
     // [FS] IRAD-1593 2021-10-12
     // Reset lastKeyCode since the content is set dynamically and so lastKeyCode is invalid now.
@@ -348,9 +373,7 @@ class Licit extends React.Component<any, any> {
     // Do a proper circular JSON comparison.
     if (stringify(this.state.data) !== stringify(nextData)) {
       const editorState = this._editorView.state;
-      const nextDoc = editorState.schema.nodeFromJSON(
-        nextData ? nextData : EMPTY_DOC_JSON
-      );
+      const nextDoc = this.getDocument(nextData, editorState);
       dataChanged = !nextDoc.eq(editorState.doc);
     }
 
@@ -377,6 +400,8 @@ class Licit extends React.Component<any, any> {
         setTimeout(this.setDocID.bind(this, nextState), 1);
       }
     }
+
+    this.skipDataTypeCheck = true;
 
     return true;
   }
@@ -628,6 +653,7 @@ class Licit extends React.Component<any, any> {
       delete propsCopy.data;
       this.setState(propsCopy);
     }
+    this.skipDataTypeCheck = false;
     // Need to go through shouldComponentUpdate lifecycle here, when updated from outside,
     // so that content is modified gracefully using transaction so that undo/redo works too.
     this._skipSCU = false;

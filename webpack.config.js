@@ -20,7 +20,7 @@ var isDev = env.NODE_ENV === 'development' || 0;
 // isDev = false;
 
 var options = {
-  mode: 'production',
+  mode: env.NODE_ENV,
   entry: {
     licit: path.join(__dirname, 'licit', 'client', 'index.js'),
   },

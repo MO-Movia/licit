@@ -17,10 +17,13 @@ export default function convertFromHTML(
 }
 
 function unEscape(htmlStr) {
-  htmlStr = htmlStr.replace(/&lt;/g, '<');
-  htmlStr = htmlStr.replace(/&gt;/g, '>');
-  htmlStr = htmlStr.replace(/&quot;/g, '\"');
-  htmlStr = htmlStr.replace(/&#39;/g, '\'');
-  htmlStr = htmlStr.replace(/&amp;/g, '&');
+  if (htmlStr) {
+    htmlStr = htmlStr
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&amp;/g, '&');
+  }
   return htmlStr;
 }

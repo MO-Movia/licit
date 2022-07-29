@@ -14,7 +14,7 @@ type IdStrict = string;
 class CollabConnector extends SimpleConnector {
   _clientID: string;
   _connected: boolean;
-  _connection: any;
+  _connection: EditorConnection;
   _docID: IdStrict;
   _stepKeys: Object;
 
@@ -80,6 +80,10 @@ class CollabConnector extends SimpleConnector {
   // Send the modified schema to server
   updateSchema = (schema: Schema, data: any) => {
     this._connection.updateSchema(schema, data);
+  };
+
+  updateContent = (data: any) => {
+    this._connection.start(data);
   };
 }
 
