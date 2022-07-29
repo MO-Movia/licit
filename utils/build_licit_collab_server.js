@@ -8,7 +8,7 @@ const env = require('./env');
 const path = require('path');
 
 const config = {
-  mode: 'production',//development
+  mode: env.NODE_ENV,
   entry: {// [FS] IRAD-901 2020-07-15 New collab server reusing base PM collab server
     run_licit_collab_server: path.join(__dirname, '../licit', 'server/collab', 'start.js'),
   },

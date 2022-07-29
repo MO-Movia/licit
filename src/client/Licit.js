@@ -51,7 +51,7 @@ export const DataType = Object.freeze({
  */
 class Licit extends React.Component<any, any> {
   _runtime: EditorRuntime;
-  _connector: any;
+  _connector: SimpleConnector;
   _clientID: string;
   _editorView: EditorView; // This will be handy in updating document's content.
   _skipSCU: boolean; // Flag to decide whether to skip shouldComponentUpdate
@@ -137,6 +137,8 @@ class Licit extends React.Component<any, any> {
           this.onReady.bind(this)
         )
       : new SimpleConnector(editorState, setState);
+
+    this._connector._dataDefined = !!props.data;
 
     // FS IRAD-989 2020-18-06
     // updating properties should automatically render the changes
@@ -344,6 +346,7 @@ class Licit extends React.Component<any, any> {
     let { tr } = editorState;
     const document = this.getDocument(content, editorState);
     this.skipDataTypeCheck = true;
+    this._connector._dataDefined = !!this.props.data;
     this._connector.updateContent(document.toJSON());
 
     // [FS] IRAD-1593 2021-10-12

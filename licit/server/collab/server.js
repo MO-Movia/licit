@@ -154,7 +154,11 @@ handle('GET', [DOCS], () => {
 
 // Output the current state of a document instance.
 handle('PUT', [DOCS, null], (data, id, req) => {
-  const inst = getInstance(id, reqIP(req), data);
+  const inst = getInstance(
+    id,
+    reqIP(req),
+    req.query.dataDefined === 'false' ? null : data
+  );
   return Output.json({
     doc_json: inst.doc.toJSON(),
     users: inst.userCount,

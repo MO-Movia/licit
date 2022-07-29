@@ -12,7 +12,7 @@ export default function convertFromHTML(
   plugins: Array<Plugin>
 ): EditorState {
   const root = document.createElement('html');
-  root.innerHTML = unEscape(html);
+  root.innerHTML = unEscape(html ? html : ' ');
   return convertFromDOMElement(root, schema, plugins);
 }
 

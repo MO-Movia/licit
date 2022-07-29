@@ -14,6 +14,10 @@ export type SetStateCall = (
 class SimpleConnector {
   _setState: SetStateCall;
   _editorState: EditorState;
+  // This flag is used to deteremine if data passed in or not
+  // If not passed in, use the data from collab server when in collab mode.
+  // else use empty content.
+  _dataDefined: boolean;
 
   constructor(editorState: EditorState, setState: SetStateCall) {
     this._editorState = editorState;

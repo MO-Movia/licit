@@ -79,11 +79,11 @@ class CollabConnector extends SimpleConnector {
   // FS IRAD-1040 2020-09-02
   // Send the modified schema to server
   updateSchema = (schema: Schema, data: any) => {
-    this._connection.updateSchema(schema, data);
+    this._connection.updateSchema(schema, data, this._dataDefined);
   };
 
   updateContent = (data: any) => {
-    this._connection.start(data);
+    this._connection.start(data, this._dataDefined);
   };
 }
 
