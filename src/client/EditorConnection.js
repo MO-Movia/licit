@@ -144,8 +144,14 @@ class EditorConnection {
   }
 
   // Load the document from the server and start up
-  start(input: any): void {
-    this.run(PUT(this.url, JSON.stringify(input), 'application/json')).then(
+  start(input: any, dataDefined: boolean): void {
+    let query = '?dataDefined=' + dataDefined;
+    if (this.state.edit) {
+      query = query + '&version=' + getVersion(this.state.edit);
+    }
+    this.run(
+      PUT(this.url + query, JSON.stringify(input), 'application/json')
+    ).then(
       (data) => {
         data = JSON.parse(data);
         this.report.success();
@@ -253,7 +259,7 @@ class EditorConnection {
 
   // [FS] IRAD-1040 2020-09-02
   // Send the modified schema to server
-  updateSchema(schema: Schema, input: any) {
+  updateSchema(schema: Schema, input: any, dataDefined: boolean) {
     // to avoid cyclic reference error, use flatted string.
     const schemaFlatted = stringify(schema);
     this.run(POST(this.url + '/schema/', schemaFlatted, 'text/plain')).then(
@@ -261,7 +267,7 @@ class EditorConnection {
         console.log("collab server's schema updated");
         // [FS] IRAD-1040 2020-09-08
         this.schema = schema;
-        this.start(input);
+        this.start(input, dataDefined);
       },
       (err) => {
         this.report.failure(err);

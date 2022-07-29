@@ -10,4 +10,4 @@ createServer((req, resp) => {
   handleCollabRequest(req, resp);
 }).listen(PORT);
 
-console.log('Licit Collab server listening on ' + PORT);
+console.log('Licit Collab v0.13.15 server listening on ' + PORT);
