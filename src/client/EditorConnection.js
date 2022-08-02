@@ -146,22 +146,23 @@ class EditorConnection {
   // Load the document from the server and start up
   start(input: any, dataDefined: boolean): void {
     let query = '?dataDefined=' + dataDefined;
-    if (this.state.edit) {
-      query = query + '&version=' + getVersion(this.state.edit);
-    }
     this.run(
-      PUT(this.url + query, JSON.stringify(input), 'application/json')
+      input
+        ? PUT(this.url + query, JSON.stringify(input), 'application/json')
+        : GET(this.url, 'application/json')
     ).then(
       (data) => {
-        data = JSON.parse(data);
-        this.report.success();
-        this.backOff = 0;
-        this.dispatch({
-          type: 'loaded',
-          doc: this.getEffectiveSchema().nodeFromJSON(data.doc_json),
-          version: data.version,
-          users: data.users,
-        });
+        if (!input || !dataDefined) {
+          data = JSON.parse(data);
+          this.report.success();
+          this.backOff = 0;
+          this.dispatch({
+            type: 'loaded',
+            doc: this.getEffectiveSchema().nodeFromJSON(data.doc_json),
+            version: data.version,
+            users: data.users,
+          });
+        }
       },
       (err) => {
         this.report.failure(err);

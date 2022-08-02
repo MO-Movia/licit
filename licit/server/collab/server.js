@@ -9,6 +9,7 @@ import {
   instanceInfo,
   setEditorSchema,
   initEditorSchema,
+  updateInstance,
 } from './instance';
 // [FS] IRAD-899 2020-03-13
 // This is for Capcomode document attribute. Shared Step, so that capcomode can be dealt collaboratively.
@@ -152,14 +153,23 @@ handle('GET', [DOCS], () => {
   return Output.json(instanceInfo());
 });
 
-// Output the current state of a document instance.
+// Save & Output the current state of a document instance.
 handle('PUT', [DOCS, null], (data, id, req) => {
-  const inst = getInstance(
+  const inst = updateInstance(
     id,
     reqIP(req),
-    req.query.dataDefined === 'false' ? null : data,
-    req.query.version
+    req.query.dataDefined === 'false' ? null : data
   );
+  return Output.json({
+    doc_json: inst.doc.toJSON(),
+    users: inst.userCount,
+    version: inst.version,
+  });
+});
+
+// Output the current state of a document instance.
+handle('GET', [DOCS, null], (id, req) => {
+  const inst = getInstance(id, reqIP(req));
   return Output.json({
     doc_json: inst.doc.toJSON(),
     users: inst.userCount,
