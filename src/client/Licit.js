@@ -346,8 +346,6 @@ class Licit extends React.Component<any, any> {
     let { tr } = editorState;
     const document = this.getDocument(content, editorState, dataType);
     this.skipDataTypeCheck = true;
-    this._connector._dataDefined = !!this.props.data;
-    this._connector.updateContent(document.toJSON());
 
     // [FS] IRAD-1593 2021-10-12
     // Reset lastKeyCode since the content is set dynamically and so lastKeyCode is invalid now.
