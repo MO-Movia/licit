@@ -152,17 +152,15 @@ class EditorConnection {
         : GET(this.url, 'application/json')
     ).then(
       (data) => {
-        if (!input || !dataDefined) {
-          data = JSON.parse(data);
-          this.report.success();
-          this.backOff = 0;
-          this.dispatch({
-            type: 'loaded',
-            doc: this.getEffectiveSchema().nodeFromJSON(data.doc_json),
-            version: data.version,
-            users: data.users,
-          });
-        }
+        data = JSON.parse(data);
+        this.report.success();
+        this.backOff = 0;
+        this.dispatch({
+          type: 'loaded',
+          doc: this.getEffectiveSchema().nodeFromJSON(data.doc_json),
+          version: data.version,
+          users: data.users,
+        });
       },
       (err) => {
         this.report.failure(err);
