@@ -12,18 +12,6 @@ export default function convertFromHTML(
   plugins: Array<Plugin>
 ): EditorState {
   const root = document.createElement('html');
-  root.innerHTML = unEscape(html ? html : ' ');
+  root.innerHTML = html ? html : ' ';
   return convertFromDOMElement(root, schema, plugins);
-}
-
-function unEscape(htmlStr) {
-  if (htmlStr) {
-    htmlStr = htmlStr
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"')
-      .replace(/&#39;/g, "'")
-      .replace(/&amp;/g, '&');
-  }
-  return htmlStr;
 }
