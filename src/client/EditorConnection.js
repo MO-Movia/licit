@@ -145,7 +145,7 @@ class EditorConnection {
 
   // Load the document from the server and start up
   start(input: any, dataDefined: boolean): void {
-    let query = '?dataDefined=' + dataDefined;
+    const query = '?dataDefined=' + dataDefined;
     this.run(
       input
         ? PUT(this.url + query, JSON.stringify(input), 'application/json')
