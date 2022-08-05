@@ -6,5 +6,5 @@ servers
 *.code-workspace
 .vscode/
 dist
-coverage
+src/coverage
 *.tgz
