@@ -183,18 +183,8 @@ export function initEditorSchema(effectiveSchema: Schema) {
   }
 }
 
-export function getInstance(id: any, ip: any, doc: any, version: any) {
-  let inst = instances[id];
-  if (inst) {
-    if (doc) {
-      inst.doc = _editorSchema.nodeFromJSON(doc);
-    }
-    if (version) {
-      inst.version = version;
-    }
-  } else {
-    inst = newInstance(id, !doc ? undefined : _editorSchema.nodeFromJSON(doc));
-  }
+export function getInstance(id: any, ip: any) {
+  const inst = instances[id] || newInstance(id);
   if (ip) inst.registerUser(ip);
   inst.lastActive = Date.now();
   return inst;
@@ -214,6 +204,20 @@ function newInstance(id: any, doc: any) {
     --instanceCount;
   }
   return (instances[id] = new Instance(id, doc));
+}
+
+export function updateInstance(id: any, ip: any, doc: any) {
+  let inst = instances[id];
+  if (inst) {
+    if (doc) {
+      inst.doc = _editorSchema.nodeFromJSON(doc);
+    }
+  } else {
+    inst = newInstance(id, !doc ? undefined : _editorSchema.nodeFromJSON(doc));
+  }
+  if (ip) inst.registerUser(ip);
+  inst.lastActive = Date.now();
+  return inst;
 }
 
 export function instanceInfo() {
