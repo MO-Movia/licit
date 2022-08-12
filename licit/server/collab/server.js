@@ -93,7 +93,12 @@ function readStreamAsJSON(stream, callback) {
   stream.on('end', () => {
     let result, error;
     try {
-      result = JSON.parse(data);
+      if (typeof data === 'string') {
+        result = JSON.parse(data);
+      }
+      else {
+        result = data;
+      }
     } catch (e) {
       error = e;
     }
