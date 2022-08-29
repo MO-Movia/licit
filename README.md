@@ -11,6 +11,7 @@
 
 
 
+
 <h1 align="center">Licit Editor</h1>
 
 <div align="center">
@@ -66,6 +67,7 @@ npm install
 ```
 
 In order to upload image work correctly, "images" folder is expected outside the root folder 'licit'.
+
 
 ### Start the collaboration server
 ```
@@ -198,7 +200,7 @@ Please refer *licit\client\index.js* for getting more detailed idea on passing p
 | embedded|To disable/enable inline behavior of the editor|false
 | fitToContent|To disable/enable fit to content behavior of the editor|false
 | runtime|To pass runtime to the editor. No value means default EditorRuntime | Expects a post method '*saveimage?fn=*' in the server with input parameters *File name and File object*, and this post method parse the form data and return response in JSON format (*{id: string, height: < height of the image>, src: <relative/full_path_of_the_image>, width: < width_of_the_image>}*). Please refer *licit\utils\build_web_server.js* for '*saveimage*' method sample.To configure style service to licit expects methods to saveStyle(),getStyles(),renameStyle() and removeStyle(). Please refer *licit\src\client\LicitRuntime.js* for getting more detailed idea.
-| plugins| Array of prosemirror plugin object to pass external prosemirror plugins to the editor. No value means no external plugins | Expects a method '*getEffectiveSchema*' in the prosemirror plugin object that returns new schema object which is the effective schema modified with the current editor schema, that is passed as the input parameter to this method.
+| plugins| Array of prosemirror plugin object to pass external prosemirror plugins to the editor. No value means no external plugins | Expects a method '*getEffectiveSchema*' in the prosemirror plugin object that returns new schema object which is the effective schema modified with the current editor schema, that is passed as the input parameter to this method. Also must follow a order for adding  the plugins in the plugin array. And the order is the licit-plugin-contrib-styles plugin and objectId plugin should be the last items in that pluigin array.The reason for this is: Style should be handled after all the other plugins handle their own rendering. And ObjectID is required for all artifacts.
 
 |Event Name| Description|Parameter|
 |--|--|--|
