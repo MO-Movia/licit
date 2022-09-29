@@ -660,6 +660,16 @@ class Licit extends React.Component<any, any> {
     this._skipSCU = false;
     this.setState(props);
   };
+
+  exportPDF = () => {
+    const event = new KeyboardEvent('keydown', {
+      ctrlKey: true,
+      altKey: true,
+      keyCode: 80,
+      bubbles: false,
+    });
+    this.editorView.dom.dispatchEvent(event);
+  };
 }
 
 export default Licit;
