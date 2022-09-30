@@ -72,7 +72,7 @@ class CustomLicitRuntime {
   }
 
   getProxyVideoSrc(src: string): string {
-    return getProxyImageSrc(src);
+    return this.getProxyImageSrc(src);
   }
 
   // Video Upload
