@@ -73,6 +73,30 @@ class CustomLicitRuntime {
     return src.indexOf('?') === -1 ? `${src}?${suffix}` : `${src}&${suffix}`;
   }
 
+  getVideoSrc(id: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const token =
+        'Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIyNFY3bWd1LXp1dDYtS29aMFR2Y2RQUDkyUkxmQkdVejFIZkNRTzJRN1NnIn0.eyJleHAiOjE2NjYwMjE4MjgsImlhdCI6MTY2NjAyMTUyOCwiYXV0aF90aW1lIjoxNjY2MDIxNTI2LCJqdGkiOiIyYmM4YzM0Mi00ZjBmLTRjZTItODc0ZC1hMDM0MTA3MmJhOWQiLCJpc3MiOiJodHRwczovL21vdmlhY2xvdWQubW9kdXNvcGVyYW5kaS5jb20vYXV0aC9yZWFsbXMvbW92aWEiLCJhdWQiOlsid29ya2Zsb3ctY2xpZW50IiwiYWNjb3VudCJdLCJzdWIiOiI0M2MwMmI4OC0xOGU3LTRjZWYtODRkOS03ZjFiNjY2ZGQ1OTYiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ1aS1jbGllbnQiLCJub25jZSI6Ijk1YmJjMGM5LTU2YzEtNGJiOC04ZjI2LWNkYzU1ZjQ4NTllNyIsInNlc3Npb25fc3RhdGUiOiJhNjViNDRlNy01YmM4LTRjNzEtYmVmYy0zZTcyNTg4NDNmNzEiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIioiLCJodHRwOi8vbG9jYWxob3N0Il0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsidWktY2xpZW50Ijp7InJvbGVzIjpbIl9jYW5fcmVhZF9vbnRvbG9neSIsIl9jYW5fbWFuYWdlX2VudGl0eSIsIl9jYW5fbWFuYWdlX2FsZXJ0cyIsIl9jYW5fbWFuYWdlX29udG9sb2d5IiwiX2Nhbl9lZGl0X29udG9sb2d5IiwiX2Nhbl9lZGl0X2RvY3VtZW50IiwiZGV2ZWxvcGVyIiwiYmxhZGVfdXNlciIsIl9jYW5fZWRpdF9lbnRpdHkiXX0sIndvcmtmbG93LWNsaWVudCI6eyJyb2xlcyI6WyJzZWN1cml0eS1yb2xlLXVzZXIiLCJ3b3JrZmxvdy1yb2xlIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiVmlzYWtoIE1zIiwicHJlZmVycmVkX3VzZXJuYW1lIjoidmlzYWtoLm1zIiwiZ2l2ZW5fbmFtZSI6IlZpc2FraCIsImZhbWlseV9uYW1lIjoiTXMifQ.Q2-4qZGwwQalIoQVngJCRnSsQJvSnImEA9Imqlxsq2wPOEqtBOSnA-MZbsJXX57AHUpbFD970oCBPnLuO45GDcTMbBR5BMjWWrUBHw5Pz7fCPQu-EGBkc-SksQWltTRKpvPaEaRteytzT1mwAt01wO9Rnr7P_FM6G9Prqmf7uoxHPnSbEAjhQP9NeJw91RmmGkWzxX2fzHuGmtlKHU0ODHV5pgNuGMW32lk0coAjgwOxADJ5pCh5O2_k2Q54fgoDmqyPCxeJKM-jt_tLSJgdEdf7F4MmJpTkzcbKmF2qfAk91bu1iKpTftlccVPLFHoK2PtrEwf4o3uIamDWKh8YLQ';
+      const endPoint = 'https://moviacloud.modusoperandi.com/movia/content';
+
+      (async () => {
+        // Video that will be fetched and appended
+        const remoteVidUrl = endPoint + '/id/' + id;
+
+        // Fetch remote URL, getting contents as binary blob
+        const vidBlob = await (
+          await fetch(remoteVidUrl, { headers: { Authorization: token } })
+        ).blob();
+
+        const videoEle = document.createElement('video');
+        videoEle.src = URL.createObjectURL(vidBlob);
+        videoEle.addEventListener('loadedmetadata', function () {
+          resolve(videoEle.src);
+        });
+      })();
+    });
+  }
+
   // Video Upload
   canUploadVideo(): boolean {
     return true;
