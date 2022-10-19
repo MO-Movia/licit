@@ -48,7 +48,7 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-flow": "^7.10.4",
     "@babel/preset-react": "^7.16.0",
-    "@cyclonedx/bom": "^2.0.1",
+    "@cyclonedx/bom": "^3.10.6",
     "babel-eslint": "10.1.0",
     "babel-jest": "^26.6.3",
     "babel-loader": "8.1.0",
