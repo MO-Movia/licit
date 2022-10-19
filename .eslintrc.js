@@ -42,6 +42,8 @@ module.exports = {
     Document: true,
     Element: false,
     Event: false,
+    FormData: false,
+    fetch: false,
     HTMLElement: false,
     HTMLTableCellElement: false,
     HTMLButtonElement: false,
@@ -69,6 +71,7 @@ module.exports = {
     require: false,
     requestAnimationFrame: false,
     setTimeout: false,
+    URL: false,
     window: false,
   },
   overrides: [

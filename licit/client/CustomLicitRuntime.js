@@ -3,7 +3,7 @@
 // This implements the interface of `EditorRuntime`.
 // To  run  editor directly:
 import type { ImageLike } from '../../src/Types';
-import { POST } from '../../src/client/http';
+import { POST, req } from '../../src/client/http';
 
 // When use it in a componet:
 
@@ -12,11 +12,7 @@ import { POST } from '../../src/client/http';
  import {POST } from '@modusoperandi/licit';
  */
 
-
 class CustomLicitRuntime {
-
-
-
   // Image Proxy
   canProxyImageSrc(): boolean {
     return false;
@@ -66,30 +62,92 @@ class CustomLicitRuntime {
     });
   }
 
+  // Video Proxy
+  canProxyVideoSrc(): boolean {
+    return false;
+  }
 
+  getProxyVideoSrc(src: string): string {
+    // This simulate a fake proxy.
+    const suffix = 'proxied=1';
+    return src.indexOf('?') === -1 ? `${src}?${suffix}` : `${src}&${suffix}`;
+  }
 
+  getVideoSrc(id: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const token =
+        'Bearer <access_token>';
+      const endPoint = 'https://moviacloud.modusoperandi.com/movia/content';
 
+      (async () => {
+        // Video that will be fetched and appended
+        const remoteVidUrl = endPoint + '/id/' + id;
 
+        // Fetch remote URL, getting contents as binary blob
+        const vidBlob = await (
+          await fetch(remoteVidUrl, { headers: { Authorization: token } })
+        ).blob();
 
+        const videoEle = document.createElement('video');
+        videoEle.src = URL.createObjectURL(vidBlob);
+        videoEle.addEventListener('loadedmetadata', function () {
+          resolve(videoEle.src);
+        });
+      })();
+    });
+  }
 
+  // Video Upload
+  canUploadVideo(): boolean {
+    return true;
+  }
 
+  uploadVideo(blob: Object, id: string): Promise<ImageLike> {
+    let img: ImageLike;
+    return new Promise((resolve, reject) => {
+      // Use uploaded image URL.
+      const formData = new FormData();
+      formData.append('label', blob.name);
+      formData.append('file', blob);
+      const token =
+        'Bearer <access_token>';
+      const endPoint = 'https://moviacloud.modusoperandi.com/movia/content';
+      req({
+        url: endPoint,
+        method: 'POST',
+        body: formData,
+        headers: {
+          Authorization: token,
+        },
+      }).then((data) => {
+        const resp = JSON.parse(data);
+        const id = resp.entity.id.substring(
+          resp.entity.id.lastIndexOf('/') + 1
+        );
 
+        (async () => {
+          // Video that will be fetched and appended
+          const remoteVidUrl = endPoint + '/id/' + id;
 
+          // Fetch remote URL, getting contents as binary blob
+          const vidBlob = await (
+            await fetch(remoteVidUrl, { headers: { Authorization: token } })
+          ).blob();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          const videoEle = document.createElement('video');
+          videoEle.src = URL.createObjectURL(vidBlob);
+          videoEle.addEventListener('loadedmetadata', function () {
+            img = {
+              id: id,
+              width: this.videoWidth,
+              height: this.videoHeight,
+              src: videoEle.src,
+            };
+            resolve(img);
+          });
+        })();
+      });
+    });
+  }
 }
 export default CustomLicitRuntime;
