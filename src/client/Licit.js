@@ -662,13 +662,28 @@ class Licit extends React.Component<any, any> {
   };
 
   exportPDF = () => {
-    const event = new KeyboardEvent('keydown', {
-      ctrlKey: true,
-      altKey: true,
-      keyCode: 80,
-      bubbles: false,
+    new Promise(async (resolve, reject) => {
+      try {
+        //
+        if (Array.isArray(this.props.plugins)) {
+          const { ExportPDFPlugin } = await import(
+            '@modusoperandi/licit-export-pdf'
+          );
+          this.props.plugins.forEach((plugin) => {
+            if (plugin instanceof ExportPDFPlugin) {
+              // got the exportPDF instance.
+              resolve(plugin);
+            }
+          });
+        }
+      } catch (error) {
+        reject();
+      }
+    }).then((exportPDF) => {
+      if (exportPDF.perform) {
+        exportPDF.perform(this._editorView);
+      }
     });
-    this.editorView.dom.dispatchEvent(event);
   };
 }
 
