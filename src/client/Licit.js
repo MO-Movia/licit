@@ -666,11 +666,8 @@ class Licit extends React.Component<any, any> {
       try {
         //
         if (Array.isArray(this.props.plugins)) {
-          const { ExportPDFPlugin } = await import(
-            '@modusoperandi/licit-export-pdf'
-          );
           this.props.plugins.forEach((plugin) => {
-            if (plugin instanceof ExportPDFPlugin) {
+            if (plugin['key'].startsWith('exportPDF$')) {
               // got the exportPDF instance.
               resolve(plugin);
             }
