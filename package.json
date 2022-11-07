@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit",
-  "version": "0.13.23",
+  "version": "0.13.24",
   "subversion": "1",
   "description": "Rich text editor built with React and ProseMirror",
   "main": "dist/index.js",
@@ -127,6 +127,7 @@
     "resize-observer-polyfill": "1.5.1",
     "smooth-scroll-into-view-if-needed": "1.1.28",
     "style-loader": "^1.2.1",
+    "url": "^0.11.0",
     "uuid": "8.2.0",
     "webfontloader": "1.6.28"
   },
