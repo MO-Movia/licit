@@ -7,7 +7,6 @@ import { EditorView } from 'prosemirror-view';
 import { MARK_LINK } from './MarkNames';
 import {
   hideSelectionPlaceholder,
-  showSelectionPlaceholder,
 } from './SelectionPlaceholderPlugin';
 import { applyMark } from '@modusoperandi/licit-ui-commands';
 import { findNodesWithSameMark } from '@modusoperandi/licit-ui-commands';
@@ -127,16 +126,6 @@ class LinkTooltipView {
     if (!result) {
       return;
     }
-    let { tr } = state;
-    const linkSelection = TextSelection.create(
-      tr.doc,
-      result.from.pos,
-      result.to.pos + 1
-    );
-
-    tr = tr.setSelection(linkSelection);
-    tr = showSelectionPlaceholder(state, tr);
-    view.dispatch(tr);
 
     const href = result.mark.attrs.href;
     this._editor = createPopUp(

@@ -660,6 +660,28 @@ class Licit extends React.Component<any, any> {
     this._skipSCU = false;
     this.setState(props);
   };
+
+  exportPDF = () => {
+    new Promise(async (resolve, reject) => {
+      try {
+        //
+        if (Array.isArray(this.props.plugins)) {
+          this.props.plugins.forEach((plugin) => {
+            if (plugin['key'].startsWith('exportPDF$')) {
+              // got the exportPDF instance.
+              resolve(plugin);
+            }
+          });
+        }
+      } catch (error) {
+        reject();
+      }
+    }).then((exportPDF) => {
+      if (exportPDF.perform) {
+        exportPDF.perform(this._editorView);
+      }
+    });
+  };
 }
 
 export default Licit;
