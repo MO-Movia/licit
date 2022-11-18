@@ -54,8 +54,8 @@
 .czi-icon.superscript,
 .czi-icon.subscript {
   display: inline-block;
-  font-family: 'Arial', sans-serif;
-  font-size: 12px;
+  font-family: 'Arial', sans-serif !important;
+  font-size: 12px !important;
   height: 16px;
   text-align: center;
   width: 20px;
