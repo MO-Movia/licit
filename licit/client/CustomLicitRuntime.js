@@ -18,10 +18,36 @@ class CustomLicitRuntime {
     return false;
   }
 
-  getProxyImageSrc(src: string): string {
-    // This simulate a fake proxy.
-    const suffix = 'proxied=1';
-    return src.indexOf('?') === -1 ? `${src}?${suffix}` : `${src}&${suffix}`;
+  getProxyImageSrc(id: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const token =
+        'Bearer <access_token>';
+      const endPoint = 'https://moviacloud.modusoperandi.com/movia/content';
+
+      (async () => {
+        // image that will be fetched and appended
+        const imageURL = endPoint + id;
+
+        // Fetch remote URL, getting contents as binary blob
+        const vidBlob = await (
+          await fetch(imageURL, { headers: { Authorization: token } })
+        ).blob();
+
+        const reader = new window.FileReader();
+        reader.addEventListener('error', () =>
+          reject(new Error('Failed to load image'))
+        );
+        reader.addEventListener('load', () =>
+          // Convert to ImageLike. Width and Height are unknown, and would
+          // require rendering into a hidden canvas to determine
+          resolve({
+            alt: vidBlob.name,
+            src: reader.result
+          })
+        );
+        reader.readAsDataURL(vidBlob);
+      })();
+    });
   }
 
   // Image Upload
