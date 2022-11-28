@@ -109,16 +109,12 @@
     "node-mathquill": "0.10.2",
     "nullthrows": "1.1.1",
     "prosemirror-model": "~1.16.0",
-    "prosemirror-view": "1.29.1",
+    "prosemirror-view": "1.27.0",
     "query-string": "6.13.1",
     "resize-observer-polyfill": "1.5.1",
     "smooth-scroll-into-view-if-needed": "1.1.28",
     "url": "^0.11.0",
     "uuid": "9.0.0"
-  },
-  "overrides": {
-    "prosemirror-model": "~1.16.0",
-    "prosemirror-view": "1.27.0"
   },
   "importSort": {
     ".js": {
