@@ -94,9 +94,9 @@ var options = {
       'window.jQuery': 'jquery',
     }),
     // type checker
-    ...(isDev
-      ? [new FlowWebpackPlugin({ flowArgs: ['--show-all-errors'] })]
-      : []),
+    // ...(isDev
+    //   ? [new FlowWebpackPlugin({ flowArgs: ['--show-all-errors'] })]
+    //   : []),
     // clean the web folder
     new CleanWebpackPlugin(),
     // expose and write the allowed env vars on the compiled bundle

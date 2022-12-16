@@ -7,4 +7,5 @@ servers
 .vscode/
 dist
 src/coverage
+/coverage
 *.tgz

@@ -2,13 +2,7 @@ const WebpackDevServer = require('webpack-dev-server'),
   webpack = require('webpack'),
   config = require('../webpack.config'),
   env = require('./env'),
-  path = require('path'),
-  formidable = require('formidable'),
-  mv = require('mv'),
-  // [FS] IRAD-1005 2020-07-07
-  // Upgrade outdated packages.
-  uuidv4 = require('uuid').v4,
-  express = require('express');
+  path = require('path');
 
 const options = config.chromeExtensionBoilerplate || {};
 const excludeEntriesToHotReload = options.notHotReload || [];
