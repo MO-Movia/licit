@@ -75,7 +75,8 @@ async function resolveURL(runtime: ?EditorRuntime, src: ?string): ?string {
   }
   const { canProxyImageSrc, getProxyImageSrc } = runtime;
   if (src && canProxyImageSrc && getProxyImageSrc && canProxyImageSrc(src)) {
-    return await getProxyImageSrc(src);
+    const imageSrc = await getProxyImageSrc(src);
+    return imageSrc;
   }
   return src;
 }
