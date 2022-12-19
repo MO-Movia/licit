@@ -90,7 +90,7 @@
     "write-file-webpack-plugin": "4.5.1"
   },
   "dependencies": {
-    "@modusoperandi/licit-doc-attrs-step": "^0.1.3",
+    "@modusoperandi/licit-doc-attrs-step": "^0.1.4",
     "@modusoperandi/licit-ui-commands": "^0.1.11",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.7",
     "body-parser": "^1.19.0",
