@@ -8,7 +8,6 @@ import DocNodeSpec from './DocNodeSpec';
 import HardBreakNodeSpec from './HardBreakNodeSpec';
 import HeadingNodeSpec from './HeadingNodeSpec';
 import HorizontalRuleNodeSpec from './HorizontalRuleNodeSpec';
-import ImageNodeSpec from './ImageNodeSpec';
 import ListItemNodeSpec from './ListItemNodeSpec';
 import MathNodeSpec from './MathNodeSpec';
 import * as NodeNames from './NodeNames';
@@ -26,7 +25,6 @@ const {
   HARD_BREAK,
   HEADING,
   HORIZONTAL_RULE,
-  IMAGE,
   LIST_ITEM,
   MATH,
   ORDERED_LIST,
@@ -45,7 +43,6 @@ const nodes = {
   [HORIZONTAL_RULE]: HorizontalRuleNodeSpec,
   [HEADING]: HeadingNodeSpec,
   [TEXT]: TextNodeSpec,
-  [IMAGE]: ImageNodeSpec,
   [MATH]: MathNodeSpec,
   [HARD_BREAK]: HardBreakNodeSpec,
   [BULLET_LIST]: BulletListNodeSpec,

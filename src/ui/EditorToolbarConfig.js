@@ -40,8 +40,6 @@ const {
   HISTORY_REDO,
   HISTORY_UNDO,
   HR,
-  IMAGE_FROM_URL,
-  IMAGE_UPLOAD,
   INDENT_LESS,
   INDENT_MORE,
   LINK_SET_URL,
@@ -149,12 +147,7 @@ export const COMMAND_GROUPS = [
   },
   {
     '[link] Apply link': LINK_SET_URL,
-    '[image] Insert image': [
-      {
-        'Insert image by URL': IMAGE_FROM_URL,
-        'Upload image from computer': IMAGE_UPLOAD,
-      },
-    ],
+    
     '[grid_on] Table...': TABLE_COMMANDS_GROUP,
     '[hr] Horizontal line': HR,
     '[functions] Math': MATH_EDIT,
