@@ -9,7 +9,6 @@ import {Plugin, PluginKey} from 'prosemirror-state';
 import ContentPlaceholderPlugin from './ContentPlaceholderPlugin';
 import CursorPlaceholderPlugin from './CursorPlaceholderPlugin';
 import EditorPageLayoutPlugin from './EditorPageLayoutPlugin';
-import ImageUploadPlaceholderPlugin from './ImageUploadPlaceholderPlugin';
 import LinkTooltipPlugin from './LinkTooltipPlugin';
 import SelectionPlaceholderPlugin from './SelectionPlaceholderPlugin';
 import TablePlugins from './TablePlugins';
@@ -25,7 +24,6 @@ export default class DefaultEditorPlugins {
       new ContentPlaceholderPlugin(),
       new CursorPlaceholderPlugin(),
       new EditorPageLayoutPlugin(),
-      new ImageUploadPlaceholderPlugin(),
       new LinkTooltipPlugin(),
       new SelectionPlaceholderPlugin(),
       this.setPluginKey(buildInputRules(schema), 'InputRules'),
