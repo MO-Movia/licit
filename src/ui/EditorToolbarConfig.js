@@ -147,7 +147,6 @@ export const COMMAND_GROUPS = [
   },
   {
     '[link] Apply link': LINK_SET_URL,
-    
     '[grid_on] Table...': TABLE_COMMANDS_GROUP,
     '[hr] Horizontal line': HR,
     '[functions] Math': MATH_EDIT,
