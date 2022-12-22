@@ -701,7 +701,7 @@ class Licit extends React.Component<any, any> {
     // Return focus to the editor with cursor at end of document.
     const view: EditorView = this.editorView;
     const tr = view.state.tr;
-    view.dispatch(tr.setSelection(TextSelection.atEnd(view.state.doc)));
+    view.dispatch(tr.setSelection(TextSelection.atEnd(view.state.doc)).scrollIntoView());
     view.focus();
   };
 
