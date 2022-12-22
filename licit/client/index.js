@@ -11,11 +11,11 @@ function main(): void {
   el.id = 'licit-app';
   el.style.setProperty('width', '100vw');
   el.style.setProperty('height', '100vh');
-  const {body} = document;
+  const { body } = document;
   body && body.appendChild(el);
   const docJSON = {
     type: 'doc',
-    attrs: {layout: null, padding: null, width: null},
+    attrs: { layout: null, padding: null, width: null },
     content: [
       {
         type: 'paragraph',
@@ -31,7 +31,7 @@ function main(): void {
         content: [
           {
             type: 'text',
-            marks: [{type: 'mark-font-type', attrs: {name: 'Arial Black'}}],
+            marks: [{ type: 'mark-font-type', attrs: { name: 'Arial Black' } }],
             text: 'First line Arial black',
           },
         ],
@@ -50,7 +50,7 @@ function main(): void {
         content: [
           {
             type: 'list_item',
-            attrs: {align: null},
+            attrs: { align: null },
             content: [
               {
                 type: 'paragraph',
@@ -63,7 +63,7 @@ function main(): void {
                   paddingBottom: null,
                   paddingTop: null,
                 },
-                content: [{type: 'text', text: 'List 1'}],
+                content: [{ type: 'text', text: 'List 1' }],
               },
             ],
           },
@@ -83,7 +83,7 @@ function main(): void {
         content: [
           {
             type: 'list_item',
-            attrs: {align: null},
+            attrs: { align: null },
             content: [
               {
                 type: 'paragraph',
@@ -96,7 +96,7 @@ function main(): void {
                   paddingBottom: null,
                   paddingTop: null,
                 },
-                content: [{type: 'text', text: 'Child'}],
+                content: [{ type: 'text', text: 'Child' }],
               },
             ],
           },
@@ -116,7 +116,7 @@ function main(): void {
         content: [
           {
             type: 'list_item',
-            attrs: {align: null},
+            attrs: { align: null },
             content: [
               {
                 type: 'paragraph',
@@ -129,7 +129,7 @@ function main(): void {
                   paddingBottom: null,
                   paddingTop: null,
                 },
-                content: [{type: 'text', text: 'List 2'}],
+                content: [{ type: 'text', text: 'List 2' }],
               },
             ],
           },
@@ -146,7 +146,7 @@ function main(): void {
           paddingBottom: null,
           paddingTop: null,
         },
-        content: [{type: 'text', text: 'Align'}],
+        content: [{ type: 'text', text: 'Align' }],
       },
       {
         type: 'paragraph',
@@ -162,18 +162,18 @@ function main(): void {
         content: [
           {
             type: 'text',
-            marks: [{type: 'mark-text-color', attrs: {color: '#f20d96'}}],
+            marks: [{ type: 'mark-text-color', attrs: { color: '#f20d96' } }],
             text: 'Font',
           },
-          {type: 'text', text: ' '},
+          { type: 'text', text: ' ' },
           {
             type: 'text',
             marks: [
-              {type: 'mark-text-highlight', attrs: {highlightColor: '#e5e5e5'}},
+              { type: 'mark-text-highlight', attrs: { highlightColor: '#e5e5e5' } },
             ],
             text: 'Color ',
           },
-          {type: 'text', marks: [{type: 'strong'}], text: 'align '},
+          { type: 'text', marks: [{ type: 'strong' }], text: 'align ' },
           {
             type: 'text',
             marks: [
@@ -186,20 +186,20 @@ function main(): void {
                   title: null,
                 },
               },
-              {type: 'em'},
+              { type: 'em' },
             ],
             text: 'Link to google',
           },
-          {type: 'text', marks: [{type: 'em'}], text: ' '},
-          {type: 'text', marks: [{type: 'underline'}], text: 'underline '},
+          { type: 'text', marks: [{ type: 'em' }], text: ' ' },
+          { type: 'text', marks: [{ type: 'underline' }], text: 'underline ' },
           {
             type: 'text',
             marks: [
-              {type: 'em'},
-              {type: 'strong'},
-              {type: 'mark-text-color', attrs: {color: '#e5e5e5'}},
-              {type: 'mark-text-highlight', attrs: {highlightColor: '#979797'}},
-              {type: 'underline'},
+              { type: 'em' },
+              { type: 'strong' },
+              { type: 'mark-text-color', attrs: { color: '#e5e5e5' } },
+              { type: 'mark-text-highlight', attrs: { highlightColor: '#979797' } },
+              { type: 'underline' },
             ],
             text: 'combined',
           },
@@ -217,7 +217,7 @@ function main(): void {
           paddingTop: null,
           level: 1,
         },
-        content: [{type: 'text', text: 'Header 1'}],
+        content: [{ type: 'text', text: 'Header 1' }],
       },
       {
         type: 'paragraph',
@@ -233,7 +233,7 @@ function main(): void {
       },
       {
         type: 'table',
-        attrs: {marginLeft: null},
+        attrs: { marginLeft: null },
         content: [
           {
             type: 'table_row',
@@ -260,7 +260,7 @@ function main(): void {
                       paddingTop: null,
                     },
                     content: [
-                      {type: 'text', marks: [{type: 'strong'}], text: 'Cell 1'},
+                      { type: 'text', marks: [{ type: 'strong' }], text: 'Cell 1' },
                     ],
                   },
                 ],
@@ -286,7 +286,7 @@ function main(): void {
                       paddingBottom: null,
                       paddingTop: null,
                     },
-                    content: [{type: 'text', text: 'Cell 2'}],
+                    content: [{ type: 'text', text: 'Cell 2' }],
                   },
                 ],
               },
@@ -318,8 +318,8 @@ function main(): void {
           paddingTop: null,
         },
         content: [
-          {type: 'text', text: 'Subscript '},
-          {type: 'text', marks: [{type: 'super'}], text: '2 '},
+          { type: 'text', text: 'Subscript ' },
+          { type: 'text', marks: [{ type: 'super' }], text: '2 ' },
         ],
       },
     ],
@@ -362,6 +362,7 @@ function onChangeCB(data) {
 
 function onReadyCB(ref) {
   console.log('ref: ' + ref);
+  ref.goToEnd();
 }
 
 window.onload = main;
