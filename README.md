@@ -211,6 +211,7 @@ Please refer *licit\client\index.js* for getting more detailed idea on passing p
 |--|--|--|
 |setProps | Update properties of the editor using an editor instance |<ul><li>props: Licit properties' object</li></ul>
 |insertJSON | Insert node at the current cursor position |<ul><li>json: Node</li></ul>
+|gotoEnd | Return focus to the editor with cursor at end of document  |</li></ul>
 
 To set data to editor: 
 
