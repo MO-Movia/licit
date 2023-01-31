@@ -13,6 +13,7 @@ import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import isElementFullyVisible from './ui/isElementFullyVisible';
 
 import '@modusoperandi/licit-ui-commands/dist/ui/czi-pop-up.css';
+import { CellSelection } from 'prosemirror-tables';
 
 class TableCellTooltipView {
   _cellElement: null;
@@ -41,9 +42,15 @@ class TableCellTooltipView {
 
     let cellEl = domFound.node;
     const popUp = this._popUp;
+    let actionNode = null;
+    if (result && state.selection instanceof CellSelection) {
+      actionNode = state.selection.$anchorCell.node(-1);
+    }
     const viewPops = {
       editorState: state,
       editorView: view,
+      pluginView: this,
+      actionNode,
     };
 
     if (cellEl && !isElementFullyVisible(cellEl)) {
