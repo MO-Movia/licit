@@ -57,7 +57,6 @@ class Licit extends React.Component<any, any> {
   _skipSCU: boolean; // Flag to decide whether to skip shouldComponentUpdate
   _defaultEditorSchema: Schema;
   _defaultEditorPlugins: Array<Plugin>;
-  _pasteJSONPlugin: Plugin;
   _devTools: Promise<any>;
   _applyDevTools: any;
 
@@ -119,7 +118,6 @@ class Licit extends React.Component<any, any> {
     this._defaultEditorPlugins = new DefaultEditorPlugins(
       this._defaultEditorSchema
     ).get();
-    this._pasteJSONPlugin = null;
 
     const editorState = this.initEditorState(plugins, dataType, data);
     data = editorState.doc;
@@ -177,7 +175,6 @@ class Licit extends React.Component<any, any> {
       this._defaultEditorPlugins,
       plugins
     );
-    this._pasteJSONPlugin = effectivePlugins.pasteJSONPlugin;
     if (DataType.JSON === dataType) {
       editorState = convertFromJSON(
         data,
@@ -211,9 +208,8 @@ class Licit extends React.Component<any, any> {
     schema: Schema,
     defaultPlugins: Array<Plugin>,
     plugins: Array<Plugin>
-  ): { plugins: Array<Plugin>, schema: Schema, pasteJSONPlugin: Plugin } {
+  ): { plugins: Array<Plugin>, schema: Schema } {
     const effectivePlugins = defaultPlugins;
-    let pasteJSONPlugin = null;
 
     if (plugins) {
       for (const p of plugins) {
@@ -226,14 +222,10 @@ class Licit extends React.Component<any, any> {
           if (p.initKeyCommands) {
             effectivePlugins.push(p.initKeyCommands());
           }
-
-          if (p.insert) {
-            pasteJSONPlugin = p;
-          }
         }
       }
     }
-    return { plugins: effectivePlugins, schema, pasteJSONPlugin };
+    return { plugins: effectivePlugins, schema };
   }
 
   // [FS] IRAD-1578 2021-09-27
@@ -344,12 +336,6 @@ class Licit extends React.Component<any, any> {
 
     return document;
   }
-
-  insertJSON = (json: { [key: string]: any }): void => {
-    if (this._pasteJSONPlugin && this._pasteJSONPlugin.insert) {
-      this._pasteJSONPlugin.insert(json, this._editorView);
-    }
-  };
 
   setContent = (content: any = {}, dataType: DataType): void => {
     this.skipDataTypeCheck = false;
@@ -674,37 +660,6 @@ class Licit extends React.Component<any, any> {
     this._skipSCU = false;
     this.setState(props);
   };
-
-  exportPDF = () => {
-    new Promise(async (resolve, reject) => {
-      try {
-        //
-        if (Array.isArray(this.props.plugins)) {
-          this.props.plugins.forEach((plugin) => {
-            if (plugin['key'].startsWith('exportPDF$')) {
-              // got the exportPDF instance.
-              resolve(plugin);
-            }
-          });
-        }
-      } catch (error) {
-        reject();
-      }
-    }).then((exportPDF) => {
-      if (exportPDF.perform) {
-        exportPDF.perform(this._editorView);
-      }
-    });
-  };
-
-  goToEnd = (): void => {
-    // Return focus to the editor with cursor at end of document.
-    const view: EditorView = this.editorView;
-    const tr = view.state.tr;
-    view.dispatch(tr.setSelection(TextSelection.atEnd(view.state.doc)).scrollIntoView());
-    view.focus();
-  };
-
 }
 
 export default Licit;
