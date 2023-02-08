@@ -12,10 +12,29 @@ import { POST } from '../../src/client/http';
  import {POST } from '@modusoperandi/licit';
  */
 
+const GLOSSARY_URI = 'http://greathints.com:3003';
+
+type Glossary = {
+  id: string;
+  term: string;
+  description: string;
+};
 
 class CustomLicitRuntime {
 
+  getAcronyms(abbreviation: string): Promise<Glossary[]> {
+    return new Promise((resolve, _reject) => {
+      resolve([{ id: '1', term: 'SFI', description: 'Students Federation of India' }, { id: '2', term: 'IT', description: 'Information Technology' }
+      , { id: '3', term: 'CAS', description: 'Close Air Support' }, { id: '4', term: 'CAS', description: 'Continuous Aerial Surveillance' }]);
+    });
+  }
 
+  getGlossary(term: string): Promise<Glossary[]> {
+    return new Promise((resolve, _reject) => {
+      resolve([{ id: '1', term: 'IAS', description: 'Indian Administrative Service' }, { id: '2', term: 'IIT', description: 'Indian Institute of Technology' }
+      , { id: '3', term: 'CAS', description: 'Close Air Support' }, { id: '4', term: 'CAS', description: 'Continuous Aerial Surveillance' }]);
+    });
+  }
 
   // Image Proxy
   canProxyImageSrc(): boolean {
