@@ -6,7 +6,6 @@ var webpack = require('webpack'),
   HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   TerserPlugin = require('terser-webpack-plugin'),
-  
   WriteFilePlugin = require('write-file-webpack-plugin'),
   env = require('./utils/env'),
   fileSystem = require('fs'),
@@ -26,7 +25,7 @@ var options = {
   },
   output: {
     path: path.join(__dirname, 'bin'),
-    filename: '[name].bundle.js'
+    filename: '[name].bundle.js',
   },
   module: {
     rules: [
@@ -35,9 +34,13 @@ var options = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
-        // https://stackoverflow.com/questions/51860043/javascript-es6-typeerror-class-constructor-client-cannot-be-invoked-without-ne
-        // ES6 classes are supported in any recent Node version, they shouldn't be transpiled. es2015 should be excluded from Babel configuration, it's preferable to use env preset set to node target.
-          presets: [['@babel/preset-env', { 'targets': { 'node': true } }], '@babel/preset-react', '@babel/preset-flow'],
+          // https://stackoverflow.com/questions/51860043/javascript-es6-typeerror-class-constructor-client-cannot-be-invoked-without-ne
+          // ES6 classes are supported in any recent Node version, they shouldn't be transpiled. es2015 should be excluded from Babel configuration, it's preferable to use env preset set to node target.
+          presets: [
+            ['@babel/preset-env', { targets: { node: true } }],
+            '@babel/preset-react',
+            '@babel/preset-flow',
+          ],
           plugins: [
             '@babel/plugin-proposal-class-properties',
             '@babel/plugin-proposal-export-default-from',
@@ -62,31 +65,28 @@ var options = {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
-              outputPath: 'fonts/'
-            }
-          }
-        ]
-      },
-      {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
+              outputPath: 'fonts/',
+            },
+          },
         ],
       },
       {
-        test: /\.(jpe?g|png|gif|svg)$/i, 
-        loader: 'file-loader'
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        loader: 'file-loader',
       },
       {
         test: /\.html$/,
         loader: 'html-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
-    ]
+    ],
   },
   resolve: {
-    alias: {}
+    alias: {},
   },
   plugins: [
     new webpack.ProvidePlugin({
@@ -94,33 +94,43 @@ var options = {
       'window.jQuery': 'jquery',
     }),
     // type checker 
-   // ... (env.NODE_ENV === 'development') ? [new FlowWebpackPlugin({flowArgs: ['--show-all-errors']})] : [],
+    ... (isDev ? [new FlowWebpackPlugin({flowArgs: ['--show-all-errors']})] : []),
     // clean the web folder
     new CleanWebpackPlugin(),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV)
+      'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV),
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'licit', 'index.html'),
       filename: 'index.html',
       chunks: ['licit'],
-      inlineSource: isDev ? '$^' : '.(js|css)$'
+      inlineSource: isDev ? '$^' : '.(js|css)$',
     }),
-    new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
-    new WriteFilePlugin()
-  ]
+    ...(isDev ? [new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)] : []),
+    new WriteFilePlugin(),
+  ],
+  performance: {
+    assetFilter: function (assetFilename) {
+      return (
+        !assetFilename.endsWith('.eot') &&
+        !assetFilename.endsWith('.ttf') &&
+        !assetFilename.endsWith('.svg') &&
+        !assetFilename.endsWith('licit.bundle.js')
+      );
+    },
+  },
 };
 
-if (env.NODE_ENV === 'development') {
+if (isDev) {
   options.devtool = 'source-map';
 } else {
-// [FS] IRAD-1005 2020-07-10
-// Upgrade outdated packages.  
-  options.optimization =  {
+  // [FS] IRAD-1005 2020-07-10
+  // Upgrade outdated packages.
+  options.optimization = {
     minimize: true,
     minimizer: [new TerserPlugin()],
-  }
+  };
 }
 
 module.exports = options;

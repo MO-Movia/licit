@@ -1,11 +1,11 @@
 .czi-icon {
   direction: ltr;
   display: inline-block;
-  font-family: 'Material Icons', sans-serif;
+  font-family: 'Material Icons', sans-serif !important;
 
   /* Support for IE. */
   font-feature-settings: 'liga';
-  font-size: 20px; /* Preferred icon size */
+  font-size: 20px !important; /* Preferred icon size */
 
   /* Support for all WebKit browsers. */
   -webkit-font-smoothing: subpixel-antialiased;
@@ -54,8 +54,8 @@
 .czi-icon.superscript,
 .czi-icon.subscript {
   display: inline-block;
-  font-family: 'Arial', sans-serif;
-  font-size: 12px;
+  font-family: 'Arial', sans-serif !important;
+  font-size: 12px !important;
   height: 16px;
   text-align: center;
   width: 20px;
