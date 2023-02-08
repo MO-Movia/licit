@@ -27,7 +27,7 @@ class TableCellMenu extends React.PureComponent<any, any> {
     let cmdGrps = null;
 
     if (pluginView.getMenu) {
-      cmdGrps = pluginView.getMenu(editorState, actionNode);
+      cmdGrps = pluginView.getMenu(editorState, actionNode, TABLE_COMMANDS_GROUP);
     }
 
     if (!cmdGrps) {
