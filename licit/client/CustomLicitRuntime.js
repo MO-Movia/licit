@@ -12,7 +12,7 @@ import { POST } from '../../src/client/http';
  import {POST } from '@modusoperandi/licit';
  */
 
-const GLOSSARY_URI = 'http://greathints.com:3003';
+// const GLOSSARY_URI = 'http://greathints.com:3003';
 
 type Glossary = {
   id: string,
@@ -40,49 +40,49 @@ class CustomLicitRuntime {
           id: '3',
           term: 'PIN',
           description:
-            'When in all-caps, the word PIN stands for “personal identification number.” This is a secret number you create to access private documents, files and account information.',
+            'When in all-caps, the word PIN stands for ï¿½personal identification number.ï¿½ This is a secret number you create to access private documents, files and account information.',
         },
         {
           id: '4',
           term: 'RADAR',
           description:
-            'RADAR stands for “radio detection and ranging.” This technology is rarely called anything other than its acronym.',
+            'RADAR stands for ï¿½radio detection and ranging.ï¿½ This technology is rarely called anything other than its acronym.',
         },
         {
           id: '5',
           term: 'TASER',
           description:
-            'The electrical weapon actually is an acronym for “Thomas A. Swift’s Electric Rifle.”',
+            'The electrical weapon actually is an acronym for ï¿½Thomas A. Swiftï¿½s Electric Rifle.ï¿½',
         },
         {
           id: '6',
           term: 'SCUBA',
           description:
-            'This piece of diving equipment is an acronym for “self-contained underwater breathing apparatus.”',
+            'This piece of diving equipment is an acronym for ï¿½self-contained underwater breathing apparatus.ï¿½',
         },
         {
           id: '7',
           term: 'NASA',
           description:
-            'NASA stands for “National Aeronautics and Space Administration,” and this organization once took a man to the moon.',
+            'NASA stands for ï¿½National Aeronautics and Space Administration,ï¿½ and this organization once took a man to the moon.',
         },
         {
           id: '8',
           term: 'NAFTA',
           description:
-            'NAFTA is the acronym or the “North American Free Trade Agreement.” This organization governs trade among North American countries.',
+            'NAFTA is the acronym or the ï¿½North American Free Trade Agreement.ï¿½ This organization governs trade among North American countries.',
         },
         {
           id: '9',
           term: 'HIPAA',
           description:
-            'The “Health Insurance Portability Accountability Act” is responsible for keeping medical information private.',
+            'The ï¿½Health Insurance Portability Accountability Actï¿½ is responsible for keeping medical information private.',
         },
         {
           id: '10',
           term: 'DARE',
           description:
-            'Most people no longer remember that DARE stands for “Drug Abuse Resistance Education”',
+            'Most people no longer remember that DARE stands for ï¿½Drug Abuse Resistance Educationï¿½',
         },
         { id: 11, term: 'AEF', description: 'air expeditionary force' },
         { id: 12, term: 'AFDP', description: 'Air Force Doctrine Publication' },
