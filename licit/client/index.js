@@ -335,7 +335,7 @@ function main(): void {
   // To pass prosemirror plugins to editor pass it to plugins property which accept array of plugin object.
   // null means no custom plugins to pass
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
-  const plugins = null;
+  const plugins = [];
   const runtime = new CustomLicitRuntime();
   ReactDOM.render(
     <Licit
@@ -343,7 +343,7 @@ function main(): void {
       data={docJSON}
       dataType={DataType.JSON}
       debug={true}
-      docID={'0000-0000-0000-0000'}
+      docID={''}
       embedded={false}
       height={'100vh'}
       onChange={onChangeCB}

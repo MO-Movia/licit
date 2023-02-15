@@ -60,15 +60,7 @@ var options = {
       },
       {
         test: /\.(woff(2)?|ttf|otf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: 'fonts/',
-            },
-          },
-        ],
+        type: 'asset/resource',
       },
       {
         test: /\.css$/,
@@ -93,10 +85,8 @@ var options = {
       // jQuery (for Mathquill)
       'window.jQuery': 'jquery',
     }),
-    // type checker
-    // ...(isDev
-    //   ? [new FlowWebpackPlugin({ flowArgs: ['--show-all-errors'] })]
-    //   : []),
+    // type checker 
+    ... (isDev ? [new FlowWebpackPlugin({flowArgs: ['--show-all-errors']})] : []),
     // clean the web folder
     new CleanWebpackPlugin(),
     // expose and write the allowed env vars on the compiled bundle
