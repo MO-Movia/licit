@@ -23,7 +23,7 @@ const HeadingNodeSpec: NodeSpec = {
   ...ParagraphNodeSpec,
   attrs: {
     ...ParagraphNodeSpec.attrs,
-    level: { default: 1 },
+    // level: { default: 1 },
   },
   defining: true,
   parseDOM: [
@@ -39,15 +39,12 @@ const HeadingNodeSpec: NodeSpec = {
 
 function toDOM(node: Node): Array<any> {
   const dom = toParagraphDOM(node);
-  const level = node.attrs.level || 1;
-  dom[0] = `h${level}`;
   return dom;
 }
 
 function getAttrs(dom: HTMLElement): Object {
-  const attrs: Object = getParagraphNodeAttrs(dom);
-  const level = TAG_NAME_TO_LEVEL[dom.nodeName.toUpperCase()] || 1;
-  attrs.level = level;
+  const attrs = getParagraphNodeAttrs(dom);
+
   return attrs;
 }
 
