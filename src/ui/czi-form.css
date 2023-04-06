@@ -7,6 +7,9 @@
   font-size: var(--czi-font-size);
   margin: 0;
   padding: 20px;
+  color: black;
+  height: auto !important;
+  display: grid;
 }
 
 .czi-form legend {
