@@ -6,7 +6,7 @@ import BookmarkNodeSpec from './BookmarkNodeSpec';
 import BulletListNodeSpec from './BulletListNodeSpec';
 import DocNodeSpec from './DocNodeSpec';
 import HardBreakNodeSpec from './HardBreakNodeSpec';
-import HeadingNodeSpec from './HeadingNodeSpec';
+// import HeadingNodeSpec from './HeadingNodeSpec';
 import HorizontalRuleNodeSpec from './HorizontalRuleNodeSpec';
 import ListItemNodeSpec from './ListItemNodeSpec';
 import MathNodeSpec from './MathNodeSpec';
@@ -36,12 +36,14 @@ const {
 
 // !! Be careful with the order of these nodes, which may effect the parsing
 // outcome.!!
+// [FS-SEA][06-04-2023]
+// Changed HeadingNodeSpec to ParagraphNodeSpec for HEADING to handle Header as a paragraph
 const nodes = {
   [DOC]: DocNodeSpec,
   [PARAGRAPH]: ParagraphNodeSpec,
   [BLOCKQUOTE]: BlockquoteNodeSpec,
   [HORIZONTAL_RULE]: HorizontalRuleNodeSpec,
-  [HEADING]: HeadingNodeSpec,
+  [HEADING]: ParagraphNodeSpec,
   [TEXT]: TextNodeSpec,
   [MATH]: MathNodeSpec,
   [HARD_BREAK]: HardBreakNodeSpec,

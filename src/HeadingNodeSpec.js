@@ -38,13 +38,14 @@ const HeadingNodeSpec: NodeSpec = {
 };
 
 function toDOM(node: Node): Array<any> {
+  // [FS-SEA][06-04-2023]
+  // returns paragraph node to dom when a header node paste
   const dom = toParagraphDOM(node);
   return dom;
 }
 
 function getAttrs(dom: HTMLElement): Object {
   const attrs = getParagraphNodeAttrs(dom);
-
   return attrs;
 }
 
