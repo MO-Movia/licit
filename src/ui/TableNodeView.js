@@ -18,5 +18,8 @@ export default class TableNodeView extends TableView {
   _updateMargin(node: Node): void {
     const marginLeft = (node.attrs && node.attrs.marginLeft) || 0;
     this.table.style.marginLeft = marginLeft ? `${marginLeft}px` : '';
+     if(node.attrs && node.attrs.vignette){
+      this.table.style.border='none' ;
+    }
   }
 }
