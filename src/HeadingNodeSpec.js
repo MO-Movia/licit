@@ -7,14 +7,14 @@ import { getParagraphNodeAttrs, toParagraphDOM } from './ParagraphNodeSpec';
 
 import type { NodeSpec } from './Types';
 
-const TAG_NAME_TO_LEVEL = {
-  H1: 1,
-  H2: 2,
-  H3: 3,
-  H4: 4,
-  H5: 5,
-  H6: 6,
-};
+// const TAG_NAME_TO_LEVEL = {
+//   H1: 1,
+//   H2: 2,
+//   H3: 3,
+//   H4: 4,
+//   H5: 5,
+//   H6: 6,
+// };
 
 // https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
 // :: NodeSpec A plain paragraph textblock. Represented in the DOM
@@ -23,7 +23,7 @@ const HeadingNodeSpec: NodeSpec = {
   ...ParagraphNodeSpec,
   attrs: {
     ...ParagraphNodeSpec.attrs,
-    level: { default: 1 },
+    // level: { default: 1 },
   },
   defining: true,
   parseDOM: [
@@ -38,16 +38,14 @@ const HeadingNodeSpec: NodeSpec = {
 };
 
 function toDOM(node: Node): Array<any> {
+  // [FS-SEA][06-04-2023]
+  // returns paragraph node to dom when a header node paste
   const dom = toParagraphDOM(node);
-  const level = node.attrs.level || 1;
-  dom[0] = `h${level}`;
   return dom;
 }
 
 function getAttrs(dom: HTMLElement): Object {
-  const attrs: Object = getParagraphNodeAttrs(dom);
-  const level = TAG_NAME_TO_LEVEL[dom.nodeName.toUpperCase()] || 1;
-  attrs.level = level;
+  const attrs = getParagraphNodeAttrs(dom);
   return attrs;
 }
 

@@ -561,9 +561,7 @@ class Licit extends React.Component<any, any> {
     const { state, dispatch } = editorView;
     this._editorView = editorView;
     const tr = state.tr;
-    const doc = state.doc;
-    const trx = tr.setSelection(TextSelection.create(doc, 0, doc.content.size));
-    dispatch(trx.scrollIntoView());
+    dispatch(tr.scrollIntoView());
 
     // [FS] IRAD-1578 2021-09-27
     // In collab mode, fire onRead only after getting the response from collab server.
