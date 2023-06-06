@@ -1,6 +1,6 @@
 // @flow
 
-import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
+import { EditorState, Plugin, PluginKey, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 /* eslint-disable-next-line */
 import * as React from 'react';
@@ -11,6 +11,7 @@ import TableCellMenu from './ui/TableCellMenu';
 import bindScrollHandler from './ui/bindScrollHandler';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import isElementFullyVisible from './ui/isElementFullyVisible';
+import { Slice } from 'prosemirror-model';
 
 import '@modusoperandi/licit-ui-commands/dist/ui/czi-pop-up.css';
 import { CellSelection } from 'prosemirror-tables';
@@ -120,6 +121,44 @@ const SPEC = {
   key: new PluginKey('TableCellMenuPlugin'),
   view(editorView: EditorView) {
     return new TableCellTooltipView(editorView);
+  },
+  props: {
+    nodeViews: {},
+    handlePaste(
+      view: EditorView,
+      _event: ClipboardEvent,
+      slice: Slice
+    ): boolean | void {
+      // check if copied content have table.
+      let allowed = true;
+      let haveTable = false;
+      for (let i = 0; i < slice.content.childCount; i++) {
+        if ('table' == slice.content.child(i).type.name) {
+          haveTable = true;
+        }
+      }
+
+      if (haveTable) {
+        const selection = view.state.selection;
+        if (selection.constructor.name === TextSelection.name) {
+          allowed = selection.from === selection.to;
+          if (allowed) {
+            const $head = selection.$head;
+            let vignette = false;
+            for (let d = 0; $head.depth > d; d++) {
+              const n = $head.node(d);
+              if (n.type.name == 'table' && n.attrs['vignette']) {
+                vignette = true;
+              }
+              if (n.type.spec.tableRole == 'row') {
+                allowed = !vignette;
+              }
+            }
+          }
+        }
+      }
+      return !allowed;
+    },
   },
 };
 

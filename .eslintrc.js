@@ -38,6 +38,7 @@ module.exports = {
     Blob: false,
     File: false,
     Class: false,
+    ClipboardEvent: false,
     Component: false,
     Document: true,
     Element: false,

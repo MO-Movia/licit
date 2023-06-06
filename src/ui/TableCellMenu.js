@@ -25,9 +25,15 @@ class TableCellMenu extends React.PureComponent<any, any> {
   render(): React.Element<any> {
     const { editorState, editorView, pluginView, actionNode } = this.props;
     let cmdGrps = null;
+    const icon = { name: 'edit' };
 
     if (pluginView.getMenu) {
-      cmdGrps = pluginView.getMenu(editorState, actionNode, TABLE_COMMANDS_GROUP);
+      cmdGrps = pluginView.getMenu(
+        editorState,
+        actionNode,
+        TABLE_COMMANDS_GROUP,
+        icon
+      );
     }
 
     if (!cmdGrps) {
@@ -41,7 +47,7 @@ class TableCellMenu extends React.PureComponent<any, any> {
         dispatch={editorView.dispatch}
         editorState={editorState}
         editorView={editorView}
-        icon={Icon.get('edit')}
+        icon={Icon.get(icon.name)}
         title="Edit"
       />
     );
