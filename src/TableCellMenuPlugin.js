@@ -129,35 +129,14 @@ const SPEC = {
       _event: ClipboardEvent,
       slice: Slice
     ): boolean | void {
-      // check if copied content have table.
-      let allowed = true;
-      let haveTable = false;
-      for (let i = 0; i < slice.content.childCount; i++) {
-        if ('table' == slice.content.child(i).type.name) {
-          haveTable = true;
-        }
-      }
-
-      if (haveTable) {
-        const selection = view.state.selection;
-        if (selection.constructor.name === TextSelection.name) {
-          allowed = selection.from === selection.to;
-          if (allowed) {
-            const $head = selection.$head;
-            let vignette = false;
-            for (let d = 0; $head.depth > d; d++) {
-              const n = $head.node(d);
-              if (n.type.name == 'table' && n.attrs['vignette']) {
-                vignette = true;
-              }
-              if (n.type.spec.tableRole == 'row') {
-                allowed = !vignette;
-              }
-            }
-          }
-        }
-      }
-      return !allowed;
+      return this.isAllowed(view, slice);
+    },
+    handleDrop(
+      view: EditorView,
+      _event: DragEvent,
+      slice: Slice
+    ): boolean | void {
+      return this.isAllowed(view, slice);
     },
   },
 };
@@ -165,6 +144,38 @@ const SPEC = {
 class TableCellMenuPlugin extends Plugin {
   constructor() {
     super(SPEC);
+  }
+
+  isAllowed(view: EditorView, slice: Slice): boolean {
+    // check if copied content have table.
+    let allowed = true;
+    let haveTable = false;
+    for (let i = 0; i < slice.content.childCount; i++) {
+      if ('table' == slice.content.child(i).type.name) {
+        haveTable = true;
+      }
+    }
+
+    if (haveTable) {
+      const selection = view.state.selection;
+      if (selection.constructor.name === TextSelection.name) {
+        allowed = selection.from === selection.to;
+        if (allowed) {
+          const $head = selection.$head;
+          let vignette = false;
+          for (let d = 0; $head.depth > d; d++) {
+            const n = $head.node(d);
+            if (n.type.name == 'table' && n.attrs['vignette']) {
+              vignette = true;
+            }
+            if (n.type.spec.tableRole == 'row') {
+              allowed = !vignette;
+            }
+          }
+        }
+      }
+    }
+    return !allowed;
   }
 }
 
