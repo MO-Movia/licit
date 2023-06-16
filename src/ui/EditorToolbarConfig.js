@@ -31,6 +31,10 @@ export function parseLabel(input: string): Object {
   };
 }
 
+export function isExpandButton(title: string): Boolean {
+  return (title?.trim() == 'Expand');
+}
+
 const {
   // [FS][07-MAY-2020][IRAD-956]
   // BLOCKQUOTE_TOGGLE,
@@ -107,10 +111,37 @@ export const TABLE_COMMANDS_GROUP = [
   },
 ];
 
+export const TEXT_ALIGN = [
+  {
+    '[format_align_left] Left Align': TEXT_ALIGN_LEFT,
+    '[format_align_center] Center Align': TEXT_ALIGN_CENTER,
+    '[format_align_right] Right Align': TEXT_ALIGN_RIGHT,
+    '[format_align_justify] Justify': TEXT_ALIGN_JUSTIFY,
+  },
+];
+
+export const FONT_ACTIONS_MINIMIZED = [
+  {
+    '[superscript] Superscript': SUPER,
+    '[subscript] Subscript': SUB,
+  },
+  {
+    '[format_color_text] Text color': TEXT_COLOR,
+    '[border_color] Highlight color': TEXT_HIGHLIGHT
+  },
+  {
+    '[format_clear] Clear formats': CLEAR_FORMAT,
+  },
+];
+
 // [FS] IRAD-1012 2020-07-14
 // Fix: Toolbar is poorly organized.
 
 export const COMMAND_GROUPS = [
+  {
+    '[undo] Undo': HISTORY_UNDO,
+    '[redo] Redo': HISTORY_REDO,
+  },
   {
     '[font_download] Font Type': FontTypeCommandMenuButton,
   },
@@ -122,22 +153,10 @@ export const COMMAND_GROUPS = [
     '[format_italic] Italic': EM,
     '[format_underline] Underline': UNDERLINE,
     '[format_strikethrough] Strike through': STRIKE,
-    '[superscript] Superscript': SUPER,
-    '[subscript] Subscript': SUB,
-    '[format_color_text] Text color': TEXT_COLOR,
-    '[border_color] Highlight color': TEXT_HIGHLIGHT,
-    '[format_clear] Clear formats': CLEAR_FORMAT,
+    '[arrow_drop_down] Expand': FONT_ACTIONS_MINIMIZED,
   },
   {
-    '[format_align_left] Left align': TEXT_ALIGN_LEFT,
-    '[format_align_center] Center Align': TEXT_ALIGN_CENTER,
-    '[format_align_right] Right Align': TEXT_ALIGN_RIGHT,
-    '[format_align_justify] Justify': TEXT_ALIGN_JUSTIFY,
-  },
-  {
-    '[format_indent_increase] Indent more': INDENT_MORE,
-    '[format_indent_decrease] Indent less': INDENT_LESS,
-    '[format_line_spacing] Line spacing': TEXT_LINE_SPACINGS,
+    '[format_align_left] Text align': TEXT_ALIGN,
   },
   {
     // [FS] IRAD-1039 2020-09-23
@@ -156,9 +175,5 @@ export const COMMAND_GROUPS = [
   },
   {
     '[settings_overscan] Page layout': DOC_LAYOUT,
-  },
-  {
-    '[undo] Undo': HISTORY_UNDO,
-    '[redo] Redo': HISTORY_REDO,
   },
 ];

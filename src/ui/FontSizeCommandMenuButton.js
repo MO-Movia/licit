@@ -46,7 +46,7 @@ class FontSizeCommandMenuButton extends React.PureComponent<any, any> {
   render(): React.Element<any> {
     const { dispatch, editorState, editorView } = this.props;
     const fontSize = findActiveFontSize(editorState);
-    const className = String(fontSize).length <= 2 ? 'width-30' : 'width-60';
+    const className = (String(fontSize).length <= 2 ? 'width-30' : 'width-60') + ' czi-dropdown-border';
     return (
       <CommandMenuButton
         className={className}

@@ -32,7 +32,7 @@ class FontTypeCommandMenuButton extends React.PureComponent<any, any> {
     const fontType = findActiveFontType(editorState);
     return (
       <CommandMenuButton
-        className="width-100"
+        className="width-100 czi-dropdown-border"
         // [FS] IRAD-1008 2020-07-16
         // Disable font type menu on editor disable state
         commandGroups={COMMAND_GROUPS}

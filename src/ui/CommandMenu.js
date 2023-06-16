@@ -8,6 +8,7 @@ import * as React from 'react';
 import CustomMenu from './CustomMenu';
 import CustomMenuItem from './CustomMenuItem';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { parseLabel, isExpandButton } from './EditorToolbarConfig';
 
 class CommandMenu extends React.PureComponent<any, any> {
   _activeCommand: ?UICommand = null;
@@ -21,13 +22,14 @@ class CommandMenu extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const { commandGroups, editorState, editorView } = this.props;
+    const { commandGroups, editorState, editorView, title } = this.props;
     const children = [];
     const jj = commandGroups.length - 1;
 
     commandGroups.forEach((group, ii) => {
       Object.keys(group).forEach((label) => {
         const command = group[label];
+        const { icon } = parseLabel(label);
         let disabled = true;
         try {
           // [FS] IRAD-1053 2020-10-22
@@ -42,7 +44,8 @@ class CommandMenu extends React.PureComponent<any, any> {
             active={command.isActive(editorState)}
             disabled={disabled}
             key={label}
-            label={command.renderLabel(editorState) || label}
+            icon={icon}
+            label={icon ? null : (command.renderLabel(editorState) || label)}
             onClick={this._onUIEnter}
             onMouseEnter={this._onUIEnter}
             value={command}
@@ -53,7 +56,7 @@ class CommandMenu extends React.PureComponent<any, any> {
         children.push(<CustomMenuItem.Separator key={`${String(ii)}-hr`} />);
       }
     });
-    return <CustomMenu>{children}</CustomMenu>;
+    return <CustomMenu isHorizontal={isExpandButton(title)}>{children}</CustomMenu>;
   }
 
   _onUIEnter = (command: UICommand, event: SyntheticEvent<>): void => {

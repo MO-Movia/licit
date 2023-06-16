@@ -6,3 +6,8 @@
   max-height: 98vh;
   overflow: auto;
 }
+
+.czi-horizontal-menu {
+  display: flex;
+  border: 1px solid #bbb8b8;
+}

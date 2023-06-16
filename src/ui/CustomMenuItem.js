@@ -15,6 +15,7 @@ class CustomMenuItem extends React.PureComponent<any, any> {
 
   props: {
     label: string,
+    icon?: string | React.Element<any> | null,
     disabled?: ?boolean,
     onClick: ?(value: any, e: SyntheticEvent<>) => void,
     onMouseEnter: ?(value: any, e: SyntheticEvent<>) => void,

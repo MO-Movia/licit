@@ -11,6 +11,7 @@ import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid';
+import { isExpandButton } from './EditorToolbarConfig';
 
 import './czi-custom-menu-button.css';
 
@@ -36,6 +37,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
+    let hasChild = false;
     const {
       className,
       label,
@@ -50,6 +52,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
       !disabled &&
       commandGroups.some((group, ii) => {
         return Object.keys(group).some((label) => {
+          hasChild = true;
           const command = group[label];
           let disabledVal = true;
           try {
@@ -63,8 +66,10 @@ class CommandMenuButton extends React.PureComponent<any, any> {
       });
 
     const { expanded } = this.state;
+    const isMaximizeButton = isExpandButton(title);
     const buttonClassName = cx(className, {
       'czi-custom-menu-button': true,
+      'menu-expand-btn': isMaximizeButton,
       expanded,
     });
 
@@ -77,6 +82,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
         label={label}
         onClick={this._onClick}
         title={title}
+        hasChild={(hasChild && !isMaximizeButton)}
       />
     );
   }

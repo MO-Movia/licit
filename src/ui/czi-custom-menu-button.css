@@ -1,7 +1,6 @@
 .czi-custom-menu-button.expanded.expanded.expanded {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  border-color: transparent;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 
@@ -15,4 +14,13 @@
 
 .czi-custom-menu-button.width-60 {
   width: 60px;
+}
+
+.czi-dropdown-border {
+  border: 0.5px solid #b7b3b3;
+}
+
+.czi-editor-toolbar .menu-expand-btn {
+  padding: 0px !important;
+  padding-top: 9px !important;
 }

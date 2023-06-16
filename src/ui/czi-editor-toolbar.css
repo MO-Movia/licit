@@ -1,6 +1,6 @@
 .czi-editor-toolbar {
-  background: #fff;
-  height: 36px;
+  background: #4d4d4d;
+  height: 38px;
   line-height: 32px;
   pointer-events: none;
   position: relative;
@@ -33,7 +33,7 @@
   /* Only reveal the first row of buttons by default */
 
   /* 0.162 =~ 36px */
-  flex: 0.162;
+  flex: 0.172;
   overflow: hidden;
 
   /* See https://css-tricks.com/using-css-transitions-auto-dimensions/ */
@@ -53,7 +53,7 @@
 }
 
 .czi-editor-toolbar-body-content {
-  background: #fff;
+  background: #4d4d4d;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.26);
   box-sizing: border-box;
 
@@ -76,7 +76,7 @@
 }
 
 .czi-editor-toolbar .czi-custom-buttons {
-  border-right-color: #efefef;
+  border-right-color: #8b8888;
   border-right-style: solid;
   border-right-width: 1px;
   display: inline-block;
@@ -86,11 +86,12 @@
   padding-right: 4px;
   position: relative;
   white-space: nowrap;
+  text-align: center;
+  margin-bottom: 3px;
 }
 
 .czi-editor-toolbar .czi-custom-button.czi-custom-button.czi-custom-button {
-  border-color: transparent;
-  border-radius: 5px;
+  border-radius: 6px;
 }
 
 .czi-editor-toolbar .czi-custom-button.use-icon .czi-icon {
@@ -110,9 +111,9 @@
 }
 
 .czi-editor-toolbar-background-line {
-  box-shadow: 0 1px 0 0.2px #efefef;
+  box-shadow: 0 1px 0 0.2px #6e6e6e;
   box-sizing: border-box;
-  height: 32px;
+  height: 41px;
 }
 
 @media only print {

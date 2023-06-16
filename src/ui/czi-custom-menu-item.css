@@ -7,6 +7,14 @@
   padding-left: 20px;
   padding-right: 20px;
   padding-top: 8px;
+  height: 100%;
+}
+
+.czi-horizontal-menu .czi-tooltip-surface .czi-custom-button {
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-bottom: 4px;
+  padding-top: 4px;
 }
 
 .czi-custom-menu-item.czi-custom-button:hover {
@@ -21,10 +29,5 @@ To adjust the width of the custom style menu dropdown. */
 }
 
 .czi-custom-menu-item-separator {
-  background-color: var(--czi-button-hover-background-color);
-  height: 1px;
-  margin-bottom: 8px;
-  margin-left: 0;
-  margin-right: 0;
-  margin-top: 8px;
+  border: 1px solid #6e6e6e;
 }
