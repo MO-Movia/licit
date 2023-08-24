@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit",
-  "version": "0.14.17",
+  "version": "0.14.18",
   "subversion": "1",
   "description": "Rich text editor built with React and ProseMirror",
   "main": "dist/index.js",
@@ -67,7 +67,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jest": "^27.1.2",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "7.31.10",
+    "eslint-plugin-react": "7.33.2",
     "exports-loader": "^1.1.0",
     "file-loader": "^6.2.0",
     "flow-bin": "0.128.0",
@@ -95,7 +95,7 @@
     "write-file-webpack-plugin": "4.5.1"
   },
   "dependencies": {
-    "@modusoperandi/licit-ui-commands": "^0.1.16",
+    "@modusoperandi/licit-ui-commands": "^0.1.17",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.7",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
