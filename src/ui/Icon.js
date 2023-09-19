@@ -12,6 +12,8 @@ import './czi-icon.css';
 //import injectStyleSheet from './injectStyleSheet';
 import './icon-font.css';
 
+//import ReactLogo from '../../images/Icon_de Indent1.svg';
+
 const VALID_CHARS = /[a-z_]+/;
 const cached = {};
 
@@ -51,6 +53,53 @@ class SubscriptIcon extends React.PureComponent<any, any> {
   }
 }
 
+/*function useDynamicSVGImport(name, options = {}) {
+  const ImportedIconRef = useRef();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState();
+
+  const { onCompleted, onError } = options;
+  useEffect(() => {
+    setLoading(true);
+    const importIcon = async () => {
+      try {
+        ImportedIconRef.current = (
+          await import(`./${name}.svg`)
+        ).ReactComponent;
+        if (onCompleted) {
+          onCompleted(name, ImportedIconRef.current);
+        }
+      } catch (err) {
+        if (onError) {
+          onError(err);
+        }
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    importIcon();
+  }, [name, onCompleted, onError]);
+
+  return { error, loading, SvgIcon: ImportedIconRef.current };
+}
+
+function IconEx({name, onCompleted, onError, ...rest}) {
+  const {error, loading, SvgIcon} = useDynamicSVGImport(name, {onCompleted, onError});
+  if(error) {
+    return error.message;
+  }
+
+  if(loading) {
+    return "Loading...";
+  }
+
+  if(SvgIcon) {
+    return <SvgIcon {...rest}/>
+  }
+}
+*/
+
 class Icon extends React.PureComponent<any, any> {
   // Get the static Icon.
   static get(type: string, title: ?string): React.Element<any> {
@@ -69,7 +118,7 @@ class Icon extends React.PureComponent<any, any> {
     const { type, title } = this.props;
     let className = '';
     let children = '';
-    if (type == 'superscript') {
+    /*if (type == 'superscript') {
       className = cx('czi-icon', { [type]: true });
       children = <SuperscriptIcon />;
     } else if (type == 'subscript') {
@@ -81,8 +130,23 @@ class Icon extends React.PureComponent<any, any> {
     } else {
       className = cx('czi-icon', { [type]: true });
       children = type;
+    }*/
+    let fileName = 'Icon_Formula';
+    switch(type)
+    {
+      case 'format_align_left':
+      case 'format_align_center':
+      case 'format_align_right':
+      case 'format_align_justify':
+        fileName = type;
+        break;
+      default:
+          break;
     }
-    return <span className={className}>{children}</span>;
+    const image = require('../../images/' + fileName + '.svg');
+    
+    //const { srcImg } = await import(`${path}`);`${path}`;//[`../../images/${'format_align_justify'}.svg`]//'../../images/format_align_justify.svg'
+    return <img src={image} alt={title} style={{width: "100%",height: "100%"}}/>;//<span className={className}>{children}</span>;
   }
 }
 
