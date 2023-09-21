@@ -48,6 +48,7 @@ export const DataType = Object.freeze({
  *  disabled {boolean} [false] Disable the editor.
  *  embedded {boolean} [false] Disable/Enable inline behaviour.
  *  plugins [plugins] External Plugins into the editor.
+ *  theme {string} [light] light/dark theme support for toolbar.
  */
 class Licit extends React.Component<any, any> {
   _runtime: EditorRuntime;
@@ -104,6 +105,8 @@ class Licit extends React.Component<any, any> {
     const dataType = props.dataType || DataType.JSON;
     const disabled = props.disabled || false;
     const embedded = props.embedded || false; // [FS] IRAD-996 2020-06-30
+    // Theme property for toolbar. By default uses light theme.
+    const theme = props.theme || 'light';
     // [FS] 2020-07-03
     // Handle Image Upload from Angular App
     const runtime = props.runtime || null;
@@ -160,6 +163,7 @@ class Licit extends React.Component<any, any> {
       embedded,
       runtime,
       dataType,
+      theme
     };
 
     // FS IRAD-1040 2020-26-08
@@ -466,6 +470,7 @@ class Licit extends React.Component<any, any> {
       disabled,
       embedded,
       runtime,
+      theme
     } = this.state;
     // [FS] IRAD-978 2020-06-05
     // Using 100vw & 100vh (100% viewport) is not ideal for a component which is expected to be a part of a page,
@@ -481,6 +486,7 @@ class Licit extends React.Component<any, any> {
         readOnly={readOnly}
         runtime={runtime}
         width={width}
+        theme={theme}
       />
     );
   }

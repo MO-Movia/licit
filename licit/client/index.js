@@ -351,6 +351,7 @@ function main(): void {
       plugins={plugins}
       runtime={runtime}
       width={'100vw'}
+      theme={'dark'}
     />,
     el
   );

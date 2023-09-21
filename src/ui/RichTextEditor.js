@@ -53,6 +53,7 @@ class RichTextEditor extends React.PureComponent<any, any> {
       placeholder,
       readOnly,
       width,
+      theme
     } = this.props;
 
     let { editorState, runtime } = this.props;
@@ -102,6 +103,7 @@ class RichTextEditor extends React.PureComponent<any, any> {
         height={height}
         toolbar={toolbar}
         width={width}
+        theme={theme}
       />
     );
   }

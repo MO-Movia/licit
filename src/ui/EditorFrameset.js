@@ -13,6 +13,7 @@ export type EditorFramesetProps = {
   toolbarPlacement?: 'header' | 'body' | null,
   toolbar: ?React.Element<any>,
   width: ?(string | number),
+  theme:?string
 };
 
 export const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';
@@ -42,6 +43,7 @@ class EditorFrameset extends React.PureComponent<any, any> {
       toolbarPlacement,
       toolbar,
       width,
+      theme
     } = this.props;
 
     const mainStyle = {
@@ -56,14 +58,17 @@ class EditorFrameset extends React.PureComponent<any, any> {
       embedded: embedded,
     });
 
+    const frameMainClassName = 'czi-editor-frame-main' + theme ? ('-' + theme) : '';
+    const frameHeadClassName = 'czi-editor-frame-head' + theme ? ('-' + theme) : '';
+
     const toolbarHeader =
       toolbarPlacement === 'header' || !toolbarPlacement ? toolbar : null;
     const toolbarBody = toolbarPlacement === 'body' && toolbar;
 
     return (
       <div className={mainClassName} style={mainStyle}>
-        <div className="czi-editor-frame-main">
-          <div className="czi-editor-frame-head">
+        <div className={frameMainClassName}>
+          <div className={frameHeadClassName}>
             {header}
             {toolbarHeader}
           </div>
