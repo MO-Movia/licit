@@ -149,12 +149,14 @@ class Icon extends React.PureComponent<any, any> {
         case 'link':
         case 'redo':
         case 'undo':
+        case 'arrow_drop_down':
           fileName = type;
           break;
         default:
           break;
       }
-      image = require('../../images/' + fileName + '.svg');
+      const theme = 'dark';
+      image = require('../../images/' + theme + '/' + fileName + '.svg');
     }
 
     //const { srcImg } = await import(`${path}`);`${path}`;//[`../../images/${'format_align_justify'}.svg`]//'../../images/format_align_justify.svg'
