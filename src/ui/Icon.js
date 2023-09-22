@@ -131,19 +131,25 @@ class Icon extends React.PureComponent<any, any> {
       className = cx('czi-icon', { [type]: true });
       children = type;
     }*/
-    let fileName = 'Icon_Formula';
-    switch(type)
-    {
-      case 'format_align_left':
-      case 'format_align_center':
-      case 'format_align_right':
-      case 'format_align_justify':
-        fileName = type;
-        break;
-      default:
+    let image = null;
+
+    if(type.startsWith('http')) {
+      image = type;
+    } else {
+      let fileName = 'Icon_Formula';
+      switch(type)
+      {
+        case 'format_align_left':
+        case 'format_align_center':
+        case 'format_align_right':
+        case 'format_align_justify':
+          fileName = type;
           break;
+        default:
+            break;
+      }
+      image = require('../../images/' + fileName + '.svg');
     }
-    const image = require('../../images/' + fileName + '.svg');
     
     //const { srcImg } = await import(`${path}`);`${path}`;//[`../../images/${'format_align_justify'}.svg`]//'../../images/format_align_justify.svg'
     return <img src={image} alt={title} style={{width: "100%",height: "100%"}}/>;//<span className={className}>{children}</span>;

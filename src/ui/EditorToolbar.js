@@ -28,6 +28,7 @@ class EditorToolbar extends React.PureComponent<any, any> {
     editorView: ?EditorView,
     onReady?: ?(view: EditorView) => void,
     readOnly?: ?boolean,
+    theme: string,
   };
 
   state = {
@@ -58,7 +59,7 @@ class EditorToolbar extends React.PureComponent<any, any> {
         //  p => p.buttonGroup
         // but changing it now would mean finding every plugin that was
         // implemented this way.
-        .map((p) => p.initButtonCommands && p.initButtonCommands())
+        .map((p) => p.initButtonCommands && p.initButtonCommands(this.props.theme))
         .filter(Boolean)
     )
       .map(this._renderButtonsGroup)

@@ -13,7 +13,7 @@ export type EditorFramesetProps = {
   toolbarPlacement?: 'header' | 'body' | null,
   toolbar: ?React.Element<any>,
   width: ?(string | number),
-  theme:?string
+  theme: ?string
 };
 
 export const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';

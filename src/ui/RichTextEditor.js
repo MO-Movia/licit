@@ -71,6 +71,7 @@ class RichTextEditor extends React.PureComponent<any, any> {
           editorState={editorState || Editor.EDITOR_EMPTY_STATE}
           editorView={editorView}
           readOnly={readOnly}
+          theme={theme}
         />
       );
 
