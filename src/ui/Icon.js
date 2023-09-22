@@ -133,26 +133,39 @@ class Icon extends React.PureComponent<any, any> {
     }*/
     let image = null;
 
-    if(type.startsWith('http')) {
+    if (type.startsWith('http')) {
       image = type;
     } else {
-      let fileName = 'Icon_Formula';
-      switch(type)
-      {
-        case 'format_align_left':
-        case 'format_align_center':
+      let fileName = 'Icon_Clear Formatting Buttons';
+      switch (type) {
         case 'format_align_right':
-        case 'format_align_justify':
+        case 'format_bold':
+        case 'format_italic':
+        case 'format_list_bulleted':
+        case 'format_underline':
+        case 'functions':
+        case 'grid_on':
+        case 'hr':
+        case 'link':
+        case 'redo':
+        case 'undo':
           fileName = type;
           break;
         default:
-            break;
+          break;
       }
       image = require('../../images/' + fileName + '.svg');
     }
-    
+
     //const { srcImg } = await import(`${path}`);`${path}`;//[`../../images/${'format_align_justify'}.svg`]//'../../images/format_align_justify.svg'
-    return <img src={image} alt={title} style={{width: "100%",height: "100%"}}/>;//<span className={className}>{children}</span>;
+    return (
+      <img
+        src={image}
+        alt={title}
+        style={{ width: '100%', height: '100%' }}
+      ></img>
+    );
+    //return <span className={className}>{children}</span>;
   }
 }
 
