@@ -60,8 +60,8 @@ class EditorFrameset extends React.PureComponent<any, any> {
 
     const theme = this.context;
 
-    const frameMainClassName = 'czi-editor-frame-main' + (theme ? ('-' + theme) : '');
-    const frameHeadClassName = 'czi-editor-frame-head' + (theme ? ('-' + theme) : '');
+    const frameMainClassName = cx('czi-editor-frame-main', theme);
+    const frameHeadClassName = cx('czi-editor-frame-head', theme);
 
     const toolbarHeader =
       toolbarPlacement === 'header' || !toolbarPlacement ? toolbar : null;
