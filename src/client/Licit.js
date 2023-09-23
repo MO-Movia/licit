@@ -25,6 +25,7 @@ import DefaultEditorPlugins from '../buildEditorPlugins';
 import EditorMarks from '../EditorMarks';
 import EditorNodes from '../EditorNodes';
 import convertFromHTML from '../convertFromHTML';
+import {ThemeProvider} from "../ui/contextProvider";
 
 export const DataType = Object.freeze({
   JSON: Symbol('json'),
@@ -476,18 +477,19 @@ class Licit extends React.Component<any, any> {
     // Using 100vw & 100vh (100% viewport) is not ideal for a component which is expected to be a part of a page,
     // so changing it to 100%  width & height which will occupy the area relative to its parent.
     return (
-      <RichTextEditor
-        disabled={disabled}
-        editorState={editorState}
-        embedded={embedded}
-        height={height}
-        onChange={this._onChange}
-        onReady={this._onReady}
-        readOnly={readOnly}
-        runtime={runtime}
-        width={width}
-        theme={theme}
-      />
+      <ThemeProvider theme={theme}>
+        <RichTextEditor
+          disabled={disabled}
+          editorState={editorState}
+          embedded={embedded}
+          height={height}
+          onChange={this._onChange}
+          onReady={this._onReady}
+          readOnly={readOnly}
+          runtime={runtime}
+          width={width}
+        />
+      </ThemeProvider>
     );
   }
 

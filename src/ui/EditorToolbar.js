@@ -28,7 +28,6 @@ class EditorToolbar extends React.PureComponent<any, any> {
     editorView: ?EditorView,
     onReady?: ?(view: EditorView) => void,
     readOnly?: ?boolean,
-    theme: string,
   };
 
   state = {

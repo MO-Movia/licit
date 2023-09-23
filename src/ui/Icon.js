@@ -4,6 +4,7 @@ import cx from 'classnames';
 import * as React from 'react';
 
 import canUseCSSFont from './canUseCSSFont';
+import {ThemeContext} from "./contextProvider";
 
 import './czi-icon.css';
 
@@ -101,6 +102,7 @@ function IconEx({name, onCompleted, onError, ...rest}) {
 */
 
 class Icon extends React.PureComponent<any, any> {
+  static contextType = ThemeContext;
   // Get the static Icon.
   static get(type: string, title: ?string): React.Element<any> {
     const key = `${type || ''}-${title || ''}`;
@@ -155,7 +157,8 @@ class Icon extends React.PureComponent<any, any> {
         default:
           break;
       }
-      const theme = 'dark';
+
+      const theme = this.context;      
       image = require('../../images/' + theme + '/' + fileName + '.svg');
     }
 

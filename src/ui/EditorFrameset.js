@@ -1,6 +1,7 @@
 // @flow
 import cx from 'classnames';
 import * as React from 'react';
+import {ThemeContext, ThemeConsumer} from "./contextProvider";
 
 import './czi-editor-frameset.css';
 
@@ -13,7 +14,6 @@ export type EditorFramesetProps = {
   toolbarPlacement?: 'header' | 'body' | null,
   toolbar: ?React.Element<any>,
   width: ?(string | number),
-  theme: ?string
 };
 
 export const FRAMESET_BODY_CLASSNAME = 'czi-editor-frame-body';
@@ -31,6 +31,7 @@ function toCSS(val: ?(number | string)): string | any {
 }
 
 class EditorFrameset extends React.PureComponent<any, any> {
+  static contextType = ThemeContext;
   props: EditorFramesetProps;
 
   render(): React.Element<any> {
@@ -43,7 +44,6 @@ class EditorFrameset extends React.PureComponent<any, any> {
       toolbarPlacement,
       toolbar,
       width,
-      theme
     } = this.props;
 
     const mainStyle = {
@@ -58,8 +58,10 @@ class EditorFrameset extends React.PureComponent<any, any> {
       embedded: embedded,
     });
 
-    const frameMainClassName = 'czi-editor-frame-main' + theme ? ('-' + theme) : '';
-    const frameHeadClassName = 'czi-editor-frame-head' + theme ? ('-' + theme) : '';
+    const theme = this.context;
+
+    const frameMainClassName = 'czi-editor-frame-main' + (theme ? ('-' + theme) : '');
+    const frameHeadClassName = 'czi-editor-frame-head' + (theme ? ('-' + theme) : '');
 
     const toolbarHeader =
       toolbarPlacement === 'header' || !toolbarPlacement ? toolbar : null;
