@@ -59,8 +59,6 @@ class EditorFrameset extends React.PureComponent<any, any> {
     });
 
     const theme = this.context;
-
-    const frameMainClassName = cx('czi-editor-frame-main', theme);
     const frameHeadClassName = cx('czi-editor-frame-head', theme);
 
     const toolbarHeader =
@@ -69,7 +67,7 @@ class EditorFrameset extends React.PureComponent<any, any> {
 
     return (
       <div className={mainClassName} style={mainStyle}>
-        <div className={frameMainClassName}>
+        <div className="czi-editor-frame-main">
           <div className={frameHeadClassName}>
             {header}
             {toolbarHeader}

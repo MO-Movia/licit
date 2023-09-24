@@ -9,15 +9,16 @@ import FontTypeCommandMenuButton from './FontTypeCommandMenuButton';
 import ListTypeCommandButton from './ListTypeCommandButton';
 import Icon from './Icon';
 
-const ICON_LABEL_PATTERN = /\[([A-Za-z_\d]+)\](.*)/;
+const ICON_LABEL_PATTERN = /^\[((?!\[)[^\s]+)(\] )(.*)/;
 
 export function parseLabel(input: string): Object {
   const matched = input.match(ICON_LABEL_PATTERN);
   if (matched) {
     const [
       // eslint-disable-next-line no-unused-vars
-      all,
+      _all,
       icon,
+      _sep,
       label,
     ] = matched;
     return {

@@ -7,16 +7,6 @@
   z-index: 0;
 }
 
-.czi-editor-frame-main-light {
-  position: relative;
-  z-index: 0;
-}
-
-.czi-editor-frame-main-dark {
-  position: relative;
-  z-index: 0;
-}
-
 .czi-editor-frame-body {
   background-color: var(--czi-page-background-color);
 }
@@ -46,18 +36,12 @@
   z-index: 2;
 }
 
-.czi-editor-frame-head .dark {
+.czi-editor-frame-head.dark {
   background-color: #444444;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.21);
-  position: relative;
-  z-index: 2;
 }
 
-.czi-editor-frame-head .light {
+.czi-editor-frame-head.light {
   background-color: #d8d6d6;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.21);
-  position: relative;
-  z-index: 2;
 }
 
 .czi-editor-frameset.with-fixed-layout .czi-editor-frame-body {

@@ -15,10 +15,12 @@ import Icon from './Icon';
 import ResizeObserver from './ResizeObserver';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import isReactClass from './isReactClass';
+import {ThemeContext} from "./contextProvider";
 
 import './czi-editor-toolbar.css';
 
 class EditorToolbar extends React.PureComponent<any, any> {
+  static contextType = ThemeContext;
   _body = null;
 
   props: {
@@ -50,6 +52,8 @@ class EditorToolbar extends React.PureComponent<any, any> {
       />
     ) : null;
 
+    const theme = this.context;
+
     // Start with static button controls and append any button groups
     // supplied by plugins
     const commandGroups = COMMAND_GROUPS.concat(
@@ -58,7 +62,7 @@ class EditorToolbar extends React.PureComponent<any, any> {
         //  p => p.buttonGroup
         // but changing it now would mean finding every plugin that was
         // implemented this way.
-        .map((p) => p.initButtonCommands && p.initButtonCommands(this.props.theme))
+        .map((p) => p.initButtonCommands && p.initButtonCommands(theme))
         .filter(Boolean)
     )
       .map(this._renderButtonsGroup)

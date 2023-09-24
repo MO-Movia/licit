@@ -158,7 +158,7 @@ class Icon extends React.PureComponent<any, any> {
           break;
       }
 
-      const theme = this.context;      
+      const theme = this.context;
       image = require('../../images/' + theme + '/' + fileName + '.svg');
     }
 
