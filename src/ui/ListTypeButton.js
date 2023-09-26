@@ -13,9 +13,11 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid';
 import ListTypeMenu from './ListTypeMenu';
+import {ThemeContext} from "./contextProvider";
 import './czi-custom-menu-button.css';
 
 class ListTypeButton extends React.PureComponent<any, any> {
+  static contextType = ThemeContext;
   props: {
     className?: ?string,
     commandGroups: Array<{ [string]: UICommand }>,
@@ -67,6 +69,7 @@ class ListTypeButton extends React.PureComponent<any, any> {
       'czi-custom-menu-button': true,
       expanded,
     });
+    const theme = this.context;
 
     return (
       <CustomButton
@@ -77,6 +80,7 @@ class ListTypeButton extends React.PureComponent<any, any> {
         label={label}
         onClick={this._onClick}
         title={title}
+        theme={theme}
       />
     );
   }

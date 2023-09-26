@@ -8,14 +8,15 @@ import * as React from 'react';
 
 import CommandMenu from './CommandMenu';
 import { CustomButton } from '@modusoperandi/licit-ui-commands';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid';
 import { isExpandButton } from './EditorToolbarConfig';
+import {ThemeContext} from "./contextProvider";
 
 import './czi-custom-menu-button.css';
 
 class CommandMenuButton extends React.PureComponent<any, any> {
+  static contextType = ThemeContext;
   props: {
     className?: ?string,
     commandGroups: Array<{ [string]: UICommand }>,
@@ -67,6 +68,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
 
     const { expanded } = this.state;
     const isMaximizeButton = isExpandButton(title);
+    const theme = this.context;
     const buttonClassName = cx(className, {
       'czi-custom-menu-button': true,
       'menu-expand-btn': isMaximizeButton,
@@ -83,6 +85,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
         onClick={this._onClick}
         title={title}
         hasChild={(hasChild && !isMaximizeButton)}
+        theme={theme}
       />
     );
   }

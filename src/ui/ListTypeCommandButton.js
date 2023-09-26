@@ -10,6 +10,7 @@ import {
   hasImageNode,
 } from '../ListToggleCommand';
 import ListTypeButton from './ListTypeButton';
+import {ThemeContext} from "./contextProvider";
 
 const LIST_TYPE_NAMES = [
   {
@@ -52,6 +53,7 @@ LIST_TYPE_NAMES.forEach((obj) => {
 const COMMAND_GROUPS = [LIST_TYPE_COMMANDS];
 
 class ListTypeCommandButton extends React.PureComponent<any, any> {
+  static contextType = ThemeContext;
   props: {
     dispatch: (tr: Transform) => void,
     editorState: EditorState,
@@ -61,6 +63,7 @@ class ListTypeCommandButton extends React.PureComponent<any, any> {
   render(): React.Element<any> {
     const { dispatch, editorState, editorView } = this.props;
     let disabled = false;
+    const theme = this.context;
     if (editorState && editorView) {
       // [FS] IRAD-1317 2021-05-06
       // To disable the list menu when select an image
@@ -77,6 +80,7 @@ class ListTypeCommandButton extends React.PureComponent<any, any> {
         editorState={editorState}
         editorView={editorView}
         icon={'format_list_numbered'}
+        theme={theme}
       />
     );
   }

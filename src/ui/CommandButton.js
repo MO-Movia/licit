@@ -6,9 +6,10 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import { CustomButton } from '@modusoperandi/licit-ui-commands';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import {ThemeContext} from "./contextProvider";
 
 class CommandButton extends React.PureComponent<any, any> {
+  static contextType = ThemeContext;
   props: {
     className?: ?string,
     command: UICommand,
@@ -35,6 +36,8 @@ class CommandButton extends React.PureComponent<any, any> {
     if (!!disabled === false) {
       disabled = !editorView || !command.isEnabled(editorState, editorView, '');
     }
+    const theme = this.context;
+
     return (
       <CustomButton
         active={command.isActive(editorState)}
@@ -46,6 +49,7 @@ class CommandButton extends React.PureComponent<any, any> {
         onMouseEnter={this._onUIEnter}
         title={title}
         value={command}
+        theme={theme}
       />
     );
   }
