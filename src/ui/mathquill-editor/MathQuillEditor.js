@@ -1,17 +1,17 @@
 // @flow
 
 import './czi-mathquill-editor.css';
-import * as MathQuillEditorSymbols from './MathQuillEditorSymbols';
-import MathQuillEditorSymbolsPanel from './MathQuillEditorSymbolsPanel';
+import * as MathQuillEditorSymbols from './MathQuillEditorSymbols.js';
+import MathQuillEditorSymbolsPanel from './MathQuillEditorSymbolsPanel.js';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
-import canUseCSSFont from './../canUseCSSFont';
+import canUseCSSFont from './../canUseCSSFont.js';
 import cx from 'classnames';
 
 // [FS] IRAD-1061 2020-09-19
 // Now loaded locally, so that it work in closed network as well.
-import type { MathQuillEditorSymbol } from './MathQuillEditorSymbols';
-import { MathQuill } from './mathquill-import-kludge';
+import type { MathQuillEditorSymbol } from './MathQuillEditorSymbols.js';
+import { MathQuill } from './mathquill-import-kludge.js';
 
 const CSS_CDN_URL =
   '//cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.css';

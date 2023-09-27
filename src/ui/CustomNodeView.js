@@ -5,7 +5,7 @@ import { Decoration, EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 
-import SelectionObserver from './SelectionObserver';
+import SelectionObserver from './SelectionObserver.js';
 
 export type NodeViewProps = {
   editorView: EditorView,

@@ -1,20 +1,20 @@
 // @flow
 
 import { Schema } from 'prosemirror-model';
-import BlockquoteNodeSpec from './BlockquoteNodeSpec';
-import BookmarkNodeSpec from './BookmarkNodeSpec';
-import BulletListNodeSpec from './BulletListNodeSpec';
-import DocNodeSpec from './DocNodeSpec';
-import HardBreakNodeSpec from './HardBreakNodeSpec';
+import BlockquoteNodeSpec from './BlockquoteNodeSpec.js';
+import BookmarkNodeSpec from './BookmarkNodeSpec.js';
+import BulletListNodeSpec from './BulletListNodeSpec.js';
+import DocNodeSpec from './DocNodeSpec.js';
+import HardBreakNodeSpec from './HardBreakNodeSpec.js';
 // import HeadingNodeSpec from './HeadingNodeSpec';
-import HorizontalRuleNodeSpec from './HorizontalRuleNodeSpec';
-import ListItemNodeSpec from './ListItemNodeSpec';
-import MathNodeSpec from './MathNodeSpec';
-import * as NodeNames from './NodeNames';
-import OrderedListNodeSpec from './OrderedListNodeSpec';
-import ParagraphNodeSpec from './ParagraphNodeSpec';
-import TableNodesSpecs from './TableNodesSpecs';
-import TextNodeSpec from './TextNodeSpec';
+import HorizontalRuleNodeSpec from './HorizontalRuleNodeSpec.js';
+import ListItemNodeSpec from './ListItemNodeSpec.js';
+import MathNodeSpec from './MathNodeSpec.js';
+import * as NodeNames from './NodeNames.js';
+import OrderedListNodeSpec from './OrderedListNodeSpec.js';
+import ParagraphNodeSpec from './ParagraphNodeSpec.js';
+import TableNodesSpecs from './TableNodesSpecs.js';
+import TextNodeSpec from './TextNodeSpec.js';
 
 const {
   BLOCKQUOTE,

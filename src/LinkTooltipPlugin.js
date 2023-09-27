@@ -4,17 +4,27 @@ import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
 import { TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 
-import { MARK_LINK } from './MarkNames';
+import {
+  MARK_LINK
+} from './MarkNames.js';
 import {
   hideSelectionPlaceholder,
-} from './SelectionPlaceholderPlugin';
-import { applyMark } from '@modusoperandi/licit-ui-commands';
-import { findNodesWithSameMark } from '@modusoperandi/licit-ui-commands';
-import lookUpElement from './lookUpElement';
-import LinkTooltip from './ui/LinkTooltip';
-import LinkURLEditor from './ui/LinkURLEditor';
-import { atAnchorTopCenter } from '@modusoperandi/licit-ui-commands';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
+} from './SelectionPlaceholderPlugin.js';
+import {
+  applyMark
+} from '@modusoperandi/licit-ui-commands';
+import {
+  findNodesWithSameMark
+} from '@modusoperandi/licit-ui-commands';
+import lookUpElement from './lookUpElement.js';
+import LinkTooltip from './ui/LinkTooltip.js';
+import LinkURLEditor from './ui/LinkURLEditor.js';
+import {
+  atAnchorTopCenter
+} from '@modusoperandi/licit-ui-commands';
+import {
+  createPopUp
+} from '@modusoperandi/licit-ui-commands';
 
 import '@modusoperandi/licit-ui-commands/dist/ui/czi-pop-up.css';
 

@@ -2,7 +2,7 @@
 
 import { EditorView } from 'prosemirror-view';
 
-import { uploadImageFiles } from '../ImageUploadPlaceholderPlugin';
+import { uploadImageFiles } from '../ImageUploadPlaceholderPlugin.js';
 
 // https://prosemirror.net/examples/upload/
 export default function handleEditorDrop(

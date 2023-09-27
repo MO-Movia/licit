@@ -1,21 +1,32 @@
 // @flow
 
 import './czi-math-view.css';
-import CustomNodeView from './CustomNodeView';
-import MathInlineEditor from './MathInlineEditor';
+import CustomNodeView from './CustomNodeView.js';
+import MathInlineEditor from './MathInlineEditor.js';
 import * as React from 'react';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import cx from 'classnames';
-import renderLaTeXAsHTML from './renderLaTeXAsHTML';
-import uuid from './uuid';
-import { Decoration } from 'prosemirror-view';
-import { FRAMESET_BODY_CLASSNAME } from './EditorFrameset';
-import { Node } from 'prosemirror-model';
-import { atAnchorBottomCenter } from '@modusoperandi/licit-ui-commands';
-import { NodeSelection } from 'prosemirror-state';
+import renderLaTeXAsHTML from './renderLaTeXAsHTML.js';
+import uuid from './uuid.js';
+import {
+  Decoration
+} from 'prosemirror-view';
+import {
+  FRAMESET_BODY_CLASSNAME
+} from './EditorFrameset.js';
+import {
+  Node
+} from 'prosemirror-model';
+import {
+  atAnchorBottomCenter
+} from '@modusoperandi/licit-ui-commands';
+import {
+  NodeSelection
+} from 'prosemirror-state';
 
-import type { NodeViewProps } from './CustomNodeView';
-
+import type {
+  NodeViewProps
+} from './CustomNodeView.js';
 const EMPTY_SRC =
   'data:image/gif;base64,' +
   'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';

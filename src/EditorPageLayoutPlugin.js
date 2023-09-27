@@ -2,7 +2,7 @@
 
 import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
 
-import { ATTRIBUTE_LAYOUT, LAYOUT } from './DocNodeSpec';
+import { ATTRIBUTE_LAYOUT, LAYOUT } from './DocNodeSpec.js';
 
 const SPEC = {
   // [FS] IRAD-1005 2020-07-07

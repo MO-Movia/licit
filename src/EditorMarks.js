@@ -1,25 +1,25 @@
 import { Schema } from 'prosemirror-model';
 
-import CodeMarkSpec from './CodeMarkSpec';
-import DocNodeSpec from './DocNodeSpec';
-import EMMarkSpec from './EMMarkSpec';
-import FontSizeMarkSpec from './FontSizeMarkSpec';
-import FontTypeMarkSpec from './FontTypeMarkSpec';
-import LinkMarkSpec from './LinkMarkSpec';
-import * as MarkNames from './MarkNames';
-import { DOC, PARAGRAPH, TEXT } from './NodeNames';
-import ParagraphNodeSpec from './ParagraphNodeSpec';
-import SpacerMarkSpec from './SpacerMarkSpec';
-import StrikeMarkSpec from './StrikeMarkSpec';
-import StrongMarkSpec from './StrongMarkSpec';
-import TextColorMarkSpec from './TextColorMarkSpec';
-import TextHighlightMarkSpec from './TextHighlightMarkSpec';
-import TextNoWrapMarkSpec from './TextNoWrapMarkSpec';
-import TextNodeSpec from './TextNodeSpec';
-import TextSelectionMarkSpec from './TextSelectionMarkSpec';
-import TextSuperMarkSpec from './TextSuperMarkSpec';
-import TextSubMarkSpec from './TextSubMarkSpec';
-import TextUnderlineMarkSpec from './TextUnderlineMarkSpec';
+import CodeMarkSpec from './CodeMarkSpec.js';
+import DocNodeSpec from './DocNodeSpec.js';
+import EMMarkSpec from './EMMarkSpec.js';
+import FontSizeMarkSpec from './FontSizeMarkSpec.js';
+import FontTypeMarkSpec from './FontTypeMarkSpec.js';
+import LinkMarkSpec from './LinkMarkSpec.js';
+import * as MarkNames from './MarkNames.js';
+import { DOC, PARAGRAPH, TEXT } from './NodeNames.js';
+import ParagraphNodeSpec from './ParagraphNodeSpec.js';
+import SpacerMarkSpec from './SpacerMarkSpec.js';
+import StrikeMarkSpec from './StrikeMarkSpec.js';
+import StrongMarkSpec from './StrongMarkSpec.js';
+import TextColorMarkSpec from './TextColorMarkSpec.js';
+import TextHighlightMarkSpec from './TextHighlightMarkSpec.js';
+import TextNoWrapMarkSpec from './TextNoWrapMarkSpec.js';
+import TextNodeSpec from './TextNodeSpec.js';
+import TextSelectionMarkSpec from './TextSelectionMarkSpec.js';
+import TextSuperMarkSpec from './TextSuperMarkSpec.js';
+import TextSubMarkSpec from './TextSubMarkSpec.js';
+import TextUnderlineMarkSpec from './TextUnderlineMarkSpec.js';
 
 const {
   MARK_CODE,

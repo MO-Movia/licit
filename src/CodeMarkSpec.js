@@ -1,6 +1,6 @@
 // @flow
 
-import type { MarkSpec } from './Types';
+import type { MarkSpec } from './Types.js';
 
 const CODE_DOM = ['code', 0];
 

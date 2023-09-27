@@ -3,7 +3,7 @@
 // This implements the interface of `StyleRuntime`.
 // To  run  editor directly:
 import type { Style } from '@modusoperandi/licit-customstyles';
-import { POST, GET, DELETE, PATCH } from '../../src/client/http';
+import { POST, GET, DELETE, PATCH } from '../../src/client/http.js';
 
 // When use it in a componet:
 /*

@@ -5,7 +5,7 @@ import { EditorState, TextSelection } from 'prosemirror-state';
 import { CellSelection, TableMap } from 'prosemirror-tables';
 import { findParentNodeOfType } from 'prosemirror-utils';
 
-import { TABLE_CELL, TABLE_HEADER } from './NodeNames';
+import { TABLE_CELL, TABLE_HEADER } from './NodeNames.js';
 
 type Result = {
   node: Node,

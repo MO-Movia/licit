@@ -4,8 +4,8 @@ import { Schema } from 'prosemirror-model';
 import { EditorState } from 'prosemirror-state';
 import { Plugin } from 'prosemirror-state';
 
-import convertFromJSON from './convertFromJSON';
-import EditorSchema from './EditorSchema';
+import convertFromJSON from './convertFromJSON.js';
+import EditorSchema from './EditorSchema.js';
 
 export const EMPTY_DOC_JSON = {
   type: 'doc',

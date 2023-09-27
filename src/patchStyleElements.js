@@ -1,7 +1,9 @@
 // @flow
 
-import toCSSColor from './ui/toCSSColor';
-import { toCSSLineSpacing } from '@modusoperandi/licit-ui-commands';
+import toCSSColor from './ui/toCSSColor.js';
+import {
+  toCSSLineSpacing
+} from '@modusoperandi/licit-ui-commands';
 
 const LIST_ITEM_PSEUDO_ELEMENT_BEFORE = /li:+before/;
 const NODE_NAME_SELECTOR = /^[a-zA-Z]+\d*$/;

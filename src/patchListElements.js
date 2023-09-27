@@ -1,20 +1,20 @@
 // @flow
 
-import HTMLMutator from './HTMLMutator';
+import HTMLMutator from './HTMLMutator.js';
 import nullthrows from 'nullthrows';
-import uuid from './ui/uuid';
+import uuid from './ui/uuid.js';
 
-import { ATTRIBUTE_LIST_STYLE_TYPE } from './ListItemNodeSpec';
+import { ATTRIBUTE_LIST_STYLE_TYPE } from './ListItemNodeSpec.js';
 import {
   ATTRIBUTE_INDENT,
   EMPTY_CSS_VALUE,
   convertMarginLeftToIndentValue,
-} from './ParagraphNodeSpec';
+} from './ParagraphNodeSpec.js';
 import {
   ATTRIBUTE_COUNTER_RESET,
   ATTRIBUTE_FOLLOWING,
-} from './OrderedListNodeSpec';
-import { ATTRIBUTE_CSS_BEFORE_CONTENT } from './patchStyleElements';
+} from './OrderedListNodeSpec.js';
+import { ATTRIBUTE_CSS_BEFORE_CONTENT } from './patchStyleElements.js';
 
 export default function patchListElements(doc: Document): void {
   // In Google Doc, lists are exported as indented

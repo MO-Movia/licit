@@ -1,6 +1,6 @@
 // @flow
 
-import type { MarkSpec } from './Types';
+import type { MarkSpec } from './Types.js';
 
 // https://bitbucket.org/atlassian/atlaskit/src/34facee3f461/packages/editor-core/src/schema/nodes/?at=master
 const StrikeMarkSpec: MarkSpec = {

@@ -1,8 +1,12 @@
-const WebpackDevServer = require('webpack-dev-server'),
-  webpack = require('webpack'),
-  config = require('../webpack.config'),
-  env = require('./env'),
-  path = require('path');
+import webpack from 'webpack';
+import  WebpackDevServer from 'webpack-dev-server';
+import config from '../webpack.config.js';
+
+import env from './env.js'; 
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename); 
 
 const options = config.chromeExtensionBoilerplate || {};
 const excludeEntriesToHotReload = options.notHotReload || [];

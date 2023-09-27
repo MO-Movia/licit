@@ -11,11 +11,17 @@ import * as React from 'react';
 import {
   hideCursorPlaceholder,
   showCursorPlaceholder,
-} from './CursorPlaceholderPlugin';
-import { MATH } from './NodeNames';
-import MathEditor from './ui/MathEditor';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
+} from './CursorPlaceholderPlugin.js';
+import {
+  MATH
+} from './NodeNames.js';
+import MathEditor from './ui/MathEditor.js';
+import {
+  UICommand
+} from '@modusoperandi/licit-doc-attrs-step';
+import {
+  createPopUp
+} from '@modusoperandi/licit-ui-commands';
 
 function insertMath(tr: Transform, schema: Schema, latex: ?string): Transform {
   const { selection } = tr;

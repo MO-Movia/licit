@@ -8,9 +8,15 @@ import { Transform } from 'prosemirror-transform';
 import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
 
-import { HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
-import nodeAt from './nodeAt';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import {
+  HEADING,
+  LIST_ITEM,
+  PARAGRAPH
+} from './NodeNames.js';
+import nodeAt from './nodeAt.js';
+import {
+  UICommand
+} from '@modusoperandi/licit-doc-attrs-step';
 
 function mergeListItemUp(tr: Transform, schema: Schema): Transform {
   // This merge a list item to is previous list item of the selection is at the

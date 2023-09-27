@@ -3,7 +3,7 @@
 import cx from 'classnames';
 import * as React from 'react';
 
-import canUseCSSFont from './canUseCSSFont';
+import canUseCSSFont from './canUseCSSFont.js';
 
 import './czi-icon.css';
 

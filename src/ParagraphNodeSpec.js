@@ -1,10 +1,10 @@
 // @flow
 
-import convertToCSSPTValue from './convertToCSSPTValue';
-import toCSSLineSpacing from './ui/toCSSLineSpacing';
+import convertToCSSPTValue from './convertToCSSPTValue.js';
+import toCSSLineSpacing from './ui/toCSSLineSpacing.js';
 import { Node } from 'prosemirror-model';
 
-import type { NodeSpec } from './Types';
+import type { NodeSpec } from './Types.js';
 
 // This assumes that every 36pt maps to one indent level.
 export const INDENT_MARGIN_PT_SIZE = 36;

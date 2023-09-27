@@ -2,9 +2,9 @@
 
 import { Node } from 'prosemirror-model';
 
-import { toClosestFontPtSize } from './toClosestFontPtSize';
+import { toClosestFontPtSize } from './toClosestFontPtSize.js';
 
-import type { MarkSpec } from './Types';
+import type { MarkSpec } from './Types.js';
 
 const FontSizeMarkSpec: MarkSpec = {
   attrs: {

@@ -6,8 +6,8 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import {FontSizeCommand} from '@modusoperandi/licit-ui-commands';
-import CommandMenuButton from './CommandMenuButton';
-import findActiveFontSize from './findActiveFontSize';
+import CommandMenuButton from './CommandMenuButton.js';
+import findActiveFontSize from './findActiveFontSize.js';
 
 export const FONT_PT_SIZES = [
   8,

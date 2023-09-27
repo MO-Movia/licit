@@ -7,24 +7,28 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { stringify } from 'flatted';
 
-import convertFromJSON from '../convertFromJSON';
-import RichTextEditor from '../ui/RichTextEditor';
-import uuid from '../uuid';
-import SimpleConnector from './SimpleConnector';
-import CollabConnector from './CollabConnector';
-import { EMPTY_DOC_JSON } from '../createEmptyEditorState';
-import type { EditorRuntime } from '../Types';
+import convertFromJSON from '../convertFromJSON.js';
+import RichTextEditor from '../ui/RichTextEditor.js';
+import uuid from '../uuid.js';
+import SimpleConnector from './SimpleConnector.js';
+import CollabConnector from './CollabConnector.js';
+import {
+  EMPTY_DOC_JSON
+} from '../createEmptyEditorState.js';
+import type {
+  EditorRuntime
+} from '../Types.js';
 import {
   createPopUp,
   atViewportCenter,
 } from '@modusoperandi/licit-ui-commands';
-import AlertInfo from '../ui/AlertInfo';
+import AlertInfo from '../ui/AlertInfo.js';
 import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
 import './licit.css';
-import DefaultEditorPlugins from '../buildEditorPlugins';
-import EditorMarks from '../EditorMarks';
-import EditorNodes from '../EditorNodes';
-import convertFromHTML from '../convertFromHTML';
+import DefaultEditorPlugins from '../buildEditorPlugins.js';
+import EditorMarks from '../EditorMarks.js';
+import EditorNodes from '../EditorNodes.js';
+import convertFromHTML from '../convertFromHTML.js';
 
 export const DataType = Object.freeze({
   JSON: Symbol('json'),

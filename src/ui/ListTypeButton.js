@@ -11,8 +11,8 @@ import * as React from 'react';
 import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
-import uuid from './uuid';
-import ListTypeMenu from './ListTypeMenu';
+import uuid from './uuid.js';
+import ListTypeMenu from './ListTypeMenu.js';
 import './czi-custom-menu-button.css';
 
 class ListTypeButton extends React.PureComponent<any, any> {

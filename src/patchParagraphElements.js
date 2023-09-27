@@ -3,7 +3,7 @@
 import {
   ATTRIBUTE_INDENT,
   convertMarginLeftToIndentValue,
-} from './ParagraphNodeSpec';
+} from './ParagraphNodeSpec.js';
 
 export default function patchParagraphElements(doc: Document): void {
   Array.from(doc.querySelectorAll('p')).forEach(patchParagraphElement);

@@ -2,7 +2,7 @@
 
 import { Node } from 'prosemirror-model';
 
-import type { MarkSpec } from './Types';
+import type { MarkSpec } from './Types.js';
 
 const TextSelectionMarkSpec: MarkSpec = {
   attrs: {

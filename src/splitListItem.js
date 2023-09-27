@@ -1,10 +1,10 @@
 // @flow
 
-import uuid from './ui/uuid';
+import uuid from './ui/uuid.js';
 import { Fragment, Schema } from 'prosemirror-model';
 import { TextSelection } from 'prosemirror-state';
 import { Transform, canSplit } from 'prosemirror-transform';
-import { LIST_ITEM, ORDERED_LIST, BULLET_LIST, PARAGRAPH } from './NodeNames';
+import { LIST_ITEM, ORDERED_LIST, BULLET_LIST, PARAGRAPH } from './NodeNames.js';
 import { findParentNodeOfType } from 'prosemirror-utils';
 
 // Splits a list item by the current cursor's position.

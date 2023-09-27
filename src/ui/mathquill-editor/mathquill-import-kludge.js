@@ -9,7 +9,7 @@
 import jquery from 'jquery';
 window.jQuery = window.jQuery || jquery;
 
-import mathquill from 'node-mathquill/build/mathquill';
+import mathquill from 'node-mathquill/build/mathquill.js';
 window.MathQuill = window.MathQuill || mathquill;
 
 import 'node-mathquill/build/mathquill.css';

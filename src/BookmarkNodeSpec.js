@@ -1,6 +1,6 @@
 // @flow
 
-import type { NodeSpec } from './Types';
+import type { NodeSpec } from './Types.js';
 
 export const ATTRIBUTE_BOOKMARK_ID = 'data-bookmark-id';
 export const ATTRIBUTE_BOOKMARK_VISIBLE = 'data-bookmark-visible';

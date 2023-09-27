@@ -1,14 +1,26 @@
 // @flow
 
-import CommandMenuButton from './CommandMenuButton';
-import {FontTypeCommand} from '@modusoperandi/licit-ui-commands';
+import CommandMenuButton from './CommandMenuButton.js';
+import {
+  FontTypeCommand
+} from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
-import findActiveFontType from './findActiveFontType';
-import { EditorState } from 'prosemirror-state';
-import { EditorView } from 'prosemirror-view';
-import { FONT_TYPE_NAMES } from '../FontTypeMarkSpec';
-import { FONT_TYPE_NAME_DEFAULT } from './findActiveFontType';
-import { Transform } from 'prosemirror-transform';
+import findActiveFontType from './findActiveFontType.js';
+import {
+  EditorState
+} from 'prosemirror-state';
+import {
+  EditorView
+} from 'prosemirror-view';
+import {
+  FONT_TYPE_NAMES
+} from '../FontTypeMarkSpec.js';
+import {
+  FONT_TYPE_NAME_DEFAULT
+} from './findActiveFontType.js';
+import {
+  Transform
+} from 'prosemirror-transform';
 
 const FONT_TYPE_COMMANDS: Object = {
   [FONT_TYPE_NAME_DEFAULT]: new FontTypeCommand(''),

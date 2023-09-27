@@ -1,10 +1,10 @@
 // @flow
 
-const express = require('express');
-const cors = require('cors');
-const formidable = require('formidable');
-const mv = require('mv');
-const uuidv4 = require('uuid').v4;
+import express from 'express';
+import cors from 'cors';
+import formidable from 'formidable';
+import mv from 'mv';
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 

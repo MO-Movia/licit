@@ -1,7 +1,7 @@
 // @flow
 
-import EditorSchema from './EditorSchema';
-import DefaultEditorPlugins from './buildEditorPlugins';
+import EditorSchema from './EditorSchema.js';
+import DefaultEditorPlugins from './buildEditorPlugins.js';
 
 // Plugin
 const EditorPlugins = new DefaultEditorPlugins(EditorSchema);

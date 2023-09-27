@@ -1,15 +1,35 @@
 // @flow
 
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { findParentNodeOfType } from 'prosemirror-utils';
-import { EditorView } from 'prosemirror-view';
+import {
+  EditorState
+} from 'prosemirror-state';
+import {
+  Transform
+} from 'prosemirror-transform';
+import {
+  findParentNodeOfType
+} from 'prosemirror-utils';
+import {
+  EditorView
+} from 'prosemirror-view';
 
-import { BULLET_LIST, ORDERED_LIST, IMAGE } from './NodeNames';
-import { noop } from '@modusoperandi/licit-ui-commands';
-import { toggleList } from '@modusoperandi/licit-ui-commands';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { isNodeSelectionForNodeType } from '@modusoperandi/licit-ui-commands';
+import {
+  BULLET_LIST,
+  ORDERED_LIST,
+  IMAGE
+} from './NodeNames.js';
+import {
+  noop
+} from '@modusoperandi/licit-ui-commands';
+import {
+  toggleList
+} from '@modusoperandi/licit-ui-commands';
+import {
+  UICommand
+} from '@modusoperandi/licit-doc-attrs-step';
+import {
+  isNodeSelectionForNodeType
+} from '@modusoperandi/licit-ui-commands';
 
 export class ListToggleCommand extends UICommand {
   _ordered: boolean;

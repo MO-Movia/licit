@@ -7,8 +7,8 @@ import { Transform } from 'prosemirror-transform';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { EditorView } from 'prosemirror-view';
 
-import { IMAGE } from './NodeNames';
-import uuid from './ui/uuid';
+import { IMAGE } from './NodeNames.js';
+import uuid from './ui/uuid.js';
 
 import './ui/czi-image-upload-placeholder.css';
 

@@ -1,15 +1,40 @@
 // @flow
 
-import { Fragment, Schema } from 'prosemirror-model';
-import { EditorState, TextSelection } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { findParentNodeOfType } from 'prosemirror-utils';
-import { EditorView } from 'prosemirror-view';
-import { MARK_SPACER } from './MarkNames';
-import { HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
-import { HAIR_SPACE_CHAR, SPACER_SIZE_TAB } from './SpacerMarkSpec';
-import { applyMark } from '@modusoperandi/licit-ui-commands';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import {
+  Fragment,
+  Schema
+} from 'prosemirror-model';
+import {
+  EditorState,
+  TextSelection
+} from 'prosemirror-state';
+import {
+  Transform
+} from 'prosemirror-transform';
+import {
+  findParentNodeOfType
+} from 'prosemirror-utils';
+import {
+  EditorView
+} from 'prosemirror-view';
+import {
+  MARK_SPACER
+} from './MarkNames.js';
+import {
+  HEADING,
+  LIST_ITEM,
+  PARAGRAPH
+} from './NodeNames.js';
+import {
+  HAIR_SPACE_CHAR,
+  SPACER_SIZE_TAB
+} from './SpacerMarkSpec.js';
+import {
+  applyMark
+} from '@modusoperandi/licit-ui-commands';
+import {
+  UICommand
+} from '@modusoperandi/licit-doc-attrs-step';
 
 function insertTabSpace(
   state: EditorState,

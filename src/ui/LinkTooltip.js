@@ -4,7 +4,7 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import scrollIntoView from 'smooth-scroll-into-view-if-needed';
 
-import sanitizeURL from '../sanitizeURL';
+import sanitizeURL from '../sanitizeURL.js';
 import { CustomButton } from '@modusoperandi/licit-ui-commands';
 
 import './czi-link-tooltip.css';

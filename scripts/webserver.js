@@ -1,10 +1,10 @@
 /*eslint-env node*/
 
-const WebpackDevServer = require('webpack-dev-server'),
-  webpack = require('webpack'),
-  config = require('../webpack.config'),
-  env = require('./env'),
-  path = require('path');
+import WebpackDevServer from 'webpack-dev-server';
+import webpack from 'webpack';
+import config from '../webpack.config';
+import env from './env';
+import path from 'path';
 
 const options = config.chromeExtensionBoilerplate || {};
 const excludeEntriesToHotReload = options.notHotReload || [];

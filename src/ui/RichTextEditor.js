@@ -4,15 +4,15 @@ import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
-import createEmptyEditorState from '../createEmptyEditorState';
-import Editor from './Editor';
-import EditorFrameset from './EditorFrameset';
-import EditorToolbar from './EditorToolbar';
-import Frag from './Frag';
-import uuid from './uuid';
+import createEmptyEditorState from '../createEmptyEditorState.js';
+import Editor from './Editor.js';
+import EditorFrameset from './EditorFrameset.js';
+import EditorToolbar from './EditorToolbar.js';
+import Frag from './Frag.js';
+import uuid from './uuid.js';
 
-import type { EditorFramesetProps } from './EditorFrameset';
-import type { EditorProps } from './Editor';
+import type { EditorFramesetProps } from './EditorFrameset.js';
+import type { EditorProps } from './Editor.js';
 
 type Props = EditorFramesetProps & EditorProps & { children?: ?any };
 

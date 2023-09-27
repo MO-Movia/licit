@@ -1,5 +1,5 @@
-const webpack = require('webpack'),
-    config = require('../webpack.config');
+import webpack from 'webpack';
+import config from '../webpack.config';
 
 delete config.chromeExtensionBoilerplate;
 

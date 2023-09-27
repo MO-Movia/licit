@@ -1,6 +1,6 @@
 // @flow
 
-import canUseCSSFont from './canUseCSSFont';
+import canUseCSSFont from './canUseCSSFont.js';
 import katex from 'katex';
 
 // [FS] IRAD-1061 2020-09-19

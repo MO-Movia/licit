@@ -1,6 +1,6 @@
 // @flow
 
-import type { MarkSpec } from './Types';
+import type { MarkSpec } from './Types.js';
 
 const LinkMarkSpec: MarkSpec = {
   attrs: {

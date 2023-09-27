@@ -6,11 +6,13 @@ import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 
 import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
-import DocLayoutEditor from './ui/DocLayoutEditor';
+import DocLayoutEditor from './ui/DocLayoutEditor.js';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 
-import type { DocLayoutEditorValue } from './ui/DocLayoutEditor';
+import type {
+  DocLayoutEditorValue
+} from './ui/DocLayoutEditor.js';
 
 function setDocLayout(
   tr: Transform,

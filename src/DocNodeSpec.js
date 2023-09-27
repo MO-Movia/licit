@@ -1,6 +1,6 @@
 // @flow
 
-import convertToCSSPTValue from './convertToCSSPTValue';
+import convertToCSSPTValue from './convertToCSSPTValue.js';
 
 export const LAYOUT = {
   DESKTOP_SCREEN_4_3: 'desktop_screen_4_3',

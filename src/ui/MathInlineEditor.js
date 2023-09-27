@@ -2,8 +2,8 @@
 
 import './czi-inline-editor.css';
 import { CustomButton } from '@modusoperandi/licit-ui-commands';
-import CustomEditorView from './CustomEditorView';
-import MathEditor from './MathEditor';
+import CustomEditorView from './CustomEditorView.js';
+import MathEditor from './MathEditor.js';
 import * as React from 'react';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 
