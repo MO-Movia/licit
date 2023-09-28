@@ -10,6 +10,19 @@
   height: 100%;
 }
 
+.czi-custom-menu-item-button.czi-custom-button {
+  border: none;
+  border-radius: 0;
+  height: 30px;
+  line-height: 28px;
+  padding-bottom: 0;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 0;
+  pointer-events: auto;
+  width: 44px;
+}
+
 .czi-horizontal-menu .czi-tooltip-surface .czi-custom-button {
   padding-left: 12px;
   padding-right: 12px;

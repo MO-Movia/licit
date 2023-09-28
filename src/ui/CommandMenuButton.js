@@ -7,11 +7,13 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import CommandMenu from './CommandMenu';
-import { CustomButton } from '@modusoperandi/licit-ui-commands';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
+import {
+  CustomButton,
+  createPopUp,
+  ThemeContext,
+} from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid';
 import { isExpandButton } from './EditorToolbarConfig';
-import {ThemeContext} from "./contextProvider";
 
 import './czi-custom-menu-button.css';
 

@@ -7,10 +7,11 @@ import * as React from 'react';
 
 import CustomMenu from './CustomMenu';
 import CustomMenuItem from './CustomMenuItem';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { parseLabel, isExpandButton } from './EditorToolbarConfig';
+import { ThemeContext } from '@modusoperandi/licit-ui-commands';
 
 class CommandMenu extends React.PureComponent<any, any> {
+  static contextType = ThemeContext;
   _activeCommand: ?UICommand = null;
 
   props: {
@@ -29,7 +30,7 @@ class CommandMenu extends React.PureComponent<any, any> {
     commandGroups.forEach((group, ii) => {
       Object.keys(group).forEach((label) => {
         const command = group[label];
-        const { icon } = parseLabel(label);
+        const { icon } = parseLabel(label, this.context);
         let disabled = true;
         try {
           // [FS] IRAD-1053 2020-10-22

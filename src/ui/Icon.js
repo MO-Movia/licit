@@ -4,7 +4,7 @@ import cx from 'classnames';
 import * as React from 'react';
 
 import canUseCSSFont from './canUseCSSFont';
-import {ThemeContext} from "./contextProvider";
+import { ThemeContext } from '@modusoperandi/licit-ui-commands';
 
 import './czi-icon.css';
 
@@ -104,9 +104,9 @@ function IconEx({name, onCompleted, onError, ...rest}) {
 class Icon extends React.PureComponent<any, any> {
   static contextType = ThemeContext;
   // Get the static Icon.
-  static get(type: string, title: ?string): React.Element<any> {
+  static get(type: string, title: ?string, theme: ?string): React.Element<any> {
     const key = `${type || ''}-${title || ''}`;
-    const icon = cached[key] || <Icon title={title} type={type} />;
+    const icon = cached[key] || <Icon title={title} type={type} theme={theme} />;
     cached[key] = icon;
     return icon;
   }
@@ -117,7 +117,7 @@ class Icon extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const { type, title } = this.props;
+    const { type, title, theme } = this.props;
     let className = '';
     let children = '';
     /*if (type == 'superscript') {
@@ -152,14 +152,15 @@ class Icon extends React.PureComponent<any, any> {
         case 'redo':
         case 'undo':
         case 'arrow_drop_down':
+        case 'format_align_left':
           fileName = type;
           break;
         default:
           break;
       }
 
-      const theme = this.context;
-      image = require('../../images/' + theme + '/' + fileName + '.svg');
+      const t = this.context ? this.context : theme;
+      image = require('../../images/' + t + '/' + fileName + '.svg');
     }
 
     //const { srcImg } = await import(`${path}`);`${path}`;//[`../../images/${'format_align_justify'}.svg`]//'../../images/format_align_justify.svg'

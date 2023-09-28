@@ -17,6 +17,7 @@ import type { EditorRuntime } from '../Types';
 import {
   createPopUp,
   atViewportCenter,
+  ThemeProvider,
 } from '@modusoperandi/licit-ui-commands';
 import AlertInfo from '../ui/AlertInfo';
 import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
@@ -25,7 +26,6 @@ import DefaultEditorPlugins from '../buildEditorPlugins';
 import EditorMarks from '../EditorMarks';
 import EditorNodes from '../EditorNodes';
 import convertFromHTML from '../convertFromHTML';
-import {ThemeProvider} from "../ui/contextProvider";
 
 export const DataType = Object.freeze({
   JSON: Symbol('json'),
@@ -107,7 +107,7 @@ class Licit extends React.Component<any, any> {
     const disabled = props.disabled || false;
     const embedded = props.embedded || false; // [FS] IRAD-996 2020-06-30
     // Theme property for toolbar. By default uses light theme.
-    const theme = props.theme || 'light';
+    const theme = props.theme || 'dark';
     // [FS] 2020-07-03
     // Handle Image Upload from Angular App
     const runtime = props.runtime || null;

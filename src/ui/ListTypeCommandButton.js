@@ -10,7 +10,7 @@ import {
   hasImageNode,
 } from '../ListToggleCommand';
 import ListTypeButton from './ListTypeButton';
-import {ThemeContext} from "./contextProvider";
+import { ThemeContext } from '@modusoperandi/licit-ui-commands';
 
 const LIST_TYPE_NAMES = [
   {
@@ -67,8 +67,7 @@ class ListTypeCommandButton extends React.PureComponent<any, any> {
     if (editorState && editorView) {
       // [FS] IRAD-1317 2021-05-06
       // To disable the list menu when select an image
-      disabled =
-       hasImageNode(editorState);
+      disabled = hasImageNode(editorState);
       disabled = editorView.disabled || disabled ? true : false;
     }
     return (

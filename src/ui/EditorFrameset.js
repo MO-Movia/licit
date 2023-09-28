@@ -1,7 +1,7 @@
 // @flow
 import cx from 'classnames';
 import * as React from 'react';
-import {ThemeContext, ThemeConsumer} from "./contextProvider";
+import { ThemeContext } from '@modusoperandi/licit-ui-commands';
 
 import './czi-editor-frameset.css';
 

@@ -11,7 +11,7 @@ import Icon from './Icon';
 
 const ICON_LABEL_PATTERN = /^\[((?!\[)[^\s]+)(\] )(.*)/;
 
-export function parseLabel(input: string): Object {
+export function parseLabel(input: string, theme: string): Object {
   const matched = input.match(ICON_LABEL_PATTERN);
   if (matched) {
     const [
@@ -22,7 +22,7 @@ export function parseLabel(input: string): Object {
       label,
     ] = matched;
     return {
-      icon: icon ? Icon.get(icon) : null,
+      icon: icon ? Icon.get(icon, null, theme) : null,
       title: label || null,
     };
   }
@@ -112,7 +112,7 @@ export const TABLE_COMMANDS_GROUP = [
   },
 ];
 
-export const TEXT_ALIGN = [
+export const TEXT_ALIGN_GROUP = [
   {
     '[format_align_left] Left Align': TEXT_ALIGN_LEFT,
     '[format_align_center] Center Align': TEXT_ALIGN_CENTER,
@@ -128,7 +128,7 @@ export const FONT_ACTIONS_MINIMIZED = [
   },
   {
     '[format_color_text] Text color': TEXT_COLOR,
-    '[border_color] Highlight color': TEXT_HIGHLIGHT
+    '[border_color] Highlight color': TEXT_HIGHLIGHT,
   },
   {
     '[format_clear] Clear formats': CLEAR_FORMAT,
@@ -157,7 +157,12 @@ export const COMMAND_GROUPS = [
     '[arrow_drop_down] Expand': FONT_ACTIONS_MINIMIZED,
   },
   {
-    '[format_align_left] Text align': TEXT_ALIGN,
+    '[format_align_left] Text align': TEXT_ALIGN_GROUP,
+  },
+  {
+    '[format_indent_increase] Indent more': INDENT_MORE,
+    '[format_indent_decrease] Indent less': INDENT_LESS,
+    '[format_line_spacing] Line spacing': TEXT_LINE_SPACINGS,
   },
   {
     // [FS] IRAD-1039 2020-09-23

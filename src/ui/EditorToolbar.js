@@ -9,13 +9,12 @@ import ReactDOM from 'react-dom';
 
 import CommandButton from './CommandButton';
 import CommandMenuButton from './CommandMenuButton';
-import { CustomButton } from '@modusoperandi/licit-ui-commands';
+import { CustomButton, ThemeContext } from '@modusoperandi/licit-ui-commands';
 import { COMMAND_GROUPS, parseLabel } from './EditorToolbarConfig';
 import Icon from './Icon';
 import ResizeObserver from './ResizeObserver';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import isReactClass from './isReactClass';
-import {ThemeContext} from "./contextProvider";
 
 import './czi-editor-toolbar.css';
 
