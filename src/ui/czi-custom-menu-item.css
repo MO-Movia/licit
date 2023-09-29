@@ -39,6 +39,21 @@
   background-color: var(--czi-button-hover-background-color);
 }
 
+.czi-custom-menu-item.dark{
+  background-color:#444444 ;
+}
+
+.czi-custom-menu-item.light{
+  background-color: #d8d6d6;
+}
+
+.czi-custom-menu-item-button.dark{
+  background-color:#444444 ;
+}
+
+.czi-custom-menu-item-button.light{
+  /* background-color: #d8d6d6; */
+}
 /* [FS] IRAD-1044 2020-09-22
 To adjust the width of the custom style menu dropdown. */
 
