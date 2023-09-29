@@ -24,10 +24,15 @@
 }
 
 .czi-horizontal-menu .czi-tooltip-surface .czi-custom-button {
-  padding-left: 12px;
-  padding-right: 12px;
-  padding-bottom: 4px;
-  padding-top: 4px;
+    box-sizing: border-box;
+    height: 35px;
+    width: 35px;
+    line-height: 28px;
+    padding-bottom: 0;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 0;
+    pointer-events: auto;
 }
 
 .czi-custom-menu-item.czi-custom-button:hover {

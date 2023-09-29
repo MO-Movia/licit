@@ -1,7 +1,10 @@
 // @flow
 
 import './czi-custom-menu-item.css';
-import { CustomButton } from '@modusoperandi/licit-ui-commands';
+import {
+  CustomButton,
+  TextAlignCommand,
+} from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
 
 class CustomMenuItemSeparator extends React.PureComponent<any, any> {
@@ -27,6 +30,9 @@ class CustomMenuItem extends React.PureComponent<any, any> {
     // Added a new class to adjust the width of the custom style menu dropdown.
 
     let className = 'czi-custom-menu-item';
+    if (this.props.value instanceof TextAlignCommand) {
+      className = 'czi-custom-menu-item-button';
+    }
     if (this.props.value._customStyleName) {
       className += ' custom-style-menu-item';
     }

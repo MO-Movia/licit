@@ -138,7 +138,7 @@ class Icon extends React.PureComponent<any, any> {
     if (type.startsWith('http')) {
       image = type;
     } else {
-      let fileName = 'Icon_Clear Formatting Buttons';
+      let fileName = 'Icon_Source';
       switch (type) {
         case 'format_align_right':
         case 'format_bold':
@@ -153,6 +153,16 @@ class Icon extends React.PureComponent<any, any> {
         case 'undo':
         case 'arrow_drop_down':
         case 'format_align_left':
+        case 'format_align_center':
+        case 'format_align_justify':
+        case 'superscript':
+        case 'subscript':
+        case 'format_indent_increase':
+        case 'format_indent_decrease':
+        case 'format_strikethrough':
+        case 'format_color_text':
+        case 'format_clear':
+        case 'border_color':
           fileName = type;
           break;
         default:
