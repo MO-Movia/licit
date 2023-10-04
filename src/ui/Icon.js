@@ -163,6 +163,7 @@ class Icon extends React.PureComponent<any, any> {
         case 'format_color_text':
         case 'format_clear':
         case 'border_color':
+        case 'settings_overscan':
           fileName = type;
           break;
         default:
