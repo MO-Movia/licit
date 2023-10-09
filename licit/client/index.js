@@ -348,6 +348,7 @@ function main(): void {
       height={'100vh'}
       onChange={onChangeCB}
       onReady={onReadyCB}
+      onToggleCapcoPlugin={onToggleCapcoPlugin}
       plugins={plugins}
       runtime={runtime}
       width={'100vw'}
@@ -362,6 +363,16 @@ function onChangeCB(data) {
 
 function onReadyCB(ref) {
   console.log('ref: ' + ref);
+}
+
+function onToggleCapcoPlugin(hideCapco, ref) {
+  if (1 <= ref.props.plugins.length) {
+    for (const p of ref.props.plugins) {
+      if (p.key.startsWith('capco$')) {
+        p.toggleCapco(hideCapco, ref._editorView);
+      }
+    }
+  }
 }
 
 window.onload = main;

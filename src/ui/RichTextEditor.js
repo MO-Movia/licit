@@ -49,6 +49,7 @@ class RichTextEditor extends React.PureComponent<any, any> {
       header,
       height,
       onChange,
+      onToggleCapcoPlugin,
       nodeViews,
       placeholder,
       readOnly,
@@ -85,6 +86,7 @@ class RichTextEditor extends React.PureComponent<any, any> {
           nodeViews={nodeViews}
           onChange={onChange}
           onReady={this._onReady}
+          onToggleCapcoPlugin = {onToggleCapcoPlugin}
           placeholder={placeholder}
           readOnly={readOnly}
           runtime={runtime}

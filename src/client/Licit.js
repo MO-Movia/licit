@@ -43,6 +43,8 @@ export const DataType = Object.freeze({
  *      @param data {JSON} Modified document data.
  *  onReady {@callback} [null] Fires when the editor is fully ready.
  *      @param ref {LICIT} Rerefence of the editor.
+ *  onToggleCapcoPlugin {@callback} [null] Fire to toggle capco plugin.
+ *      @param hideCapco {boolean} To hide/show capco plugin, ref {LICIT} Rerefence of the editor.
  *  data {JSON|HTML} [null] Document data to be loaded into the editor.
  *  dataType {JSON|HTML} [JSON] Document data to be loaded into the editor.
  *  disabled {boolean} [false] Disable the editor.
@@ -99,6 +101,9 @@ class Licit extends React.Component<any, any> {
       typeof props.onChange === 'function' ? props.onChange : noop;
     const onReadyCB =
       typeof props.onReady === 'function' ? props.onReady : noop;
+    const onToggleCapcoPlugin =
+      typeof props.onToggleCapcoPlugin === 'function' ? props.onToggleCapcoPlugin : noop;
+
     const readOnly = props.readOnly || false;
     let data = props.data || null;
     const dataType = props.dataType || DataType.JSON;
@@ -155,6 +160,7 @@ class Licit extends React.Component<any, any> {
       readOnly,
       onChangeCB,
       onReadyCB,
+      onToggleCapcoPlugin,
       debug,
       disabled,
       embedded,
@@ -478,6 +484,7 @@ class Licit extends React.Component<any, any> {
         height={height}
         onChange={this._onChange}
         onReady={this._onReady}
+        onToggleCapcoPlugin={this._onToggleCapcoPlugin}
         readOnly={readOnly}
         runtime={runtime}
         width={width}
@@ -571,6 +578,10 @@ class Licit extends React.Component<any, any> {
     }
 
     this.initDevTool(this.state.debug, editorView);
+  };
+
+  _onToggleCapcoPlugin = (hideCapco: boolean, editorView: EditorView): void => {
+    this.state.onToggleCapcoPlugin(hideCapco, this);
   };
 
   initDevTool(debug: boolean, editorView: EditorView): void {

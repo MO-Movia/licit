@@ -3,8 +3,7 @@
 import './czi-mathquill-editor.css';
 import * as MathQuillEditorSymbols from './MathQuillEditorSymbols';
 import MathQuillEditorSymbolsPanel from './MathQuillEditorSymbolsPanel';
-import * as React from 'react';
-import ReactDOM from 'react-dom';
+import React, { createRef } from 'react';
 import canUseCSSFont from './../canUseCSSFont';
 import cx from 'classnames';
 
@@ -50,9 +49,10 @@ class MathQuillEditor extends React.PureComponent<any, any> {
     value: string,
     onChange?: ?(latex: string) => void,
   };
+  myRef = React.createRef();
 
   // MathJax apparently fire 4 edit events on startup.
-  _element = null;
+  _element = createRef();;
   _ignoreEditEvents = 4;
   _mathField = null;
   _latex = '';
@@ -70,8 +70,8 @@ class MathQuillEditor extends React.PureComponent<any, any> {
     const className = cx('czi-mathquill-editor', { empty });
     return (
       <div className={className}>
-        <div className="czi-mathquill-editor-main">
-          <MathQuillElement ref={this._onElementRef} />
+        <div className="czi-mathquill-editor-main" ref={this._element}>
+          <MathQuillElement  />
         </div>
         <div className="czi-mathquill-editor-side">{panels}</div>
       </div>
@@ -94,8 +94,8 @@ class MathQuillEditor extends React.PureComponent<any, any> {
         edit: this._onEdit,
       },
     };
-
-    const mathField = MQ.MathField(this._element, config);
+    // Issue: Math menu not working[D-65]
+    const mathField = MQ.MathField(this._element.current, config);
     this._mathField = mathField;
 
     // TODO: Remove this if MathQuill supports `\displaystyle`.
@@ -145,14 +145,6 @@ class MathQuillEditor extends React.PureComponent<any, any> {
     const latex = mathField.latex();
     this._latex = latex;
     onChange && onChange(latex);
-  };
-
-  _onElementRef = (ref: any): void => {
-    if (ref) {
-      this._element = ReactDOM.findDOMNode(ref);
-    } else {
-      this._element = null;
-    }
   };
 }
 
