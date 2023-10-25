@@ -115,6 +115,7 @@
     "query-string": "6.13.1",
     "resize-observer-polyfill": "1.5.1",
     "smooth-scroll-into-view-if-needed": "1.1.28",
+    "style-loader": "^3.3.3",
     "url": "^0.11.0"
   },
   "importSort": {
