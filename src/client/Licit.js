@@ -58,8 +58,6 @@ class Licit extends React.Component<any, any> {
   _defaultEditorSchema: Schema;
   _defaultEditorPlugins: Array<Plugin>;
   _pasteJSONPlugin: Plugin;
-  _devTools: Promise<any>;
-  _applyDevTools: any;
 
   _popUp = null;
 
@@ -569,63 +567,9 @@ class Licit extends React.Component<any, any> {
       editorView.focus();
       this.state.onReadyCB(this);
     }
-
-    this.initDevTool(this.state.debug, editorView);
   };
 
-  initDevTool(debug: boolean, editorView: EditorView): void {
-    // [FS] IRAD-1575 2021-09-27
-    if (debug) {
-      if (!this._devTools) {
-        this._devTools = new Promise(async (resolve, reject) => {
-          try {
-            // Method is exported as both the default and named, Using named
-            // for clarity and future proofing.
-            const { applyDevTools } = await import('prosemirror-dev-tools');
-            // got the pm dev tools instance.
-            this._applyDevTools = applyDevTools;
-            // Attach debug tools to current editor instance.
-            this._applyDevTools(editorView);
-            resolve(() => {
-              // [FS] IRAD-1571 2021-10-08
-              // Prosemirror Dev Tools handles as if one only instance is used in a page and
-              // hence handling removal here gracefully.
-              const place = document.querySelector(
-                '.'.concat('__prosemirror-dev-tools__')
-              );
-              if (place) {
-                ReactDOM.unmountComponentAtNode(place);
-                place.innerHTML = '';
-              }
-            });
-          } catch (error) {
-            reject();
-          }
-        });
-      }
 
-      // Attach debug tools to current editor instance.
-      if (this._devTools && this._applyDevTools) {
-        this._applyDevTools(editorView);
-      }
-    }
-  }
-
-  destroyDevTool(): void {
-    // [FS] IRAD-1569 2021-09-15
-    // Unmount dev tools when component is destroyed,
-    // so that toggle effect is not occuring when the document is retrieved each time.
-    if (this._devTools) {
-      // Call the applyDevTools method again to trigger DOM removal
-      // prosemirror-dev-tools has outstanding pull-requests that affect
-      // dom removal. this may need to be addressed once those have been merged.
-      this._devTools.then((removeDevTools) => removeDevTools());
-    }
-  }
-
-  componentWillUnmount(): void {
-    this.destroyDevTool();
-  }
 
   /**
    * LICIT properties:
@@ -643,18 +587,6 @@ class Licit extends React.Component<any, any> {
    *  embedded {boolean} [false] Disable/Enable inline behaviour.
    */
   setProps = (props: any): void => {
-    // [FS] IRAD-1571 2021-10-08
-    // Since the debug lies outside the editor,
-    // any change to debug tool must be refreshed here.
-    if (this.state.debug !== props.debug) {
-      // change in debug flag.
-      if (props.debug) {
-        this.initDevTool(true, this._editorView);
-      } else {
-        this.destroyDevTool();
-      }
-    }
-
     if (this.state.readOnly) {
       // It should be possible to load content into the editor in readonly as well.
       // It should not be necessary to make the component writable any time during the process
