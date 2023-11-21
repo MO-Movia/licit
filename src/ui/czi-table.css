@@ -5,7 +5,9 @@
 .ProseMirror .tableWrapper {
   overflow-x: auto;
 }
-
+.ProseMirror .tableWrapper::-webkit-scrollbar{
+  height: 12px;
+ }
 .ProseMirror table {
   border: 1px solid var(--czi-table-border-color);
   border-collapse: initial;
