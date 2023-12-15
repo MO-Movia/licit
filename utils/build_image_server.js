@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const FlowWebpackPlugin = require('flow-webpack-plugin');
+// const FlowWebpackPlugin = require('flow-webpack-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
 const env = require('./env');
 const path = require('path');
@@ -44,7 +44,7 @@ const config = {
   },
   plugins: [
     // type checker
-    ... (env.NODE_ENV === 'development') ? [new FlowWebpackPlugin()] : [],
+    // ... (env.NODE_ENV === 'development') ? [new FlowWebpackPlugin()] : [],
     // To take care of formidable.
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
     // clean the web folder

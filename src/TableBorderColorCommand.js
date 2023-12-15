@@ -6,10 +6,14 @@ import { setCellAttr } from 'prosemirror-tables';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 
-import { ColorEditor } from '@modusoperandi/licit-ui-commands';
+import { ColorEditor } from 'color-picker'
 import { atAnchorRight } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
+import {findNodesWithSameMark} from '@modusoperandi/licit-ui-commands'
+import { MARK_TEXT_COLOR, MARK_FONT_SIZE } from '@modusoperandi/licit-ui-commands';
+
+
 
 const setCellBorderBlack = setCellAttr('borderColor', '#000000');
 
@@ -37,11 +41,20 @@ class TableBorderColorCommand extends UICommand {
     if (!(target instanceof HTMLElement)) {
       return Promise.resolve(undefined);
     }
+    const { doc, selection, schema } = state;
+    const markType = schema.marks[MARK_TEXT_COLOR];
+    const { from, to } = selection;
+    const result = findNodesWithSameMark(doc, from, to, markType);
 
     const anchor = event ? event.currentTarget : null;
+    const hex = result ? result.mark.attrs.color : null;
+
     return new Promise((resolve) => {
-      this._popUp = createPopUp(ColorEditor, null, {
+      this._popUp = createPopUp(ColorEditor, 
+        { hex, runtime: view.runtime },
+        {
         anchor,
+        autoDismiss: false,
         position: atAnchorRight,
         onClose: (val) => {
           if (this._popUp) {
@@ -51,6 +64,8 @@ class TableBorderColorCommand extends UICommand {
         },
       });
     });
+
+
   };
 
   executeWithUserInput = (

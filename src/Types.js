@@ -43,10 +43,10 @@ export type ImageLike = {
   width: number,
 };
 
-
-
-
-
+export type RecentColor = {
+  id: number,
+  color: string
+};
 
 export type EditorRuntime = {
   // Image Proxy
