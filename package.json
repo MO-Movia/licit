@@ -6,6 +6,7 @@
   "description": "Rich text editor built with React and ProseMirror",
   "main": "dist/index.js",
   "style": "dist/styles.css",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MO-Movia/licit.git"
@@ -20,10 +21,10 @@
     "build:fonts": "mkdirp ./dist/fonts && cp -r fonts/* dist/fonts",
     "build:babel": "babel src --out-dir dist",
     "build:flow": "flow-copy-source -v -i '**/__tests__/**' src dist",
-    "build:dist": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts && npm run build:bom",
+    "build:dist": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts && npm run build:bom && cp src/*.d.ts dist/",
     "build:licit": "node utils/build_bin.js",
     "ci:bom": "cyclonedx-npm --ignore-npm-errors --short-PURLs --output-format XML --output-file dist/bom.xml",
-    "ci:build": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts && npm run build:bom",
+    "ci:build": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts && npm run build:bom && cp src/*.d.ts dist/ ",
     "flow": "flow --show-all-errors",
     "lint:css": "stylelint \"**/*.css\"",
     "lint:js": "eslint \"src/**/*.js\" \"licit/**/*.js\"",
