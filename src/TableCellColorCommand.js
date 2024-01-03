@@ -5,8 +5,7 @@ import { EditorState } from 'prosemirror-state';
 import { setCellAttr } from 'prosemirror-tables';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
-
-import { ColorEditor } from 'color-picker'
+import { ColorEditor } from '@modusoperandi/color-picker'
 import { atAnchorRight } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
