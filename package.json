@@ -108,7 +108,7 @@
     "katex": "0.11.1",
     "mv": "^2.1.1",
     "node-mathquill": "0.10.2",
-    "prosemirror-collab": "1.2.2",
+    "prosemirror-collab": "1.3.1",
     "prosemirror-tables": "1.2.5",
     "query-string": "6.13.1",
     "resize-observer-polyfill": "1.5.1",
