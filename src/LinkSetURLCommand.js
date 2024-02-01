@@ -108,6 +108,10 @@ class LinkSetURLCommand extends UICommand {
     view && view.focus();
     return true;
   };
+
+  cancel(): void {
+    return null;
+  }
 }
 
 export default LinkSetURLCommand;

@@ -1,40 +1,16 @@
 // @flow
 
-import {
-  Fragment,
-  Schema
-} from 'prosemirror-model';
-import {
-  EditorState,
-  TextSelection
-} from 'prosemirror-state';
-import {
-  Transform
-} from 'prosemirror-transform';
-import {
-  findParentNodeOfType
-} from 'prosemirror-utils';
-import {
-  EditorView
-} from 'prosemirror-view';
-import {
-  MARK_SPACER
-} from './MarkNames.js';
-import {
-  HEADING,
-  LIST_ITEM,
-  PARAGRAPH
-} from './NodeNames.js';
-import {
-  HAIR_SPACE_CHAR,
-  SPACER_SIZE_TAB
-} from './SpacerMarkSpec.js';
-import {
-  applyMark
-} from '@modusoperandi/licit-ui-commands';
-import {
-  UICommand
-} from '@modusoperandi/licit-doc-attrs-step';
+import { Fragment, Schema } from 'prosemirror-model';
+import { EditorState, TextSelection } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
+import { findParentNodeOfType } from 'prosemirror-utils';
+import { EditorView } from 'prosemirror-view';
+import { MARK_SPACER } from './MarkNames.js';
+import { HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames.js';
+import { HAIR_SPACE_CHAR, SPACER_SIZE_TAB } from './SpacerMarkSpec.js';
+import { applyMark } from '@modusoperandi/licit-ui-commands';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import * as React from 'react';
 
 function insertTabSpace(
   state: EditorState,
@@ -103,6 +79,28 @@ class TextInsertTabSpaceCommand extends UICommand {
     }
     return false;
   };
+
+  waitForUserInput = (
+    _state: EditorState,
+    _dispatch: ?(tr: Transform) => void,
+    _view: ?EditorView,
+    _event: ?React.SyntheticEvent
+  ): Promise<undefined> => {
+    return Promise.resolve(undefined);
+  };
+
+  executeWithUserInput = (
+    _state: EditorState,
+    _dispatch: ?(tr: Transform) => void,
+    _view: ?EditorView,
+    _inputs: ?string
+  ): boolean => {
+    return false;
+  };
+
+  cancel(): void {
+    return null;
+  }
 }
 
 export default TextInsertTabSpaceCommand;

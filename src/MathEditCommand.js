@@ -111,6 +111,10 @@ class MathEditCommand extends UICommand {
 
     return false;
   };
+
+  cancel(): void {
+    return null;
+  }
 }
 
 export default MathEditCommand;

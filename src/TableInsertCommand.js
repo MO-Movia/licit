@@ -94,6 +94,10 @@ class TableInsertCommand extends UICommand {
     }
     return false;
   };
+
+  cancel(): void {
+    return null;
+  }
 }
 
 // [FS] 2021-04-01

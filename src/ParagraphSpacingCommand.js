@@ -7,6 +7,7 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { Schema } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
+import * as React from 'react';
 
 export function setParagraphSpacing(
   tr: Transform,
@@ -116,6 +117,28 @@ class ParagraphSpacingCommand extends UICommand {
       return false;
     }
   };
+
+  waitForUserInput = (
+    _state: EditorState,
+    _dispatch: ?(tr: Transform) => void,
+    _view: ?EditorView,
+    _event: ?React.SyntheticEvent
+  ): Promise<undefined> => {
+    return Promise.resolve(undefined);
+  };
+
+  executeWithUserInput = (
+    _state: EditorState,
+    _dispatch: ?(tr: Transform) => void,
+    _view: ?EditorView,
+    _inputs: ?string
+  ): boolean => {
+    return false;
+  };
+
+  cancel(): void {
+    return null;
+  }
 }
 
 export default ParagraphSpacingCommand;
