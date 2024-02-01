@@ -1,6 +1,6 @@
 import React from 'react';
 import { configure, shallow } from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Adapter from '@cfaester/enzyme-adapter-react-18';
 import Licit, { DataType } from './Licit';
 import RichTextEditor from '../ui/RichTextEditor';
 import { noop } from '@modusoperandi/licit-ui-commands';
