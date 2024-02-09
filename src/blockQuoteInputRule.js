@@ -4,8 +4,8 @@ import { InputRule } from 'prosemirror-inputrules';
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 
-import { BLOCKQUOTE } from './NodeNames';
-import toggleBlockquote from './toggleBlockquote';
+import { BLOCKQUOTE } from './NodeNames.js';
+import toggleBlockquote from './toggleBlockquote.js';
 
 // Given a blockquote node type, returns an input rule that turns `"> "`
 // at the start of a textblock into a blockquote.

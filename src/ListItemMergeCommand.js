@@ -7,9 +7,9 @@ import { TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
-
-import { HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
-import nodeAt from './nodeAt';
+import * as React from 'react';
+import { HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames.js';
+import nodeAt from './nodeAt.js';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 function mergeListItemUp(tr: Transform, schema: Schema): Transform {
@@ -172,6 +172,28 @@ class ListItemMergeCommand extends UICommand {
       return false;
     }
   };
+
+  waitForUserInput = (
+    _state: EditorState,
+    _dispatch: ?(tr: Transform) => void,
+    _view: ?EditorView,
+    _event: ?React.SyntheticEvent
+  ): Promise<undefined> => {
+    return Promise.resolve(undefined);
+  };
+
+  executeWithUserInput = (
+    _state: EditorState,
+    _dispatch: ?(tr: Transform) => void,
+    _view: ?EditorView,
+    _inputs: ?string
+  ): boolean => {
+    return false;
+  };
+
+  cancel(): void {
+    return null;
+  }
 }
 
 export default ListItemMergeCommand;

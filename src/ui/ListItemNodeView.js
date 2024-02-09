@@ -2,7 +2,7 @@
 
 import { Node } from 'prosemirror-model';
 import { Decoration, EditorView } from 'prosemirror-view';
-import { MARK_TEXT_COLOR, MARK_FONT_SIZE } from '../MarkNames';
+import { MARK_TEXT_COLOR, MARK_FONT_SIZE } from '../MarkNames.js';
 
 // This implements the `NodeView` interface
 // https://prosemirror.net/docs/ref/#view.NodeView

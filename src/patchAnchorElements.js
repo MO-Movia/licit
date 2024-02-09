@@ -3,7 +3,7 @@
 import {
   ATTRIBUTE_BOOKMARK_ID,
   ATTRIBUTE_BOOKMARK_VISIBLE,
-} from './BookmarkNodeSpec';
+} from './BookmarkNodeSpec.js';
 
 const BLOCK_NODE_NAME_PATTERN = /(P|H1|H2|H3|H4|H5|H6)/;
 

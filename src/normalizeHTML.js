@@ -4,16 +4,16 @@ import {
   DOM_ATTRIBUTE_SIZE,
   HAIR_SPACE_CHAR,
   SPACER_SIZE_TAB,
-} from './SpacerMarkSpec';
-import patchAnchorElements from './patchAnchorElements';
-import patchBreakElements from './patchBreakElements';
-import patchElementInlineStyles from './patchElementInlineStyles';
-import patchListElements from './patchListElements';
-import patchMathElements from './patchMathElements';
-import patchParagraphElements from './patchParagraphElements';
-import patchStyleElements from './patchStyleElements';
-import patchTableElements from './patchTableElements';
-import toSafeHTMLDocument from './toSafeHTMLDocument';
+} from './SpacerMarkSpec.js';
+import patchAnchorElements from './patchAnchorElements.js';
+import patchBreakElements from './patchBreakElements.js';
+import patchElementInlineStyles from './patchElementInlineStyles.js';
+import patchListElements from './patchListElements.js';
+import patchMathElements from './patchMathElements.js';
+import patchParagraphElements from './patchParagraphElements.js';
+import patchStyleElements from './patchStyleElements.js';
+import patchTableElements from './patchTableElements.js';
+import toSafeHTMLDocument from './toSafeHTMLDocument.js';
 
 const HTML_BODY_PATTERN = /<body[\s>]/i;
 const LONG_UNDERLINE_PATTERN = /_+/g;

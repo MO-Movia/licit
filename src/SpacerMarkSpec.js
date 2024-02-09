@@ -2,7 +2,7 @@
 
 import { Node } from 'prosemirror-model';
 
-import type { MarkSpec } from './Types';
+import type { MarkSpec } from './Types.js';
 
 export const DOM_ATTRIBUTE_SIZE = 'data-spacer-size';
 export const SPACER_SIZE_TAB = 'tab';

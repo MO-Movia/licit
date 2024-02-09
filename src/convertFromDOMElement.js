@@ -5,9 +5,9 @@ import { DOMParser } from 'prosemirror-model';
 import { EditorState } from 'prosemirror-state';
 import { Plugin } from 'prosemirror-state';
 
-import { getAttrs } from './DocNodeSpec';
-import EditorPlugins from './EditorPlugins';
-import EditorSchema from './EditorSchema';
+import { getAttrs } from './DocNodeSpec.js';
+import EditorPlugins from './EditorPlugins.js';
+import EditorSchema from './EditorSchema.js';
 
 export default function convertFromDOMElement(
   el: HTMLElement,

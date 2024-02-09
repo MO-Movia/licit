@@ -1,7 +1,7 @@
 // @flow
-import { PT_TO_PX_RATIO } from './convertToCSSPTValue';
-import convertToCSSPTValue from './convertToCSSPTValue';
-import toHexColor from './ui/toHexColor';
+import { PT_TO_PX_RATIO } from './convertToCSSPTValue.js';
+import convertToCSSPTValue from './convertToCSSPTValue.js';
+import toHexColor from './ui/toHexColor.js';
 
 export default function patchTableElements(doc: Document): void {
   Array.from(doc.querySelectorAll('td')).forEach(patchTableCell);

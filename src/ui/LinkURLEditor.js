@@ -3,10 +3,16 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-import sanitizeURL from '../sanitizeURL';
-import { CustomButton } from '@modusoperandi/licit-ui-commands';
-import { ENTER } from './KeyCodes';
-import { preventEventDefault } from '@modusoperandi/licit-ui-commands';
+import sanitizeURL from '../sanitizeURL.js';
+import {
+  CustomButton
+} from '@modusoperandi/licit-ui-commands';
+import {
+  ENTER
+} from './KeyCodes.js';
+import {
+  preventEventDefault
+} from '@modusoperandi/licit-ui-commands';
 
 import './czi-form.css';
 import './czi-image-url-editor.css';

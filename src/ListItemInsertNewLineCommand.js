@@ -6,8 +6,8 @@ import { TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
-
-import { HARD_BREAK, LIST_ITEM } from './NodeNames';
+import * as React from 'react';
+import { HARD_BREAK, LIST_ITEM } from './NodeNames.js';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 // This handles the case when user press SHIFT + ENTER key to insert a new line
@@ -50,6 +50,28 @@ class ListItemInsertNewLineCommand extends UICommand {
       return false;
     }
   };
+
+  waitForUserInput = (
+    _state: EditorState,
+    _dispatch: ?(tr: Transform) => void,
+    _view: ?EditorView,
+    _event: ?React.SyntheticEvent
+  ): Promise<undefined> => {
+    return Promise.resolve(undefined);
+  };
+
+  executeWithUserInput = (
+    _state: EditorState,
+    _dispatch: ?(tr: Transform) => void,
+    _view: ?EditorView,
+    _inputs: ?string
+  ): boolean => {
+    return false;
+  };
+
+  cancel(): void {
+    return null;
+  }
 }
 
 export default ListItemInsertNewLineCommand;

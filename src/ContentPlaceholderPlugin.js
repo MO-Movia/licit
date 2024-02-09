@@ -5,7 +5,7 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 
-import isEditorStateEmpty from './isEditorStateEmpty';
+import isEditorStateEmpty from './isEditorStateEmpty.js';
 
 import './ui/czi-editor.css';
 

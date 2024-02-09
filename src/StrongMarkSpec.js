@@ -1,6 +1,6 @@
 // @flow
 
-import type { MarkSpec } from './Types';
+import type { MarkSpec } from './Types.js';
 
 const STRONG_DOM = ['strong', 0];
 const CSS_BOLD_PATTERN = /^(bold(er)?|[5-9]\d{2,})$/;

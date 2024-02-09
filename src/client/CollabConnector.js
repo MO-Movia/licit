@@ -3,10 +3,10 @@
 import { Transform } from 'prosemirror-transform';
 import { Schema } from 'prosemirror-model';
 import { Plugin, EditorState } from 'prosemirror-state';
-import SimpleConnector from './SimpleConnector';
-import type { SetStateCall } from './SimpleConnector';
-import EditorConnection from './EditorConnection';
-import Reporter from './Reporter';
+import SimpleConnector from './SimpleConnector.js';
+import type { SetStateCall } from './SimpleConnector.js';
+import EditorConnection from './EditorConnection.js';
+import Reporter from './Reporter.js';
 import ReactDOM from 'react-dom';
 
 type IdStrict = string;

@@ -29,7 +29,7 @@
 // - Let user set the left margin of the table.
 // - Let user set the right margin of the table.
 
-import TableNodeView from './ui/TableNodeView';
+import TableNodeView from './ui/TableNodeView.js';
 import { Node } from 'prosemirror-model';
 import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';

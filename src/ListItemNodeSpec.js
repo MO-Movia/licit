@@ -2,7 +2,7 @@
 
 import { Node } from 'prosemirror-model';
 
-import type { NodeSpec } from './Types';
+import type { NodeSpec } from './Types.js';
 
 export const ATTRIBUTE_LIST_STYLE_TYPE = 'data-list-style-type';
 

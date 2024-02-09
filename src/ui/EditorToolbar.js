@@ -7,14 +7,21 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 
-import CommandButton from './CommandButton';
-import CommandMenuButton from './CommandMenuButton';
-import { CustomButton } from '@modusoperandi/licit-ui-commands';
-import { COMMAND_GROUPS, parseLabel } from './EditorToolbarConfig';
-import Icon from './Icon';
-import ResizeObserver from './ResizeObserver';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import isReactClass from './isReactClass';
+import CommandButton from './CommandButton.js';
+import CommandMenuButton from './CommandMenuButton.js';
+import {
+  CustomButton
+} from '@modusoperandi/licit-ui-commands';
+import {
+  COMMAND_GROUPS,
+  parseLabel
+} from './EditorToolbarConfig.js';
+import Icon from './Icon.js';
+import ResizeObserver from './ResizeObserver.js';
+import {
+  UICommand
+} from '@modusoperandi/licit-doc-attrs-step';
+import isReactClass from './isReactClass.js';
 
 import './czi-editor-toolbar.css';
 

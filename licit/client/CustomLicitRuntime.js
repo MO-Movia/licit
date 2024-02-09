@@ -2,8 +2,8 @@
 
 // This implements the interface of `EditorRuntime`.
 // To  run  editor directly:
-import type { ImageLike } from '../../src/Types';
-import { POST } from '../../src/client/http';
+import type { ImageLike } from '../../src/Types.js';
+import { POST } from '../../src/client/http.js';
 
 // When use it in a componet:
 

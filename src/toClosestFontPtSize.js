@@ -3,7 +3,7 @@
 // [FS][28-02-2020]
 // IRAD-893 - Copy Paste From External Source Not Working
 // removed {} from import, because convertToCSSPTValue is a default export function.
-import convertToCSSPTValue from './convertToCSSPTValue';
+import convertToCSSPTValue from './convertToCSSPTValue.js';
 
 export function toClosestFontPtSize(styleValue: string): number {
   // duplicated FONT_PT_SIZES(available in ./ui/FontSizeCommandMenuButton)

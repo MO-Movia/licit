@@ -1,19 +1,30 @@
 /*eslint-disable */
 
-var webpack = require('webpack'),
-  CopyWebpackPlugin = require('copy-webpack-plugin'),
-  FlowWebpackPlugin = require('flow-webpack-plugin'),
-  HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin'),
-  HtmlWebpackPlugin = require('html-webpack-plugin'),
-  TerserPlugin = require('terser-webpack-plugin'),
-  WriteFilePlugin = require('write-file-webpack-plugin'),
-  env = require('./utils/env'),
-  fileSystem = require('fs'),
-  path = require('path');
+import webpack from 'webpack';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import FlowWebpackPlugin from 'flow-webpack-plugin';
+import HtmlWebpackInlineSourcePlugin from 'html-webpack-inline-source-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
+import WriteFilePlugin from 'write-file-webpack-plugin';
+import path, {
+  dirname
+} from 'path';
+import {
+  CleanWebpackPlugin
+} from 'clean-webpack-plugin';
+import {
+  fileURLToPath
+} from 'url';
+
+import env from './utils/env.js';
+import fileSystem from 'fs';
+const __filename = fileURLToPath(
+  import.meta.url);
+const __dirname = dirname(__filename);
 
 // [FS] IRAD-1005 2020-07-07
 // Upgrade outdated packages.
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 var isDev = env.NODE_ENV === 'development' || 0;
 // isDev = false;
@@ -75,6 +86,14 @@ var options = {
         loader: 'html-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.(js|mjs|jsx)$/,
+        include: /node_modules/,
+        type: 'javascript/auto',
+        resolve: {
+          fullySpecified: false,
+        },
+      }
     ],
   },
   resolve: {
@@ -125,4 +144,4 @@ if (isDev) {
   };
 }
 
-module.exports = options;
+export default options;

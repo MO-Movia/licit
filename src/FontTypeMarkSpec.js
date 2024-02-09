@@ -1,7 +1,7 @@
 // @flow
 
 import { Node } from 'prosemirror-model';
-import type { MarkSpec } from './Types';
+import type { MarkSpec } from './Types.js';
 
 // [FS] IRAD-1061 2020-09-19
 // Now loaded locally, so that it work in closed network as well.

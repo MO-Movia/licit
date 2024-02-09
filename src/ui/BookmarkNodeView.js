@@ -7,13 +7,13 @@ import * as React from 'react';
 import {
   ATTRIBUTE_BOOKMARK_ID,
   ATTRIBUTE_BOOKMARK_VISIBLE,
-} from './../BookmarkNodeSpec';
-import CustomNodeView from './CustomNodeView';
-import Icon from './Icon';
+} from './../BookmarkNodeSpec.js';
+import CustomNodeView from './CustomNodeView.js';
+import Icon from './Icon.js';
 
 import './czi-bookmark-view.css';
 
-import type { NodeViewProps } from './CustomNodeView';
+import type { NodeViewProps } from './CustomNodeView.js';
 
 class BookmarkViewBody extends React.PureComponent<any, any> {
   props: NodeViewProps;

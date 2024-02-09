@@ -2,8 +2,8 @@
 
 import { EditorView } from 'prosemirror-view';
 
-import convertToJSON from './convertToJSON';
-import CustomEditorView from './ui/CustomEditorView';
+import convertToJSON from './convertToJSON.js';
+import CustomEditorView from './ui/CustomEditorView.js';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 const commandsRegistery = new Map<any, any>();

@@ -1,11 +1,13 @@
 // @flow
 
-import renderLaTeXAsHTML from '../renderLaTeXAsHTML';
+import renderLaTeXAsHTML from '../renderLaTeXAsHTML.js';
 import './czi-mathquill-editor-symbols-panel.css';
 import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
 
-import type { MathQuillEditorSymbol } from './MathQuillEditorSymbols';
+import type {
+  MathQuillEditorSymbol
+} from './MathQuillEditorSymbols.js';
 
 class MathQuillEditorSymbolsPanel extends React.PureComponent<any, any> {
   props: {

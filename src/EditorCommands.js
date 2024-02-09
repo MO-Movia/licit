@@ -4,32 +4,51 @@ import * as ProsemirrorTables from 'prosemirror-tables';
 // [FS][07-MAY-2020][IRAD-956]
 // import BlockquoteInsertNewLineCommand from './BlockquoteInsertNewLineCommand';
 // import BlockquoteToggleCommand from './BlockquoteToggleCommand';
-import DocLayoutCommand from './DocLayoutCommand';
-import { HeadingCommand } from '@modusoperandi/licit-ui-commands';
-import HistoryRedoCommand from './HistoryRedoCommand';
-import HistoryUndoCommand from './HistoryUndoCommand';
-import HorizontalRuleCommand from './HorizontalRuleCommand';
-import { IndentCommand } from '@modusoperandi/licit-ui-commands';
-import LinkSetURLCommand from './LinkSetURLCommand';
-import ListItemInsertNewLineCommand from './ListItemInsertNewLineCommand';
-import ListItemMergeCommand from './ListItemMergeCommand';
-import ListSplitCommand from './ListSplitCommand';
-import { ListToggleCommand } from './ListToggleCommand';
-import * as MarkNames from './MarkNames';
-import { MarkToggleCommand } from '@modusoperandi/licit-ui-commands';
-import MarksClearCommand from './MarksClearCommand';
-import MathEditCommand from './MathEditCommand';
-import PrintCommand from './PrintCommand';
-import TableBackgroundColorCommand from './TableBackgroundColorCommand';
-import TableBorderColorCommand from './TableBorderColorCommand';
-import TableInsertCommand from './TableInsertCommand';
-import TableMergeCellsCommand from './TableMergeCellsCommand';
-import { TextAlignCommand } from '@modusoperandi/licit-ui-commands';
-import { TextColorCommand } from '@modusoperandi/licit-ui-commands';
-import { TextHighlightCommand } from '@modusoperandi/licit-ui-commands';
-import TextInsertTabSpaceCommand from './TextInsertTabSpaceCommand';
-import { TextLineSpacingCommand } from '@modusoperandi/licit-ui-commands';
-import createCommand from './createCommand';
+import DocLayoutCommand from './DocLayoutCommand.js';
+import {
+  HeadingCommand
+} from '@modusoperandi/licit-ui-commands';
+import HistoryRedoCommand from './HistoryRedoCommand.js';
+import HistoryUndoCommand from './HistoryUndoCommand.js';
+import HorizontalRuleCommand from './HorizontalRuleCommand.js';
+import {
+  IndentCommand
+} from '@modusoperandi/licit-ui-commands';
+import LinkSetURLCommand from './LinkSetURLCommand.js';
+import ListItemInsertNewLineCommand from './ListItemInsertNewLineCommand.js';
+import ListItemMergeCommand from './ListItemMergeCommand.js';
+import ListSplitCommand from './ListSplitCommand.js';
+import {
+  ListToggleCommand
+} from './ListToggleCommand.js';
+import * as MarkNames from './MarkNames.js';
+import {
+  MarkToggleCommand
+} from '@modusoperandi/licit-ui-commands';
+import MarksClearCommand from './MarksClearCommand.js';
+import MathEditCommand from './MathEditCommand.js';
+import PrintCommand from './PrintCommand.js';
+import TableBackgroundColorCommand from './TableBackgroundColorCommand.js';
+import TableBorderColorCommand from './TableBorderColorCommand.js';
+import TableInsertCommand from './TableInsertCommand.js';
+import TableMergeCellsCommand from './TableMergeCellsCommand.js';
+import {
+  TextAlignCommand
+} from '@modusoperandi/licit-ui-commands';
+import {
+  TextColorCommand
+} from '@modusoperandi/licit-ui-commands';
+import {
+  TextHighlightCommand
+} from '@modusoperandi/licit-ui-commands';
+import TextInsertTabSpaceCommand from './TextInsertTabSpaceCommand.js';
+import {
+  TextLineSpacingCommand
+} from '@modusoperandi/licit-ui-commands';
+import {
+  createGroup
+} from '@modusoperandi/licit-ui-commands';
+import createCommand from './createCommand.js';
 
 const {
   addColumnAfter,

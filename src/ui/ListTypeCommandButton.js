@@ -8,8 +8,8 @@ import { EditorView } from 'prosemirror-view';
 import {
   ListToggleCommand,
   hasImageNode,
-} from '../ListToggleCommand';
-import ListTypeButton from './ListTypeButton';
+} from '../ListToggleCommand.js';
+import ListTypeButton from './ListTypeButton.js';
 
 const LIST_TYPE_NAMES = [
   {

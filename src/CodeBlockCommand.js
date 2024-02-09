@@ -4,7 +4,7 @@ import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
-
+import * as React from 'react';
 import { CODE_BLOCK } from './NodeNames';
 import { noop } from '@modusoperandi/licit-ui-commands';
 import toggleCodeBlock from './toggleCodeBlock';
@@ -37,6 +37,28 @@ class CodeBlockCommand extends UICommand {
     const codeBlock = state.schema.nodes[CODE_BLOCK];
     const findCodeBlock = codeBlock ? findParentNodeOfType(codeBlock) : noop;
     return findCodeBlock(state.selection);
+  }
+
+  waitForUserInput = (
+    _state: EditorState,
+    _dispatch: ?(tr: Transform) => void,
+    _view: ?EditorView,
+    _event: ?React.SyntheticEvent
+  ): Promise<undefined> => {
+    return Promise.resolve(undefined);
+  };
+
+  executeWithUserInput = (
+    _state: EditorState,
+    _dispatch: ?(tr: Transform) => void,
+    _view: ?EditorView,
+    _inputs: ?string
+  ): boolean => {
+    return false;
+  };
+
+  cancel(): void {
+    return null;
   }
 }
 

@@ -66,6 +66,10 @@ class TableCellColorCommand extends UICommand {
     }
     return false;
   };
+
+  cancel(): void {
+    return null;
+  }
 }
 
 export default TableCellColorCommand;

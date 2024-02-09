@@ -1,9 +1,13 @@
-const webpack = require('webpack');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const FlowWebpackPlugin = require('flow-webpack-plugin');
-const WriteFilePlugin = require('write-file-webpack-plugin');
-const env = require('./env');
-const path = require('path');
+import webpack from 'webpack';
+import  { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import FlowWebpackPlugin from 'flow-webpack-plugin';
+import WriteFilePlugin from 'write-file-webpack-plugin';
+
+import env from './env'; 
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const config = {
   mode: 'production',//development
@@ -69,4 +73,4 @@ webpack(
 );
 
 // To take care of formidable.
-module.exports = config;
+export default config;

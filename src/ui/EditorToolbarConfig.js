@@ -3,11 +3,11 @@
 // eslint-disable-next-line no-unused-vars
 import * as React from 'react';
 
-import * as EditorCommands from '../EditorCommands';
-import FontSizeCommandMenuButton from './FontSizeCommandMenuButton';
-import FontTypeCommandMenuButton from './FontTypeCommandMenuButton';
-import ListTypeCommandButton from './ListTypeCommandButton';
-import Icon from './Icon';
+import * as EditorCommands from '../EditorCommands.js';
+import FontSizeCommandMenuButton from './FontSizeCommandMenuButton.js';
+import FontTypeCommandMenuButton from './FontTypeCommandMenuButton.js';
+import ListTypeCommandButton from './ListTypeCommandButton.js';
+import Icon from './Icon.js';
 
 const ICON_LABEL_PATTERN = /\[([A-Za-z_\d]+)\](.*)/;
 

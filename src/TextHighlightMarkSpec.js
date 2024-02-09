@@ -2,9 +2,9 @@
 
 import { Node } from 'prosemirror-model';
 
-import { isTransparent, toCSSColor } from './ui/toCSSColor';
+import { isTransparent, toCSSColor } from './ui/toCSSColor.js';
 
-import type { MarkSpec } from './Types';
+import type { MarkSpec } from './Types.js';
 
 const TextHighlightMarkSpec: MarkSpec = {
   attrs: {

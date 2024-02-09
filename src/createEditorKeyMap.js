@@ -4,8 +4,8 @@ import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 
-import * as EditorCommands from './EditorCommands';
-import * as EditorKeyMap from './EditorKeyMap';
+import * as EditorCommands from './EditorCommands.js';
+import * as EditorKeyMap from './EditorKeyMap.js';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import type {
   UserKeyCommand,

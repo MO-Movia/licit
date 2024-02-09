@@ -1,6 +1,6 @@
 // @flow
 
-const { readFileSync, writeFile } = require('fs');
+import { readFileSync, writeFile } from 'fs';
 
 // [FS] IRAD-1040 2020-09-02
 import { Schema } from 'prosemirror-model';

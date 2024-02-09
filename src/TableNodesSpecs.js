@@ -1,6 +1,6 @@
 // @flow
 
-import toCSSColor from './ui/toCSSColor';
+import toCSSColor from './ui/toCSSColor.js';
 import { Node } from 'prosemirror-model';
 import { tableNodes } from 'prosemirror-tables';
 

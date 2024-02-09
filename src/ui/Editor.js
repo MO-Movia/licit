@@ -16,23 +16,23 @@ import {
   registerEditorView,
   registeryKeys,
   releaseEditorView,
-} from '../CZIProseMirror';
-import { BOOKMARK, LIST_ITEM, MATH } from '../NodeNames';
-import WebFontLoader from '../WebFontLoader';
-import { preLoadFonts } from '../FontTypeMarkSpec';
-import createEmptyEditorState from '../createEmptyEditorState';
-import normalizeHTML from '../normalizeHTML';
-import BookmarkNodeView from './BookmarkNodeView';
-import CustomEditorView from './CustomEditorView';
-import CustomNodeView from './CustomNodeView';
-import ListItemNodeView from './ListItemNodeView';
-import MathNodeView from './MathNodeView';
-import handleEditorDrop from './handleEditorDrop';
-import handleEditorKeyDown from './handleEditorKeyDown';
-import handleEditorPaste from './handleEditorPaste';
-import uuid from './uuid';
+} from '../CZIProseMirror.js';
+import { BOOKMARK, LIST_ITEM, MATH } from '../NodeNames.js';
+import WebFontLoader from '../WebFontLoader.js';
+import { preLoadFonts } from '../FontTypeMarkSpec.js';
+import createEmptyEditorState from '../createEmptyEditorState.js';
+import normalizeHTML from '../normalizeHTML.js';
+import BookmarkNodeView from './BookmarkNodeView.js';
+import CustomEditorView from './CustomEditorView.js';
+import CustomNodeView from './CustomNodeView.js';
+import ListItemNodeView from './ListItemNodeView.js';
+import MathNodeView from './MathNodeView.js';
+import handleEditorDrop from './handleEditorDrop.js';
+import handleEditorKeyDown from './handleEditorKeyDown.js';
+import handleEditorPaste from './handleEditorPaste.js';
+import uuid from './uuid.js';
 import './czi-editor.css';
-import type { EditorRuntime } from '../Types';
+import type { EditorRuntime } from '../Types.js';
 
 export type EditorProps = {
   autoFocus?: ?boolean,

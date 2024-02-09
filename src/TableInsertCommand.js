@@ -6,13 +6,17 @@ import { TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import { Fragment } from 'prosemirror-model';
-import insertTable from './insertTable';
+import insertTable from './insertTable.js';
 import { atAnchorRight } from '@modusoperandi/licit-ui-commands';
-import TableGridSizeEditor from './ui/TableGridSizeEditor';
+import TableGridSizeEditor from './ui/TableGridSizeEditor.js';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
-import { PARAGRAPH } from './NodeNames';
-import type { TableGridSizeEditorValue } from './ui/TableGridSizeEditor';
+import {
+  PARAGRAPH
+} from './NodeNames.js';
+import type {
+  TableGridSizeEditorValue
+} from './ui/TableGridSizeEditor.js';
 
 class TableInsertCommand extends UICommand {
   _popUp = null;
@@ -90,6 +94,10 @@ class TableInsertCommand extends UICommand {
     }
     return false;
   };
+
+  cancel(): void {
+    return null;
+  }
 }
 
 // [FS] 2021-04-01

@@ -5,8 +5,8 @@ import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
-import CustomMenu from './CustomMenu';
-import CustomMenuItem from './CustomMenuItem';
+import CustomMenu from './CustomMenu.js';
+import CustomMenuItem from './CustomMenuItem.js';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 class CommandMenu extends React.PureComponent<any, any> {

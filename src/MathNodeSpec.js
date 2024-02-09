@@ -1,6 +1,6 @@
 // @flow
 
-import type { NodeSpec } from './Types';
+import type { NodeSpec } from './Types.js';
 
 function getAttrs(dom: HTMLElement) {
   let align = dom.getAttribute('data-align') || dom.getAttribute('align');

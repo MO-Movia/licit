@@ -3,8 +3,8 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 
-import Licit, { DataType } from '../../src/client/Licit';
-import CustomLicitRuntime from './CustomLicitRuntime';
+import Licit, { DataType } from '../../src/client/Licit.js';
+import CustomLicitRuntime from './CustomLicitRuntime.js';
 
 function main(): void {
   const el = document.createElement('div');

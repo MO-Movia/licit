@@ -2,11 +2,11 @@
 
 import { Node } from 'prosemirror-model';
 
-import { ATTRIBUTE_LIST_STYLE_TYPE } from './ListItemNodeSpec';
-import { LIST_ITEM } from './NodeNames';
-import { ATTRIBUTE_INDENT, MIN_INDENT_LEVEL } from './ParagraphNodeSpec';
+import { ATTRIBUTE_LIST_STYLE_TYPE } from './ListItemNodeSpec.js';
+import { LIST_ITEM } from './NodeNames.js';
+import { ATTRIBUTE_INDENT, MIN_INDENT_LEVEL } from './ParagraphNodeSpec.js';
 
-import type { NodeSpec } from './Types';
+import type { NodeSpec } from './Types.js';
 
 const AUTO_LIST_STYLE_TYPES = ['disc', 'square', 'circle'];
 

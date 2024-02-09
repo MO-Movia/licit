@@ -2,8 +2,8 @@
 
 import { Schema } from 'prosemirror-model';
 
-import EditorMarks from './EditorMarks';
-import EditorNodes from './EditorNodes';
+import EditorMarks from './EditorMarks.js';
+import EditorNodes from './EditorNodes.js';
 
 const EditorSchema = new Schema({
   nodes: EditorNodes,

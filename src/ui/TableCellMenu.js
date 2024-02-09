@@ -4,9 +4,9 @@ import { EditorView } from 'prosemirror-view';
 import { Node } from 'prosemirror-model';
 import * as React from 'react';
 
-import CommandMenuButton from './CommandMenuButton';
-import { TABLE_COMMANDS_GROUP } from './EditorToolbarConfig';
-import Icon from './Icon';
+import CommandMenuButton from './CommandMenuButton.js';
+import { TABLE_COMMANDS_GROUP } from './EditorToolbarConfig.js';
+import Icon from './Icon.js';
 
 import './czi-table-cell-menu.css';
 

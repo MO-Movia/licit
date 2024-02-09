@@ -5,16 +5,26 @@ import { TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 
-import { MARK_LINK } from './MarkNames';
+import {
+  MARK_LINK
+} from './MarkNames.js';
 import {
   hideSelectionPlaceholder,
   showSelectionPlaceholder,
-} from './SelectionPlaceholderPlugin';
-import { applyMark } from '@modusoperandi/licit-ui-commands';
-import { findNodesWithSameMark } from '@modusoperandi/licit-ui-commands';
-import LinkURLEditor from './ui/LinkURLEditor';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
+} from './SelectionPlaceholderPlugin.js';
+import {
+  applyMark
+} from '@modusoperandi/licit-ui-commands';
+import {
+  findNodesWithSameMark
+} from '@modusoperandi/licit-ui-commands';
+import LinkURLEditor from './ui/LinkURLEditor.js';
+import {
+  UICommand
+} from '@modusoperandi/licit-doc-attrs-step';
+import {
+  createPopUp
+} from '@modusoperandi/licit-ui-commands';
 
 class LinkSetURLCommand extends UICommand {
   _popUp = null;
@@ -98,6 +108,10 @@ class LinkSetURLCommand extends UICommand {
     view && view.focus();
     return true;
   };
+
+  cancel(): void {
+    return null;
+  }
 }
 
 export default LinkSetURLCommand;

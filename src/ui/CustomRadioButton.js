@@ -4,7 +4,7 @@ import './czi-custom-radio-button.css';
 import { PointerSurface } from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
 import cx from 'classnames';
-import uuid from './uuid';
+import uuid from './uuid.js';
 import { preventEventDefault } from '@modusoperandi/licit-ui-commands';
 
 import type { PointerSurfaceProps } from '@modusoperandi/licit-ui-commands';;

@@ -2,7 +2,7 @@
 
 import Keymap from 'browserkeymap';
 
-import browser from './browser';
+import browser from './browser.js';
 
 import {
   makeKeyMap,

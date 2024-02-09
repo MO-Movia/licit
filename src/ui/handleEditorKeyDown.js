@@ -9,7 +9,7 @@ import {
   LEFT_ARROW,
   RIGHT_ARROW,
   UP_ARROW,
-} from './KeyCodes';
+} from './KeyCodes.js';
 
 const AtomicNodeKeyCodes = new Set([
   BACKSPACE,

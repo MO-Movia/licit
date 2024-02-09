@@ -9,8 +9,8 @@ import {
 import { Plugin, EditorState } from 'prosemirror-state';
 import { Step } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
-import uuid from '../uuid';
-import { GET, POST, PUT } from './http';
+import uuid from '../uuid.js';
+import { GET, POST, PUT } from './http.js';
 // [FS] IRAD-1040 2020-09-02
 import { Schema } from 'prosemirror-model';
 import { stringify } from 'flatted';

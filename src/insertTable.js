@@ -4,7 +4,7 @@ import { Fragment, Schema } from 'prosemirror-model';
 import { TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 
-import { PARAGRAPH, TABLE, TABLE_CELL, TABLE_ROW } from './NodeNames';
+import { PARAGRAPH, TABLE, TABLE_CELL, TABLE_ROW } from './NodeNames.js';
 
 // const ZERO_WIDTH_SPACE_CHAR = '\u200b';
 

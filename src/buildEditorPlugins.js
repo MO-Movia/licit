@@ -6,14 +6,14 @@ import {history} from 'prosemirror-history';
 import {keymap} from 'prosemirror-keymap';
 import {Schema} from 'prosemirror-model';
 import {Plugin, PluginKey} from 'prosemirror-state';
-import ContentPlaceholderPlugin from './ContentPlaceholderPlugin';
-import CursorPlaceholderPlugin from './CursorPlaceholderPlugin';
-import EditorPageLayoutPlugin from './EditorPageLayoutPlugin';
-import LinkTooltipPlugin from './LinkTooltipPlugin';
-import SelectionPlaceholderPlugin from './SelectionPlaceholderPlugin';
-import TablePlugins from './TablePlugins';
-import buildInputRules from './buildInputRules';
-import createEditorKeyMap from './createEditorKeyMap';
+import ContentPlaceholderPlugin from './ContentPlaceholderPlugin.js';
+import CursorPlaceholderPlugin from './CursorPlaceholderPlugin.js';
+import EditorPageLayoutPlugin from './EditorPageLayoutPlugin.js';
+import LinkTooltipPlugin from './LinkTooltipPlugin.js';
+import SelectionPlaceholderPlugin from './SelectionPlaceholderPlugin.js';
+import TablePlugins from './TablePlugins.js';
+import buildInputRules from './buildInputRules.js';
+import createEditorKeyMap from './createEditorKeyMap.js';
 
 // Creates the default plugin for the editor.
 export default class DefaultEditorPlugins {
