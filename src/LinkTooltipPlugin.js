@@ -4,29 +4,17 @@ import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
 import { TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 
-import {
-  MARK_LINK
-} from './MarkNames.js';
-import {
-  hideSelectionPlaceholder,
-} from './SelectionPlaceholderPlugin.js';
-import {
-  applyMark
-} from '@modusoperandi/licit-ui-commands';
-import {
-  findNodesWithSameMark
-} from '@modusoperandi/licit-ui-commands';
+import { MARK_LINK } from './MarkNames.js';
+import { hideSelectionPlaceholder } from './SelectionPlaceholderPlugin.js';
+import { applyMark } from '@modusoperandi/licit-ui-commands';
+import { findNodesWithSameMark } from '@modusoperandi/licit-ui-commands';
 import lookUpElement from './lookUpElement.js';
 import LinkTooltip from './ui/LinkTooltip.js';
 import LinkURLEditor from './ui/LinkURLEditor.js';
-import {
-  atAnchorTopCenter
-} from '@modusoperandi/licit-ui-commands';
-import {
-  createPopUp
-} from '@modusoperandi/licit-ui-commands';
+import { atAnchorTopCenter } from '@modusoperandi/licit-ui-commands';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 
-import '@modusoperandi/licit-ui-commands/dist/ui/czi-pop-up.css';
+import '@modusoperandi/licit-ui-commands/ui/czi-pop-up.css';
 
 // https://prosemirror.net/examples/tooltip/
 const SPEC = {

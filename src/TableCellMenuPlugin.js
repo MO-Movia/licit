@@ -6,17 +6,13 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import findActionableCell from './findActionableCell.js';
-import {
-  atAnchorTopRight
-} from '@modusoperandi/licit-ui-commands';
+import { atAnchorTopRight } from '@modusoperandi/licit-ui-commands';
 import TableCellMenu from './ui/TableCellMenu.js';
 import bindScrollHandler from './ui/bindScrollHandler.js';
-import {
-  createPopUp
-} from '@modusoperandi/licit-ui-commands';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import isElementFullyVisible from './ui/isElementFullyVisible.js';
 
-import '@modusoperandi/licit-ui-commands/dist/ui/czi-pop-up.css';
+import '@modusoperandi/licit-ui-commands/ui/czi-pop-up.css';
 import { CellSelection } from 'prosemirror-tables';
 
 class TableCellTooltipView {

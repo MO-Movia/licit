@@ -3,9 +3,9 @@
 @import './ui/czi-indent.css';
 @import './ui/czi-list.css';
 @import './ui/czi-table.css';
-@import '@modusoperandi/licit-ui-commands/dist/ui/czi-custom-button.css';
-@import '@modusoperandi/licit-ui-commands/dist/ui/czi-animations.css';
-@import '@modusoperandi/licit-ui-commands/dist/ui/czi-color-editor.css';
+@import '@modusoperandi/licit-ui-commands/ui/czi-custom-button.css';
+@import '@modusoperandi/licit-ui-commands/ui/czi-animations.css';
+@import '@modusoperandi/licit-ui-commands/ui/czi-color-editor.css';
 @import './ui/czi-bookmark-view.css';
 @import './ui/czi-body-layout-editor.css';
 @import './ui/czi-cursor-placeholder.css';
