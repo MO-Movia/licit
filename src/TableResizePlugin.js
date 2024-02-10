@@ -39,7 +39,7 @@ import nullthrows from 'nullthrows';
 import {
   cellAround,
   pointsAtCell,
-  setAttr,
+  setCellAttr,
   tableNodeTypes,
   TableMap,
   TableView,
@@ -344,7 +344,7 @@ function handleDragEnd(view: EditorView, event: any): void {
       tr = tr.setNodeMarkup(
         start + pos,
         null,
-        setAttr(attrs, 'colwidth', colwidth)
+        setCellAttr('colwidth', colwidth)
       );
     }
   }
