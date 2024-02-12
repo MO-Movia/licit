@@ -5,26 +5,15 @@ import * as ProsemirrorTables from 'prosemirror-tables';
 // import BlockquoteInsertNewLineCommand from './BlockquoteInsertNewLineCommand';
 // import BlockquoteToggleCommand from './BlockquoteToggleCommand';
 import DocLayoutCommand from './DocLayoutCommand.js';
-import {
-  HeadingCommand
-} from '@modusoperandi/licit-ui-commands';
 import HistoryRedoCommand from './HistoryRedoCommand.js';
 import HistoryUndoCommand from './HistoryUndoCommand.js';
 import HorizontalRuleCommand from './HorizontalRuleCommand.js';
-import {
-  IndentCommand
-} from '@modusoperandi/licit-ui-commands';
 import LinkSetURLCommand from './LinkSetURLCommand.js';
 import ListItemInsertNewLineCommand from './ListItemInsertNewLineCommand.js';
 import ListItemMergeCommand from './ListItemMergeCommand.js';
 import ListSplitCommand from './ListSplitCommand.js';
-import {
-  ListToggleCommand
-} from './ListToggleCommand.js';
+import { ListToggleCommand } from './ListToggleCommand.js';
 import * as MarkNames from './MarkNames.js';
-import {
-  MarkToggleCommand
-} from '@modusoperandi/licit-ui-commands';
 import MarksClearCommand from './MarksClearCommand.js';
 import MathEditCommand from './MathEditCommand.js';
 import PrintCommand from './PrintCommand.js';
@@ -33,21 +22,15 @@ import TableBorderColorCommand from './TableBorderColorCommand.js';
 import TableInsertCommand from './TableInsertCommand.js';
 import TableMergeCellsCommand from './TableMergeCellsCommand.js';
 import {
-  TextAlignCommand
-} from '@modusoperandi/licit-ui-commands';
-import {
-  TextColorCommand
-} from '@modusoperandi/licit-ui-commands';
-import {
-  TextHighlightCommand
+  HeadingCommand,
+  IndentCommand,
+  MarkToggleCommand,
+  TextAlignCommand,
+  TextColorCommand,
+  TextHighlightCommand,
+  TextLineSpacingCommand,
 } from '@modusoperandi/licit-ui-commands';
 import TextInsertTabSpaceCommand from './TextInsertTabSpaceCommand.js';
-import {
-  TextLineSpacingCommand
-} from '@modusoperandi/licit-ui-commands';
-import {
-  createGroup
-} from '@modusoperandi/licit-ui-commands';
 import createCommand from './createCommand.js';
 
 const {

@@ -14,7 +14,7 @@ export const ATTRIBUTE_INDENT = 'data-indent';
 export const ATTRIBUTE_STYLE_LEVEL = 'data-style-level';
 export const RESERVED_STYLE_NONE = 'None';
 export const RESERVED_STYLE_NONE_NUMBERING = RESERVED_STYLE_NONE + '-@#$-';
-const cssVal = new Set < string > (['', '0%', '0pt', '0px']);
+const cssVal = new Set(['', '0%', '0pt', '0px']);
 
 export const EMPTY_CSS_VALUE = cssVal;
 

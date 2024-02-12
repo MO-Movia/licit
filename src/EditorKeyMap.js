@@ -1,6 +1,6 @@
 // @flow
 
-import Keymap from 'browserkeymap';
+// import Keymap from 'browserkeymap';
 
 import browser from './browser.js';
 
@@ -11,7 +11,7 @@ import {
 
 // https://tinyurl.com/ybwf3wex
 
-export function tooltip(keymap: ?Keymap): ?string {
+export function tooltip(keymap: ?any): ?string {
   if (keymap) {
     let shortcut;
     if (browser.isMac()) {
@@ -28,7 +28,7 @@ export function tooltip(keymap: ?Keymap): ?string {
   return null;
 }
 
-export function findShortcutByKeymap(keymap: Keymap): ?string {
+export function findShortcutByKeymap(keymap: any): ?string {
   if (browser.isMac()) {
     return keymap.mac;
   }
@@ -171,7 +171,7 @@ export const ALL_KEYS = [
   KEY_UNDO,
 ];
 
-export function findKeymapByDescription(description: string): ?Keymap {
+export function findKeymapByDescription(description: string): ?any {
   const matches = ALL_KEYS.filter((keymap) => {
     return keymap.description.toUpperCase() === description.toUpperCase();
   });

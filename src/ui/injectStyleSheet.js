@@ -2,7 +2,7 @@
 
 import url from 'url';
 
-const addedElements = new Map<any, any>();
+const addedElements = new Map();
 
 function createElement(tag: string, attrs: Object): Element {
   const el: any = document.createElement(tag);
