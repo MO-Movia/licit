@@ -3,7 +3,9 @@
  * https://jestjs.io/docs/configuration
  */
 
-export default {
+import type { JestConfigWithTsJest } from 'ts-jest';
+
+const jestConfig: JestConfigWithTsJest = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -20,7 +22,6 @@ export default {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-
   collectCoverageFrom: ['**/*.{js,jsx,ts,tsx}'],
 
   // The directory where Jest should output its coverage files
@@ -44,7 +45,7 @@ export default {
   ],
 
   // An object that configures minimum threshold enforcement for coverage results
-  coverageThreshold: {global:{branches:80,functions:80,lines:80,},},
+  coverageThreshold: { global: { branches: 80, functions: 80, lines: 80 } },
 
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,
@@ -62,7 +63,13 @@ export default {
   // globalTeardown: undefined,
 
   // A set of global variables that need to be available in all test environments
-  // globals: {},
+  /* globals: {
+    'ts-jest': {
+      tsconfig: {
+        allowJs: true,
+      },
+    },
+  },*/
 
   // The maximum amount of workers used to run your tests. Can be specified as % or a number. E.g. maxWorkers: 10% will use 10% of your CPU amount + 1 as the maximum worker number. maxWorkers: 2 will use a maximum of 2 workers.
   // maxWorkers: "50%",
@@ -74,17 +81,18 @@ export default {
 
   // An array of file extensions your modules use
   moduleFileExtensions: [
-     'js',
-  //   "jsx",
-  //   "ts",
-  //   "tsx",
-  //   "json",
-  //   "node"
+    'js',
+    "jsx",
+    'ts',
+    'tsx',
+    //   "json",
+    //   "node"
   ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
-'\\.(css|less|scss|sass)$': 'identity-obj-proxy'
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -97,14 +105,22 @@ export default {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  //preset: 'ts-jest/presets/default',
+  preset: 'ts-jest/presets/default-esm', // or other ESM presets
 
   // Run tests from one or more projects
   // projects: undefined,
 
   // Use this configuration option to add custom reporters to Jest
-  // reporters: undefined,
-
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        outputDirectory: 'coverage',
+        outputName: 'TESTS.xml',
+      },
+    ],
+  ],
   // Automatically reset mock state between every test
   // resetMocks: false,
 
@@ -129,14 +145,10 @@ export default {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: [
-      '../jest.setup.js'
-  ],
+  setupFiles: ['../jest.setup.js'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  setupFilesAfterEnv: [
-      'jest-prosemirror/environment'
-    ],
+  setupFilesAfterEnv: ['jest-prosemirror/environment'],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
@@ -154,10 +166,10 @@ export default {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-   testMatch: [
+  // testMatch: [
   //   "**/__tests__/**/*.[jt]s?(x)",
-     '**/?(*.)+(spec|test).[j]s?(x)'
-  ],
+  //   "**/?(*.)+(spec|test).[tj]s?(x)"
+  // ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [
@@ -165,7 +177,7 @@ export default {
   // ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
-  //testRegex: ["((\\.|/*.)(test))\\.ts?$"],
+  testRegex: ['((\\.|/*.)(test))\\.(js?|jsx?)$'],
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: "jest-sonar-reporter",
@@ -180,15 +192,22 @@ export default {
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
-  /*transform: {
-   "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
-  },*/
+  transform: {
+    // '^.+\\.[tj]sx?$' to process js/ts with `ts-jest`
+    // '^.+\\.m?[tj]sx?$' to process js/ts/mjs/mts with `ts-jest`
+    '^.+\\.m?[tj]sx?$': [
+      'ts-jest',
+      {
+        useESM: true,
+        tsconfig: {
+          allowJs: true,
+        },
+      },
+    ],
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  transformIgnorePatterns: [
-   'node_modules/(?!(prosemirror-utils|@modusoperandi)/).+\\.js$'
-  //   "\\.pnp\\.[^\\/]+$"
-  ],
+  transformIgnorePatterns: ['node_modules/(?!@modusoperandi)'],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
@@ -201,7 +220,8 @@ export default {
 
   // Whether to use watchman for file crawling
   // watchman: true,
-
   // Default timeout of a test in milliseconds.
   testTimeout: 30000,
 };
+
+export default jestConfig;

@@ -7,14 +7,14 @@ import nullthrows from 'nullthrows';
 // https://github.com/que-etc/resize-observer-polyfill/blob/master/src/index.js.flow
 
 type ClientRectLikeReadOnly = {
-  +x: number,
-  +y: number,
-  +width: number,
-  +height: number,
-  +top: number,
-  +right: number,
-  +bottom: number,
-  +left: number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  top: number,
+  right: number,
+  bottom: number,
+  left: number,
 };
 
 type ResizeCallback = (r: ResizeObserverEntry) => void;
@@ -29,13 +29,13 @@ type Entries = $ReadOnlyArray<ResizeObserverEntry>;
 //   `ResizeObserver.unobserve(element)`
 
 export type ResizeObserverEntry = {
-  +target: Element,
-  +contentRect: ClientRectLikeReadOnly,
+  target: Element,
+  contentRect: ClientRectLikeReadOnly,
 };
 
 let instance: ?ResizeObserver = null;
 
-const nodesObserving: Map<Element, Array<ResizeCallback>> = new Map<any, any>();
+const nodesObserving: Map<Element, Array<ResizeCallback>> = new Map();
 
 function onResizeObserve(entries: Entries): void {
   entries.forEach(handleResizeObserverEntry);
