@@ -6,8 +6,8 @@ import convertToJSON from './convertToJSON.js';
 import CustomEditorView from './ui/CustomEditorView.js';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
-const commandsRegistery = new Map<any, any>();
-const viewsRegistery = new Map<any, any>();
+const commandsRegistery = new Map();
+const viewsRegistery = new Map();
 
 // This file exports methods to help developer to debug editor from web
 // inspector. To use this, add the following lines to export the utility.
