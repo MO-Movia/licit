@@ -118,7 +118,7 @@
     "prosemirror-tables": "^1.2.5",
     "query-string": "^6.13.1",
     "resize-observer-polyfill": "^1.5.1",
-    "smooth-scroll-into-view-if-needed": "^1.1.28",
+    "smooth-scroll-into-view-if-needed": "^2.0.2",
     "style-loader": "^3.3.3",
     "url": "^0.11.0",
     "webfontloader": "^1.6.28"
