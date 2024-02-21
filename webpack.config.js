@@ -1,12 +1,8 @@
 /*eslint-disable */
 
 import webpack from 'webpack';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import FlowWebpackPlugin from 'flow-webpack-plugin';
-import HtmlWebpackInlineSourcePlugin from 'html-webpack-inline-source-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
-import WriteFilePlugin from 'write-file-webpack-plugin';
 import path, {
   dirname
 } from 'path';
@@ -18,7 +14,6 @@ import {
 } from 'url';
 
 import env from './utils/env.js';
-import fileSystem from 'fs';
 const __filename = fileURLToPath(
   import.meta.url);
 const __dirname = dirname(__filename);
@@ -118,8 +113,6 @@ var options = {
       chunks: ['licit'],
       inlineSource: isDev ? '$^' : '.(js|css)$',
     }),
-    ...(isDev ? [new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)] : []),
-    new WriteFilePlugin(),
   ],
   performance: {
     assetFilter: function (assetFilename) {
