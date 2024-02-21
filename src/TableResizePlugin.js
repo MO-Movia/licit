@@ -39,7 +39,6 @@ import nullthrows from 'nullthrows';
 import {
   cellAround,
   pointsAtCell,
-  setCellAttr,
   tableNodeTypes,
   TableMap,
   TableView,
