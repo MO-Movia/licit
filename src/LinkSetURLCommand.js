@@ -43,15 +43,40 @@ class LinkSetURLCommand extends UICommand {
     return from < to;
   };
 
-  waitForUserInput = (
+  showTocList = async (view) => {
+    let storeTOCvalue = [];
+    let TOCselectedNode = [];
+
+    const stylePromise = view.styleRuntime;
+    const prototype = Object.getPrototypeOf(stylePromise);
+
+    const styles = await prototype.getStylesAsync();
+
+    storeTOCvalue = styles
+      .filter((style) => style.styles.toc === true)
+      .map((style) => style.styleName);
+
+    view.state.tr.doc.descendants((node, pos) => {
+      if (node.attrs.styleName) {
+        for (let i = 0; i <= storeTOCvalue.length; i++) {
+          if (storeTOCvalue[i] === node.attrs.styleName) {
+            TOCselectedNode.push({ node_: node, pos_: pos });
+          }
+        }
+      }
+    });
+    return TOCselectedNode;
+  };
+
+  waitForUserInput = async (
     state: EditorState,
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView,
     event: ?SyntheticEvent<>
   ): Promise<any> => {
-    if (this._popUp) {
-      return Promise.resolve(undefined);
-    }
+    // if (this._popUp) {
+    //   return Promise.resolve(undefined);
+    // }
 
     if (dispatch) {
       dispatch(showSelectionPlaceholder(state));
@@ -65,20 +90,23 @@ class LinkSetURLCommand extends UICommand {
     const { from, to } = selection;
     const result = findNodesWithSameMark(doc, from, to, markType);
     const href = result ? result.mark.attrs.href : null;
+    const tocItemsNode = await this.showTocList(view);
+    const viewPops = {
+      href_: href,
+      TOCselectedNode_: tocItemsNode,
+      view_: view,
+    };
+
     return new Promise((resolve) => {
-      this._popUp = createPopUp(
-        LinkURLEditor,
-        { href },
-        {
-          modal: true,
-          onClose: (val) => {
-            if (this._popUp) {
-              this._popUp = null;
-              resolve(val);
-            }
-          },
-        }
-      );
+      this._popUp = createPopUp(LinkURLEditor, viewPops, {
+        modal: true,
+        onClose: (val) => {
+          if (this._popUp) {
+            resolve(val);
+            this._popUp = null;
+          }
+        },
+      });
     });
   };
 
@@ -86,16 +114,23 @@ class LinkSetURLCommand extends UICommand {
     state: EditorState,
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView,
-    href: ?string
+    url: ?string
   ): boolean => {
     if (dispatch) {
       const { selection, schema } = state;
       let { tr } = state;
       tr = view ? hideSelectionPlaceholder(view.state) : tr;
       tr = tr.setSelection(selection);
-      if (href !== undefined) {
+      if (url !== undefined) {
+        if(url.includes('INNER______LINK')){
+          var selectionId = url.split('INNER______LINK')[0];
+          var href = url.split('INNER______LINK')[1];
+        }else{
+          var selectionId = null;
+          var href = url;
+        }
         const markType = schema.marks[MARK_LINK];
-        const attrs = href ? { href } : null;
+        const attrs = url ? { href, selectionId } : null;
         tr = applyMark(
           tr.setSelection(state.selection),
           schema,
@@ -108,10 +143,6 @@ class LinkSetURLCommand extends UICommand {
     view && view.focus();
     return true;
   };
-
-  cancel(): void {
-    return null;
-  }
 }
 
 export default LinkSetURLCommand;

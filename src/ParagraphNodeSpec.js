@@ -48,6 +48,9 @@ const ParagraphNodeSpec: NodeSpec = {
     paddingTop: {
       default: null,
     },
+    innerLink: {
+      default: null,
+    },
   },
   content: 'inline*',
   group: 'block',
@@ -83,6 +86,7 @@ function getAttrs(dom: HTMLElement): Object {
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
 
   const id = dom.getAttribute('id') || '';
+  const innerLink = dom.getAttribute('innerLink') || '';
   return {
     align,
     indent,
@@ -90,6 +94,7 @@ function getAttrs(dom: HTMLElement): Object {
     paddingTop,
     paddingBottom,
     id,
+    innerLink,
   };
 }
 
@@ -128,7 +133,7 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
 }
 
 function toDOM(node: Node): Array<any> {
-  const { indent, id } = node.attrs;
+  const { indent, id, innerLink } = node.attrs;
   const attrs = {};
   const { style } = getStyle(node.attrs);
 
@@ -140,7 +145,9 @@ function toDOM(node: Node): Array<any> {
   if (id) {
     attrs.id = id;
   }
-
+  if (innerLink) {
+    attrs.innerLink = innerLink;
+  }
   return ['p', attrs, 0];
 }
 
