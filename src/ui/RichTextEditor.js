@@ -55,7 +55,7 @@ class RichTextEditor extends React.PureComponent<any, any> {
       width,
     } = this.props;
 
-    let { editorState, runtime } = this.props;
+    let { editorState, runtime, styleRuntime } = this.props;
 
     editorState = editorState || createEmptyEditorState();
     runtime = runtime || EMPTY_EDITOR_RUNTIME;
@@ -88,6 +88,7 @@ class RichTextEditor extends React.PureComponent<any, any> {
           placeholder={placeholder}
           readOnly={readOnly}
           runtime={runtime}
+          styleRuntime={styleRuntime}
         />
         {children}
       </Frag>

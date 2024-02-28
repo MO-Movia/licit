@@ -66,10 +66,18 @@ export type EditorRuntime = {
   canLoadHTML?: () => boolean,
   loadHTML?: () => Promise<?string>,
 
+};
+export type StyleRuntime = {
 
+  saveStyle?: (style: Style) => Promise<Style[]>,
+  getStylesAsync?: () => Promise<Style[]>,
 
+  renameStyle?: (oldName: string, newName: string) => Promise<Style[]>,
+  removeStyle?: (styleName: string) => Promise<Style[]>,
 
-
+  fetchStyles?: () => Promise<Style[]>,
+  buildRoute?: (...path: string[]) => String,
+   
 };
 
 export type EditorState = any;

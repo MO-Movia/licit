@@ -13,6 +13,7 @@ import {
 import {
   preventEventDefault
 } from '@modusoperandi/licit-ui-commands';
+import uuid from '../uuid.js';
 
 import './czi-form.css';
 import './czi-image-url-editor.css';
