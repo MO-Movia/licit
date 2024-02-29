@@ -5,10 +5,7 @@ import ReactDOM from 'react-dom';
 
 import Licit, { DataType } from '../../src/client/Licit.js';
 import CustomLicitRuntime from './CustomLicitRuntime.js';
-import { PasteJSONPlugin } from '@modusoperandi/licit-paste-json';
-import CustomStyleRuntime from './CustomStyleRuntime.js';
-import { CustomstylePlugin } from '@modusoperandi/licit-custom-styles';
-import { MultimediaPlugin } from '@modusoperandi/licit-multimedia';
+
 function main(): void {
   const el = document.createElement('div');
   el.id = 'licit-app';
@@ -338,12 +335,8 @@ function main(): void {
   // To pass prosemirror plugins to editor pass it to plugins property which accept array of plugin object.
   // null means no custom plugins to pass
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
-  const styleRuntime = new CustomStyleRuntime();
-  const plugins = [
-    new PasteJSONPlugin(),
-    new CustomstylePlugin(styleRuntime),
-    new MultimediaPlugin(),
-  ];
+
+  const plugins = [];
   const runtime = new CustomLicitRuntime();
   ReactDOM.render(
     <Licit
@@ -359,7 +352,6 @@ function main(): void {
       plugins={plugins}
       runtime={runtime}
       width={'100vw'}
-      styleRuntime={styleRuntime}
     />,
     el
   );

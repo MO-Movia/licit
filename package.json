@@ -101,10 +101,6 @@
     "write-file-webpack-plugin": "^4.5.1"
   },
   "dependencies": {
-    "@modusoperandi/licit-custom-styles": "1.0.2",
-    "@modusoperandi/licit-multimedia": "1.0.2",
-    "@modusoperandi/licit-paste-json": "^1.0.0",
-    "@modusoperandi/licit-ui-commands": "1.0.0",
     "@cfaester/enzyme-adapter-react-18": "^0.7.1",
     "body-parser": "^1.19.0",
     "browserkeymap": "^2.0.2",
