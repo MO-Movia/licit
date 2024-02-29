@@ -37,7 +37,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
   componentDidMount() {
     const { selectionId } = this.state;
     let defaultTab = 'webpage';
-    if (selectionId) {      
+    if (selectionId) {
       defaultTab = 'innerlink';
     } else {
       defaultTab = 'webpage';
@@ -133,42 +133,51 @@ class LinkURLEditor extends React.PureComponent<any, any> {
               </div>
             </form>
           </div>
-
-          <div id="innerlink" className="tabcontent">
-            <form action="#">
-              <label>Select the Inner Link</label>
-              <br></br>
-              <select
-                name="toccontents"
-                id="toc"
-                size="3"
-                defaultValue={
-                  selectionId ? url : null
-                }
-              >
-                {TOCselectedNode_?.map((res, index) => (
-                  <option
-                    key={index}
-                    value={res.node_.textContent}
-                    onClick={() => {
-                      this.handleOptionChange(
-                        res.node_.textContent,
-                        res.pos_,
-                        view_
-                      );
-                    }}
-                  >
-                    {res.node_.textContent}
-                  </option>
-                ))}
-              </select>
-
-              <br></br>
+          {TOCselectedNode_.length === 0 ? (
+            <div id="innerlink" className="tabcontent">
+              <p>No TOC styles</p>
               <div className="czi-form-buttons">
                 <CustomButton label="Cancel" onClick={this._cancel} />
               </div>
-            </form>
-          </div>
+            </div>
+          ) : (
+
+            <div id="innerlink" className="tabcontent">
+              <form action="#">
+                <label>Select the Inner Link</label>
+                <br></br>
+                <select
+                  name="toccontents"
+                  id="toc"
+                  size="3"
+                  defaultValue={
+                    selectionId ? url : null
+                  }
+                >
+                  {TOCselectedNode_?.map((res, index) => (
+                    <option
+                      key={index}
+                      value={res.node_.textContent}
+                      onClick={() => {
+                        this.handleOptionChange(
+                          res.node_.textContent,
+                          res.pos_,
+                          view_
+                        );
+                      }}
+                    >
+                      {res.node_.textContent}
+                    </option>
+                  ))}
+                </select>
+
+                <br></br>
+                <div className="czi-form-buttons">
+                  <CustomButton label="Cancel" onClick={this._cancel} />
+                </div>
+              </form>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -180,7 +189,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     view: EditorView
   ) => {
     let tr = view.state.tr;
-      const TocNode = view.state.doc.nodeAt(tocNodePosition_);
+    const TocNode = view.state.doc.nodeAt(tocNodePosition_);
     if (TocNode && (TocNode.attrs.innerLink == null || TocNode.attrs.innerLink == "" || TocNode.attrs.innerLink == undefined)) {
 
       const nodeUUID = uuid();
