@@ -133,6 +133,9 @@ class LinkTooltipView {
     let TOCselectedNode = [];
 
     const stylePromise = view.styleRuntime;
+    if (stylePromise === null || undefined) {
+      return TOCselectedNode
+    } else {
     const prototype = Object.getPrototypeOf(stylePromise);
 
     const styles = await prototype.getStylesAsync();
@@ -150,6 +153,7 @@ class LinkTooltipView {
       }
     });
     return TOCselectedNode;
+  }
   };
 
   _onEdit = (view: EditorView): void => {

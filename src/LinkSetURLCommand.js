@@ -48,24 +48,29 @@ class LinkSetURLCommand extends UICommand {
     let TOCselectedNode = [];
 
     const stylePromise = view.styleRuntime;
-    const prototype = Object.getPrototypeOf(stylePromise);
 
-    const styles = await prototype.getStylesAsync();
+    if (stylePromise === null || undefined) {
+      return TOCselectedNode
+    } else {
 
-    storeTOCvalue = styles
-      .filter((style) => style.styles.toc === true)
-      .map((style) => style.styleName);
+      const prototype = Object.getPrototypeOf(stylePromise);
+      const styles = await prototype.getStylesAsync();
 
-    view.state.tr.doc.descendants((node, pos) => {
-      if (node.attrs.styleName) {
-        for (let i = 0; i <= storeTOCvalue.length; i++) {
-          if (storeTOCvalue[i] === node.attrs.styleName) {
-            TOCselectedNode.push({ node_: node, pos_: pos });
+      storeTOCvalue = styles
+        .filter((style) => style.styles.toc === true)
+        .map((style) => style.styleName);
+
+      view.state.tr.doc.descendants((node, pos) => {
+        if (node.attrs.styleName) {
+          for (let i = 0; i <= storeTOCvalue.length; i++) {
+            if (storeTOCvalue[i] === node.attrs.styleName) {
+              TOCselectedNode.push({ node_: node, pos_: pos });
+            }
           }
         }
-      }
-    });
-    return TOCselectedNode;
+      });
+      return TOCselectedNode;
+    }
   };
 
   waitForUserInput = async (
@@ -122,10 +127,10 @@ class LinkSetURLCommand extends UICommand {
       tr = view ? hideSelectionPlaceholder(view.state) : tr;
       tr = tr.setSelection(selection);
       if (url !== undefined) {
-        if(url.includes('INNER______LINK')){
+        if (url.includes('INNER______LINK')) {
           var selectionId = url.split('INNER______LINK')[0];
           var href = url.split('INNER______LINK')[1];
-        }else{
+        } else {
           var selectionId = null;
           var href = url;
         }
