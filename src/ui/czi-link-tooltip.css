@@ -70,19 +70,6 @@
   }
 }
 
-/* .czi-link-tooltip-toc {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  left: -150px;
-  pointer-events: none;
-   position: absolute; 
-  top: -70px;
-  width: 400px; 
-   width: 400px;
-  height: 400px; 
-} */
-
 .czi-link-tooltip-body-toc {
   background: #fff;
   border-radius: var(--czi-overlay-radius);

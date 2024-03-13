@@ -79,9 +79,6 @@ class LinkSetURLCommand extends UICommand {
     view: ?EditorView,
     event: ?SyntheticEvent<>
   ): Promise<any> => {
-    // if (this._popUp) {
-    //   return Promise.resolve(undefined);
-    // }
 
     if (dispatch) {
       dispatch(showSelectionPlaceholder(state));

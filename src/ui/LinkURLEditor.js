@@ -188,6 +188,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     tocNodePosition_,
     view: EditorView
   ) => {
+    const innerString = 'INNER______LINK';
     let tr = view.state.tr;
     const TocNode = view.state.doc.nodeAt(tocNodePosition_);
     if (TocNode && (TocNode.attrs.innerLink == null || TocNode.attrs.innerLink == "" || TocNode.attrs.innerLink == undefined)) {
@@ -198,9 +199,9 @@ class LinkURLEditor extends React.PureComponent<any, any> {
       const nodeconcat_UUID = texthash.concat(nodeUUID);
       nodeAttrs.innerLink = nodeconcat_UUID;
       tr.setNodeMarkup(tocNodePosition_, undefined, nodeAttrs);
-      var textContent = nodeconcat_UUID.concat('INNER______LINK', textContent_);
+      var textContent = nodeconcat_UUID.concat(innerString, textContent_);
     } else {
-      var textContent = TocNode.attrs.innerLink.concat('INNER______LINK', textContent_);
+      var textContent = TocNode.attrs.innerLink.concat(innerString, textContent_);
     }
     this.props.close(textContent);
   };
