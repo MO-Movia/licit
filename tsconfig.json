@@ -15,16 +15,22 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "types": [
-      "jest"
+      "jest",
+      "node"
     ],
     "jsx": "react",
+    // Ensure that .d.ts files are created by tsc, but not .js files
+    "declaration": true,
+    //"emitDeclarationOnly": true,
+    // Ensure that Babel can safely transpile files in the TypeScript project
+    "isolatedModules": true
   },
   "typeAcquisition": {
-    "enable": true
+    "enable": false
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.tsx",
+    "src/**/*.tsx"
   ],
   "exclude": [
     "node_modules",

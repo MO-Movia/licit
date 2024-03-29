@@ -1,0 +1,73 @@
+.czi-custom-menu-item.czi-custom-button {
+  border: none;
+  border-radius: 0;
+  display: block;
+  margin: 0;
+  padding-bottom: 8px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 8px;
+  height: 100%;
+}
+
+.czi-custom-menu-item.czi-custom-button:hover {
+  background-color: var(--czi-button-hover-background-color);
+}
+
+.czi-custom-menu-item-button.czi-custom-button {
+  border: none;
+  border-radius: 0;
+  height: 30px;
+  line-height: 28px;
+  padding-bottom: 0;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 0;
+  pointer-events: auto;
+  width: 44px;
+}
+
+.czi-horizontal-menu .czi-tooltip-surface .czi-custom-button {
+  box-sizing: border-box;
+  height: 35px;
+  width: 35px;
+  line-height: 28px;
+  padding-bottom: 0;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 0;
+  pointer-events: auto;
+}
+
+.czi-custom-menu-item.dark {
+  background-color: #444;
+}
+
+.czi-custom-menu-item.light {
+  background-color: #d8d6d6;
+}
+
+.czi-custom-menu-item-button.dark {
+  background-color: #444;
+}
+
+.czi-custom-menu-item-button.light {
+  /* background-color: #d8d6d6; */
+}
+
+/* [FS] IRAD-1044 2020-09-22
+To adjust the width of the custom style menu dropdown. */
+
+.custom-style-menu-item {
+  width: 250px;
+}
+
+.czi-custom-menu-item-separator {
+  /* background-color: var(--czi-button-hover-background-color);
+  height: 1px;
+  margin-bottom: 8px;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 8px; */
+  border: 1px solid #6e6e6e;
+}

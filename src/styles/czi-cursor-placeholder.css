@@ -1,0 +1,32 @@
+@import 'czi-vars.css';
+
+.czi-cursor-placeholder {
+  display: inline-block;
+  position: relative;
+  vertical-align: text-bottom;
+}
+
+.czi-cursor-placeholder::after {
+  animation-direction: alternate;
+  animation-duration: 0.5s;
+  animation-iteration-count: infinite;
+  animation-name: czi-cursor-blink;
+  animation-timing-function: ease-in-out;
+  background-color: var(--czi-selection-highlight-color-dark);
+  bottom: 0;
+  content: '';
+  height: 1.2em;
+  left: -1px;
+  position: absolute;
+  width: 3px;
+}
+
+@keyframes czi-cursor-blink {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}

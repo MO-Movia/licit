@@ -15,23 +15,20 @@ var webpack = require('webpack'),
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 var isDev = env.NODE_ENV === 'development' || 0;
-// isDev = false;
 
 var options = {
-  mode: 'production',
+  mode: env.NODE_ENV,
   entry: {
     licit: path.join(__dirname, 'licit', 'client', 'index.tsx'),
   },
   output: {
     path: path.join(__dirname, 'bin'),
-    filename: '[name].bundle.js'
+    filename: '[name].bundle.js',
   },
   devServer: {
     port: env.PORT,
-    contentBase: path.join(__dirname, 'bin'),
-    stats: {
-      colors: true
-    },
+    // static: path.join(__dirname, 'bin'),
+    static: __dirname,
     headers: { 'Access-Control-Allow-Origin': '*' },
     hot: true,
   },
@@ -41,59 +38,53 @@ var options = {
         test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        options: {
-        // https://stackoverflow.com/questions/51860043/javascript-es6-typeerror-class-constructor-client-cannot-be-invoked-without-ne
-        // ES6 classes are supported in any recent Node version, they shouldn't be transpiled. es2015 should be excluded from Babel configuration, it's preferable to use env preset set to node target.
-          presets: [['@babel/preset-env', { 'targets': { 'node': true } }], '@babel/preset-react'],
-          plugins: [
-            '@babel/plugin-proposal-class-properties',
-            '@babel/plugin-proposal-export-default-from',
-            [
-              '@babel/plugin-transform-runtime',
-              {
-                helpers: true,
-                regenerator: true,
-              },
-            ],
-            '@babel/plugin-proposal-object-rest-spread',
-            '@babel/plugin-syntax-dynamic-import',
-          ],
-        },
       },
       {
-        test: /\.(woff(2)?|ttf|otf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        test: /\.(woff(2)?|ttf|otf|eot)(\?v=\d+\.\d+\.\d+)?$/,
         use: [
           {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
-              outputPath: 'fonts/'
-            }
-          }
-        ]
+              outputPath: 'fonts/',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'images/',
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(scss|sass)$/,
-        use: ["style-loader", "css-loader"],
+        use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(jpe?g|png|gif|svg)$/i, 
-        loader: 'file-loader'
+        test: /\.(jpe?g|png|gif)$/i,
+        loader: 'file-loader',
       },
       {
         test: /\.html$/,
         loader: 'html-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
-    ]
+    ],
   },
   resolve: {
     alias: {},
-    extensions: ['.ts','.tsx','.js','.json']
+    extensions: ['.ts', '.tsx', '.js', '.json'],
   },
   plugins: [
     new webpack.ProvidePlugin({
@@ -104,28 +95,28 @@ var options = {
     new CleanWebpackPlugin(),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV)
+      'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV),
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'licit', 'index.html'),
       filename: 'index.html',
       chunks: ['licit'],
-      inlineSource: isDev ? '$^' : '.(ts|css)$'
+      inlineSource: isDev ? '$^' : '.(ts|css)$',
     }),
     new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
-    new WriteFilePlugin()
-  ]
+    new WriteFilePlugin(),
+  ],
 };
 
 if (isDev) {
   options.devtool = 'source-map';
 } else {
-// [FS] IRAD-1005 2020-07-10
-// Upgrade outdated packages.  
-  options.optimization =  {
+  // [FS] IRAD-1005 2020-07-10
+  // Upgrade outdated packages.
+  options.optimization = {
     minimize: true,
     minimizer: [new TerserPlugin()],
-  }
+  };
 }
 options.plugins.push(function () {
   this.hooks.done.tapAsync('done', function (stats, callback) {

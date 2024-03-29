@@ -10,3 +10,4 @@ src/coverage
 *.tgz
 coverage
 .scannerwork
+src/tests/__snapshots__

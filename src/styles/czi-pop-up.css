@@ -1,0 +1,32 @@
+@import "./czi-vars.css";
+
+.czi-pop-up-modal-mask,
+.czi-pop-up-element {
+  background-color: rgb(0 0 0 / 50%);
+  height: 100vh;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: 5000;
+}
+
+/* [FS] IRAD-1048 2020-10-07
+ To handle child dialog window  */
+.child-modal {
+  background-color: unset !important;
+  z-index: 100006 !important;
+}
+
+.czi-pop-up-element {
+  background-color: transparent;
+  height: auto;
+  width: auto;
+}
+
+.czi-pop-up-element a:link,
+.czi-pop-up-element a:visited,
+.czi-pop-up-element a:hover,
+.czi-pop-up-element a:active {
+  color: var(--czi-link-color);
+}
