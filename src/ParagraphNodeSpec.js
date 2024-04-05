@@ -48,6 +48,9 @@ const ParagraphNodeSpec: NodeSpec = {
     paddingTop: {
       default: null,
     },
+    overriddenAlign: {
+      default: null,
+    },
   },
   content: 'inline*',
   group: 'block',
@@ -83,12 +86,14 @@ function getAttrs(dom: HTMLElement): Object {
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
 
   const id = dom.getAttribute('id') || '';
+  const overriddenAlign = dom.getAttribute('overriddenAlign') || '';
   return {
     align,
     indent,
     lineSpacing,
     paddingTop,
     paddingBottom,
+    overriddenAlign,
     id,
   };
 }
@@ -128,7 +133,7 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
 }
 
 function toDOM(node: Node): Array<any> {
-  const { indent, id } = node.attrs;
+  const { indent, id, overriddenAlign } = node.attrs;
   const attrs = {};
   const { style } = getStyle(node.attrs);
 
@@ -141,6 +146,7 @@ function toDOM(node: Node): Array<any> {
     attrs.id = id;
   }
 
+  attrs.overriddenAlign = overriddenAlign;
   return ['p', attrs, 0];
 }
 
