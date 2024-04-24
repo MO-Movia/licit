@@ -132,7 +132,7 @@ class LinkTooltipView {
     let storeTOCvalue = [];
     let TOCselectedNode = [];
 
-    const stylePromise = view.styleRuntime;
+    const stylePromise = view.runtime;
     if (stylePromise === null || undefined) {
       return TOCselectedNode
     } else {
