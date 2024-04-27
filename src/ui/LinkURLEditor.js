@@ -17,6 +17,7 @@ import uuid from '../uuid.js';
 
 import './czi-form.css';
 import './czi-image-url-editor.css';
+import { EditorView } from 'prosemirror-view';
 
 const BAD_CHARACTER_PATTER = /\s/;
 
@@ -48,13 +49,13 @@ class LinkURLEditor extends React.PureComponent<any, any> {
   }
 
   openForm = (formName) => {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName('tabcontent');
+    let i;
+    const tabcontent = document.getElementsByClassName('tabcontent');
     for (i = 0; i < tabcontent.length; i++) {
       tabcontent[i].style.display = 'none';
     }
 
-    tablinks = document.getElementsByClassName('tablinks');
+    const tablinks = document.getElementsByClassName('tablinks');
     for (i = 0; i < tablinks.length; i++) {
       tablinks[i].classList.remove('active');
     }
@@ -73,7 +74,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    let { url, TOCselectedNode_, view_, selectionId } =
+    const { url, TOCselectedNode_, view_, selectionId } =
       this.state;
     const error = url ? BAD_CHARACTER_PATTER.test(url) : false;
 
@@ -189,19 +190,20 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     view: EditorView
   ) => {
     const innerString = 'INNER______LINK';
-    let tr = view.state.tr;
+    const tr = view.state.tr;
     const TocNode = view.state.doc.nodeAt(tocNodePosition_);
-    if (TocNode && (TocNode.attrs.innerLink == null || TocNode.attrs.innerLink == "" || TocNode.attrs.innerLink == undefined)) {
+    let textContent;
+    if (TocNode && (TocNode.attrs.innerLink == null || TocNode.attrs.innerLink == '' || TocNode.attrs.innerLink == undefined)) {
 
       const nodeUUID = uuid();
       const texthash = '#';
-      let nodeAttrs = TocNode.attrs;
+      const nodeAttrs = TocNode.attrs;
       const nodeconcat_UUID = texthash.concat(nodeUUID);
       nodeAttrs.innerLink = nodeconcat_UUID;
       tr.setNodeMarkup(tocNodePosition_, undefined, nodeAttrs);
-      var textContent = nodeconcat_UUID.concat(innerString, textContent_);
+      textContent = nodeconcat_UUID.concat(innerString, textContent_);
     } else {
-      var textContent = TocNode.attrs.innerLink.concat(innerString, textContent_);
+      textContent = TocNode.attrs.innerLink.concat(innerString, textContent_);
     }
     this.props.close(textContent);
   };
@@ -224,7 +226,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     this.props.close();
   };
 
-  _apply = (view: EditorView): void => {
+  _apply = (): void => {
     const { url } = this.state;
     if (url && !BAD_CHARACTER_PATTER.test(url)) {
       this.props.close(sanitizeURL(url));

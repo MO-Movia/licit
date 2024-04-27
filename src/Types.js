@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import { Style } from '@modusoperandi/licit-custom-styles';
 export type NodeSpec = {
   attrs?: ?{ [key: string]: any },
   content?: ?string,
@@ -77,7 +78,6 @@ export type StyleRuntime = {
 
   fetchStyles?: () => Promise<Style[]>,
   buildRoute?: (...path: string[]) => String,
-   
 };
 
 export type EditorState = any;

@@ -34,7 +34,6 @@ class LinkTooltip extends React.PureComponent<any, any> {
     } = this.props;
     // [FS] IRAD-1013 2020-07-09
     // Change button in "Apply Link" missing in LICIT.
-    const tocPosandEditerview = [editorView];
     return (
       <div className="czi-link-tooltip">
         <div className="czi-link-tooltip-body">
@@ -63,7 +62,7 @@ class LinkTooltip extends React.PureComponent<any, any> {
 
   jumpLink = (view: EditorView, tocItemPos, href, selectionId): void => {
     if (
-      selectionId ||  selectionId === 0 &&
+      selectionId || selectionId === 0 &&
       tocItemPos
     ) {
       this.jumpInnerLink(view, tocItemPos);

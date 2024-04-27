@@ -82,10 +82,7 @@ class LinkTooltipView {
       this.destroy();
       return;
     }
-   
-    let tocItemPos = this.getInnerlinkSelected_position(view, result.mark.attrs.selectionId);
-  
-
+    const tocItemPos = this.getInnerlinkSelected_position(view, result.mark.attrs.selectionId);
     const popup = this._popup;
     const viewPops = {
       editorState: state,
@@ -130,30 +127,30 @@ class LinkTooltipView {
 
   showTocList = async (view) => {
     let storeTOCvalue = [];
-    let TOCselectedNode = [];
+    const TOCselectedNode = [];
 
     const stylePromise = view.runtime;
     if (stylePromise === null || undefined) {
-      return TOCselectedNode
+      return TOCselectedNode;
     } else {
-    const prototype = Object.getPrototypeOf(stylePromise);
+      const prototype = Object.getPrototypeOf(stylePromise);
 
-    const styles = await prototype.getStylesAsync();
+      const styles = await prototype.getStylesAsync();
 
-    storeTOCvalue = styles
-      .filter((style) => style.styles.toc === true)
-      .map((style) => style.styleName);
-    view.state.tr.doc.descendants((node, pos) => {
-      if (node.attrs.styleName) {
-        for (let i = 0; i <= storeTOCvalue.length; i++) {
-          if (storeTOCvalue[i] === node.attrs.styleName) {
-            TOCselectedNode.push({ node_: node, pos_: pos });
+      storeTOCvalue = styles
+        .filter((style) => style.styles.toc === true)
+        .map((style) => style.styleName);
+      view.state.tr.doc.descendants((node, pos) => {
+        if (node.attrs.styleName) {
+          for (let i = 0; i <= storeTOCvalue.length; i++) {
+            if (storeTOCvalue[i] === node.attrs.styleName) {
+              TOCselectedNode.push({ node_: node, pos_: pos });
+            }
           }
         }
-      }
-    });
-    return TOCselectedNode;
-  }
+      });
+      return TOCselectedNode;
+    }
   };
 
   _onEdit = (view: EditorView): void => {
@@ -218,18 +215,19 @@ class LinkTooltipView {
             result.to.pos + 1
           );
           tr = tr.setSelection(linkSelection);
-
-          if(url === null){
-            var selectionId = null;
-              var href = null;
+          let selectionId;
+          let href;
+          if (url === null) {
+            selectionId = null;
+            href = null;
           }
-            else if(url.includes('INNER______LINK')){
-              var selectionId = url.split('INNER______LINK')[0];
-              var href = url.split('INNER______LINK')[1];
-            }else{
-              var selectionId = null;
-              var href = url;
-            }
+          else if (url.includes('INNER______LINK')) {
+            selectionId = url.split('INNER______LINK')[0];
+            href = url.split('INNER______LINK')[1];
+          } else {
+            selectionId = null;
+            href = url;
+          }
 
           const attrs = href ? { href, selectionId } : null;
           tr = applyMark(tr, schema, markType, attrs);

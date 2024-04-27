@@ -45,12 +45,12 @@ class LinkSetURLCommand extends UICommand {
 
   showTocList = async (view) => {
     let storeTOCvalue = [];
-    let TOCselectedNode = [];
+    const TOCselectedNode = [];
 
     const stylePromise = view.runtime;
 
     if (stylePromise === null || undefined) {
-      return TOCselectedNode
+      return TOCselectedNode;
     } else {
 
       const prototype = Object.getPrototypeOf(stylePromise);
@@ -124,12 +124,14 @@ class LinkSetURLCommand extends UICommand {
       tr = view ? hideSelectionPlaceholder(view.state) : tr;
       tr = tr.setSelection(selection);
       if (url !== undefined) {
+        let selectionId;
+        let href;
         if (url.includes('INNER______LINK')) {
-          var selectionId = url.split('INNER______LINK')[0];
-          var href = url.split('INNER______LINK')[1];
+          selectionId = url.split('INNER______LINK')[0];
+          href = url.split('INNER______LINK')[1];
         } else {
-          var selectionId = null;
-          var href = url;
+          selectionId = null;
+          href = url;
         }
         const markType = schema.marks[MARK_LINK];
         const attrs = url ? { href, selectionId } : null;
