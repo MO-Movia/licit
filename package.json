@@ -108,7 +108,7 @@
     "express": "^4.17.1",
     "flatted": "^3.1.0",
     "flow-typed": "^3.3.1",
-    "formidable": "^1.2.2",
+    "formidable": "^3.2.4",
     "invariant": "^2.2.4",
     "jquery": "^3.5.1",
     "katex": "^0.16.9",
