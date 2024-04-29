@@ -119,7 +119,7 @@
     "query-string": "^9.0.0",
     "resize-observer-polyfill": "^1.5.1",
     "smooth-scroll-into-view-if-needed": "^2.0.2",
-    "style-loader": "^3.3.3",
+    "style-loader": "^4.0.0",
     "url": "^0.11.0",
     "webfontloader": "^1.6.28"
   },
