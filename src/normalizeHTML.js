@@ -44,6 +44,8 @@ export default function normalizeHTML(html: string): string {
 
   // Convert every two consecutive "&nbsp;" into a spacer tab.
   html = html.replace(LONG_TAB_SPACE_PATTERN, TAB_SPACER_HTML);
+  // fix for jspdf copy paste text, from jspdf its always getting transparent
+  html = html.replace(/color:\s*transparent;/g, 'color: black;');
   const doc = toSafeHTMLDocument(html);
   if (doc) {
     // styles.
