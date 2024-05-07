@@ -19,6 +19,11 @@ export type MarkSpec = {
   toDOM: (node: any) => Array<any>,
 };
 
+export type RecentColor = {
+  id: number,
+  color: string
+};
+
 export type EditorProps = {
   // TODO: Fill the interface.
   // https://github.com/ProseMirror/prosemirror-view/blob/master/src/index.js
