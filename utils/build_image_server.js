@@ -1,6 +1,6 @@
 import webpack from 'webpack';
 import  { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import FlowWebpackPlugin from 'flow-webpack-plugin';
+//import FlowWebpackPlugin from 'flow-webpack-plugin';
 import WriteFilePlugin from 'write-file-webpack-plugin';
 
 import env from './env'; 
@@ -48,7 +48,7 @@ const config = {
   },
   plugins: [
     // type checker
-    ... (env.NODE_ENV === 'development') ? [new FlowWebpackPlugin()] : [],
+    // ... (env.NODE_ENV === 'development') ? [new FlowWebpackPlugin()] : [],
     // To take care of formidable.
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
     // clean the web folder
