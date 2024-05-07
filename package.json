@@ -102,7 +102,7 @@
   },
   "dependencies": {
     "@cfaester/enzyme-adapter-react-18": "^0.7.1",
-    "@modusoperandi/color-picker": "^1.0.0",
+    "@modusoperandi/color-picker": "^1.0.1",
     "body-parser": "^1.19.0",
     "browserkeymap": "^2.0.2",
     "cors": "^2.8.5",
@@ -120,7 +120,7 @@
     "query-string": "^9.0.0",
     "resize-observer-polyfill": "^1.5.1",
     "smooth-scroll-into-view-if-needed": "^2.0.2",
-    "style-loader": "^3.3.3",
+    "style-loader": "^4.0.0",
     "url": "^0.11.0",
     "webfontloader": "^1.6.28"
   },
