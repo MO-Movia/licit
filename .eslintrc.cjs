@@ -10,7 +10,7 @@ module.exports = {
   },
   plugins: ['react'],
   rules: {
-    'react/jsx-sort-props': 'off',
+    'react/jsx-sort-props': 'error',
     'react/jsx-uses-react': 'error',
     'react/jsx-uses-vars': 'error',
     'consistent-return': 'error',

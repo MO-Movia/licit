@@ -81,3 +81,5 @@ export type StyleRuntime = {
 };
 
 export type EditorState = any;
+
+export const INNER_LINK = 'INNER______LINK';

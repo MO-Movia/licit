@@ -26,6 +26,8 @@ import {
   createPopUp
 } from '@modusoperandi/licit-ui-commands';
 
+import {INNER_LINK} from './Types.js';
+
 class LinkSetURLCommand extends UICommand {
   _popUp = null;
 
@@ -51,26 +53,27 @@ class LinkSetURLCommand extends UICommand {
 
     if (stylePromise === null || undefined) {
       return TOCselectedNode;
-    } else {
-
-      const prototype = Object.getPrototypeOf(stylePromise);
-      const styles = await prototype.getStylesAsync();
-
-      storeTOCvalue = styles
-        .filter((style) => style.styles.toc === true)
-        .map((style) => style.styleName);
-
-      view.state.tr.doc.descendants((node, pos) => {
-        if (node.attrs.styleName) {
-          for (let i = 0; i <= storeTOCvalue.length; i++) {
-            if (storeTOCvalue[i] === node.attrs.styleName) {
-              TOCselectedNode.push({ node_: node, pos_: pos });
-            }
-          }
-        }
-      });
-      return TOCselectedNode;
     }
+
+    const prototype = Object.getPrototypeOf(stylePromise);
+    const styles = await prototype.getStylesAsync();
+
+
+    storeTOCvalue = styles
+      .filter((style) => style.styles.toc === true)
+      .map((style) => style.styleName);
+
+    view.state.tr.doc.descendants((node, pos) => {
+
+      if (storeTOCvalue.contains(node.attrs.styleName)) {
+        TOCselectedNode.push({ node_: node, pos_: pos });
+      }
+    });
+
+
+
+    return TOCselectedNode;
+
   };
 
   waitForUserInput = async (
@@ -126,9 +129,9 @@ class LinkSetURLCommand extends UICommand {
       if (url !== undefined) {
         let selectionId;
         let href;
-        if (url.includes('INNER______LINK')) {
-          selectionId = url.split('INNER______LINK')[0];
-          href = url.split('INNER______LINK')[1];
+        if (url.includes(INNER_LINK)) {
+          selectionId = url.split(INNER_LINK)[0];
+          href = url.split(INNER_LINK)[1];
         } else {
           selectionId = null;
           href = url;

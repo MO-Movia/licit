@@ -18,6 +18,7 @@ import uuid from '../uuid.js';
 import './czi-form.css';
 import './czi-image-url-editor.css';
 import { EditorView } from 'prosemirror-view';
+import { INNER_LINK } from '../Types.js';
 
 const BAD_CHARACTER_PATTER = /\s/;
 
@@ -107,7 +108,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
             </button>
           </div>
 
-          <div id="webpage" className="tabcontent">
+          <div className="tabcontent" id="webpage" >
             <form onSubmit={preventEventDefault}>
               <fieldset>
                 <label>Add a Link : </label>
@@ -135,7 +136,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
             </form>
           </div>
           {TOCselectedNode_.length === 0 ? (
-            <div id="innerlink" className="tabcontent">
+            <div className="tabcontent" id="innerlink" >
               <p>No TOC styles</p>
               <div className="czi-form-buttons">
                 <CustomButton label="Cancel" onClick={this._cancel} />
@@ -143,22 +144,21 @@ class LinkURLEditor extends React.PureComponent<any, any> {
             </div>
           ) : (
 
-            <div id="innerlink" className="tabcontent">
+            <div className="tabcontent" id="innerlink"   >
               <form action="#">
                 <label>Select the Inner Link</label>
                 <br></br>
                 <select
-                  name="toccontents"
-                  id="toc"
-                  size="3"
                   defaultValue={
                     selectionId ? url : null
                   }
+                  id="toc"
+                  name="toccontents"
+                  size="3"
                 >
                   {TOCselectedNode_?.map((res, index) => (
                     <option
                       key={index}
-                      value={res.node_.textContent}
                       onClick={() => {
                         this.handleOptionChange(
                           res.node_.textContent,
@@ -166,6 +166,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                           view_
                         );
                       }}
+                      value={res.node_.textContent}
                     >
                       {res.node_.textContent}
                     </option>
@@ -189,7 +190,6 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     tocNodePosition_,
     view: EditorView
   ) => {
-    const innerString = 'INNER______LINK';
     const tr = view.state.tr;
     const TocNode = view.state.doc.nodeAt(tocNodePosition_);
     let textContent;
@@ -201,9 +201,9 @@ class LinkURLEditor extends React.PureComponent<any, any> {
       const nodeconcat_UUID = texthash.concat(nodeUUID);
       nodeAttrs.innerLink = nodeconcat_UUID;
       tr.setNodeMarkup(tocNodePosition_, undefined, nodeAttrs);
-      textContent = nodeconcat_UUID.concat(innerString, textContent_);
+      textContent = nodeconcat_UUID.concat(INNER_LINK, textContent_);
     } else {
-      textContent = TocNode.attrs.innerLink.concat(innerString, textContent_);
+      textContent = TocNode.attrs.innerLink.concat(INNER_LINK, textContent_);
     }
     this.props.close(textContent);
   };
