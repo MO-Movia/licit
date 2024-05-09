@@ -193,8 +193,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     const tr = view.state.tr;
     const TocNode = view.state.doc.nodeAt(tocNodePosition_);
     let textContent;
-    if (TocNode && (TocNode.attrs.innerLink == null || TocNode.attrs.innerLink == '' || TocNode.attrs.innerLink == undefined)) {
-
+    if (!TocNode?.attrs?.innerLink) {
       const nodeUUID = uuid();
       const texthash = '#';
       const nodeAttrs = TocNode.attrs;
