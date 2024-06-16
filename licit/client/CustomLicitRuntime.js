@@ -4,7 +4,6 @@
 // To  run  editor directly:
 import type { ImageLike } from '../../src/Types.js';
 import { POST, GET, DELETE, PATCH } from '../../src/client/http.js';
-import type { Style } from '@modusoperandi/licit-customstyles';
 
 
 const STYLES_URI = 'http://greathints.com:3000';
@@ -18,6 +17,17 @@ const TYPE_JSON = 'application/json; charset=utf-8';
  */
 
 // const GLOSSARY_URI = 'http://greathints.com:3003';
+
+type Style = {
+  /**
+   * Name of the style. Case insensitive value must be unique.
+   */
+  styleName: string; // Style name to display
+  mode?: number; // For Style Editor UI behaviour //0 = new , 1- modify, 2- rename, 3- editall
+  description?: string; // style description
+  styles?: HTMLStyles;
+  docType?: string
+};
 
 type Glossary = {
   id: string,
