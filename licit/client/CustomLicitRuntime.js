@@ -2,7 +2,7 @@
 
 // This implements the interface of `EditorRuntime`.
 // To  run  editor directly:
-import type { ImageLike } from '../../src/Types.js';
+import type { ImageLike, RecentColor } from '../../src/Types.js';
 import { POST, GET, DELETE, PATCH } from '../../src/client/http.js';
 
 
@@ -452,5 +452,102 @@ class CustomLicitRuntime {
   buildRoute(...path: string[]) {
     return [STYLES_URI, ...path].join('/');
   }
+  getRecentColors(): Promise<RecentColor[]> {
+    const apiUrl =
+      window.location.protocol +
+      '//' +
+      window.location.hostname +
+      ':3004/getrecentcolors';
+    // const apiUrl = 'http://88.99.193.94:3004/getrecentcolors'
+    const requestOptions = {
+      method: 'GET'
+    };
+
+    return new Promise((resolve, reject) => {
+      fetch(apiUrl, requestOptions)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          resolve(data); // Resolve with the response data
+        })
+        .catch(error => {
+          resolve([]);
+          // reject(error); // Reject with the error
+        });
+    });
+  }
+
+  saveRecentColor(colorValue: any): Promise<RecentColor> {
+
+    const apiUrl =
+      window.location.protocol +
+      '//' +
+      window.location.hostname +
+      ':3004/saverecentcolor';
+    // const apiUrl = 'http://88.99.193.94:3004/saverecentcolor'
+    // Fetch options
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify(colorValue)
+    };
+
+    // Return a Promise for the API call
+    return new Promise((resolve, reject) => {
+      fetch(apiUrl, requestOptions)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(data.message); // JSON data saved successfully
+          // Handle the response data as needed
+          resolve(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Handle errors
+          // reject(error);
+          resolve(undefined);
+        });
+    });
+  }
+
+  deleteRecentColorById(id: string): Promise<void> {
+
+    const apiUrl =
+      window.location.protocol +
+      '//' +
+      window.location.hostname +
+      ':3004/deleterecentcolor/';
+    // const apiUrl = 'http://88.99.193.94:3004/deleterecentcolor'
+    return new Promise((resolve, reject) => {
+      try {
+        const response = fetch(`${apiUrl}${id}`, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          const responseData = response.json();
+          resolve(responseData.message);
+        } else {
+          resolve(undefined);
+        }
+      } catch (error) {
+        resolve(undefined);
+      }
+    });
+  }
+
+
+
 }
 export default CustomLicitRuntime;

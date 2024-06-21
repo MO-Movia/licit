@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 
 import Licit, { DataType } from '../../src/client/Licit.js';
 import CustomLicitRuntime from './CustomLicitRuntime.js';
+import { setRuntime } from '@modusoperandi/licit-ui-commands';
 
 function main(): void {
   const el = document.createElement('div');
@@ -338,6 +339,7 @@ function main(): void {
 
   const plugins = [];
   const runtime = new CustomLicitRuntime();
+  setRuntime(runtime);
   ReactDOM.render(
     <Licit
       collabServiceURL={'http://localhost:3002'}
