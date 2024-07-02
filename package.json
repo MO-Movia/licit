@@ -120,7 +120,6 @@
     "jquery": "^3.5.1",
     "katex": "^0.16.9",
     "node-mathquill": "^0.10.2",
-    "query-string": "^9.0.0",
     "resize-observer-polyfill": "^1.5.1",
     "smooth-scroll-into-view-if-needed": "^2.0.2",
     "style-loader": "^4.0.0",
