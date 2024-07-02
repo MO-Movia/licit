@@ -634,6 +634,27 @@ class Licit extends React.Component<any, any> {
     });
   };
 
+  exportJSON = () => {
+    new Promise(async (resolve, reject) => {
+      try {
+        if (Array.isArray(this.props.plugins)) {
+          this.props.plugins.forEach((plugin) => {
+            if (plugin['key'].startsWith('RichCopyEmbedImagePlugin$')) {
+              resolve(plugin);
+            }
+          });
+        }
+      } catch (error) {
+        reject();
+      }
+    }).then((exportJSON) => {
+      if (exportJSON.perform) {
+        exportJSON.perform(this._editorView);
+      }
+    });
+  };
+
+
   goToEnd = (): void => {
     // Return focus to the editor with cursor at end of document.
     const view: EditorView = this.editorView;
