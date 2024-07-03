@@ -1,7 +1,6 @@
 // @flow
 
 import * as React from 'react';
-import { Style } from '@modusoperandi/licit-custom-styles';
 export type NodeSpec = {
   attrs?: ?{ [key: string]: any },
   content?: ?string,
@@ -73,18 +72,6 @@ export type EditorRuntime = {
   loadHTML?: () => Promise<?string>,
 
 };
-export type StyleRuntime = {
-
-  saveStyle?: (style: Style) => Promise<Style[]>,
-  getStylesAsync?: () => Promise<Style[]>,
-
-  renameStyle?: (oldName: string, newName: string) => Promise<Style[]>,
-  removeStyle?: (styleName: string) => Promise<Style[]>,
-
-  fetchStyles?: () => Promise<Style[]>,
-  buildRoute?: (...path: string[]) => String,
-};
-
 export type EditorState = any;
 
 export const INNER_LINK = 'INNER______LINK';

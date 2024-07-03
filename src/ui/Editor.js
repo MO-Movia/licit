@@ -32,7 +32,7 @@ import handleEditorKeyDown from './handleEditorKeyDown.js';
 import handleEditorPaste from './handleEditorPaste.js';
 import uuid from './uuid.js';
 import './czi-editor.css';
-import type { EditorRuntime, StyleRuntime } from '../Types.js';
+import type { EditorRuntime } from '../Types.js';
 
 export type EditorProps = {
   autoFocus?: ?boolean,
@@ -48,7 +48,6 @@ export type EditorProps = {
   placeholder?: ?(string | React.Element<any>),
   readOnly?: ?boolean,
   runtime?: ?EditorRuntime,
-  styleRuntime?: ?StyleRuntime,
   transformPastedHTML?: (html: string) => string,
 };
 
@@ -129,7 +128,6 @@ class Editor extends React.PureComponent<any, any> {
       editorState,
       readOnly,
       runtime,
-      styleRuntime,
       placeholder,
       disabled,
       dispatchTransaction,
@@ -167,7 +165,6 @@ class Editor extends React.PureComponent<any, any> {
       }));
 
       view.runtime = runtime;
-      view.styleRuntime = styleRuntime;
       view.placeholder = placeholder;
       view.readOnly = !!readOnly;
       view.disabled = !!disabled;
@@ -203,7 +200,6 @@ class Editor extends React.PureComponent<any, any> {
 
       const {
         runtime,
-        styleRuntime,
         editorState,
         placeholder,
         readOnly,
@@ -211,7 +207,6 @@ class Editor extends React.PureComponent<any, any> {
       } = this.props;
       const { isPrinting } = this.state;
       const state = editorState || EDITOR_EMPTY_STATE;
-      view.styleRuntime = styleRuntime;
       view.runtime = runtime;
       view.placeholder = placeholder;
       view.readOnly = !!readOnly || isPrinting;

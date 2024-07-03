@@ -108,7 +108,6 @@ class Licit extends React.Component<any, any> {
     // [FS] 2020-07-03
     // Handle Image Upload from Angular App
     const runtime = props.runtime || null;
-    const styleRuntime = props.styleRuntime || null;
     const plugins = props.plugins || null;
     // This flag decides whether DataType.HTML check is needed when
     // changing document. If it forcefully done, it is not needed, otherwise needed.
@@ -161,7 +160,6 @@ class Licit extends React.Component<any, any> {
       disabled,
       embedded,
       runtime,
-      styleRuntime,
       dataType,
     };
 
@@ -469,7 +467,6 @@ class Licit extends React.Component<any, any> {
       disabled,
       embedded,
       runtime,
-      styleRuntime,
     } = this.state;
     // [FS] IRAD-978 2020-06-05
     // Using 100vw & 100vh (100% viewport) is not ideal for a component which is expected to be a part of a page,
@@ -484,7 +481,6 @@ class Licit extends React.Component<any, any> {
         onReady={this._onReady}
         readOnly={readOnly}
         runtime={runtime}
-        styleRuntime={styleRuntime}
         width={width}
       />
     );

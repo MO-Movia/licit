@@ -26,7 +26,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
   static propTypes = {
     href: PropTypes.string,
     close: PropTypes.func.isRequired,
-    selectedTab: this.state.selectedTab,
+    selectedTab: this.state?.selectedTab,
   };
 
   state = {
