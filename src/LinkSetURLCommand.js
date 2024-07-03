@@ -65,8 +65,12 @@ class LinkSetURLCommand extends UICommand {
 
     view.state.tr.doc.descendants((node, pos) => {
 
-      if (storeTOCvalue.contains(node.attrs.styleName)) {
-        TOCselectedNode.push({ node_: node, pos_: pos });
+      if (node.attrs.styleName) {
+        for (let i = 0; i <= storeTOCvalue.length; i++) {
+          if (storeTOCvalue[i] === node.attrs.styleName) {
+            TOCselectedNode.push({ node_: node, pos_: pos });
+          }
+        }
       }
     });
 
