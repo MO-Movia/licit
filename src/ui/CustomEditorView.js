@@ -5,6 +5,7 @@ import * as React from 'react';
 
 import type { DirectEditorProps, EditorRuntime } from '../Types.js';
 
+
 // https://github.com/ProseMirror/prosemirror-view/blob/master/src/index.js
 class CustomEditorView extends EditorView {
   disabled: boolean;

@@ -1,7 +1,5 @@
 // @flow
 
-// import Keymap from 'browserkeymap';
-
 import browser from './browser.js';
 
 import {

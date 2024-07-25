@@ -71,10 +71,7 @@ export type EditorRuntime = {
   canLoadHTML?: () => boolean,
   loadHTML?: () => Promise<?string>,
 
-
-
-
-
 };
-
 export type EditorState = any;
+
+export const INNER_LINK = 'INNER______LINK';

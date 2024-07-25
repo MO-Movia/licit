@@ -81,7 +81,7 @@ class Licit extends React.Component<any, any> {
     this._editorView = null;
     this._skipSCU = true;
 
-    const noop = function () {};
+    const noop = function () { };
 
     // [FS] IRAD-981 2020-06-10
     // Component's configurations.
@@ -128,17 +128,17 @@ class Licit extends React.Component<any, any> {
     const setState = this.setState.bind(this);
     this._connector = collaborative
       ? new CollabConnector(
-          editorState,
-          setState,
-          {
-            docID,
-            collabServiceURL,
-          },
-          this._defaultEditorSchema,
-          this._defaultEditorPlugins,
-          // [FS] IRAD-1578 2021-09-27
-          this.onReady.bind(this)
-        )
+        editorState,
+        setState,
+        {
+          docID,
+          collabServiceURL,
+        },
+        this._defaultEditorSchema,
+        this._defaultEditorPlugins,
+        // [FS] IRAD-1578 2021-09-27
+        this.onReady.bind(this)
+      )
       : new SimpleConnector(editorState, setState);
 
     this._connector._dataDefined = !!props.data;
@@ -437,17 +437,17 @@ class Licit extends React.Component<any, any> {
     // create new connector
     this._connector = collabEditing
       ? new CollabConnector(
-          editorState,
-          setState,
-          {
-            docID,
-            collabServiceURL,
-          },
-          this._defaultEditorSchema,
-          this._defaultEditorPlugins,
-          // [FS] IRAD-1578 2021-09-27
-          this.onReady.bind(this)
-        )
+        editorState,
+        setState,
+        {
+          docID,
+          collabServiceURL,
+        },
+        this._defaultEditorSchema,
+        this._defaultEditorPlugins,
+        // [FS] IRAD-1578 2021-09-27
+        this.onReady.bind(this)
+      )
       : new SimpleConnector(editorState, setState);
 
     // FS IRAD-1592 2021-11-10
@@ -606,28 +606,6 @@ class Licit extends React.Component<any, any> {
     // so that content is modified gracefully using transaction so that undo/redo works too.
     this._skipSCU = false;
     this.setState(props);
-  };
-
-  exportPDF = () => {
-    new Promise(async (resolve, reject) => {
-      try {
-        //
-        if (Array.isArray(this.props.plugins)) {
-          this.props.plugins.forEach((plugin) => {
-            if (plugin['key'].startsWith('exportPDF$')) {
-              // got the exportPDF instance.
-              resolve(plugin);
-            }
-          });
-        }
-      } catch (error) {
-        reject();
-      }
-    }).then((exportPDF) => {
-      if (exportPDF.perform) {
-        exportPDF.perform(this._editorView);
-      }
-    });
   };
 
   goToEnd = (): void => {
