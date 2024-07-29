@@ -56,7 +56,7 @@ class LinkSetURLCommand extends UICommand {
     }
 
     const prototype = Object.getPrototypeOf(stylePromise);
-    const styles = await prototype.getStylesAsync();
+    const styles = await prototype.fetchStyles();
 
 
     storeTOCvalue = styles

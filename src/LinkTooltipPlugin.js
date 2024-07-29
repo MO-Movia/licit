@@ -135,7 +135,7 @@ class LinkTooltipView {
     } else {
       const prototype = Object.getPrototypeOf(stylePromise);
 
-      const styles = await prototype.getStylesAsync();
+      const styles = await prototype.fetchStyles();
 
       storeTOCvalue = styles
         .filter((style) => style.styles.toc === true)
