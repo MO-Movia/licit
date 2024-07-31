@@ -40,13 +40,13 @@ class LinkTooltip extends React.PureComponent<any, any> {
           <div className="czi-link-tooltip-row">
             <CustomButton
               className="czi-link-tooltip-href"
-              label={href}
+              label={tocItemPos_ ? tocItemPos_.textContent : href}
               onClick={() =>
-                this.jumpLink(editorView, tocItemPos_, href, selectionId_)
+                this.jumpLink(editorView, tocItemPos_?.position, href, selectionId_)
               }
               target="new"
-              title={href}
-              value={href}
+              title={tocItemPos_ ? tocItemPos_.textContent : href}
+              value={tocItemPos_ ? tocItemPos_.textContent : href}
             />
             <CustomButton label="Change" onClick={onEdit} value={editorView} />
             <CustomButton

@@ -119,7 +119,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                   placeholder="Paste a URL"
                   spellCheck={false}
                   type="text"
-                  value={selectionId === null ? url || '' : null}
+                  value={selectionId ? null : url}
                 />
               </fieldset>
               <div className="czi-form-buttons">

@@ -13,7 +13,7 @@ import LinkTooltip from './ui/LinkTooltip.js';
 import LinkURLEditor from './ui/LinkURLEditor.js';
 import { atAnchorTopCenter } from '@modusoperandi/licit-ui-commands';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
-import {INNER_LINK} from './Types.js';
+import { INNER_LINK } from './Types.js';
 
 import '@modusoperandi/licit-ui-commands/ui/czi-pop-up.css';
 
@@ -43,13 +43,14 @@ class LinkTooltipView {
   }
 
   getInnerlinkSelected_position(view: EditorView, selectionId): void {
-    let tocItemPos;
-    view.state.tr.doc.descendants((node, pos) => {
-      if (node.attrs.styleName && (node.attrs.innerLink === selectionId)) {
-        tocItemPos = pos;
-      }
-
-    });
+    let tocItemPos = null;
+    if (selectionId) {
+      view.state.tr.doc.descendants((node, pos) => {
+        if (node.attrs.styleName && (node.attrs.innerLink === selectionId)) {
+          tocItemPos = { position: pos, textContent: node.textContent };;
+        }
+      });
+    }
     return tocItemPos;
   }
 
