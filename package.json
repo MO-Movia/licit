@@ -124,7 +124,8 @@
     "smooth-scroll-into-view-if-needed": "^2.0.2",
     "style-loader": "^4.0.0",
     "url": "^0.11.0",
-    "webfontloader": "^1.6.28"
+    "webfontloader": "^1.6.28",
+    "react-tooltip": "^5.27.1"
   },
   "peerDependencies": {
     "@modusoperandi/licit-ui-commands": "^1.0.0",
