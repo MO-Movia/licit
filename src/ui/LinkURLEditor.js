@@ -79,6 +79,19 @@ class LinkURLEditor extends React.PureComponent<any, any> {
   render(): React.Element<any> {
     const { url, TOCselectedNode_, view_, selectionId } =
       this.state;
+
+    const isTOCValid = () => {
+      if (!TOCselectedNode_ || TOCselectedNode_.length === 0) {
+        return false;
+      }
+
+      return TOCselectedNode_.some(
+        item => item.node_ && item.node_.textContent.trim() !== ""
+      );
+    };
+    const isValid = isTOCValid();
+    console.log("isTOCValid:", isValid);
+   
     const error = url ? BAD_CHARACTER_PATTER.test(url) : false;
 
     let label = 'Apply';
@@ -92,7 +105,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
 
     return (
       <div className="czi-image-url-editor">
-        <div className="czi-form" style={{display:'flex', padding:'10px'}}>
+        <div className="czi-form" style={{ display: 'flex', padding: '10px' }}>
           <div className="tab">
             <button
               className="tablinks"
@@ -137,7 +150,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
               </div>
             </form>
           </div>
-          {TOCselectedNode_.length === 0 ? (
+          {!isValid ? (
             <div className="tabcontent" id="innerlink" >
               <p>No TOC styles</p>
               <div className="czi-form-buttons">
@@ -152,13 +165,13 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                 <br></br>
                 <select
                   defaultValue={
-                    selectionId ? url : null
+                    TOCselectedNode_.some(res => res.node_.textContent === url) ? url : null
                   }
                   id="toc"
                   name="toccontents"
                   size="3"
                 >
-                  {TOCselectedNode_?.map((res, index) => (
+                  {TOCselectedNode_?.filter(res => res.node_.textContent.trim() !== "").map((res, index) => (
                     <option
                       key={index}
                       onClick={() => {

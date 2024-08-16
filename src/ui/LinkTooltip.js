@@ -30,30 +30,37 @@ class LinkTooltip extends React.PureComponent<any, any> {
       onEdit,
       onRemove,
       tocItemPos_,
-      selectionId_
+      selectionId_,
     } = this.props;
-    // [FS] IRAD-1013 2020-07-09
-    // Change button in "Apply Link" missing in LICIT.
+
+    const getLabel = () => {
+      if (tocItemPos_) {
+        return tocItemPos_.textContent === "" ? "Reference not found" : tocItemPos_.textContent;
+      }
+      return href;
+    };
+
+    const label = getLabel();
+    const isRemoved = label === "Reference not found";
+
     return (
       <div className="czi-link-tooltip">
         <div className="czi-link-tooltip-body">
           <div className="czi-link-tooltip-row">
             <CustomButton
-              className="czi-link-tooltip-href"
-              label={tocItemPos_ ? tocItemPos_.textContent : href}
-              onClick={() =>
+              className={`czi-link-tooltip-href ${isRemoved ? 'red-text disabled' : ''}`}
+              label={label}
+              onClick={!isRemoved ? () =>
                 this.jumpLink(editorView, tocItemPos_?.position, href, selectionId_)
+                : undefined
               }
               target="new"
-              title={tocItemPos_ ? tocItemPos_.textContent : href}
-              value={tocItemPos_ ? tocItemPos_.textContent : href}
+              title={label}
+              value={label}
+              style={{ color: isRemoved ? 'red' : undefined }}
             />
             <CustomButton label="Change" onClick={onEdit} value={editorView} />
-            <CustomButton
-              label="Remove"
-              onClick={onRemove}
-              value={editorView}
-            />
+            <CustomButton label="Remove" onClick={onRemove} value={editorView} />
           </div>
         </div>
       </div>
@@ -62,7 +69,7 @@ class LinkTooltip extends React.PureComponent<any, any> {
 
   jumpLink = (view: EditorView, tocItemPos, href, selectionId): void => {
     if (
-      selectionId || selectionId === 0 &&
+      (selectionId || selectionId === 0) &&
       tocItemPos
     ) {
       this.jumpInnerLink(view, tocItemPos);
@@ -103,3 +110,5 @@ class LinkTooltip extends React.PureComponent<any, any> {
 }
 
 export default LinkTooltip;
+
+
