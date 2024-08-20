@@ -69,8 +69,8 @@ class LinkTooltip extends React.PureComponent<any, any> {
 
   jumpLink = (view: EditorView, tocItemPos, href, selectionId): void => {
     if (
-      (selectionId || selectionId === 0) &&
-      tocItemPos
+      (selectionId !== undefined && selectionId !== null) &&
+      (tocItemPos !== undefined && tocItemPos !== null)
     ) {
       this.jumpInnerLink(view, tocItemPos);
     } else {
