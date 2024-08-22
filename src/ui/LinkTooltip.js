@@ -34,8 +34,10 @@ class LinkTooltip extends React.PureComponent<any, any> {
     } = this.props;
 
     const getLabel = () => {
-      if (tocItemPos_) {
+      if (tocItemPos_ && selectionId_) {
         return tocItemPos_.textContent === "" ? "Reference not found" : tocItemPos_.textContent;
+      }else if(!tocItemPos_ && selectionId_){
+        return "Reference not found"
       }
       return href;
     };
