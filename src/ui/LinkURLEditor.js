@@ -105,7 +105,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
 
     return (
       <div className="czi-image-url-editor">
-        <div className="czi-form" style={{ display: 'flex', padding: '10px' }}>
+        <div className="tab-container">
           <div className="tab">
             <button
               className="tablinks"

@@ -15,6 +15,17 @@
   max-width: 400px;
   margin-top: -5px;
 }
+.tab-container{
+  background: #fff;
+  border: none;
+  font-family: var(--czi-font-family);
+  font-size: var(--czi-font-size);
+  margin: 0;
+  padding: 10px;
+  color: black;
+  height: auto !important;
+  display: flex;
+}
 
 .czi-form legend {
   border: none;
