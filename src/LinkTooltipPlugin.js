@@ -155,6 +155,7 @@ class LinkTooltipView {
   };
 
   _onEdit = (view: EditorView): void => {
+    this._popup.close();
     if (this._editor) {
       return;
     }
@@ -188,6 +189,7 @@ class LinkTooltipView {
   };
 
   _onRemove = (view: EditorView): void => {
+    this._popup.close();
     this._onEditEnd(view, view.state.selection, null);
   };
 
