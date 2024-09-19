@@ -366,9 +366,6 @@ class Licit extends React.Component<any, any> {
     // Reset lastKeyCode since the content is set dynamically and so lastKeyCode is invalid now.
     this._editorView.lastKeyCode = null;
 
-    const selection = TextSelection.create(doc, 0, doc.content.size);
-
-    tr = tr.setSelection(selection).replaceSelectionWith(document, false);
     // [FS] IRAD-1092 2020-12-03
     // set the value for object metadata  and objectId
     // Should update all document attributes.
