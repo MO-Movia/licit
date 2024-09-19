@@ -123,7 +123,7 @@
   box-shadow: unset;
   min-height: unset;
   padding: unset;
-  width: unset;
+  width: 78vw;
 }
 
 @media only print {
