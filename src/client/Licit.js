@@ -102,6 +102,9 @@ class Licit extends React.Component<any, any> {
       typeof props.onReady === 'function' ? props.onReady : noop;
     const readOnly = props.readOnly || false;
     let data = props.data || null;
+    if(data){
+     data = this.insertTextNodes(data);
+    }
     const dataType = props.dataType || DataType.JSON;
     const disabled = props.disabled || false;
     const embedded = props.embedded || false; // [FS] IRAD-996 2020-06-30
@@ -615,6 +618,26 @@ class Licit extends React.Component<any, any> {
     view.dispatch(tr.setSelection(TextSelection.atEnd(view.state.doc)).scrollIntoView());
     view.focus();
   };
+  //To insert empty text property for content without text attribute
+  insertTextNodes = (docJson) => {
+    // Create a deep copy of docJson to avoid modifying the original object
+    const deepCopy = JSON.parse(JSON.stringify(docJson));
+
+    deepCopy.content.forEach((node) => {
+        if (node.content) {
+            node.content = node.content.map((content) => {
+                if (content.type === 'text' && !Object.hasOwn(content, 'text')) {
+                    // Return a new object with the 'text' property added
+                    return { ...content, text: " " };
+                }
+                // Return the original content if no modification is needed
+                return content;
+            });
+        }
+    });
+
+    return deepCopy; // Return the modified deep copy
+}
 
 }
 
