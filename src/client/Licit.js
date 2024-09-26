@@ -618,27 +618,38 @@ class Licit extends React.Component<any, any> {
     view.dispatch(tr.setSelection(TextSelection.atEnd(view.state.doc)).scrollIntoView());
     view.focus();
   };
-  //To insert empty text property for content without text attribute
+  
   insertTextNodes = (docJson) => {
-    // Create a deep copy of docJson to avoid modifying the original object
-    const deepCopy = JSON.parse(JSON.stringify(docJson));
+    // Clone the input JSON: parse if it's a string, otherwise use structuredClone
+    const clonedJSON = (typeof docJson === 'string') 
+        ? JSON.parse(docJson) 
+        : window.structuredClone(docJson);
 
-    deepCopy.content.forEach((node) => {
-        if (node.content) {
-            node.content = node.content.map((content) => {
-                if (content.type === 'text' && !Object.hasOwn(content, 'text')) {
-                    // Return a new object with the 'text' property added
-                    return { ...content, text: " " };
-                }
-                // Return the original content if no modification is needed
-                return content;
-            });
-        }
-    });
+    // Recursive function to process each node's content
+    const processNodeContent = (node) => {
+      if (!node.content) {
+          return;
+      }
+  
+      node.content = node.content.map((content) => {
+          if (content.type === 'text' && !Object.hasOwn(content, 'text')) {
+              return { ...content, text: " " };
+          }
+  
+          if (content.content && Array.isArray(content.content)) {
+              processNodeContent(content);
+          }
+  
+          return content;
+      });
+  };
+  
 
-    return deepCopy; // Return the modified deep copy
-}
+    // Start processing from the top-level nodes
+    clonedJSON.content.forEach(processNodeContent);
 
+    return clonedJSON; // Return the modified deep copy
+};
 }
 
 export default Licit;
