@@ -72,7 +72,7 @@
     "eslint-plugin-react": "^7.33.2",
     "exports-loader": "^5.0.0",
     "file-loader": "^6.2.0",
-    "flow-bin": "^0.245.2",
+    "flow-bin": "^0.247.1",
     "flow-copy-source": "^2.0.9",
     "flow-webpack-plugin": "^1.2.0",
     "html-loader": "^5.0.0",
