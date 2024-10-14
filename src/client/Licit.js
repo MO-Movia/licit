@@ -357,7 +357,6 @@ class Licit extends React.Component<any, any> {
     // [FS] IRAD-1571 2021-09-27
     // dispatch a transaction that MUST start from the views current state;
     const editorState = this._editorView.state;
-    const { doc } = editorState;
     let { tr } = editorState;
     const document = this.getDocument(content, editorState, dataType);
     this.skipDataTypeCheck = true;

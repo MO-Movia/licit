@@ -11,11 +11,11 @@ describe('<Licit />', () => {
         content: [{ type: 'text', text: ' ' }],
       },
     ],
-    onReady:() => {},
-    autoFocus:true,
-    children:'',
-    className:'licit',
-    disabled:true,
+    onReady: () => {},
+    autoFocus: true,
+    children: '',
+    className: 'licit',
+    disabled: true,
   };
 
   const fakeEditorView = {
@@ -39,7 +39,7 @@ describe('<Licit />', () => {
   };
 
   it('should render a <RichTextEditor /> ', () => {
-    const wrapper = new RichTextEditor({data})
+    const wrapper = new RichTextEditor({ data });
     wrapper.props = {
       type: 'doc',
       content: [
@@ -48,18 +48,18 @@ describe('<Licit />', () => {
           content: [{ type: 'text', text: ' ' }],
         },
       ],
-      onReady:() => {},
-      autoFocus:true,
-      children:'',
-      className:'licit',
-      disabled:true,
-    }
+      onReady: () => {},
+      autoFocus: true,
+      children: '',
+      className: 'licit',
+      disabled: true,
+    };
     expect(wrapper.render()).toBeTruthy();
   });
 
   describe('editorView (getter)', () => {
     it('should return the prosemirror view', () => {
-      const wrapper = new RichTextEditor({data})
+      const wrapper = new RichTextEditor({ data });
       wrapper.props = {
         type: 'doc',
         content: [
@@ -68,12 +68,12 @@ describe('<Licit />', () => {
             content: [{ type: 'text', text: ' ' }],
           },
         ],
-        onReady:() => {},
-        autoFocus:true,
-        children:'',
-        className:'licit',
-        disabled:true,
-      }
+        onReady: () => {},
+        autoFocus: true,
+        children: '',
+        className: 'licit',
+        disabled: true,
+      };
       expect(wrapper._onReady(fakeEditorView)).toBeUndefined();
     });
   });
@@ -91,7 +91,7 @@ describe('<Licit with HTML input/>', () => {
     '</strong></p>';
 
   beforeEach(() => {
-    wrapper = new Licit({data},DataType.HTML);
+    wrapper = new Licit({ data }, DataType.HTML);
   });
 
   it('should render a <RichTextEditor /> ', () => {
