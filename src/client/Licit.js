@@ -357,7 +357,6 @@ class Licit extends React.Component<any, any> {
     // [FS] IRAD-1571 2021-09-27
     // dispatch a transaction that MUST start from the views current state;
     const editorState = this._editorView.state;
-    const { doc } = editorState;
     let { tr } = editorState;
     const document = this.getDocument(content, editorState, dataType);
     this.skipDataTypeCheck = true;
@@ -366,9 +365,6 @@ class Licit extends React.Component<any, any> {
     // Reset lastKeyCode since the content is set dynamically and so lastKeyCode is invalid now.
     this._editorView.lastKeyCode = null;
 
-    const selection = TextSelection.create(doc, 0, doc.content.size);
-
-    tr = tr.setSelection(selection).replaceSelectionWith(document, false);
     // [FS] IRAD-1092 2020-12-03
     // set the value for object metadata  and objectId
     // Should update all document attributes.
