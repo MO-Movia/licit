@@ -37,9 +37,9 @@ class CommandButton extends React.PureComponent<CommandButtonProps> {
     let disabled = this.props.disabled;
     const theme = this.context;
     if (!!disabled === false) {
-      disabled = !editorView || !command.isEnabled(editorState, editorView, '');
+      disabled = !editorView || !command.isEnabled(editorState, editorView);
     }
-
+    UICommand.theme = theme.toString();
     const buttonClassName = sub
       ? cx(className, {
           'czi-custom-submenu-button': true,

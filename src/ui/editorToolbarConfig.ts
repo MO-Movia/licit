@@ -146,60 +146,7 @@ export const FONT_ACTIONS_MINIMIZED = [
 // [FS] IRAD-1012 2020-07-14
 // Fix: Toolbar is poorly organized.
 
-export const COMMAND_GROUPS: Array<
-  Record<string, UICommand | React.PureComponent>
-> = [
-  // {
-  //   '[font_download] Font Type': FontTypeCommandMenuButton,
-  // },
-  // {
-  //   '[format_size] Text Size': FontSizeCommandMenuButton,
-  // },
-  // {
-  //   '[format_bold] Bold': STRONG,
-  //   '[format_italic] Italic': EM,
-  //   '[format_underline] Underline': UNDERLINE,
-  //   '[arrow_right_rounded] More': [
-  //     {
-  //       '[strikethrough_s] Strike Through': STRIKE,
-  //       '[superscript] Superscript': SUPER,
-  //       '[subscript] Subscript': SUB,
-  //       '[format_color_text] Text Color': TEXT_COLOR,
-  //       '[border_color] Highlight Color': TEXT_HIGHLIGHT,
-  //       '[format_clear] Clear Formats': CLEAR_FORMAT,
-  //     },
-  //   ],
-  // },
-  // {
-  //   '[format_align_center] Align': TEXT_ALIGN,
-  //   '[format_indent_decrease] Indent Less': INDENT_LESS,
-  //   '[format_indent_increase] Indent More': INDENT_MORE,
-  // },
-  // {
-  //   // [FS] IRAD-1039 2020-09-23
-  //   // Added new command button that brings a popup
-  //   '[format_list_numbered] Ordered List': ListTypeCommandButton,
-  //   '[format_list_bulleted] Bulleted List': UL,
-  //   '[arrow_right_rounded] More': [
-  //     {
-  //       '[format_line_spacing] Line Spacing': TEXT_LINE_SPACINGS,
-  //       '[file_copy] Page Layout': DOC_LAYOUT,
-  //     },
-  //   ],
-  // },
-  // {
-  //   '[link] Apply link': LINK_SET_URL,
-  //   '[grid_on] Table...': TABLE_COMMANDS_GROUP,
-  //   '[arrow_right_rounded] More': [
-  //     {
-  //       '[hr] Horizontal Line': HR,
-  //     },
-  //   ],
-  // },
-  // {
-  //   '[undo] Undo': HISTORY_UNDO,
-  //   '[redo] Redo': HISTORY_REDO,
-  // },
+export const COMMAND_GROUPS: any = [
 
   {
     '[undo] Undo': HISTORY_UNDO,

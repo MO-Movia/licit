@@ -41,7 +41,7 @@
 
 .czi-custom-button:focus,
 .czi-custom-button:hover {
-  background-color: #f0f0f0;
+  background-color: #5e5a5a;
   border-color: #555;
   outline: none;
 }
@@ -66,7 +66,6 @@
 .czi-custom-button.disabled,
 .czi-custom-button.disabled:hover {
   background: #fff;
-  border-color: #ccc;
   color: #dedede;
   cursor: unset;
   pointer-events: none;

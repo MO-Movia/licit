@@ -1,11 +1,20 @@
 @import './czi-vars.css';
 
 .czi-image-url-editor {
-  background: #fff;
   box-shadow: var(--czi-overlay-shadow);
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
   padding: 4px 10px;
+}
+
+.czi-image-url-editor.light {
+  background-color: #d8d6d6;
+
+}
+
+.czi-image-url-editor.dark {
+  background: #444;
+  color: #b7b7b7;
 }
 
 .czi-image-url-editor .czi-form {

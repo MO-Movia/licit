@@ -15,6 +15,8 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 
 export class ListToggleCommand extends UICommand {
+
+
   _ordered: boolean;
   _orderedListType: string;
 
@@ -40,9 +42,35 @@ export class ListToggleCommand extends UICommand {
     return !bOK;
   };
 
+  waitForUserInput = (
+    _state: EditorState,
+    _dispatch?:(tr: Transform) => void,
+    _view?:EditorView,
+    _event?:React.SyntheticEvent
+  ): Promise<undefined> => {
+    return Promise.resolve(undefined);
+  };
+
+  executeWithUserInput = (
+    _state: EditorState,
+    _dispatch?:(tr: Transform) => void,
+    _view?:EditorView,
+    _inputs?:string
+  ): boolean => {
+    return false;
+  };
+
+  cancel(): void {
+    return null;
+  }
+
   getEditor = (): Editor => {
     return UICommand.prototype.editor as Editor;
   };
+  
+  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+    return tr;
+  }
 
   execute = (
     state: EditorState,

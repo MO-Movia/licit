@@ -1,40 +1,31 @@
 {
+ 
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "lib": [
-      "es5",
-      "es6",
-      "es2017",
-      "dom",
-      "dom.iterable"
-    ],
-    "outDir": "dist",
-    "pretty": false,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "types": [
-      "jest",
-      "node"
-    ],
     "jsx": "react",
-    // Ensure that .d.ts files are created by tsc, but not .js files
-    "declaration": true,
-    //"emitDeclarationOnly": true,
-    // Ensure that Babel can safely transpile files in the TypeScript project
-    "isolatedModules": true
+    "allowJs": true,
+    "target": "ES6",
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "strict": false,
+     "types": [
+      "jest",
+      "node",
+      "jest-prosemirror"
+    ],
+    "paths": {
+      "@assets/*": ["./assets/*"],
+      "@src/*": ["./src/*"]
+    }
   },
-  "typeAcquisition": {
-    "enable": false
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ],
+  "include": ["src/**/*", "tools/**/*"],
   "exclude": [
     "node_modules",
-    "**/*.test.ts",
-    "**/*.test.tsx"
-  ],
+  ]
+  
 }

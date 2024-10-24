@@ -60,14 +60,19 @@ export type ImageLike = {
   width: number;
 };
 
-export type ToolbarMenuConfig={
-  menuPosition:number;
-  key:string;
-  menuCommand:UICommand|unknown;
-  isPlugin?:boolean;
-  group:string;
+export type ToolbarMenuConfig = {
+  menuPosition: number;
+  key: string;
+  menuCommand: any;
+  isPlugin?: boolean;
+  group: string;
 
 }
+export type RecentColor = {
+  id: number,
+  color: string
+};
+
 export type EditorRuntime = {
   // Image Proxy
   canProxyImageSrc?: (src: string) => boolean;

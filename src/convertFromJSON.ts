@@ -4,7 +4,7 @@ import { Plugin } from 'prosemirror-state';
 export interface LicitPlugin extends Plugin {
   getEffectiveSchema: (schema: Schema) => Schema;
   initKeyCommands: () => Plugin;
-  initButtonCommands: () => void;
+  initButtonCommands: (theme: unknown) => any;
 }
 
 export function getEffectiveSchema(

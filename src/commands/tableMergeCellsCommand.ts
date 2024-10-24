@@ -7,6 +7,18 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 
 class TableMergeCellsCommand extends UICommand {
+  waitForUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, event?: any): Promise<any> {
+    return Promise.resolve(null);
+  }
+  executeWithUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, inputs?: any): boolean {
+    return false
+  }
+  cancel(): void {
+    return null;
+  }
+  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+    return tr;
+  }
   isEnabled = (_state: EditorState): boolean => {
     return true;
   };

@@ -17,6 +17,7 @@ import LinkURLEditor from '../ui/linkURLEditor';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 class LinkSetURLCommand extends UICommand {
+ 
   _popUp = null;
 
   isEnabled = (state: EditorState): boolean => {
@@ -99,6 +100,13 @@ class LinkSetURLCommand extends UICommand {
     view && view.focus();
     return true;
   };
+  
+   cancel(): void {
+    return null;
+  }
+  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+    return tr;
+  }
 }
 
 export default LinkSetURLCommand;

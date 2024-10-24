@@ -9,8 +9,9 @@ class CustomMenu extends React.Component<
   /* eslint-disable  @typescript-eslint/no-explicit-any */ any
 > {
   render(): React.ReactElement {
-    const { children, isHorizontal } = this.props;
-    const buttonClassName = cx('czi-custom-menu czi-custom-scrollbar', {
+    const { children, isHorizontal, theme } = this.props;
+    const menuClasssName = 'czi-custom-menu ' + theme;
+    const buttonClassName = cx(menuClasssName + ' czi-custom-scrollbar', {
       'czi-horizontal-menu': isHorizontal
     });
     return (

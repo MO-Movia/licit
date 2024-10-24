@@ -39,8 +39,13 @@
   pointer-events: auto;
 }
 
-.czi-custom-menu-item.dark {
-  background-color: #444;
+.czi-custom-menu-item.dark img {
+  width: 35px;
+  height: 35px;
+}
+.czi-custom-menu-item.light img {
+  width: 35px;
+  height: 35px;
 }
 
 .czi-custom-menu-item.light {

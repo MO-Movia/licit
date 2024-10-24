@@ -6,12 +6,19 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 
 class HistoryRedoCommand extends UICommand {
+
   getEditor = (): Editor => {
     return UICommand.prototype.editor as Editor;
   };
 
   isEnabled = (_state: EditorState): boolean => {
-    return true;
+    const history = (_state as any).history$;
+    if (history.undone.eventCount === 0) {
+      return false;
+    }
+    else {
+      return true;
+    }
   };
 
   execute = (
@@ -21,6 +28,20 @@ class HistoryRedoCommand extends UICommand {
   ): boolean => {
     return this.getEditor().commands.redo();
   };
+
+  waitForUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, event?: any): Promise<any> {
+    return Promise.resolve(null);
+  }
+  executeWithUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, inputs?: any): boolean {
+    return false
+  }
+  cancel(): void {
+    return null;
+  }
+  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+    return tr;
+  }
+
 }
 
 export default HistoryRedoCommand;

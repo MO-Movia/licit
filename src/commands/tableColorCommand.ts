@@ -13,6 +13,9 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 
 class TableColorCommand extends UICommand {
+  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+    return tr;
+  }
   _popUp = null;
   attribute = null;
 

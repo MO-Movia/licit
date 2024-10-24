@@ -6,7 +6,7 @@ import { EditorView } from 'prosemirror-view';
 
 import { SetDocAttrStep, UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import DocLayoutEditor from '../ui/docLayoutEditor';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
+import { createPopUp, ThemeContext } from '@modusoperandi/licit-ui-commands';
 
 import type { DocLayoutEditorValue } from '../ui/docLayoutEditor';
 import { Editor } from '@tiptap/react';
@@ -91,6 +91,13 @@ class DocLayoutCommand extends UICommand {
 
     return false;
   };
+
+  cancel(): void {
+    return null;
+  }
+  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+    return tr;
+  }
 }
 
 export default DocLayoutCommand;

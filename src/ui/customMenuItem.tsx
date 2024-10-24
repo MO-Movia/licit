@@ -9,7 +9,8 @@ import * as React from 'react';
 type CustomButtonProps = PointerSurfaceProps & {
   icon?: string | React.ReactElement | null;
   label?: string | React.ReactElement | null;
-  theme?:string
+  theme?: string;
+
 };
 
 class CustomMenuItemSeparator extends React.PureComponent {
@@ -29,7 +30,7 @@ class CustomMenuItem extends React.PureComponent {
     // const theme = this.context;
     // const className = 'czi-custom-menu-item';
     let className = 'czi-custom-menu-item ' + this.props.theme;
-    if (this.props.value instanceof TextAlignCommand) {
+    if (this.props.value?.alignment) {
       className = 'czi-custom-menu-item-button ' + this.props.theme;
     }
     return <CustomButton {...this.props} className={className} theme={this.props.theme} />;

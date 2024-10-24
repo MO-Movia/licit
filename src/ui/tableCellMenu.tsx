@@ -27,7 +27,7 @@ class TableCellMenu extends React.PureComponent<TableCellMenuProps> {
         dispatch={editorView.dispatch}
         editorState={editorState}
         editorView={editorView}
-        icon={Icon.get('edit')}
+        icon={Icon.get('icon_edit')}
         title="Edit"
       />
     );

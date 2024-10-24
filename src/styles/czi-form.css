@@ -1,12 +1,19 @@
 @import './czi-vars.css';
 
 .czi-form {
-  background: #fff;
   border: none;
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
   margin: 0;
   padding: 20px;
+}
+
+.czi-form.light {
+  background: #d8d6d6;
+}
+
+.czi-form.dark {
+  background: #444;
 }
 
 .czi-form legend {

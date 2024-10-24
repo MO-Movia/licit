@@ -6,6 +6,7 @@ import splitListItem from '../splitListItem';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 class ListSplitCommand extends UICommand {
+
   constructor() {
     super();
   }
@@ -31,6 +32,20 @@ class ListSplitCommand extends UICommand {
       return false;
     }
   };
+
+  waitForUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, event?: any): Promise<any> {
+    return Promise.resolve(null);
+  }
+  executeWithUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, inputs?: any): boolean {
+    return false
+  }
+  cancel(): void {
+    return null;
+  }
+  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+    return tr;
+  }
+
 }
 
 export default ListSplitCommand;

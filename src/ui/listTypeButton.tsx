@@ -15,7 +15,7 @@ import { Arr } from './commandMenuButton';
 
 type ListTypeButtonType = {
   className?: string;
-  commandGroups: Array<Arr>;
+  commandGroups: Array<any>;
   disabled?: boolean;
   dispatch: (tr: Transform) => void;
   editorState: EditorState;

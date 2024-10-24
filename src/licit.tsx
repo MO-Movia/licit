@@ -19,7 +19,7 @@ import { Schema, NodeSpec } from 'prosemirror-model';
 import Subscript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
 import TextAlign from '@tiptap/extension-text-align';
-import { HEADING, noop, PARAGRAPH,  ThemeProvider } from '@modusoperandi/licit-ui-commands';
+import { HEADING, noop, PARAGRAPH, ThemeProvider } from '@modusoperandi/licit-ui-commands';
 import { updateEditorMarks } from './editorMarks';
 import { updateEditorNodes } from './editorNodes';
 import OrderedMap from 'orderedmap';
@@ -79,8 +79,8 @@ export interface LicitProps {
   runtime?: EditorRuntime;
   onChange?: ChangeCB;
   onReady?: ReadyCB;
-  theme?:string;
-  toolbarConfig?:ToolbarMenuConfig[];
+  theme?: string;
+  toolbarConfig?: ToolbarMenuConfig[];
 }
 
 const effectiveSchema: Schema = null;
@@ -115,7 +115,7 @@ const configCollab = (
             peerOpts: {},
           });
           useDefaultProvider = false;
-        } catch {}
+        } catch { }
       }
 
       if (useDefaultProvider) {
@@ -339,14 +339,14 @@ const getCollabExtensions = (
 ): Extension[] => {
   return collaboration
     ? [
-        Collaboration.configure({
-          document: ydoc,
-        }),
-        CollaborationCursor.configure({
-          provider: provider,
-          user: currentUser,
-        }),
-      ]
+      Collaboration.configure({
+        document: ydoc,
+      }),
+      CollaborationCursor.configure({
+        provider: provider,
+        user: currentUser,
+      }),
+    ]
     : [];
 };
 
@@ -392,9 +392,9 @@ const Licit = ({
   runtime = runtime || null;
   plugins = plugins || null;
 
-   // Theme property for toolbar. By default uses light theme.
-   theme = theme || 'light';
-   toolbarConfig = toolbarConfig || null;
+  // Theme property for toolbar. By default uses light theme.
+  theme = theme || 'light';
+  toolbarConfig = toolbarConfig || null;
 
   let currentUser = null;
   let collaboration = false;
@@ -461,19 +461,19 @@ const Licit = ({
     });
     return (
       <ThemeProvider theme={theme}>
-      <div className={mainClassName}>
-        <RichTextEditor
-          disabled={disabled}
-          editor={editor}
-          editorState={editor.state}
-          editorView={eView}
-          embedded={embedded}
-          height={height}
-          readOnly={readOnly}
-          toolbarConfig={ toolbarConfig }
-          width={width}
-        />
-      </div>
+        <div className={mainClassName}>
+          <RichTextEditor
+            disabled={disabled}
+            editor={editor}
+            editorState={editor.state}
+            editorView={eView}
+            embedded={embedded}
+            height={height}
+            readOnly={readOnly}
+            toolbarConfig={toolbarConfig}
+            width={width}
+          />
+        </div>
       </ThemeProvider>
     );
   } else {

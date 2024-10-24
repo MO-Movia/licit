@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { LAYOUT } from '../constants';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import {
   CustomButton,
-  preventEventDefault,
+  preventEventDefault, ThemeContext
 } from '@modusoperandi/licit-ui-commands';
 import CustomRadioButton from './customRadioButton';
 
@@ -23,11 +24,13 @@ type DocLayoutEditorState = {
   selectedValue: string | number;
   layout?: string;
   width?: number;
+
 };
 
 class DocLayoutEditor extends React.PureComponent<DocLayoutEditorProps> {
-  _unmounted = false;
 
+  static contextType = ThemeContext;
+  _unmounted = false;
   // [FS] IRAD-1005 2020-07-07
   // Upgrade outdated packages.
   // To take care of the property type declaration.
@@ -52,6 +55,7 @@ class DocLayoutEditor extends React.PureComponent<DocLayoutEditorProps> {
 
   constructor(props: DocLayoutEditorProps) {
     super(props);
+    const theme = this.context;
     const { width, layout } = this.props.initialValue || {};
     this.state = {
       width,
@@ -62,6 +66,11 @@ class DocLayoutEditor extends React.PureComponent<DocLayoutEditorProps> {
 
   render(): React.ReactElement<CustomRadioButton> {
     const { width, selectedValue } = this.state;
+    console.log("UICommand : ", UICommand.theme);
+    const parentClassName = "czi-body-layout-editor " + UICommand.theme;
+    const formClassName = "czi-form " + UICommand.theme;
+    const contextType = ThemeContext;
+    const theme = this.context;
     const customOption = width ? (
       <CustomRadioButton
         checked={selectedValue === String(width)}
@@ -73,8 +82,8 @@ class DocLayoutEditor extends React.PureComponent<DocLayoutEditorProps> {
     ) : null;
 
     return (
-      <div className="czi-body-layout-editor">
-        <form className="czi-form" onSubmit={preventEventDefault}>
+      <div className={parentClassName}>
+        <form className={formClassName} onSubmit={preventEventDefault}>
           <fieldset>
             <legend>Page Layout</legend>
             <CustomRadioButton

@@ -14,7 +14,7 @@ class ListTypeMenu extends React.PureComponent {
   _activeCommand: UICommand = null;
   props: {
     className?: string;
-    commandGroups: Array<Arr>;
+    commandGroups: Array<any>,
     disabled?: boolean;
     dispatch: (tr: Transform) => void;
     editorState: EditorState;
@@ -23,6 +23,7 @@ class ListTypeMenu extends React.PureComponent {
     icon?: string | React.ReactElement | null;
     label?: string | React.ReactElement | null;
     title?: string;
+    theme?: string;
   };
 
   _menu = null;
@@ -35,13 +36,15 @@ class ListTypeMenu extends React.PureComponent {
   render(): JSX.Element {
     const { commandGroups } = this.props;
     const children = [];
-
+    const theme = this.props.theme;
+    let className = 'buttonsize ' + theme;
+    let cont_classname = 'ol-container ' + theme;
     commandGroups.forEach((group, _ii) => {
       Object.keys(group).forEach((label) => {
         const command = group[label];
         children.push(
           <button
-            className="buttonsize"
+            className={className}
             id={label}
             key={label}
             onClick={(e) => this._onUIEnter(command, e)}
@@ -52,7 +55,7 @@ class ListTypeMenu extends React.PureComponent {
         );
       });
     });
-    return <div className="container">{children}</div>;
+    return <div className={cont_classname}>{children}</div>;
   }
 
   _onUIEnter = (command: UICommand, event: React.SyntheticEvent): void => {

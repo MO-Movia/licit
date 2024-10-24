@@ -1,7 +1,6 @@
 @import './czi-vars.css';
 
 .czi-body-layout-editor {
-  background: #fff;
   box-shadow: var(--czi-overlay-shadow);
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
@@ -11,6 +10,15 @@
   padding-top: 4px;
 }
 
+.czi-body-layout-editor.light {
+  background-color: #d8d6d6;
+
+}
+
+.czi-body-layout-editor.dark {
+  background: #444;
+  color: #b7b7b7;
+}
 .czi-body-layout-editor .czi-form {
   width: 300px;
 }

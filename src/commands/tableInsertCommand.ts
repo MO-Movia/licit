@@ -10,6 +10,12 @@ import type { TableGridSizeEditorState } from '../ui/tableGridSizeEditor';
 import { Editor } from '@tiptap/react';
 
 class TableInsertCommand extends UICommand {
+  cancel(): void {
+    return null;
+  }
+  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+    return tr;
+  }
   _popUp = null;
 
   shouldRespondToUIEvent = (e: React.SyntheticEvent | MouseEvent): boolean => {

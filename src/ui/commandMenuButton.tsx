@@ -20,7 +20,7 @@ export interface Arr {
 }
 type PropsType = {
   className?: string;
-  commandGroups: Array<Arr>;
+  commandGroups: Array<any>;
   disabled?: boolean;
   dispatch: (tr: Transform) => void;
   editorState: EditorState;
@@ -29,7 +29,7 @@ type PropsType = {
   label?: string | React.ReactElement | null;
   title?: string;
   sub?: boolean;
-  theme?:string;
+  theme?: string;
 };
 type StateType = {
   expanded: boolean;
@@ -79,7 +79,8 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
 
     const { expanded } = this.state;
     const isMaximizeButton = isExpandButton(title);
-    const theme_1 = this.context;
+    // const theme_1 = this.context;
+    const theme_1 = UICommand.theme;
     // const buttonClassName = sub
     //   ? cx(className, {
     //       'czi-custom-submenu-button': true,
@@ -137,7 +138,7 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
     const menuProps = {
       ...this.props,
       onCommand: this._onCommand,
-      theme:this.context.toString()
+      theme: UICommand.theme
     };
     if (menu) {
       menu.update(menuProps);
@@ -149,8 +150,8 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
       const popUpProps = {
         anchor: document.getElementById(this._id),
         onClose: this._onClose,
-        IsChildDialog:true,
-        autoDismiss:false,
+        IsChildDialog: true,
+        autoDismiss: true,
         popUpId: menuProps.commandGroups[0]['Single']
           ? 'mo-menuList-1'
           : 'mo-menuList',

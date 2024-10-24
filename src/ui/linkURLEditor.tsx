@@ -9,6 +9,7 @@ import {
 
 import '../styles/czi-form.css';
 import '../styles/czi-image-url-editor.css';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 type LinkURLEditorProps = {
   href;
   close: (props?, propName?: string) => Error;
@@ -46,7 +47,7 @@ class LinkURLEditor extends React.PureComponent<LinkURLEditorProps> {
     const { url } = this.state;
 
     const error = url ? BAD_CHARACTER_PATTER.test(url) : false;
-
+    const theme = UICommand.theme;
     let label = 'Apply';
     let disabled = false;
     if (href) {
@@ -55,10 +56,11 @@ class LinkURLEditor extends React.PureComponent<LinkURLEditorProps> {
     } else {
       disabled = error || !url;
     }
-
+    let klassName = "czi-image-url-editor " + theme;
+    let klassName_form = "czi-form " + theme;
     return (
-      <div className="czi-image-url-editor">
-        <form className="czi-form" onSubmit={preventEventDefault}>
+      <div className={klassName}>
+        <form className={klassName_form} onSubmit={preventEventDefault}>
           <fieldset>
             <legend>Add a Link</legend>
             <input

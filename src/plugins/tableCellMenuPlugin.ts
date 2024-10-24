@@ -52,7 +52,7 @@ class TableCellTooltipView {
     if (!cellEl) {
       // Closes the popup.
       popUp && popUp.close();
-      this._cellElement = null;
+      // this._cellElement = null;
     } else if (popUp && cellEl === this._cellElement) {
       // Updates the popup.
       popUp.update(viewPops);
@@ -99,9 +99,9 @@ class TableCellTooltipView {
     if (!popUp || !cellEl) {
       return;
     }
-    if (!isElementFullyVisible(cellEl as HTMLElement)) {
-      popUp.close();
-    }
+    // if (!isElementFullyVisible(cellEl as HTMLElement)) {
+    //   popUp.close();
+    // }
   };
 }
 
