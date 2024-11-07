@@ -337,8 +337,8 @@ function main(): void {
   // null means no custom plugins to pass
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
 
-  const plugins = [];
   const runtime = new CustomLicitRuntime();
+  const plugins = [];
   setRuntime(runtime);
   ReactDOM.render(
     <Licit
