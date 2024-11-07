@@ -97,7 +97,14 @@ class LinkTooltip extends React.PureComponent<any, any> {
       return;
     }
     if (href) {
-      window.open(sanitizeURL(href));
+      const url = sanitizeURL(href);
+      const popupString = "Any unsaved changes will be lost"
+  
+  if (this.props.editorView?.runtime?.openLinkDialog) {
+      this.props.editorView.runtime.openLinkDialog(url,popupString);
+  } else {
+      window.open(url);
+  }
     }
   };
 }
