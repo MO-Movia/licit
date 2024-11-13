@@ -54,10 +54,6 @@ class LinkTooltipView {
   }
 
   update(view: EditorView, lastState: EditorState): void {
-    if (view.readOnly) {
-      this.destroy();
-      return;
-    }
 
     const { state } = view;
     const { doc, selection, schema } = state;

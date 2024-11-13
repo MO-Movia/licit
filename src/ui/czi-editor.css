@@ -142,6 +142,10 @@
   margin: 0;
 }
 
+.prosemirror-editor-wrapper.readOnly a {
+  pointer-events: none; /* Disable interaction */
+}
+
 .ProseMirror a:link,
 .ProseMirror a:visited,
 .ProseMirror a:hover,

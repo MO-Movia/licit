@@ -32,6 +32,7 @@ class LinkTooltip extends React.PureComponent<any, any> {
       tocItemPos_,
       selectionId_
     } = this.props;
+    const canEdit = editorView.editable;
     // [FS] IRAD-1013 2020-07-09
     // Change button in "Apply Link" missing in LICIT.
     return (
@@ -48,12 +49,16 @@ class LinkTooltip extends React.PureComponent<any, any> {
               title={href}
               value={href}
             />
-            <CustomButton label="Change" onClick={onEdit} value={editorView} />
-            <CustomButton
-              label="Remove"
-              onClick={onRemove}
-              value={editorView}
-            />
+            {canEdit && (
+              <CustomButton label="Change" onClick={onEdit} value={editorView} />
+            )}
+            {canEdit && (
+              <CustomButton
+                label="Remove"
+                onClick={onRemove}
+                value={editorView}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -98,8 +103,15 @@ class LinkTooltip extends React.PureComponent<any, any> {
     }
     if (href) {
       const url = sanitizeURL(href);
-      const popupString = "Any unsaved changes will be lost"
-  
+      let popupString;
+
+       if(this.props.editorView.editable){
+        popupString = "Any unsaved changes will be lost"
+      }
+      else{
+        popupString = "";
+      }
+   
   if (this.props.editorView?.runtime?.openLinkDialog) {
       this.props.editorView.runtime.openLinkDialog(url,popupString);
   } else {
