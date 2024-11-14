@@ -325,7 +325,7 @@ class Licit extends React.Component<any, any> {
   }
 
   isNodeHasAttribute(node: Node, attrName: string) {
-    return node.attrs && node.attrs[attrName];
+    return node.attrs?.[attrName];
   }
 
   getDocument(content: any, editorState: EditorState, dataType: DataType) {
@@ -333,10 +333,10 @@ class Licit extends React.Component<any, any> {
     const { schema } = editorState;
 
     if (DataType.JSON === dataType || this.skipDataTypeCheck) {
-      document = schema.nodeFromJSON(content ? content : EMPTY_DOC_JSON);
+      document = schema.nodeFromJSON(content || EMPTY_DOC_JSON);
     } else {
       const tempEState = convertFromHTML(
-        content ? content : '',
+        content || '',
         schema,
         editorState.plugins
       );
@@ -347,7 +347,7 @@ class Licit extends React.Component<any, any> {
   }
 
   insertJSON = (json: { [key: string]: any }): void => {
-    if (this._pasteJSONPlugin && this._pasteJSONPlugin.insert) {
+    if (this._pasteJSONPlugin?.insert) {
       this._pasteJSONPlugin.insert(json, this._editorView);
     }
   };
@@ -357,6 +357,7 @@ class Licit extends React.Component<any, any> {
     // [FS] IRAD-1571 2021-09-27
     // dispatch a transaction that MUST start from the views current state;
     const editorState = this._editorView.state;
+    const { doc } = editorState;
     let { tr } = editorState;
     const document = this.getDocument(content, editorState, dataType);
     this.skipDataTypeCheck = true;
@@ -519,9 +520,8 @@ class Licit extends React.Component<any, any> {
         if (docJson.content && docJson.content.length === 1) {
           if (
             !docJson.content[0].content ||
-            (docJson.content[0].content &&
-              docJson.content[0].content[0].text &&
-              '' === docJson.content[0].content[0].text.trim())
+            (docJson.content?.[0]?.content?.[0]?.text &&
+              '' === docJson.content?.[0]?.content?.[0]?.text.trim())
           ) {
             isEmpty = true;
           }
@@ -547,7 +547,7 @@ class Licit extends React.Component<any, any> {
   // Bug fix: Transaction mismatch error when a dialog is opened and keep typing.
   closeOpenedPopupModels() {
     const element = document.getElementsByClassName('czi-pop-up-element')[0];
-    if (element && element.parentElement) {
+    if (element?.parentElement) {
       element.parentElement.removeChild(element);
     }
   }

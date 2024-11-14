@@ -1,19 +1,15 @@
 // @flow
 
-import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
-import { TextSelection } from 'prosemirror-state';
+import { EditorState, Plugin, PluginKey, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 
 import { MARK_LINK } from './MarkNames.js';
 import { hideSelectionPlaceholder } from './SelectionPlaceholderPlugin.js';
-import { applyMark } from '@modusoperandi/licit-ui-commands';
-import { findNodesWithSameMark } from '@modusoperandi/licit-ui-commands';
+import { applyMark, findNodesWithSameMark, atAnchorTopCenter, createPopUp } from '@modusoperandi/licit-ui-commands';
 import lookUpElement from './lookUpElement.js';
 import LinkTooltip from './ui/LinkTooltip.js';
 import LinkURLEditor from './ui/LinkURLEditor.js';
-import { atAnchorTopCenter } from '@modusoperandi/licit-ui-commands';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
-import {INNER_LINK} from './Types.js';
+import { INNER_LINK } from './Types.js';
 
 import '@modusoperandi/licit-ui-commands/ui/czi-pop-up.css';
 
@@ -98,7 +94,7 @@ class LinkTooltipView {
     if (popup && anchorEl === this._anchorEl) {
       popup.update(viewPops);
     } else {
-      popup && popup.close();
+      popup?.close();
       this._anchorEl = anchorEl;
       this._popup = createPopUp(LinkTooltip, viewPops, {
         anchor: anchorEl,
@@ -110,8 +106,8 @@ class LinkTooltipView {
   }
 
   destroy() {
-    this._popup && this._popup.close();
-    this._editor && this._editor.close();
+    this._popup?.close();
+    this._editor?.close();
   }
 
   _onCancel = (view: EditorView): void => {

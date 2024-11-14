@@ -2,11 +2,8 @@
 
 import * as React from 'react';
 import PropTypes from 'prop-types';
-
-import { CustomButton } from '@modusoperandi/licit-ui-commands';
+import { CustomButton, preventEventDefault } from '@modusoperandi/licit-ui-commands';
 import MathQuillEditor from './mathquill-editor/MathQuillEditor.js';
-import { preventEventDefault } from '@modusoperandi/licit-ui-commands';
-import uuid from './uuid.js';
 
 import './czi-form.css';
 
@@ -35,9 +32,6 @@ class MathEditor extends React.PureComponent<any, any> {
     initialValue: this.props.initialValue,
     value: this.props.initialValue || '',
   };
-
-  _id = uuid();
-  _unmounted = false;
 
   render(): React.Element<any> {
     const { initialValue, value } = this.state;

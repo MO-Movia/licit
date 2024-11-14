@@ -8,9 +8,8 @@ import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
-import { CustomButton } from '@modusoperandi/licit-ui-commands';
+import { CustomButton, createPopUp } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid.js';
 import ListTypeMenu from './ListTypeMenu.js';
 import './czi-custom-menu-button.css';
@@ -50,11 +49,9 @@ class ListTypeButton extends React.PureComponent<any, any> {
       !disabled &&
       commandGroups.some((group, ii) => {
         return Object.keys(group).some((label) => {
-          // const command = group[label];
           let disabledVal = true;
           try {
             disabledVal = false;
-            //   !editorView || !command.isEnabled(editorState, editorView);
           } catch (ex) {
             disabledVal = false;
           }
@@ -96,7 +93,7 @@ class ListTypeButton extends React.PureComponent<any, any> {
   _hideMenu = (): void => {
     const menu = this._menu;
     this._menu = null;
-    menu && menu.close();
+    menu?.close();
   };
 
   _showMenu = (): void => {

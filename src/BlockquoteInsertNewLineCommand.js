@@ -1,8 +1,7 @@
 // @flow
 
 import { Fragment, Schema } from 'prosemirror-model';
-import { EditorState } from 'prosemirror-state';
-import { TextSelection } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';

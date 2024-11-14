@@ -11,7 +11,6 @@ export class StyleView {
   update(view: EditorView, lastState: EditorState): void {
     if (view.readOnly) {
       this.destroy();
-      return;
     }
   }
 

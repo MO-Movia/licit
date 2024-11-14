@@ -14,16 +14,7 @@ import {
   PARAGRAPH
 } from './NodeNames.js';
 import {
-  compareNumber
-} from '@modusoperandi/licit-ui-commands';
-import {
-  isInsideListItem
-} from '@modusoperandi/licit-ui-commands';
-import {
-  isListNode
-} from '@modusoperandi/licit-ui-commands';
-import {
-  unwrapNodesFromList
+  compareNumber, isInsideListItem, isListNode, unwrapNodesFromList
 } from '@modusoperandi/licit-ui-commands';
 
 export default function toggleBlockquote(
@@ -58,8 +49,10 @@ export default function toggleBlockquote(
     return !isListNode(node);
   });
   // Update from the bottom to avoid disruptive changes in pos.
-  poses
-    .sort(compareNumber)
+  const sortedPoses = [...poses];  // Create a shallow copy of poses
+  sortedPoses.sort(compareNumber);
+
+  sortedPoses.sort(compareNumber)
     .reverse()
     .forEach((pos) => {
       tr = setBlockquoteNode(tr, schema, pos);

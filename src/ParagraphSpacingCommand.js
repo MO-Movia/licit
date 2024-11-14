@@ -1,9 +1,8 @@
 // @flow
 
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { AllSelection, TextSelection } from 'prosemirror-state';
+import { AllSelection, TextSelection, EditorState } from 'prosemirror-state';
 import { BLOCKQUOTE, HEADING, LIST_ITEM, PARAGRAPH } from './NodeNames';
-import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { Schema } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
@@ -55,7 +54,7 @@ export function setParagraphSpacing(
           nodeType,
         });
       }
-      return nodeType === listItem ? true : false;
+      return nodeType === listItem;
     }
     return true;
   });
@@ -70,16 +69,12 @@ export function setParagraphSpacing(
     if (isAfter) {
       attrs = {
         ...attrs,
-        paragraphSpacingAfter: paragraphSpacingValue
-          ? paragraphSpacingValue
-          : null,
+        paragraphSpacingAfter: paragraphSpacingValue || null,
       };
     } else {
       attrs = {
         ...attrs,
-        paragraphSpacingBefore: paragraphSpacingValue
-          ? paragraphSpacingValue
-          : null,
+        paragraphSpacingBefore: paragraphSpacingValue || null,          
       };
     }
     tr = tr.setNodeMarkup(pos, nodeType, attrs, node.marks);

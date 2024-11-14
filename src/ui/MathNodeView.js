@@ -4,7 +4,7 @@ import './czi-math-view.css';
 import CustomNodeView from './CustomNodeView.js';
 import MathInlineEditor from './MathInlineEditor.js';
 import * as React from 'react';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
+import { createPopUp, atAnchorBottomCenter } from '@modusoperandi/licit-ui-commands';
 import cx from 'classnames';
 import renderLaTeXAsHTML from './renderLaTeXAsHTML.js';
 import uuid from './uuid.js';
@@ -16,10 +16,7 @@ import {
 } from './EditorFrameset.js';
 import {
   Node
-} from 'prosemirror-model';
-import {
-  atAnchorBottomCenter
-} from '@modusoperandi/licit-ui-commands';
+} from 'prosemirror-model'; 
 import {
   NodeSelection
 } from 'prosemirror-state';
@@ -91,7 +88,7 @@ class MathViewBody extends React.PureComponent<any, any> {
   _renderInlineEditor(): void {
     const el = document.getElementById(this._id);
     if (!el || el.getAttribute('data-active') !== 'true') {
-      this._inlineEditor && this._inlineEditor.close();
+      this._inlineEditor?.close();
       return;
     }
     const { node } = this.props;

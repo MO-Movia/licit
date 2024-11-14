@@ -166,7 +166,6 @@ class CustomNodeView {
 
   // This should be overwrite by subclass.
   renderReactComponent(): React.Element<any> {
-    // return <CustomNodeViewComponent {...this.props} />;
     throw new Error('not implemented');
   }
 
@@ -183,7 +182,7 @@ class CustomNodeView {
   __renderReactComponent(): void {
     const { editorView, getPos } = this.props;
 
-    if (editorView.state && editorView.state.selection) {
+    if (editorView.state?.selection) {
       const { from } = editorView.state.selection;
       const pos = getPos();
       this.props.selected = this._selected;

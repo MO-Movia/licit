@@ -40,9 +40,9 @@ export function req(conf) {
 }
 
 function makePlain(html) {
-  var elt = document.createElement('div');
+  let elt = document.createElement('div');
   elt.innerHTML = html;
-  return elt.textContent.replace(/\n[^]*|\s+$/g, '');
+  return elt.textContent.replace(/(\n[^]*|\s+)$/g, '');
 }
 
 export function GET(url) {

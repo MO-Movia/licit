@@ -1,6 +1,5 @@
 // @flow
-import { PT_TO_PX_RATIO } from './convertToCSSPTValue.js';
-import convertToCSSPTValue from './convertToCSSPTValue.js';
+import convertToCSSPTValue, { PT_TO_PX_RATIO } from './convertToCSSPTValue.js';
 import toHexColor from './ui/toHexColor.js';
 
 export default function patchTableElements(doc: Document): void {
@@ -26,7 +25,7 @@ function patchTableCell(tdElement: HTMLElement): void {
     spans.some((spanElement) => {
       let retVal = true;
       const spanStyle = spanElement.style;
-      if (!spanStyle || !spanStyle.backgroundColor) {
+      if (!spanStyle?.backgroundColor) {
         retVal = false;
       } else {
         const spanBgColor = toHexColor(spanStyle.backgroundColor);

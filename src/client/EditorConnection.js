@@ -179,7 +179,7 @@ class EditorConnection {
         this.report.success();
         data = JSON.parse(data);
         this.backOff = 0;
-        if (data.steps && data.steps.length) {
+        if (data.steps?.length) {
           const tr = receiveTransaction(
             this.state.edit,
             data.steps.map((j) => Step.fromJSON(this.getEffectiveSchema(), j)),
@@ -228,10 +228,10 @@ class EditorConnection {
         this.backOff = 0;
         const tr = steps
           ? receiveTransaction(
-              this.state.edit,
-              steps.steps,
-              repeat(steps.clientID, steps.steps.length)
-            )
+            this.state.edit,
+            steps.steps,
+            repeat(steps.clientID, steps.steps.length)
+          )
           : this.state.edit.tr;
 
         this.dispatch({
@@ -296,7 +296,8 @@ class EditorConnection {
   }
 
   run(request: any): Promise<any> {
-    return (this.request = request);
+    this.request = request
+    return (this.request);
   }
 
   close(): void {

@@ -2,8 +2,7 @@
 
 import { Node } from 'prosemirror-model';
 
-import ParagraphNodeSpec from './ParagraphNodeSpec.js';
-import { getParagraphNodeAttrs, toParagraphDOM } from './ParagraphNodeSpec.js';
+import ParagraphNodeSpec,{ getParagraphNodeAttrs, toParagraphDOM } from './ParagraphNodeSpec.js';
 
 import type { NodeSpec } from './Types.js';
 

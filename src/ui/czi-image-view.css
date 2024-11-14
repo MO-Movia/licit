@@ -100,11 +100,7 @@
 .czi-image-view-body.active {
   background-color: transparent;
   box-shadow: 0 0 0 2px var(--czi-selection-highlight-color-dark);
-}
-
-.czi-image-view-body.error {
-  /* outline: var(--czi-border-red); */
-}
+} 
 
 @media only print {
   .czi-image-view-body.active {

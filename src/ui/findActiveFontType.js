@@ -20,16 +20,13 @@ export default function findActiveFontType(state: EditorState): string {
     const storedMarks =
       tr.storedMarks ||
       state.storedMarks ||
-      (selection.$cursor &&
-        selection.$cursor.marks &&
-        selection.$cursor.marks()) ||
-      [];
+      selection.$cursor?.marks?.() || [];
     const sm = storedMarks.find((m) => m.type === markType);
-    return (sm && sm.attrs.name) || FONT_TYPE_NAME_DEFAULT;
+    return (sm?.attrs.name) || FONT_TYPE_NAME_DEFAULT;
   }
 
   const mark = findActiveMark(doc, from, to, markType);
-  const fontName = mark && mark.attrs.name;
+  const fontName = mark?.attrs.name;
   if (!fontName) {
     return FONT_TYPE_NAME_DEFAULT;
   }

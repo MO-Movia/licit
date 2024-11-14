@@ -27,7 +27,6 @@ const MQ = MathQuill.getInterface(2);
     // Now loaded locally, so that it work in closed network as well.
     //injectStyleSheet(CSS_CDN_URL);
   }
-  // injectStyleSheet(CSS_CDN_URL);
 })();
 
 class MathQuillElement extends React.Component<any, any> {

@@ -13,10 +13,10 @@ function patchBreakElement(brElement: HTMLElement): void {
   if (!ownerDocument || !parentElement) {
     return;
   }
-  const div = brElement.parentElement && brElement.parentElement.parentElement;
+  const div = brElement.parentElement?.parentElement;
   if (!div) {
     return;
   }
   const pp = ownerDocument.createElement('p');
-  div.parentElement && div.parentElement.replaceChild(pp, div);
+  div.parentElement?.replaceChild(pp, div);
 }

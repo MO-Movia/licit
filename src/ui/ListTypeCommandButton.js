@@ -66,7 +66,7 @@ class ListTypeCommandButton extends React.PureComponent<any, any> {
       // To disable the list menu when select an image
       disabled =
        hasImageNode(editorState);
-      disabled = editorView.disabled || disabled ? true : false;
+       disabled = editorView.disabled || disabled;
     }
     return (
       <ListTypeButton

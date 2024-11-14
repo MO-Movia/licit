@@ -65,7 +65,7 @@ class EditorToolbar extends React.PureComponent<any, any> {
         //  p => p.buttonGroup
         // but changing it now would mean finding every plugin that was
         // implemented this way.
-        .map((p) => p.initButtonCommands && p.initButtonCommands())
+        .map((p) => p.initButtonCommands?.())
         .filter(Boolean)
     )
       .map(this._renderButtonsGroup)
@@ -202,8 +202,8 @@ class EditorToolbar extends React.PureComponent<any, any> {
   _checkIfContentIsWrapped = (): void => {
     const ref = this._body;
     const el: any = ref && ReactDOM.findDOMNode(ref);
-    const startAnchor = el && el.firstChild;
-    const endAnchor = el && el.lastChild;
+    const startAnchor = el?.firstChild;
+    const endAnchor = el?.lastChild;
     if (startAnchor && endAnchor) {
       const wrapped = startAnchor.offsetTop < endAnchor.offsetTop;
       this.setState({ wrapped });

@@ -1,8 +1,7 @@
 // @flow
 
 import { Fragment, Schema } from 'prosemirror-model';
-import { EditorState } from 'prosemirror-state';
-import { TextSelection } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 // eslint-disable-next-line no-unused-vars

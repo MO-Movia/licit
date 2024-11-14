@@ -49,7 +49,7 @@ function patchBlockElementStyle(
 ): void {
   const element: any = el;
   const elementStyle = element.style;
-  const value = elementStyle && elementStyle[inlineStyleName];
+  const value = elementStyle?.[inlineStyleName];
 
   if (inlineStyleName === 'textIndent' && value) {
     // This is the workaround to fix the issue that people with mix both

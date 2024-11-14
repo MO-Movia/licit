@@ -32,7 +32,7 @@ export default function handleEditorKeyDown(
       // An atomic node (e.g. Image) is selected.
       // Only whitelisted keyCode should be allowed, which prevents user
       // from typing letter after the atomic node selected.
-      return !AtomicNodeKeyCodes.has(event.keyCode);
+      return !AtomicNodeKeyCodes.has(event.key);
     }
   }
   return false;

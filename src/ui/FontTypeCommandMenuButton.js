@@ -5,7 +5,9 @@ import {
   FontTypeCommand
 } from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
-import findActiveFontType from './findActiveFontType.js';
+import findActiveFontType, {
+  FONT_TYPE_NAME_DEFAULT
+} from './findActiveFontType.js';
 import {
   EditorState
 } from 'prosemirror-state';
@@ -15,9 +17,6 @@ import {
 import {
   FONT_TYPE_NAMES
 } from '../FontTypeMarkSpec.js';
-import {
-  FONT_TYPE_NAME_DEFAULT
-} from './findActiveFontType.js';
 import {
   Transform
 } from 'prosemirror-transform';
@@ -48,7 +47,7 @@ class FontTypeCommandMenuButton extends React.PureComponent<any, any> {
         // [FS] IRAD-1008 2020-07-16
         // Disable font type menu on editor disable state
         commandGroups={COMMAND_GROUPS}
-        disabled={editorView && editorView.disabled ? true : false}
+        disabled={editorView?.disabled}
         dispatch={dispatch}
         editorState={editorState}
         editorView={editorView}

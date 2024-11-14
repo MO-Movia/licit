@@ -5,14 +5,11 @@ import PropTypes from 'prop-types';
 
 import sanitizeURL from '../sanitizeURL.js';
 import {
-  CustomButton
+  CustomButton, preventEventDefault
 } from '@modusoperandi/licit-ui-commands';
 import {
   ENTER
-} from './KeyCodes.js';
-import {
-  preventEventDefault
-} from '@modusoperandi/licit-ui-commands';
+} from './KeyCodes.js'; 
 import uuid from '../uuid.js';
 
 import './czi-form.css';
@@ -38,7 +35,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
 
   componentDidMount() {
     const { selectionId } = this.state;
-    let defaultTab = 'webpage';
+    let defaultTab;
     if (selectionId) {
       defaultTab = 'innerlink';
     } else {
@@ -80,7 +77,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     const error = url ? BAD_CHARACTER_PATTER.test(url) : false;
 
     let label = 'Apply';
-    let disabled = !!error;
+    let disabled;
     if (this.props.href) {
       label = url ? 'Apply' : 'Remove';
       disabled = error;
