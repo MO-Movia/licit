@@ -6,7 +6,11 @@ import { Transform } from 'prosemirror-transform';
 
 import { MARK_LINK } from './MarkNames';
 import { BLOCKQUOTE, CODE_BLOCK, HEADING, PARAGRAPH } from './NodeNames';
-import { clearMarks, compareNumber, isListNode } from '@modusoperandi/licit-ui-commands';
+import {
+  clearMarks,
+  compareNumber,
+  isListNode,
+} from '@modusoperandi/licit-ui-commands';
 
 export default function toggleCodeBlock(
   tr: Transform,
@@ -45,20 +49,16 @@ export default function toggleCodeBlock(
     return isBlock;
   });
 
-  const sortedPoses = [...poses];  // Create a shallow copy of poses
+  const sortedPoses = [...poses]; // Create a shallow copy of poses
   // Update from the bottom to avoid disruptive changes in pos.
-  const sortedPoses = allowed ? poses.toSorted(compareNumber) : poses;
-  
+  sortedPoses = allowed ? poses.toSorted(compareNumber) : poses;
+
   allowed &&
-    sortedPoses.sort(compareNumber)
+    sortedPoses
+      .sort(compareNumber)
       .reverse()
       .forEach((pos) => {
-        tr = setCodeBlockNodeEnabled(
-          tr,
-          schema,
-          pos,
-          !startWithCodeBlock
-        );
+        tr = setCodeBlockNodeEnabled(tr, schema, pos, !startWithCodeBlock);
       });
   return tr;
 }
