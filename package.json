@@ -132,6 +132,9 @@
     "prosemirror-tables": "^1.2.5",
     "jquery": "^3.5.1"
   },
+  "overrides": {
+    "libxmljs2": "^1.0.0"
+  },
   "importSort": {
     ".js": {
       "parser": "babylon",

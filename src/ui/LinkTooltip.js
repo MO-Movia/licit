@@ -11,7 +11,7 @@ import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import './czi-link-tooltip.css';
 
 function isBookMarkHref(href: string): boolean {
-  return !!href && href.indexOf('#') === 0 && href.length >= 2;
+  return !!href && href.startsWith('#') && href.length >= 2;
 }
 
 class LinkTooltip extends React.PureComponent<any, any> {
@@ -24,15 +24,8 @@ class LinkTooltip extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const {
-      href,
-      editorView,
-      onEdit,
-      onRemove,
-      tocItemPos_,
-      selectionId_
-    } = this.props;
-    const canEdit = editorView.editable;
+    const { href, editorView, onEdit, onRemove, tocItemPos_, selectionId_ } =
+      this.props;
     // [FS] IRAD-1013 2020-07-09
     // Change button in "Apply Link" missing in LICIT.
     return (
@@ -49,16 +42,12 @@ class LinkTooltip extends React.PureComponent<any, any> {
               title={href}
               value={href}
             />
-            {canEdit && (
-              <CustomButton label="Change" onClick={onEdit} value={editorView} />
-            )}
-            {canEdit && (
-              <CustomButton
-                label="Remove"
-                onClick={onRemove}
-                value={editorView}
-              />
-            )}
+            <CustomButton label="Change" onClick={onEdit} value={editorView} />
+            <CustomButton
+              label="Remove"
+              onClick={onRemove}
+              value={editorView}
+            />
           </div>
         </div>
       </div>
@@ -66,10 +55,7 @@ class LinkTooltip extends React.PureComponent<any, any> {
   }
 
   jumpLink = (view: EditorView, tocItemPos, href, selectionId): void => {
-    if (
-      selectionId || selectionId === 0 &&
-      tocItemPos
-    ) {
+    if (selectionId || (selectionId === 0 && tocItemPos)) {
       this.jumpInnerLink(view, tocItemPos);
     } else {
       this._openLink(href);
@@ -105,18 +91,17 @@ class LinkTooltip extends React.PureComponent<any, any> {
       const url = sanitizeURL(href);
       let popupString;
 
-       if(this.props.editorView.editable){
-        popupString = "Any unsaved changes will be lost"
+      if (this.props.editorView.editable) {
+        popupString = 'Any unsaved changes will be lost';
+      } else {
+        popupString = '';
       }
-      else{
-        popupString = "";
+
+      if (this.props.editorView?.runtime?.openLinkDialog) {
+        this.props.editorView.runtime.openLinkDialog(url, popupString);
+      } else {
+        window.open(url);
       }
-   
-  if (this.props.editorView?.runtime?.openLinkDialog) {
-      this.props.editorView.runtime.openLinkDialog(url,popupString);
-  } else {
-      window.open(url);
-  }
     }
   };
 }
