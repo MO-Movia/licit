@@ -9,5 +9,5 @@ export default function sanitizeURL(url: ?string): string {
   if (HTTP_PREFIX.test(url)) {
     return url;
   }
-  return 'http://' + url;
+  return 'https://' + url;
 }
