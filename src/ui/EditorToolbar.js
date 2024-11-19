@@ -181,34 +181,32 @@ class EditorToolbar extends React.PureComponent<any, any> {
     );
   };
 
-  _onBodyRef = (ref: any): void => {
+  _onBodyRef = (ref: HTMLElement): void => {
     if (ref) {
       this._body = ref;
       // Mounting
-      const el = ReactDOM.findDOMNode(ref);
-      if (el instanceof HTMLElement) {
-        ResizeObserver.observe(el, this._checkIfContentIsWrapped);
-      }
-    } else {
-      // Unmounting.
-      const el = this._body && ReactDOM.findDOMNode(this._body);
-      if (el instanceof HTMLElement) {
-        ResizeObserver.unobserve(el);
-      }
+      ResizeObserver.observe(ref, this._checkIfContentIsWrapped);
+    } else if (this._body) {
+      // Unmounting
+      ResizeObserver.unobserve(this._body);
       this._body = null;
     }
   };
 
   _checkIfContentIsWrapped = (): void => {
     const ref = this._body;
-    const el: any = ref && ReactDOM.findDOMNode(ref);
-    const startAnchor = el?.firstChild;
-    const endAnchor = el?.lastChild;
-    if (startAnchor && endAnchor) {
-      const wrapped = startAnchor.offsetTop < endAnchor.offsetTop;
-      this.setState({ wrapped });
+
+    if (ref) {
+      const startAnchor = ref.firstChild;
+      const endAnchor = ref.lastChild;
+
+      if (startAnchor && endAnchor) {
+        const wrapped = startAnchor.offsetTop < endAnchor.offsetTop;
+        this.setState({ wrapped });
+      }
     }
   };
+
 
   _toggleExpansion = (expanded: boolean): void => {
     this.setState({ expanded: !expanded });
