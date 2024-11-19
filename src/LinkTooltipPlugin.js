@@ -49,16 +49,22 @@ class LinkTooltipView {
   }
 
   getInnerlinkSelected_position(view: EditorView, selectionId): void {
-    let tocItemPos;
-    view.state.tr.doc.descendants((node, pos) => {
-      if (node.attrs.styleName && node.attrs.innerLink === selectionId) {
-        tocItemPos = pos;
-      }
-    });
+    let tocItemPos = null;
+    if (selectionId) {
+      view.state.tr.doc.descendants((node, pos) => {
+        if (node.attrs.styleName && node.attrs.innerLink === selectionId) {
+          tocItemPos = { position: pos, textContent: node.textContent };
+        }
+      });
+    }
     return tocItemPos;
   }
 
   update(view: EditorView, lastState: EditorState): void {
+    if (view.readOnly) {
+      this.destroy();
+      return;
+    }
 
     const { state } = view;
     const { doc, selection, schema } = state;
@@ -130,32 +136,33 @@ class LinkTooltipView {
   };
 
   showTocList = async (view) => {
+    let storeTOCvalue = [];
     const TOCselectedNode = [];
 
     const stylePromise = view.runtime;
     if (stylePromise === null || undefined) {
       return TOCselectedNode;
-    }
-    const styles = await view.runtime.getStylesAsync();
+    } else {
+      const styles = await stylePromise.fetchStyles();
 
-    const storeTOCvalue =
-      styles ??
-      []
+      storeTOCvalue = styles
         .filter((style) => style.styles.toc === true)
         .map((style) => style.styleName);
-    view.state.tr.doc.descendants((node, pos) => {
-      if (node.attrs.styleName) {
-        for (let i = 0; i <= storeTOCvalue.length; i++) {
-          if (storeTOCvalue[i] === node.attrs.styleName) {
-            TOCselectedNode.push({ node_: node, pos_: pos });
+      view.state.tr.doc.descendants((node, pos) => {
+        if (node.attrs.styleName) {
+          for (let i = 0; i <= storeTOCvalue.length; i++) {
+            if (storeTOCvalue[i] === node.attrs.styleName) {
+              TOCselectedNode.push({ node_: node, pos_: pos });
+            }
           }
         }
-      }
-    });
-    return TOCselectedNode;
+      });
+      return TOCselectedNode;
+    }
   };
 
   _onEdit = (view: EditorView): void => {
+    this._popup.close();
     if (this._editor) {
       return;
     }
@@ -169,31 +176,27 @@ class LinkTooltipView {
       return;
     }
 
-    this.showTocList(view)
-      .catch((error) => {
-        console.error('Failed to get Toc', error);
-        return [];
-      })
-      .then((data) => {
-        const tocItemsNode = data;
-        const href = result.mark.attrs.href;
-        const viewPops = {
-          selectionId_: result.mark.attrs.selectionId,
-          href_: href,
-          TOCselectedNode_: tocItemsNode,
-          view_: view,
-        };
+    this.showTocList(view).then((data) => {
+      const tocItemsNode = data;
+      const href = result.mark.attrs.href;
+      const viewPops = {
+        selectionId_: result.mark.attrs.selectionId,
+        href_: href,
+        TOCselectedNode_: tocItemsNode,
+        view_: view,
+      };
 
-        this._editor = createPopUp(LinkURLEditor, viewPops, {
-          onClose: (value) => {
-            this._editor = null;
-            this._onEditEnd(view, selection, value);
-          },
-        });
+      this._editor = createPopUp(LinkURLEditor, viewPops, {
+        onClose: (value) => {
+          this._editor = null;
+          this._onEditEnd(view, selection, value);
+        },
       });
+    });
   };
 
   _onRemove = (view: EditorView): void => {
+    this._popup.close();
     this._onEditEnd(view, view.state.selection, null);
   };
 

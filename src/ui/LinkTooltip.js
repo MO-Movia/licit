@@ -27,27 +27,36 @@ class LinkTooltip extends React.PureComponent<any, any> {
     const { href, editorView, onEdit, onRemove, tocItemPos_, selectionId_ } =
       this.props;
     // [FS] IRAD-1013 2020-07-09
-    // Change button in "Apply Link" missing in LICIT.
+    const getLabel = () => {
+      if (tocItemPos_ && selectionId_) {
+        return tocItemPos_.textContent === "" ? "Reference not found" : tocItemPos_.textContent;
+      }else if(!tocItemPos_ && selectionId_){
+        return "Reference not found"
+      }
+      return href;
+    };
+
+    const label = getLabel();
+    const isRemoved = label === "Reference not found";
+
     return (
       <div className="czi-link-tooltip">
         <div className="czi-link-tooltip-body">
           <div className="czi-link-tooltip-row">
             <CustomButton
-              className="czi-link-tooltip-href"
-              label={href}
-              onClick={() =>
-                this.jumpLink(editorView, tocItemPos_, href, selectionId_)
+              className={`czi-link-tooltip-href ${isRemoved ? 'red-text disabled' : ''}`}
+              label={label}
+              onClick={!isRemoved ? () =>
+                this.jumpLink(editorView, tocItemPos_?.position, href, selectionId_)
+                : undefined
               }
               target="new"
-              title={href}
-              value={href}
+              title={label}
+              value={label}
+              style={{ color: isRemoved ? 'red' : undefined }}
             />
             <CustomButton label="Change" onClick={onEdit} value={editorView} />
-            <CustomButton
-              label="Remove"
-              onClick={onRemove}
-              value={editorView}
-            />
+            <CustomButton label="Remove" onClick={onRemove} value={editorView} />
           </div>
         </div>
       </div>

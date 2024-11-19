@@ -5,28 +5,18 @@ import { TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 
-import {
-  MARK_LINK
-} from './MarkNames.js';
+import { MARK_LINK } from './MarkNames.js';
 import {
   hideSelectionPlaceholder,
   showSelectionPlaceholder,
 } from './SelectionPlaceholderPlugin.js';
-import {
-  applyMark
-} from '@modusoperandi/licit-ui-commands';
-import {
-  findNodesWithSameMark
-} from '@modusoperandi/licit-ui-commands';
+import { applyMark } from '@modusoperandi/licit-ui-commands';
+import { findNodesWithSameMark } from '@modusoperandi/licit-ui-commands';
 import LinkURLEditor from './ui/LinkURLEditor.js';
-import {
-  UICommand
-} from '@modusoperandi/licit-doc-attrs-step';
-import {
-  createPopUp
-} from '@modusoperandi/licit-ui-commands';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 
-import {INNER_LINK} from './Types.js';
+import { INNER_LINK } from './Types.js';
 
 class LinkSetURLCommand extends UICommand {
   _popUp = null;
@@ -54,19 +44,13 @@ class LinkSetURLCommand extends UICommand {
     if (stylePromise === null || undefined) {
       return TOCselectedNode;
     }
-
-    const styles = await stylePromise.getStylesAsync().catch(e => {
-      console('Could\'t fetch styles', e);
-      return [];
-    });
-
+    const styles = await stylePromise.fetchStyles();
 
     storeTOCvalue = styles
       .filter((style) => style.styles.toc === true)
       .map((style) => style.styleName);
 
     view.state.tr.doc.descendants((node, pos) => {
-
       if (node.attrs.styleName) {
         for (let i = 0; i <= storeTOCvalue.length; i++) {
           if (storeTOCvalue[i] === node.attrs.styleName) {
@@ -76,10 +60,7 @@ class LinkSetURLCommand extends UICommand {
       }
     });
 
-
-
     return TOCselectedNode;
-
   };
 
   waitForUserInput = async (
@@ -88,7 +69,6 @@ class LinkSetURLCommand extends UICommand {
     view: ?EditorView,
     event: ?SyntheticEvent<>
   ): Promise<any> => {
-
     if (dispatch) {
       dispatch(showSelectionPlaceholder(state));
     }

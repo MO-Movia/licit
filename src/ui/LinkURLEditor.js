@@ -3,8 +3,15 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
+import sanitizeURL from '../sanitizeURL.js';
 import {
-  CustomButton,
+  CustomButton
+} from '@modusoperandi/licit-ui-commands';
+import {
+  ENTER
+} from './KeyCodes.js';
+import {
+  preventEventDefault
 } from '@modusoperandi/licit-ui-commands';
 import uuid from '../uuid.js';
 
@@ -12,6 +19,10 @@ import './czi-form.css';
 import './czi-image-url-editor.css';
 import { EditorView } from 'prosemirror-view';
 import { INNER_LINK } from '../Types.js';
+import 'react-tooltip/dist/react-tooltip.css'
+import { Tooltip as ReactTooltip } from 'react-tooltip'
+
+const BAD_CHARACTER_PATTER = /\s/;
 
 class LinkURLEditor extends React.PureComponent<any, any> {
   static propTypes = {
@@ -32,103 +43,161 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     const defaultTab = selectionId ? 'innerlink' : 'webpage';
 
     const selectedTab = this.props.selectedTab || defaultTab;
-    this.setState((state) => ({
-      ...state,
-      isWebLink: selectedTab !== 'innerlink',
-    }));
+    this.openForm(selectedTab);
   }
 
-  render(): React.Element<any> {
-    const { url, TOCselectedNode_, view_, isWebLink } = this.state;
+  openForm = (formName) => {
+    let i;
+    const tabcontent = document.getElementsByClassName('tabcontent');
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = 'none';
+    }
 
-    const label = !this.props.href || url ? 'Apply' : 'Remove';
-    const disabled = !url || url.length === 0;
-    const formValue = url ?? '';
+    const tablinks = document.getElementsByClassName('tablinks');
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].classList.remove('active');
+    }
+
+    const selectedTab = document.getElementById(formName);
+    if (selectedTab) {
+      selectedTab.style.display = 'block';
+    }
+
+    const clickedButton = document.querySelector(
+      `.tablinks[data-form="${formName}"]`
+    );
+    if (clickedButton) {
+      clickedButton.classList.add('active');
+    }
+  };
+
+  render(): React.Element<any> {
+    const { url, TOCselectedNode_, view_, selectionId } =
+      this.state;
+
+    const isTOCValid = () => {
+      if (!TOCselectedNode_ || TOCselectedNode_.length === 0) {
+        return false;
+      }
+
+      return TOCselectedNode_.some(
+        item => item.node_ && item.node_.textContent.trim() !== ""
+      );
+    };
+    const isValid = isTOCValid();
+    console.log("isTOCValid:", isValid);
+   
+    const error = url ? BAD_CHARACTER_PATTER.test(url) : false;
+
+    let label = 'Apply';
+    let disabled = !!error;
+    if (this.props.href) {
+      label = url ? 'Apply' : 'Remove';
+      disabled = error;
+    } else {
+      disabled = error || !url;
+    }
 
     return (
       <div className="czi-image-url-editor">
-        <div className="czi-form">
+        <div className="czi-form" style={{padding:'10px', display:'flex'}}>
           <div className="tab">
             <button
-              className="tablinks active"
-              onClick={() => this.toggleForm()}
+              className="tablinks"
+              data-form="webpage"
+              onClick={() => this.openForm('webpage')}
             >
-              {isWebLink ? 'Place in this Document' : 'Existing Web Page'}
+              Existing Web Page
+            </button>
+            <button
+              className="tablinks"
+              data-form="innerlink"
+              onClick={() => this.openForm('innerlink')}
+            >
+              Place in this Document
             </button>
           </div>
 
-          <div className="tabcontent">
-            <form onSubmit={this._apply}>
-              {isWebLink
-                ? this.weblinkForm(formValue)
-                : this.innerLinkForm(formValue, TOCselectedNode_, view_)}
+          <div className="tabcontent" id="webpage" >
+            <form onSubmit={preventEventDefault}>
+              <fieldset>
+                <label>Add a Link : </label>
+                <input
+                  autoFocus={true}
+                  onChange={this._onURLChange}
+                  onKeyDown={this._onKeyDown}
+                  placeholder="Paste a URL"
+                  spellCheck={false}
+                  type="text"
+                  value={selectionId ? null : url}
+                />
+              </fieldset>
               <div className="czi-form-buttons">
                 <CustomButton label="Cancel" onClick={this._cancel} />
                 <CustomButton
-                  style={{
-                    display:
-                      isWebLink || TOCselectedNode_.length > 0
-                        ? 'block'
-                        : 'none',
-                  }}
                   active={true}
                   disabled={disabled}
                   label={label}
-                  onClick={() => this._apply()}
+                  onClick={() => {
+                    this._apply();
+                  }}
                 />
               </div>
             </form>
           </div>
+          {!isValid ? (
+            <div className="tabcontent" id="innerlink" >
+              <p>No TOC styles</p>
+              <div className="czi-form-buttons">
+                <CustomButton label="Cancel" onClick={this._cancel} />
+              </div>
+            </div>
+          ) : (
+
+            <div className="tabcontent" id="innerlink"   >
+              <form action="#">
+                <label>Select the Inner Link</label>
+                <br></br>
+                <select
+                  defaultValue={
+                    TOCselectedNode_.some(res => res.node_.textContent === url) ? url : null
+                  }
+                  id="toc"
+                  name="toccontents"
+                  size="3"
+                >
+                  {TOCselectedNode_?.filter(res => res.node_.textContent.trim() !== "").map((res, index) => (
+                    <option
+                      key={index}
+                      onClick={() => {
+                        this.handleOptionChange(
+                          res.node_.textContent,
+                          res.pos_,
+                          view_
+                        );
+                      }}
+                      value={res.node_.textContent}
+                      data-tooltip-id="select-toc-tooltip"
+                      data-tooltip-content={res.node_.textContent}
+                    >
+                      {res.node_.textContent}
+                    </option>
+                  ))}
+                </select>
+                <ReactTooltip
+                  id="select-toc-tooltip"
+                  place="bottom"
+                  effect="solid"
+                />
+                <br></br>
+                <div className="czi-form-buttons">
+                  <CustomButton label="Cancel" onClick={this._cancel} />
+                </div>
+              </form>
+            </div>
+          )}
         </div>
       </div>
-    );
-  }
-
-  toggleForm = () => {
-    this.setState((state) => ({
-      isWebLink: !state.isWebLink,
-    }));
-  };
-
-  weblinkForm(value) {
-    return (
-      <fieldset>
-        <label>Add a Link :</label>
-        <br />
-        <input
-          autoFocus={true}
-          onChange={this._onURLChange}
-          onKeyDown={this._onKeyDown}
-          placeholder="Paste a URL"
-          spellCheck={false}
-          type="text"
-          value={value}
-        />
-      </fieldset>
-    );
-  }
-
-  innerLinkForm(value, TOCselectedNode_, view_) {
-    return TOCselectedNode_.length === 0 ? (
-      <p>No TOC styles</p>
-    ) : (
-      <>
-        <label>Select the Inner Link</label>
-        <br />
-        <select defaultValue={value} id="toc" name="toccontents" size="3">
-          {TOCselectedNode_?.map((res) => (
-            <option
-              key={res.node_.textContent}
-              onClick={() => {
-                this.handleOptionChange(res.node_.textContent, res.pos_, view_);
-              }}
-              value={res.node_.textContent}
-            >
-              {res.node_.textContent}
-            </option>
-          ))}
-        </select>
-      </>
     );
   }
 
@@ -150,6 +219,13 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     this.props.close(textContent);
   };
 
+  _onKeyDown = (e: any) => {
+    if (e.keyCode === ENTER) {
+      e.preventDefault();
+      this._apply();
+    }
+  };
+
   _onURLChange = (e: SyntheticInputEvent<>) => {
     const url = e.target.value;
     this.setState({
@@ -161,12 +237,11 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     this.props.close();
   };
 
-  _apply = (event): void => {
+  _apply = (): void => {
     const { url } = this.state;
-    if (url) {
-      this.props.close(url);
+    if (url && !BAD_CHARACTER_PATTER.test(url)) {
+      this.props.close(sanitizeURL(url));
     }
-    event?.preventDefault();
   };
 }
 
