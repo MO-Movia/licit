@@ -19,8 +19,8 @@ import './czi-form.css';
 import './czi-image-url-editor.css';
 import { EditorView } from 'prosemirror-view';
 import { INNER_LINK } from '../Types.js';
-import 'react-tooltip/dist/react-tooltip.css'
-import { Tooltip as ReactTooltip } from 'react-tooltip'
+import 'react-tooltip/dist/react-tooltip.css';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 const BAD_CHARACTER_PATTER = /\s/;
 
@@ -81,12 +81,12 @@ class LinkURLEditor extends React.PureComponent<any, any> {
       }
 
       return TOCselectedNode_.some(
-        item => item.node_ && item.node_.textContent.trim() !== ""
+        item => item.node_ && item.node_.textContent.trim() !== ''
       );
     };
     const isValid = isTOCValid();
-    console.log("isTOCValid:", isValid);
-   
+    console.log('isTOCValid:', isValid);
+
     const error = url ? BAD_CHARACTER_PATTER.test(url) : false;
 
     let label = 'Apply';
@@ -166,8 +166,10 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                   name="toccontents"
                   size="3"
                 >
-                  {TOCselectedNode_?.filter(res => res.node_.textContent.trim() !== "").map((res, index) => (
+                  {TOCselectedNode_?.filter(res => res.node_.textContent.trim() !== '').map((res, index) => (
                     <option
+                      data-tooltip-content={res.node_.textContent}
+                      data-tooltip-id="select-toc-tooltip"
                       key={index}
                       onClick={() => {
                         this.handleOptionChange(
@@ -177,17 +179,15 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                         );
                       }}
                       value={res.node_.textContent}
-                      data-tooltip-id="select-toc-tooltip"
-                      data-tooltip-content={res.node_.textContent}
                     >
                       {res.node_.textContent}
                     </option>
                   ))}
                 </select>
                 <ReactTooltip
+                  effect="solid"
                   id="select-toc-tooltip"
                   place="bottom"
-                  effect="solid"
                 />
                 <br></br>
                 <div className="czi-form-buttons">

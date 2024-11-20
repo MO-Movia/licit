@@ -39,7 +39,7 @@ describe('<Licit />', () => {
   };
 
   it('should render a <RichTextEditor /> ', () => {
-    const wrapper = new RichTextEditor({data})
+    const wrapper = new RichTextEditor({data});
     wrapper.props = {
       type: 'doc',
       content: [
@@ -53,13 +53,13 @@ describe('<Licit />', () => {
       children:'',
       className:'licit',
       disabled:true,
-    }
+    };
     expect(wrapper.render()).toBeTruthy();
   });
 
   describe('editorView (getter)', () => {
     it('should return the prosemirror view', () => {
-      const wrapper = new RichTextEditor({data})
+      const wrapper = new RichTextEditor({data});
       wrapper.props = {
         type: 'doc',
         content: [
@@ -73,7 +73,7 @@ describe('<Licit />', () => {
         children:'',
         className:'licit',
         disabled:true,
-      }
+      };
       expect(wrapper._onReady(fakeEditorView)).toBeUndefined();
     });
   });

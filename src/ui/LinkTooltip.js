@@ -29,15 +29,15 @@ class LinkTooltip extends React.PureComponent<any, any> {
     // [FS] IRAD-1013 2020-07-09
     const getLabel = () => {
       if (tocItemPos_ && selectionId_) {
-        return tocItemPos_.textContent === "" ? "Reference not found" : tocItemPos_.textContent;
+        return tocItemPos_.textContent === '' ? 'Reference not found' : tocItemPos_.textContent;
       }else if(!tocItemPos_ && selectionId_){
-        return "Reference not found"
+        return 'Reference not found';
       }
       return href;
     };
 
     const label = getLabel();
-    const isRemoved = label === "Reference not found";
+    const isRemoved = label === 'Reference not found';
 
     return (
       <div className="czi-link-tooltip">
@@ -50,10 +50,10 @@ class LinkTooltip extends React.PureComponent<any, any> {
                 this.jumpLink(editorView, tocItemPos_?.position, href, selectionId_)
                 : undefined
               }
+              style={{ color: isRemoved ? 'red' : undefined }}
               target="new"
               title={label}
               value={label}
-              style={{ color: isRemoved ? 'red' : undefined }}
             />
             <CustomButton label="Change" onClick={onEdit} value={editorView} />
             <CustomButton label="Remove" onClick={onRemove} value={editorView} />
