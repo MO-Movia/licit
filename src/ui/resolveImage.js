@@ -53,12 +53,12 @@ function processPromise(
     resolve(result);
     return;
   } else if (cache[srcStr]) {
-    const cachedResult = { ...cache[srcStr] }; 
+    const cachedResult = { ...cache[srcStr] };
     resolve(cachedResult);
     return;
   }
 
-  const parsedURL = new URL(srcStr);  
+  const parsedURL = new URL(srcStr);
   // [FS] IRAD-1007 2020-07-13
   // Removed the port validation from here
   const { protocol } = parsedURL;

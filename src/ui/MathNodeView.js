@@ -4,26 +4,19 @@ import './czi-math-view.css';
 import CustomNodeView from './CustomNodeView.js';
 import MathInlineEditor from './MathInlineEditor.js';
 import * as React from 'react';
-import { createPopUp, atAnchorBottomCenter } from '@modusoperandi/licit-ui-commands';
+import {
+  createPopUp,
+  atAnchorBottomCenter,
+} from '@modusoperandi/licit-ui-commands';
 import cx from 'classnames';
 import renderLaTeXAsHTML from './renderLaTeXAsHTML.js';
 import uuid from './uuid.js';
-import {
-  Decoration
-} from 'prosemirror-view';
-import {
-  FRAMESET_BODY_CLASSNAME
-} from './EditorFrameset.js';
-import {
-  Node
-} from 'prosemirror-model'; 
-import {
-  NodeSelection
-} from 'prosemirror-state';
+import { Decoration } from 'prosemirror-view';
+import { FRAMESET_BODY_CLASSNAME } from './EditorFrameset.js';
+import { Node } from 'prosemirror-model';
+import { NodeSelection } from 'prosemirror-state';
 
-import type {
-  NodeViewProps
-} from './CustomNodeView.js';
+import type { NodeViewProps } from './CustomNodeView.js';
 const EMPTY_SRC =
   'data:image/gif;base64,' +
   'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';

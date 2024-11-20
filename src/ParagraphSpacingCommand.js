@@ -74,7 +74,7 @@ export function setParagraphSpacing(
     } else {
       attrs = {
         ...attrs,
-        paragraphSpacingBefore: paragraphSpacingValue || null,          
+        paragraphSpacingBefore: paragraphSpacingValue || null,
       };
     }
     tr = tr.setNodeMarkup(pos, nodeType, attrs, node.marks);

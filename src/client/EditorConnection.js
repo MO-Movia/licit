@@ -228,10 +228,10 @@ class EditorConnection {
         this.backOff = 0;
         const tr = steps
           ? receiveTransaction(
-            this.state.edit,
-            steps.steps,
-            repeat(steps.clientID, steps.steps.length)
-          )
+              this.state.edit,
+              steps.steps,
+              repeat(steps.clientID, steps.steps.length)
+            )
           : this.state.edit.tr;
 
         this.dispatch({
@@ -296,8 +296,8 @@ class EditorConnection {
   }
 
   run(request: any): Promise<any> {
-    this.request = request
-    return (this.request);
+    this.request = request;
+    return this.request;
   }
 
   close(): void {

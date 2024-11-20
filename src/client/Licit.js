@@ -11,12 +11,8 @@ import RichTextEditor from '../ui/RichTextEditor.js';
 import uuid from '../uuid.js';
 import SimpleConnector from './SimpleConnector.js';
 import CollabConnector from './CollabConnector.js';
-import {
-  EMPTY_DOC_JSON
-} from '../createEmptyEditorState.js';
-import type {
-  EditorRuntime
-} from '../Types.js';
+import { EMPTY_DOC_JSON } from '../createEmptyEditorState.js';
+import type { EditorRuntime } from '../Types.js';
 import {
   createPopUp,
   atViewportCenter,
@@ -81,7 +77,7 @@ class Licit extends React.Component<any, any> {
     this._editorView = null;
     this._skipSCU = true;
 
-    const noop = function () { };
+    const noop = function () {};
 
     // [FS] IRAD-981 2020-06-10
     // Component's configurations.
@@ -128,17 +124,17 @@ class Licit extends React.Component<any, any> {
     const setState = this.setState.bind(this);
     this._connector = collaborative
       ? new CollabConnector(
-        editorState,
-        setState,
-        {
-          docID,
-          collabServiceURL,
-        },
-        this._defaultEditorSchema,
-        this._defaultEditorPlugins,
-        // [FS] IRAD-1578 2021-09-27
-        this.onReady.bind(this)
-      )
+          editorState,
+          setState,
+          {
+            docID,
+            collabServiceURL,
+          },
+          this._defaultEditorSchema,
+          this._defaultEditorPlugins,
+          // [FS] IRAD-1578 2021-09-27
+          this.onReady.bind(this)
+        )
       : new SimpleConnector(editorState, setState);
 
     this._connector._dataDefined = !!props.data;
@@ -357,7 +353,6 @@ class Licit extends React.Component<any, any> {
     // [FS] IRAD-1571 2021-09-27
     // dispatch a transaction that MUST start from the views current state;
     const editorState = this._editorView.state;
-    const { doc } = editorState;
     let { tr } = editorState;
     const document = this.getDocument(content, editorState, dataType);
     this.skipDataTypeCheck = true;
@@ -434,17 +429,17 @@ class Licit extends React.Component<any, any> {
     // create new connector
     this._connector = collabEditing
       ? new CollabConnector(
-        editorState,
-        setState,
-        {
-          docID,
-          collabServiceURL,
-        },
-        this._defaultEditorSchema,
-        this._defaultEditorPlugins,
-        // [FS] IRAD-1578 2021-09-27
-        this.onReady.bind(this)
-      )
+          editorState,
+          setState,
+          {
+            docID,
+            collabServiceURL,
+          },
+          this._defaultEditorSchema,
+          this._defaultEditorPlugins,
+          // [FS] IRAD-1578 2021-09-27
+          this.onReady.bind(this)
+        )
       : new SimpleConnector(editorState, setState);
 
     // FS IRAD-1592 2021-11-10
@@ -568,8 +563,6 @@ class Licit extends React.Component<any, any> {
     }
   };
 
-
-
   /**
    * LICIT properties:
    *  docID {number} [0] Collaborative Doument ID
@@ -608,10 +601,11 @@ class Licit extends React.Component<any, any> {
     // Return focus to the editor with cursor at end of document.
     const view: EditorView = this.editorView;
     const tr = view.state.tr;
-    view.dispatch(tr.setSelection(TextSelection.atEnd(view.state.doc)).scrollIntoView());
+    view.dispatch(
+      tr.setSelection(TextSelection.atEnd(view.state.doc)).scrollIntoView()
+    );
     view.focus();
   };
-
 }
 
 export default Licit;

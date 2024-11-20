@@ -14,4 +14,4 @@ window.MathQuill = window.MathQuill || mathquill;
 
 import 'node-mathquill/build/mathquill.css';
 
-export const MathQuill = window.MathQuill || mathquill; 
+export const MathQuill = window.MathQuill || mathquill;

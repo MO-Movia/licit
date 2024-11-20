@@ -2,11 +2,14 @@
 
 import cx from 'classnames';
 import * as React from 'react';
-import ReactDOM from 'react-dom';
 
 import { clamp } from '@modusoperandi/licit-ui-commands';
 import htmlElementToRect from './htmlElementToRect.js';
-import { fromHTMlElement, fromXY, isIntersected } from '@modusoperandi/licit-ui-commands';
+import {
+  fromHTMlElement,
+  fromXY,
+  isIntersected,
+} from '@modusoperandi/licit-ui-commands';
 
 import './czi-table-grid-size-editor.css';
 

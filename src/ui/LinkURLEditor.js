@@ -5,11 +5,10 @@ import PropTypes from 'prop-types';
 
 import sanitizeURL from '../sanitizeURL.js';
 import {
-  CustomButton, preventEventDefault
+  CustomButton,
+  preventEventDefault,
 } from '@modusoperandi/licit-ui-commands';
-import {
-  ENTER
-} from './KeyCodes.js'; 
+import { ENTER } from './KeyCodes.js';
 import uuid from '../uuid.js';
 
 import './czi-form.css';
@@ -30,7 +29,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     url: this.props.href_,
     TOCselectedNode_: this.props.TOCselectedNode_,
     view_: this.props.view_,
-    selectionId: this.props.selectionId_
+    selectionId: this.props.selectionId_,
   };
 
   componentDidMount() {
@@ -72,8 +71,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const { url, TOCselectedNode_, view_, selectionId } =
-      this.state;
+    const { url, TOCselectedNode_, view_, selectionId } = this.state;
     const error = url ? BAD_CHARACTER_PATTER.test(url) : false;
 
     let label = 'Apply';
@@ -105,7 +103,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
             </button>
           </div>
 
-          <div className="tabcontent" id="webpage" >
+          <div className="tabcontent" id="webpage">
             <form onSubmit={preventEventDefault}>
               <fieldset>
                 <label>Add a Link : </label>
@@ -133,22 +131,19 @@ class LinkURLEditor extends React.PureComponent<any, any> {
             </form>
           </div>
           {TOCselectedNode_.length === 0 ? (
-            <div className="tabcontent" id="innerlink" >
+            <div className="tabcontent" id="innerlink">
               <p>No TOC styles</p>
               <div className="czi-form-buttons">
                 <CustomButton label="Cancel" onClick={this._cancel} />
               </div>
             </div>
           ) : (
-
-            <div className="tabcontent" id="innerlink"   >
+            <div className="tabcontent" id="innerlink">
               <form action="#">
                 <label>Select the Inner Link</label>
                 <br></br>
                 <select
-                  defaultValue={
-                    selectionId ? url : null
-                  }
+                  defaultValue={selectionId ? url : null}
                   id="toc"
                   name="toccontents"
                   size="3"
@@ -182,11 +177,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     );
   }
 
-  handleOptionChange = (
-    textContent_,
-    tocNodePosition_,
-    view: EditorView
-  ) => {
+  handleOptionChange = (textContent_, tocNodePosition_, view: EditorView) => {
     const tr = view.state.tr;
     const TocNode = view.state.doc.nodeAt(tocNodePosition_);
     let textContent;

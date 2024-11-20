@@ -1,5 +1,5 @@
 // @flow
-
+import url from 'url';
 const addedElements = new Map();
 
 function createElement(tag: string, attrs: Object): Element {
