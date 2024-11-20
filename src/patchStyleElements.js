@@ -1,9 +1,7 @@
 // @flow
 
 import toCSSColor from './ui/toCSSColor.js';
-import {
-  toCSSLineSpacing
-} from '@modusoperandi/licit-ui-commands';
+import { toCSSLineSpacing } from '@modusoperandi/licit-ui-commands';
 
 const LIST_ITEM_PSEUDO_ELEMENT_BEFORE = /li:+before/;
 const NODE_NAME_SELECTOR = /^[a-zA-Z]+\d*$/;
@@ -81,9 +79,12 @@ export default function patchStyleElements(doc: Document): void {
         }
       });
       if (selectorText.indexOf(',') > -1) {
-        selectorText.split(/\s*,\s*/).forEach((st) => {
-          buildSelectorTextToCSSText(selectorTextToCSSTexts, st, cssText);
-        });
+        selectorText
+          .split('.')
+          .trim()
+          .forEach((st) => {
+            buildSelectorTextToCSSText(selectorTextToCSSTexts, st, cssText);
+          });
       } else {
         buildSelectorTextToCSSText(
           selectorTextToCSSTexts,

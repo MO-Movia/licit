@@ -1,20 +1,11 @@
 // @flow
 
 import { Node } from 'prosemirror-model';
-
-import ParagraphNodeSpec from './ParagraphNodeSpec';
-import { getParagraphNodeAttrs, toParagraphDOM } from './ParagraphNodeSpec';
-
+import ParagraphNodeSpec, {
+  getParagraphNodeAttrs,
+  toParagraphDOM,
+} from './ParagraphNodeSpec';
 import type { NodeSpec } from './Types';
-
-// const TAG_NAME_TO_LEVEL = {
-//   H1: 1,
-//   H2: 2,
-//   H3: 3,
-//   H4: 4,
-//   H5: 5,
-//   H6: 6,
-// };
 
 // https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
 // :: NodeSpec A plain paragraph textblock. Represented in the DOM
@@ -23,7 +14,6 @@ const HeadingNodeSpec: NodeSpec = {
   ...ParagraphNodeSpec,
   attrs: {
     ...ParagraphNodeSpec.attrs,
-    // level: { default: 1 },
   },
   defining: true,
   parseDOM: [

@@ -12,8 +12,6 @@ export function req(conf) {
         success(req.responseText);
       } else {
         let text = req.responseText;
-        if (text && /html/.test(req.getResponseHeader('content-type')))
-          text = makePlain(text);
         let err = new Error(
           'Request failed: ' + req.statusText + (text ? '\n\n' + text : '')
         );
@@ -37,12 +35,6 @@ export function req(conf) {
     }
   };
   return result;
-}
-
-function makePlain(html) {
-  var elt = document.createElement('div');
-  elt.innerHTML = html;
-  return elt.textContent.replace(/\n[^]*|\s+$/g, '');
 }
 
 export function GET(url) {

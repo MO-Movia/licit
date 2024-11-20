@@ -1,7 +1,5 @@
 // @flow
-
 import url from 'url';
-
 const addedElements = new Map();
 
 function createElement(tag: string, attrs: Object): Element {
@@ -17,7 +15,7 @@ function createElement(tag: string, attrs: Object): Element {
 }
 
 export default function injectStyleSheet(urlStr: string): void {
-  const parsedURL = url.parse(urlStr);
+  const parsedURL = new URL(urlStr);
   const { protocol } = parsedURL;
   const protocolPattern = /^(http:|https:)/;
   if (!protocolPattern.test(protocol || '')) {
@@ -38,5 +36,5 @@ export default function injectStyleSheet(urlStr: string): void {
   });
   addedElements.set(href, el);
   const root = document.head || document.documentElement || document.body;
-  root && root.appendChild(el);
+  root?.appendChild(el);
 }

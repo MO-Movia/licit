@@ -1,11 +1,9 @@
 // @flow
 
 import nullthrows from 'nullthrows';
-import { Plugin, PluginKey } from 'prosemirror-state';
-import { EditorState, TextSelection } from 'prosemirror-state';
+import { EditorState, TextSelection, Plugin, PluginKey } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { Decoration, DecorationSet } from 'prosemirror-view';
-import { EditorView } from 'prosemirror-view';
+import { Decoration, DecorationSet, EditorView } from 'prosemirror-view';
 
 import { IMAGE } from './NodeNames.js';
 import uuid from './ui/uuid.js';
@@ -56,7 +54,7 @@ export function uploadImageFiles(
 ): boolean {
   const { runtime, state, readOnly, disabled } = view;
   const { schema, plugins } = state;
-  if (readOnly || disabled || !runtime || !runtime.canUploadImage) {
+  if (readOnly || disabled || !runtime?.canUploadImage) {
     return false;
   }
 
@@ -162,7 +160,7 @@ class ImageUploadPlaceholderPlugin extends Plugin {
           set = set.map(tr.mapping, tr.doc);
           // See if the transaction adds or removes any placeholders
           const action = tr.getMeta(this);
-          if (action && action.add) {
+          if (action?.add) {
             const el = document.createElement('div');
             el.title = TITLE;
             el.className = 'czi-image-upload-placeholder';
@@ -173,7 +171,7 @@ class ImageUploadPlaceholderPlugin extends Plugin {
             });
 
             set = set.add(tr.doc, [deco]);
-          } else if (action && action.remove) {
+          } else if (action?.remove) {
             const finder = (spec) => spec.id == action.remove.id;
             set = set.remove(set.find(null, null, finder));
           }

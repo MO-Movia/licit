@@ -2,8 +2,7 @@
 
 import nullthrows from 'nullthrows';
 import { Fragment, Schema } from 'prosemirror-model';
-import { EditorState } from 'prosemirror-state';
-import { TextSelection } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
@@ -109,12 +108,12 @@ function mergeListItemDown(tr: Transform, schema: Schema): Transform {
   let nextContent;
 
   switch (nextNode.type) {
-    case listItem:
+    case listItem: {
       // List item should only have one child (paragraph).
       const paragraphNode = nullthrows(nextNode.firstChild);
       nextContent = Fragment.from(paragraphNode.content);
       break;
-
+    }
     case schema.nodes[HEADING]:
     case schema.nodes[PARAGRAPH]:
       // Will bring in the content of the next block.

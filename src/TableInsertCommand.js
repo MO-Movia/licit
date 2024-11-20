@@ -1,16 +1,14 @@
 // @flow
 
 import nullthrows from 'nullthrows';
-import { EditorState } from 'prosemirror-state';
-import { TextSelection } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import { Fragment } from 'prosemirror-model';
 import insertTable from './insertTable.js';
-import { atAnchorRight } from '@modusoperandi/licit-ui-commands';
+import { atAnchorRight, createPopUp } from '@modusoperandi/licit-ui-commands';
 import TableGridSizeEditor from './ui/TableGridSizeEditor.js';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import {
   PARAGRAPH
 } from './NodeNames.js';

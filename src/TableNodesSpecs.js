@@ -24,7 +24,8 @@ const TableNodesSpecs = tableNodes({
       },
       setDOMAttr(value, attrs) {
         if (value) {
-          attrs.style = (attrs.style || '') + `;border-color: ${value};`;
+          const colorValue = String(value);
+          attrs.style = (attrs.style || '') + `;border-color: ${colorValue};`;
         }
       },
     },
@@ -36,7 +37,8 @@ const TableNodesSpecs = tableNodes({
       },
       setDOMAttr(value, attrs) {
         if (value) {
-          attrs.style = (attrs.style || '') + `;background-color: ${value};`;
+          const colorValue = String(value);
+          attrs.style = (attrs.style || '') + `;background-color: ${colorValue};`;
         }
       },
     },

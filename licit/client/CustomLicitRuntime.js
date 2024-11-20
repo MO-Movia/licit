@@ -3,7 +3,11 @@
 // This implements the interface of `EditorRuntime`.
 // To  run  editor directly:
 import type { ImageLike, RecentColor } from '../../src/Types.js';
-import { POST } from '../../src/client/http.js';
+import { POST, GET, DELETE, PATCH } from '../../src/client/http.js';
+
+
+const STYLES_URI = 'http://greathints.com:3000';
+const TYPE_JSON = 'application/json; charset=utf-8';
 
 // When use it in a componet:
 
@@ -14,6 +18,46 @@ import { POST } from '../../src/client/http.js';
 
 // const GLOSSARY_URI = 'http://greathints.com:3003';
 
+type HTMLStyles = {
+  align?: string; // Text align
+  boldNumbering?: boolean; // true= Bold the Numbering part
+  boldPartial?: boolean; // true = Bold first word
+  boldSentence?: boolean; // true = Bold first sentence
+  fontName?: string; // Font Name
+  fontSize?: string; // Font size
+  strong?: boolean; // Bold
+  em?: boolean; // Italic
+  underline?: boolean; // Text Underline
+  color?: string; // Text colour
+  textHighlight?: string; // Text highlight
+  hasNumbering?: boolean; // true= The style has numbering
+  hasBullet?: boolean; // true= The style has bullet
+  paragraphSpacingAfter?: string; // Spacing after a Paragraph
+  paragraphSpacingBefore?: string; // Spacing before a Paragraph
+  styleLevel?: number; // Numbering heirachy level
+  bulletLevel?: string | boolean; // Numbering heirachy level
+  lineHeight?: string; // Line spacing
+  isLevelbased?: boolean; // true= Text indent will be based on Level
+  indent?: string; // Text indent
+  nextLineStyleName?: string;
+  toc?: boolean;
+  isHidden?: boolean;
+  strike?: string;
+  isList?: boolean;
+  prefixValue?: string;
+};
+
+type Style = {
+  /**
+   * Name of the style. Case insensitive value must be unique.
+   */
+  styleName: string; // Style name to display
+  mode?: number; // For Style Editor UI behaviour //0 = new , 1- modify, 2- rename, 3- editall
+  description?: string; // style description
+  styles?: HTMLStyles;
+  docType?: string
+};
+
 type Glossary = {
   id: string,
   term: string,
@@ -21,6 +65,8 @@ type Glossary = {
 };
 
 class CustomLicitRuntime {
+
+  stylePromise: Promise<Style[]>;
   getAcronyms(abbreviation: string): Promise<Glossary[]> {
     return new Promise((resolve, _reject) => {
       resolve([
@@ -295,6 +341,117 @@ class CustomLicitRuntime {
     });
   }
 
+  /**
+   * Save or update a style.
+   *
+   * @param style Style to update.
+   * @return Updated array of styles.
+   */
+  async saveStyle(style: Style): Promise<Style[]> {
+    try {
+      const json = JSON.stringify(style);
+      const url = this.buildRoute('styles');
+      // Issue HTTP request and save style to service.
+      await POST(url, json, TYPE_JSON);
+    } catch (error) {
+      // Log error to console, but otherwise ignore it. In the place in the
+      // editor where this method is called, there is no accommodation for
+      // handling errors.
+      console.error('Failed to save style', style, error);
+    }
+
+    // Refresh styles from service. This becomes the new cache.
+    this.stylePromise = this.fetchStyles();
+    return this.stylePromise;
+  }
+
+  /**
+   * Fetch list of styles.
+   *
+   * @returns Array of styles or empty array
+   */
+  getStylesAsync(): Promise<Style[]> {
+    if (!this.stylePromise) {
+      this.stylePromise = this.fetchStyles();
+    }
+    return this.stylePromise;
+  }
+
+  /**
+   * Renames an existing style on the service.
+   *
+   * @param oldName name of style to rename
+   * @param newName new name to apply to style
+   */
+  async renameStyle(oldName: string, newName: string): Promise<Style[]> {
+    try {
+      const json = JSON.stringify({ oldName, newName });
+      const url = this.buildRoute('styles/rename');
+      await PATCH(url, json, TYPE_JSON);
+    } catch (error) {
+      // Log error to console, but otherwise ignore it. In the place in the
+      // editor where this method is called, there is no accommodation for
+      // handling errors.
+      console.error('Failed to rename style', oldName, newName, error);
+    }
+
+    // Refresh styles from service. This becomes the new cache.
+    this.stylePromise = this.fetchStyles();
+    return this.stylePromise;
+  }
+
+  /**
+   * Remove an existing style from the service.
+   * @param styleName Name of style to delete
+   */
+  async removeStyle(styleName: string): Promise<Style[]> {
+    try {
+      const url = this.buildRoute('styles', encodeURIComponent(styleName));
+      // Issue the HTTP request to delete the named style.
+      await DELETE(url, 'text/plain');
+    } catch (error) {
+      // Log error to console, but otherwise ignore it. In the place in the
+      // editor where this method is called, there is no accommodation for
+      // handling errors.
+      console.error('Failed to delete style', styleName, error);
+    }
+
+    // Refresh styles from service. This becomes the new cache.
+    this.stylePromise = this.fetchStyles();
+    return this.stylePromise;
+  }
+
+  /**
+   * Issue HTTP request to fetch styles from service.  Used internally by
+   * runtime, but should not be used externally.
+   *
+   * @returns Style array or empty array on error.
+   * @private
+   */
+  async fetchStyles(): Promise<Style[]> {
+    let styles: Style[];
+    try {
+      styles = JSON.parse(await GET(this.buildRoute('styles')));
+    } catch (error) {
+      // HTTP request or parsing of response failed.
+      // In either case, log an error and treat as if an empty array was
+      // returned.
+      styles = [];
+      console.error('Failed to fetch styles from service', error);
+    }
+
+    // Return the styles.
+    return styles;
+  }
+
+  /**
+  * Helper method for building URI
+  *
+  * @param path  path segments to join.
+  */
+  buildRoute(...path: string[]) {
+    return [STYLES_URI, ...path].join('/');
+  }
   getRecentColors(): Promise<RecentColor[]> {
     const apiUrl =
       window.location.protocol +

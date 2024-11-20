@@ -67,7 +67,7 @@ class CommandMenu extends React.PureComponent<any, any> {
   _execute = (command: UICommand, e: SyntheticEvent<>) => {
     const { dispatch, editorState, editorView, onCommand } = this.props;
     if (command.execute(editorState, dispatch, editorView, e)) {
-      onCommand && onCommand();
+      onCommand?.();
     }
   };
 }

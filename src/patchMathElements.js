@@ -1,7 +1,5 @@
 // @flow
 
-import queryString from 'query-string';
-import url from 'url';
 export default function patchMathElements(doc: Document): void {
   Array.from(doc.querySelectorAll('img')).forEach(patchGoogleEquationElement);
 }
@@ -41,12 +39,12 @@ function getGoogleEquationContent(src: ?string): ?string {
   if (!src) {
     return null;
   }
-  const { host, pathname, query } = url.parse(src);
+  const { host, pathname, query } = new URL(src);
   if (host !== 'www.google.com' || pathname !== '/chart') {
     return null;
   }
 
-  const params = queryString.parse(query);
+  const params = new URL(query);
   const chartType = params[PARAM_CHART_CHART_TYPE];
   const label = params[PARAM_CHART_LABEL];
 

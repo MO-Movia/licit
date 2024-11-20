@@ -6,12 +6,10 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import findActionableCell from './findActionableCell.js';
-import { atAnchorTopRight } from '@modusoperandi/licit-ui-commands';
+import { atAnchorTopRight, createPopUp } from '@modusoperandi/licit-ui-commands';
 import TableCellMenu from './ui/TableCellMenu.js';
 import bindScrollHandler from './ui/bindScrollHandler.js';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import isElementFullyVisible from './ui/isElementFullyVisible.js';
-
 import '@modusoperandi/licit-ui-commands/ui/czi-pop-up.css';
 import { CellSelection } from 'prosemirror-tables';
 
@@ -59,14 +57,14 @@ class TableCellTooltipView {
 
     if (!cellEl) {
       // Closes the popup.
-      popUp && popUp.close();
+      popUp?.close();
       this._cellElement = null;
     } else if (popUp && cellEl === this._cellElement) {
       // Updates the popup.
       popUp.update(viewPops);
     } else {
       // Creates a new popup.
-      popUp && popUp.close();
+      popUp?.close();
       this._cellElement = cellEl;
       // [FS] IRAD-1009 2020-07-16
       // Does not allow Table Menu Popuup button in disable mode
@@ -83,7 +81,7 @@ class TableCellTooltipView {
   }
 
   destroy = (): void => {
-    this._popUp && this._popUp.close();
+    this._popUp?.close();
     this._popUp = null;
   };
 
@@ -97,7 +95,7 @@ class TableCellTooltipView {
 
   _onClose = (): void => {
     this._popUp = null;
-    this._scrollHandle && this._scrollHandle.dispose();
+    this._scrollHandle?.dispose();
     this._scrollHandle = null;
   };
 

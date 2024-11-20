@@ -7,9 +7,8 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
 import CommandMenu from './CommandMenu.js';
-import { CustomButton } from '@modusoperandi/licit-ui-commands';
+import { CustomButton, createPopUp } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid.js';
 
 import './czi-custom-menu-button.css';
@@ -96,7 +95,7 @@ class CommandMenuButton extends React.PureComponent<any, any> {
   _hideMenu = (): void => {
     const menu = this._menu;
     this._menu = null;
-    menu && menu.close();
+    menu?.close();
   };
 
   _showMenu = (): void => {

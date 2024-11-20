@@ -6,8 +6,6 @@ export const LINE_SPACING_115 = '138%';
 export const LINE_SPACING_150 = '165%';
 export const LINE_SPACING_200 = '232%';
 
-const NUMBER_VALUE_PATTERN = /^\d+(.\d+)?$/;
-
 // Normalize the css line-height vlaue to percentage-based value if applicable.
 // Also, it calibrates the incorrect line spacing value exported from Google
 // Doc.
@@ -19,8 +17,8 @@ export default function toCSSLineSpacing(source: any): string {
   let strValue = String(source);
 
   // e.g. line-height: 1.5;
-  if (NUMBER_VALUE_PATTERN.test(strValue)) {
-    const numValue = parseFloat(strValue);
+  if (!isNaN(Number(strValue))) {
+    const numValue = Number(strValue);
     strValue = String(Math.round(numValue * 100)) + '%';
   }
 

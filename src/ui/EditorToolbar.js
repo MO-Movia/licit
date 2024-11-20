@@ -5,22 +5,14 @@ import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
-import ReactDOM from 'react-dom';
 
 import CommandButton from './CommandButton.js';
 import CommandMenuButton from './CommandMenuButton.js';
-import {
-  CustomButton
-} from '@modusoperandi/licit-ui-commands';
-import {
-  COMMAND_GROUPS,
-  parseLabel
-} from './EditorToolbarConfig.js';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
+import { COMMAND_GROUPS, parseLabel } from './EditorToolbarConfig.js';
 import Icon from './Icon.js';
 import ResizeObserver from './ResizeObserver.js';
-import {
-  UICommand
-} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import isReactClass from './isReactClass.js';
 
 import './czi-editor-toolbar.css';
@@ -65,7 +57,7 @@ class EditorToolbar extends React.PureComponent<any, any> {
         //  p => p.buttonGroup
         // but changing it now would mean finding every plugin that was
         // implemented this way.
-        .map((p) => p.initButtonCommands && p.initButtonCommands())
+        .map((p) => p.initButtonCommands?.())
         .filter(Boolean)
     )
       .map(this._renderButtonsGroup)
@@ -135,12 +127,8 @@ class EditorToolbar extends React.PureComponent<any, any> {
     label: string,
     commandGroups: Array<{ [string]: UICommand }>
   ): React.Element<any> => {
-    const {
-      editorState,
-      editorView,
-      disabled,
-      dispatchTransaction,
-    } = this.props;
+    const { editorState, editorView, disabled, dispatchTransaction } =
+      this.props;
     const { icon, title } = parseLabel(label);
     return (
       <CommandMenuButton
@@ -158,12 +146,8 @@ class EditorToolbar extends React.PureComponent<any, any> {
   };
 
   _renderButton = (label: string, command: UICommand): React.Element<any> => {
-    const {
-      disabled,
-      editorState,
-      editorView,
-      dispatchTransaction,
-    } = this.props;
+    const { disabled, editorState, editorView, dispatchTransaction } =
+      this.props;
     const { icon, title } = parseLabel(label);
 
     return (
@@ -181,32 +165,29 @@ class EditorToolbar extends React.PureComponent<any, any> {
     );
   };
 
-  _onBodyRef = (ref: any): void => {
+  _onBodyRef = (ref: HTMLElement): void => {
     if (ref) {
       this._body = ref;
       // Mounting
-      const el = ReactDOM.findDOMNode(ref);
-      if (el instanceof HTMLElement) {
-        ResizeObserver.observe(el, this._checkIfContentIsWrapped);
-      }
-    } else {
-      // Unmounting.
-      const el = this._body && ReactDOM.findDOMNode(this._body);
-      if (el instanceof HTMLElement) {
-        ResizeObserver.unobserve(el);
-      }
+      ResizeObserver.observe(ref, this._checkIfContentIsWrapped);
+    } else if (this._body) {
+      // Unmounting
+      ResizeObserver.unobserve(this._body);
       this._body = null;
     }
   };
 
   _checkIfContentIsWrapped = (): void => {
     const ref = this._body;
-    const el: any = ref && ReactDOM.findDOMNode(ref);
-    const startAnchor = el && el.firstChild;
-    const endAnchor = el && el.lastChild;
-    if (startAnchor && endAnchor) {
-      const wrapped = startAnchor.offsetTop < endAnchor.offsetTop;
-      this.setState({ wrapped });
+
+    if (ref) {
+      const startAnchor = ref.firstChild;
+      const endAnchor = ref.lastChild;
+
+      if (startAnchor && endAnchor) {
+        const wrapped = startAnchor.offsetTop < endAnchor.offsetTop;
+        this.setState({ wrapped });
+      }
     }
   };
 

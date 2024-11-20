@@ -16,10 +16,10 @@ export default class TableNodeView extends TableView {
     return updated;
   }
   _updateMargin(node: Node): void {
-    const marginLeft = (node.attrs && node.attrs.marginLeft) || 0;
+    const marginLeft = node.attrs?.marginLeft || 0;
     this.table.style.marginLeft = marginLeft ? `${marginLeft}px` : '';
-     if(node.attrs && node.attrs.vignette){
-      this.table.style.border='none' ;
+    if (node.attrs?.vignette) {
+      this.table.style.border = 'none';
     }
   }
 }

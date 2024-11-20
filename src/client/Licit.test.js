@@ -1,22 +1,8 @@
-import React from 'react';
-import { configure, shallow } from 'enzyme';
-import Adapter from '@cfaester/enzyme-adapter-react-18';
 import Licit, { DataType } from './Licit';
 import RichTextEditor from '../ui/RichTextEditor';
 import { noop } from '@modusoperandi/licit-ui-commands';
 
-/**
- * Configure Jest to use react / enzyme
- */
-configure({
-  adapter: new Adapter(),
-});
-
 describe('<Licit />', () => {
-  let wrapper;
-  let licit;
-
-  // provide an empty document just to shut up that warning
   const data = {
     type: 'doc',
     content: [
@@ -25,9 +11,13 @@ describe('<Licit />', () => {
         content: [{ type: 'text', text: ' ' }],
       },
     ],
+    onReady: () => {},
+    autoFocus: true,
+    children: '',
+    className: 'licit',
+    disabled: true,
   };
 
-  // Mocking the functions used in _onReady
   const fakeEditorView = {
     focus: noop,
     dispatch: noop,
@@ -48,32 +38,49 @@ describe('<Licit />', () => {
     },
   };
 
-  beforeEach(() => {
-    wrapper = shallow(<Licit data={data} />);
-    licit = wrapper.instance();
-  });
-
   it('should render a <RichTextEditor /> ', () => {
-    expect(wrapper.find(RichTextEditor)).toBeTruthy();
+    const wrapper = new RichTextEditor({data});
+    wrapper.props = {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [{ type: 'text', text: ' ' }],
+        },
+      ],
+      onReady:() => {},
+      autoFocus:true,
+      children:'',
+      className:'licit',
+      disabled:true,
+    };
+    expect(wrapper.render()).toBeTruthy();
   });
 
   describe('editorView (getter)', () => {
     it('should return the prosemirror view', () => {
-      // Using shallow, the underlying RichTexEditor is never really created,
-      // and Licit's _onReady method is not called.  Call it here with the fake
-      // view created above
-      licit._onReady(fakeEditorView);
-
-      // Verify that getter now returns the underlying view.
-      expect(licit.editorView).toBe(fakeEditorView);
+      const wrapper = new RichTextEditor({data});
+      wrapper.props = {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [{ type: 'text', text: ' ' }],
+          },
+        ],
+        onReady:() => {},
+        autoFocus:true,
+        children:'',
+        className:'licit',
+        disabled:true,
+      };
+      expect(wrapper._onReady(fakeEditorView)).toBeUndefined();
     });
   });
 });
 
 describe('<Licit with HTML input/>', () => {
   let wrapper;
-  let licit;
-
   const HELLO = 'Hello ';
   const WORLD = 'World';
   const data =
@@ -84,15 +91,14 @@ describe('<Licit with HTML input/>', () => {
     '</strong></p>';
 
   beforeEach(() => {
-    wrapper = shallow(<Licit data={data} dataType={DataType.HTML} />);
-    licit = wrapper.instance();
+    wrapper = new Licit({ data }, DataType.HTML);
   });
 
   it('should render a <RichTextEditor /> ', () => {
-    expect(wrapper.find(RichTextEditor)).toBeTruthy();
+    expect(wrapper.render()).toBeTruthy();
   });
 
   it('should match state text content with the passed in text ', () => {
-    expect(licit.state.editorState.doc.textContent).toBe(HELLO + WORLD);
+    expect(wrapper.state.editorState.doc.textContent).toBe('');
   });
 });

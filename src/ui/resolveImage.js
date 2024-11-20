@@ -1,7 +1,5 @@
 // @flow
 
-import url from 'url';
-
 import isOffline from './isOffline';
 
 export type ImageResult = {
@@ -55,12 +53,12 @@ function processPromise(
     resolve(result);
     return;
   } else if (cache[srcStr]) {
-    const cachedResult = Object.assign({}, cache[srcStr]);
+    const cachedResult = { ...cache[srcStr] };
     resolve(cachedResult);
     return;
   }
 
-  const parsedURL = url.parse(srcStr);
+  const parsedURL = new URL(srcStr);
   // [FS] IRAD-1007 2020-07-13
   // Removed the port validation from here
   const { protocol } = parsedURL;
@@ -75,7 +73,7 @@ function processPromise(
     if (img) {
       if (img instanceof HTMLElement) {
         const pe = img.parentNode;
-        pe && pe.removeChild(img);
+        pe?.removeChild(img);
       }
       img.onload = null;
       img.onerror = null;

@@ -8,8 +8,21 @@
   margin: 0;
   padding: 20px;
   color: black;
-  height: auto !important;
   display: grid;
+}
+#select-toc-tooltip {
+  max-width: 400px;
+  margin-top: -5px;
+}
+.tab-container {
+  background: #fff;
+  border: none;
+  font-family: var(--czi-font-family);
+  font-size: var(--czi-font-size);
+  margin: 0;
+  padding: 10px;
+  color: black;
+  display: flex;
 }
 
 .czi-form legend {
@@ -17,7 +30,7 @@
   font-size: var(--czi-content-font-size-h2);
   margin-top: 0;
   margin-right: 0;
-  margin-bottom: 20px;
+  margin-bottom: 3px;
   margin-left: 0;
   padding: 0;
   user-select: none;
@@ -39,6 +52,7 @@
   border: none;
   margin: 0;
   padding: 0;
+  margin-top: 20px;
 }
 
 .czi-form input[type='text'] {
@@ -48,7 +62,7 @@
   display: block;
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
-  margin-top: 0;
+  margin-top: 5px;
   margin-right: 0;
   margin-bottom: 8px;
   margin-left: 0;
@@ -77,11 +91,7 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-}
-
-.czi-form-buttons .czi-custom-button {
-  margin: 0 5px;
-}
+} 
 
 .licit-alert {
   background-color: #f44336;
@@ -104,4 +114,88 @@
 
 .closebtn:hover {
   color: black;
+}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  float: left;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 30%;
+  height: 260px;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  display: block;
+  background-color: inherit;
+  color: black;
+  padding: 23px 13px;
+  width: 100%;
+  border: none;
+  outline: none;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+  height: 130px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current "tab button" class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+.tablinks.active {
+  background-color: #ccc; /* Style for the active button */
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  float: left;
+  padding: 0px 12px;
+  padding-top: inherit;
+  border: 1px solid #ccc;
+  width: 70%;
+  border-left: none;
+  height: 260px;
+}
+
+#toc {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  outline: 0;
+  border: 4px solid lightslategray;
+  padding: 7px;
+  border-radius: 9px;
+  width: 100%;
+  height: 180px;
+}
+
+#toc option {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 3px;
+  background-color: white;
+  color: black;
+}
+
+.czi-form-buttons .czi-custom-button {
+  margin: 0 5px;
+}
+
+.highlighted {
+  color: yellow;
+}
+
+#toc option:checked {
+  background-color: #1967d2;
+  color: white;
 }
