@@ -1,8 +1,7 @@
 // @flow
 
 import { Schema } from 'prosemirror-model';
-import { EditorState } from 'prosemirror-state';
-import { Plugin } from 'prosemirror-state';
+import { EditorState, Plugin } from 'prosemirror-state';
 import createEmptyEditorState from './createEmptyEditorState.js';
 
 export default function convertFromJSON(

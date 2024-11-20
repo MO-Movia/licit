@@ -76,10 +76,9 @@ class ContentPlaceholderView {
 
   destroy() {
     this._hide();
-
     const el = this._el;
+    el?.parentNode?.removeChild(el);
     if (el) {
-      el.parentNode && el.parentNode.removeChild(el);
       ReactDOM.unmountComponentAtNode(el);
     }
     document.removeEventListener('focusin', this._checkFocus, true);
@@ -102,17 +101,16 @@ class ContentPlaceholderView {
 
     if (!activeElement || !bodyEl || (doc.hasFocus && !doc.hasFocus())) {
       this._onBlur();
+    } else if (
+      activeElement === bodyEl ||
+      bodyEl.contains(activeElement) ||
+      activeElement === bodyEl.parentNode
+    ) {
+      this._onFocus();
     } else {
-      if (
-        activeElement === bodyEl ||
-        bodyEl.contains(activeElement) ||
-        activeElement === bodyEl.parentNode
-      ) {
-        this._onFocus();
-      } else {
-        this._onBlur();
-      }
+      this._onBlur();
     }
+
   };
 
   _onFocus(): void {
@@ -137,7 +135,7 @@ class ContentPlaceholderView {
   _getBodyElement(): ?HTMLElement {
     const view = this._view;
     return (
-      view && view.docView && view.docView.dom && view.docView.dom.firstChild
+      view?.docView?.dom?.firstChild
     );
   }
 

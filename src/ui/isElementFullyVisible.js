@@ -10,17 +10,5 @@ export default function isElementFullyVisible(el: HTMLElement): boolean {
   const nwEl =
     w && h ? el.ownerDocument.elementFromPoint(x + factor, y + factor) : null;
 
-  if (!nwEl) {
-    return false;
-  }
-
-  if (nwEl === el) {
-    return true;
-  }
-
-  if (el.contains(nwEl)) {
-    return true;
-  }
-
-  return false;
+  return !nwEl ? false : nwEl === el || el.contains(nwEl);
 }

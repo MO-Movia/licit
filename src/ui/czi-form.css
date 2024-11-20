@@ -8,8 +8,21 @@
   margin: 0;
   padding: 20px;
   color: black;
-  height: auto !important;
   display: grid;
+}
+#select-toc-tooltip {
+  max-width: 400px;
+  margin-top: -5px;
+}
+.tab-container {
+  background: #fff;
+  border: none;
+  font-family: var(--czi-font-family);
+  font-size: var(--czi-font-size);
+  margin: 0;
+  padding: 10px;
+  color: black;
+  display: flex;
 }
 
 .czi-form legend {
@@ -78,11 +91,7 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-}
-
-.czi-form-buttons .czi-custom-button {
-  margin: 0 5px;
-}
+} 
 
 .licit-alert {
   background-color: #f44336;
@@ -155,13 +164,12 @@
   border: 1px solid #ccc;
   width: 70%;
   border-left: none;
-  height: 250px;
+  height: 260px;
 }
 
 #toc {
   margin-bottom: 10px;
   margin-top: 10px;
-  /* font-family: cursive, sans-serif; */
   outline: 0;
   border: 4px solid lightslategray;
   padding: 7px;
@@ -175,24 +183,19 @@
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 3px;
+  background-color: white;
+  color: black;
 }
 
 .czi-form-buttons .czi-custom-button {
   margin: 0 5px;
-  margin-top: 13px;
 }
 
 .highlighted {
   color: yellow;
 }
 
-
-#toc option {
-  background-color: white; 
-}
-
 #toc option:checked {
-  background-color: #1967d2; 
-  color: white; 
+  background-color: #1967d2;
+  color: white;
 }
-

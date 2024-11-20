@@ -1,9 +1,7 @@
 // @flow
 
 import { Schema } from 'prosemirror-model';
-import { EditorState } from 'prosemirror-state';
-import { Plugin } from 'prosemirror-state';
-
+import { EditorState, Plugin } from 'prosemirror-state';
 import convertFromJSON from './convertFromJSON.js';
 import EditorSchema from './EditorSchema.js';
 
@@ -25,7 +23,7 @@ export default function createEmptyEditorState(
   return convertFromJSON(
     EMPTY_DOC_JSON,
     schema,
-    defaultSchema ? defaultSchema : EditorSchema,
+    defaultSchema || EditorSchema,
     plugins
   );
 }

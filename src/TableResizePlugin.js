@@ -179,7 +179,7 @@ function handleMouseDown(view: EditorView, event: MouseEvent): boolean {
   // It's possible that the resize action that happened earlier was inturrupted
   // while its dependent mouse events were stopped or prevented by others.
   // We need to stop the previous resize action if it did not finish.
-  cancelDrag && cancelDrag(event);
+  cancelDrag?.(event);
 
   const resizeState = PLUGIN_KEY.getState(view.state);
   if (resizeState.cellPos === -1 || resizeState.draggingInfo) {

@@ -18,7 +18,7 @@ export default function findActiveMark(
 
   while (ii <= to) {
     const node = doc.nodeAt(ii);
-    if (!node || !node.marks) {
+    if (!node?.marks) {
       ii++;
       continue;
     }

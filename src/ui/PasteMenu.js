@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { EditorView } from 'prosemirror-view';
 import uuid from './uuid';
 import './listType.css';
 
@@ -8,9 +6,7 @@ import './listType.css';
 // Popup menu UI with paste options.
 
 class PasteMenu extends React.PureComponent<any, any> {
-  _activeCommand: ?UICommand = null;
   props: {
-    view: EditorView,
     close: (?string) => void,
   };
 

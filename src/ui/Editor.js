@@ -76,7 +76,7 @@ const EDITOR_EMPTY_STATE = Object.freeze(createEmptyEditorState());
 // developer to explicitly use `scrollIntoView(true)` to enforce page scroll.
 const scrollIntoView = Transaction.prototype.scrollIntoView;
 const scrollIntoViewPatched = function (forced: boolean): Transaction {
-  if (forced === true && scrollIntoView) {
+  if (forced && scrollIntoView) {
     return scrollIntoView.call(this);
   } else {
     return this;
@@ -137,11 +137,10 @@ class Editor extends React.PureComponent<any, any> {
 
     const editorNode = document.getElementById(this._id);
     if (editorNode) {
-      const effectiveNodeViews = Object.assign(
-        {},
-        DEFAULT_NODE_VIEWS,
-        nodeViews
-      );
+      const effectiveNodeViews = {
+        ...DEFAULT_NODE_VIEWS,
+        ...nodeViews
+      };
       const boundNodeViews = {};
       const schema = getSchema(editorState);
       const { nodes } = schema;
@@ -180,7 +179,7 @@ class Editor extends React.PureComponent<any, any> {
   }
 
   onEditorReady(view: EditorView, onReady: Function) {
-    onReady && onReady(view);
+    onReady?.(view);
     this._autoFocusTimer && clearTimeout(this._autoFocusTimer);
     this._autoFocusTimer = this.props.autoFocus
       ? setTimeout(this.focus, AUTO_FOCUS_DELAY)
@@ -223,7 +222,7 @@ class Editor extends React.PureComponent<any, any> {
 
   componentWillUnmount(): void {
     this._autoFocusTimer && clearTimeout(this._autoFocusTimer);
-    this._editorView && this._editorView.destroy();
+    this._editorView?.destroy();
     this._editorView = null;
     releaseEditorView(this._id);
     window.removeEventListener('beforeprint', this._onPrintStart, false);

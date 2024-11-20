@@ -1,11 +1,10 @@
 // @flow
 
 import './czi-inline-editor.css';
-import { CustomButton } from '@modusoperandi/licit-ui-commands';
+import { CustomButton, createPopUp } from '@modusoperandi/licit-ui-commands';
 import CustomEditorView from './CustomEditorView.js';
 import MathEditor from './MathEditor.js';
 import * as React from 'react';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
 
 const MathAlignValues = {
   NONE: {
@@ -35,7 +34,7 @@ class MathInlineEditor extends React.PureComponent<any, any> {
   _popUp = null;
 
   componentWillUnmount(): void {
-    this._popUp && this._popUp.close();
+    this._popUp?.close();
   }
 
   render(): React.Element<any> {
@@ -79,7 +78,7 @@ class MathInlineEditor extends React.PureComponent<any, any> {
     const { editorView, value } = this.props;
     const props = {
       runtime: editorView ? editorView.runtime : null,
-      initialValue: (value && value.latex) || '',
+      initialValue: (value?.latex) || '',
     };
     this._popUp = createPopUp(MathEditor, props, {
       autoDismiss: false,

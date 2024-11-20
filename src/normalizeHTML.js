@@ -20,7 +20,7 @@ const LONG_UNDERLINE_PATTERN = /_+/g;
 
 // This is a workround to convert "&nbsp;&nbsp;......&nbsp;" into wider tab
 // tab spacers. For every 6 "&nbsp;", they will be converted into tab spacers.
-const LONG_TAB_SPACE_PATTERN = /(\&nbsp;){6}/g;
+const LONG_TAB_SPACE_PATTERN = /(&nbsp;){6}/g;
 
 const TAB_SPACER_HTML = new Array(6).join(
   `<span ${DOM_ATTRIBUTE_SIZE}="${SPACER_SIZE_TAB}">${HAIR_SPACE_CHAR}</span>`

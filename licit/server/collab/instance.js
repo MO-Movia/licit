@@ -49,12 +49,10 @@ export class Instance {
     this.checkVersion(version);
     if (this.version != version) return false;
     let doc = this.doc;
-    const maps = [];
-    for (let i = 0; i < steps.length; i++) {
-      steps[i].clientID = clientID;
-      const result = steps[i].apply(doc);
+    for (const step of steps) {
+      step.clientID = clientID;
+      const result = step.apply(doc);
       doc = result.doc;
-      maps.push(steps[i].getMap());
     }
     this.doc = doc;
     this.version += steps.length;
@@ -90,12 +88,6 @@ export class Instance {
     this.checkVersion(version);
     const startIndex = this.steps.length - (this.version - version);
     if (startIndex < 0) return false;
-
-    // return {
-    //   steps: this.steps.slice(startIndex),
-    //   users: this.userCount
-    // }
-
     const steps: any[] = this.steps.slice(startIndex);
     const users = this.userCount;
     return { steps: steps, users: users };
@@ -106,8 +98,9 @@ export class Instance {
     this.users = Object.create(null);
     this.userCount = 0;
     this.collecting = null;
-    for (let i = 0; i < this.waiting.length; i++)
-      this._registerUser(this.waiting[i].ip);
+    for (const user of this.waiting) {
+      this._registerUser(user.ip);
+    }
     if (this.userCount != oldUserCount) this.sendUpdates();
   }
 
@@ -137,7 +130,7 @@ let json;
 if (process.argv.indexOf('--fresh') == -1) {
   try {
     json = JSON.parse(readFileSync(saveFile, 'utf8'));
-  } catch (e) {}
+  } catch (e) { }
 }
 
 if (json && null != _editorSchema) {
@@ -158,7 +151,7 @@ function doSave() {
   const out = {};
   for (const prop in instances)
     out[prop] = { doc: instances[prop].doc.toJSON() };
-  writeFile(saveFile, JSON.stringify(out), () => {});
+  writeFile(saveFile, JSON.stringify(out), () => { });
 }
 
 // [FS] IRAD-1040 2020-09-02
@@ -203,7 +196,8 @@ function newInstance(id: any, doc: any) {
     }
     --instanceCount;
   }
-  return (instances[id] = new Instance(id, doc));
+  instances[id] = new Instance(id, doc)
+  return (instances[id]);
 }
 
 export function updateInstance(id: any, ip: any, doc: any) {

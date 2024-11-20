@@ -5,20 +5,18 @@ import PropTypes from 'prop-types';
 
 import sanitizeURL from '../sanitizeURL.js';
 import {
-  CustomButton
+  CustomButton,
+  preventEventDefault,
 } from '@modusoperandi/licit-ui-commands';
-import {
-  ENTER
-} from './KeyCodes.js';
-import {
-  preventEventDefault
-} from '@modusoperandi/licit-ui-commands';
+import { ENTER } from './KeyCodes.js';
 import uuid from '../uuid.js';
 
 import './czi-form.css';
 import './czi-image-url-editor.css';
 import { EditorView } from 'prosemirror-view';
 import { INNER_LINK } from '../Types.js';
+import 'react-tooltip/dist/react-tooltip.css';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 const BAD_CHARACTER_PATTER = /\s/;
 
@@ -33,17 +31,12 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     url: this.props.href_,
     TOCselectedNode_: this.props.TOCselectedNode_,
     view_: this.props.view_,
-    selectionId: this.props.selectionId_
+    selectionId: this.props.selectionId_,
   };
 
   componentDidMount() {
     const { selectionId } = this.state;
-    let defaultTab = 'webpage';
-    if (selectionId) {
-      defaultTab = 'innerlink';
-    } else {
-      defaultTab = 'webpage';
-    }
+    const defaultTab = selectionId ? 'innerlink' : 'webpage';
 
     const selectedTab = this.props.selectedTab || defaultTab;
     this.openForm(selectedTab);
@@ -77,10 +70,23 @@ class LinkURLEditor extends React.PureComponent<any, any> {
   render(): React.Element<any> {
     const { url, TOCselectedNode_, view_, selectionId } =
       this.state;
+
+    const isTOCValid = () => {
+      if (!TOCselectedNode_ || TOCselectedNode_.length === 0) {
+        return false;
+      }
+
+      return TOCselectedNode_.some(
+        item => item.node_ && item.node_.textContent.trim() !== ''
+      );
+    };
+    const isValid = isTOCValid();
+    console.log('isTOCValid:', isValid);
+
     const error = url ? BAD_CHARACTER_PATTER.test(url) : false;
 
     let label = 'Apply';
-    let disabled = !!error;
+    let disabled;
     if (this.props.href) {
       label = url ? 'Apply' : 'Remove';
       disabled = error;
@@ -90,7 +96,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
 
     return (
       <div className="czi-image-url-editor">
-        <div className="czi-form">
+        <div className="czi-form" style={{padding:'10px', display:'flex'}}>
           <div className="tab">
             <button
               className="tablinks"
@@ -108,7 +114,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
             </button>
           </div>
 
-          <div className="tabcontent" id="webpage" >
+          <div className="tabcontent" id="webpage">
             <form onSubmit={preventEventDefault}>
               <fieldset>
                 <label>Add a Link : </label>
@@ -119,7 +125,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                   placeholder="Paste a URL"
                   spellCheck={false}
                   type="text"
-                  value={selectionId === null ? url || '' : null}
+                  value={selectionId ? null : url}
                 />
               </fieldset>
               <div className="czi-form-buttons">
@@ -135,7 +141,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
               </div>
             </form>
           </div>
-          {TOCselectedNode_.length === 0 ? (
+          {!isValid ? (
             <div className="tabcontent" id="innerlink" >
               <p>No TOC styles</p>
               <div className="czi-form-buttons">
@@ -143,21 +149,22 @@ class LinkURLEditor extends React.PureComponent<any, any> {
               </div>
             </div>
           ) : (
-
-            <div className="tabcontent" id="innerlink"   >
+            <div className="tabcontent" id="innerlink">
               <form action="#">
                 <label>Select the Inner Link</label>
                 <br></br>
                 <select
                   defaultValue={
-                    selectionId ? url : null
+                    TOCselectedNode_.some(res => res.node_.textContent === url) ? url : null
                   }
                   id="toc"
                   name="toccontents"
                   size="3"
                 >
-                  {TOCselectedNode_?.map((res, index) => (
+                  {TOCselectedNode_?.filter(res => res.node_.textContent.trim() !== '').map((res, index) => (
                     <option
+                      data-tooltip-content={res.node_.textContent}
+                      data-tooltip-id="select-toc-tooltip"
                       key={index}
                       onClick={() => {
                         this.handleOptionChange(
@@ -172,7 +179,11 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                     </option>
                   ))}
                 </select>
-
+                <ReactTooltip
+                  effect="solid"
+                  id="select-toc-tooltip"
+                  place="bottom"
+                />
                 <br></br>
                 <div className="czi-form-buttons">
                   <CustomButton label="Cancel" onClick={this._cancel} />
@@ -185,11 +196,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     );
   }
 
-  handleOptionChange = (
-    textContent_,
-    tocNodePosition_,
-    view: EditorView
-  ) => {
+  handleOptionChange = (textContent_, tocNodePosition_, view: EditorView) => {
     const tr = view.state.tr;
     const TocNode = view.state.doc.nodeAt(tocNodePosition_);
     let textContent;

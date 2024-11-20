@@ -1,9 +1,7 @@
-// @xflow
-
 import { Node } from 'prosemirror-model';
 import { Decoration, EditorView } from 'prosemirror-view';
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 
 import SelectionObserver from './SelectionObserver.js';
 
@@ -41,7 +39,7 @@ function onMutation(mutations: any, observer: MutationObserver): void {
     const el = view.dom;
     if (!root.contains(el)) {
       mountedViews.delete(el);
-      ReactDOM.unmountComponentAtNode(el);
+      view.unmountReactComponent();
     }
   }
 
@@ -91,9 +89,8 @@ const mutationObserver = new MutationObserver(onMutation);
 // https://github.com/ProseMirror/prosemirror-view/blob/master/src/viewdesc.js#L429
 class CustomNodeView {
   dom: HTMLElement;
-
   props: NodeViewProps;
-
+  reactRoot: ReactDOM.Root | null = null;
   _selected: null;
 
   constructor(
@@ -166,7 +163,6 @@ class CustomNodeView {
 
   // This should be overwrite by subclass.
   renderReactComponent(): React.Element<any> {
-    // return <CustomNodeViewComponent {...this.props} />;
     throw new Error('not implemented');
   }
 
@@ -178,12 +174,13 @@ class CustomNodeView {
     // When destroying the node view, remove from the set.
     // FIX: This solves the image missing issue.
     pendingViews.delete(this);
+    this.unmountReactComponent();
   }
 
   __renderReactComponent(): void {
     const { editorView, getPos } = this.props;
 
-    if (editorView.state && editorView.state.selection) {
+    if (editorView.state?.selection) {
       const { from } = editorView.state.selection;
       const pos = getPos();
       this.props.selected = this._selected;
@@ -193,7 +190,17 @@ class CustomNodeView {
       this.props.focused = false;
     }
 
-    ReactDOM.render(this.renderReactComponent(), this.dom);
+    if (!this.reactRoot) {
+      this.reactRoot = ReactDOM.createRoot(this.dom);
+    }
+    this.reactRoot.render(this.renderReactComponent());
+  }
+
+  unmountReactComponent(): void {
+    if (this.reactRoot) {
+      this.reactRoot.unmount();
+      this.reactRoot = null;
+    }
   }
 }
 

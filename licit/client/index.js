@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 
 import Licit, { DataType } from '../../src/client/Licit.js';
 import CustomLicitRuntime from './CustomLicitRuntime.js';
@@ -337,10 +337,12 @@ function main(): void {
   // null means no custom plugins to pass
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
 
-  const plugins = [];
   const runtime = new CustomLicitRuntime();
+  const plugins = [];
   setRuntime(runtime);
-  ReactDOM.render(
+
+  const root = ReactDOM.createRoot(el); // Create the React root
+  root.render(
     <Licit
       collabServiceURL={'http://localhost:3002'}
       data={docJSON}
@@ -354,8 +356,8 @@ function main(): void {
       plugins={plugins}
       runtime={runtime}
       width={'100vw'}
-    />,
-    el
+      readOnly={false}
+    />
   );
 }
 

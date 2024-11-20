@@ -14,7 +14,7 @@ export default function handleEditorDrop(
     return false;
   }
   const { files } = dataTransfer;
-  if (!files || !files.length) {
+  if (!files?.length) {
     return false;
   }
 

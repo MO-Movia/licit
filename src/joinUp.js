@@ -2,9 +2,7 @@
 // https://github.com/ProseMirror/prosemirror-commands/blob/master/src/commands.js
 
 import { NodeSelection } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { canJoin } from 'prosemirror-transform';
-import { joinPoint } from 'prosemirror-transform';
+import { Transform, canJoin, joinPoint } from 'prosemirror-transform';
 
 // Join the selected block or, if there is a text selection, the
 // closest ancestor block of the selection that can be joined, with

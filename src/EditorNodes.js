@@ -6,7 +6,6 @@ import BookmarkNodeSpec from './BookmarkNodeSpec.js';
 import BulletListNodeSpec from './BulletListNodeSpec.js';
 import DocNodeSpec from './DocNodeSpec.js';
 import HardBreakNodeSpec from './HardBreakNodeSpec.js';
-// import HeadingNodeSpec from './HeadingNodeSpec';
 import HorizontalRuleNodeSpec from './HorizontalRuleNodeSpec.js';
 import ListItemNodeSpec from './ListItemNodeSpec.js';
 import MathNodeSpec from './MathNodeSpec.js';

@@ -79,7 +79,7 @@ export function unobserve(node: HTMLElement, callback?: ResizeCallback): void {
     const callbacks = nodesObserving.has(el)
       ? nullthrows(nodesObserving.get(el)).filter((cb) => cb !== callback)
       : null;
-    if (callbacks && callbacks.length) {
+    if (callbacks?.length) {
       nodesObserving.set(el, callbacks);
     } else {
       nodesObserving.delete(el);

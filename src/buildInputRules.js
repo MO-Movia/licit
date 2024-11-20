@@ -65,16 +65,20 @@ export default function buildInputRules(schema: Schema) {
   if (schema.nodes.blockquote) {
     rules.push(blockQuoteInputRule());
   }
-  if ((type = schema.nodes.ordered_list)) {
+  type = schema.nodes.ordered_list;
+  if (type) {
     rules.push(orderedListRule(type));
   }
-  if ((type = schema.nodes.bullet_list)) {
+  type = schema.nodes.bullet_list;
+  if (type) {
     rules.push(bulletListRule(type));
   }
-  if ((type = schema.nodes.code_block)) {
+  type = schema.nodes.code_block;
+  if (type) {
     rules.push(codeBlockRule(type));
   }
-  if ((type = schema.nodes.heading)) {
+  type = schema.nodes.heading;
+  if (type) {
     rules.push(headingRule(type, 6));
   }
   return inputRules({ rules });

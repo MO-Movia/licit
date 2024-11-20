@@ -1,9 +1,7 @@
 // @flow
 
 import { Schema } from 'prosemirror-model';
-import { EditorState } from 'prosemirror-state';
-import { Plugin } from 'prosemirror-state';
-
+import { EditorState, Plugin } from 'prosemirror-state';
 import convertFromDOMElement from './convertFromDOMElement.js';
 
 export default function convertFromHTML(
@@ -12,6 +10,6 @@ export default function convertFromHTML(
   plugins: Array<Plugin>
 ): EditorState {
   const root = document.createElement('html');
-  root.innerHTML = html ? html : ' ';
+  root.innerHTML = html || ' ';
   return convertFromDOMElement(root, schema, plugins);
 }

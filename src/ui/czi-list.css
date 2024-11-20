@@ -48,8 +48,6 @@ html {
 /* https://css-tricks.com/numbering-in-style/ */
 .ProseMirror ul li > p::before {
   color: var(--czi-list-style-color);
-
-  /* content: '\2022'; */
   display: inline-block;
   font-size: 1em;
   left: -5px;
@@ -62,8 +60,6 @@ html {
 }
 
 .ProseMirror ol {
-  /* counter-reset: czi-counter;
-  list-style-type: none; */
   --czi-counter-name: czi-counter-0;
   --czi-list-style-type: decimal;
   --czi-counter-reset: 0;
