@@ -5,7 +5,6 @@
 @import './czi-vars.css';
 
 .czi-text-selection {
-  /* var(--czi-selection-highlight-color-dark); */
   background: red;
 }
 
@@ -45,8 +44,6 @@
 .ProseMirror .tableWrapper {
   /* [FS] IRAD-993 2020-06-26
   Fix:Table exceeds the canvas */
-
-  /* overflow-x: visible; */
   width: 100%;
 }
 
@@ -123,7 +120,7 @@
   box-shadow: unset;
   min-height: unset;
   padding: unset;
-  width: unset;
+  width: 78vw;
 }
 
 @media only print {

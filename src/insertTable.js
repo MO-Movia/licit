@@ -6,8 +6,6 @@ import { Transform } from 'prosemirror-transform';
 
 import { PARAGRAPH, TABLE, TABLE_CELL, TABLE_ROW } from './NodeNames.js';
 
-// const ZERO_WIDTH_SPACE_CHAR = '\u200b';
-
 export default function insertTable(
   tr: Transform,
   schema: Schema,

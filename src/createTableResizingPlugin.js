@@ -11,7 +11,7 @@ const TABLE_LAST_COLUMN_RESIZABLE = false;
 
 function lookUpTableWrapper(event: Event): ?HTMLElement {
   const target: any = event.target;
-  if (!target || !target.closest) {
+  if (!target?.closest) {
     return null;
   }
   return target.closest('.tableWrapper');

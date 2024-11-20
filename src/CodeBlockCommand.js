@@ -13,7 +13,7 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 class CodeBlockCommand extends UICommand {
   isActive = (state: EditorState): boolean => {
     const result = this._findCodeBlock(state);
-    return !!(result && result.node);
+    return !!result?.node;
   };
 
   execute = (

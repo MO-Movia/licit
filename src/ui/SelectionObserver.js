@@ -105,7 +105,7 @@ export default class SelectionObserver {
         selection: resolveSelectionValue(target),
       };
     });
-    callback && callback(this.takeRecords(), this);
+    callback?.(this.takeRecords(), this);
   };
 
   _check = (): void => {
@@ -129,6 +129,6 @@ export default class SelectionObserver {
         selection: $selection,
       };
     });
-    changed && callback && callback(this.takeRecords(), this);
+    changed && callback?.(this.takeRecords(), this);
   };
 }

@@ -1,7 +1,6 @@
 // @flow
 
-import { EditorState } from 'prosemirror-state';
-import { TextSelection } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 
@@ -10,12 +9,13 @@ import {
   hideSelectionPlaceholder,
   showSelectionPlaceholder,
 } from './SelectionPlaceholderPlugin.js';
-import { applyMark } from '@modusoperandi/licit-ui-commands';
-import { findNodesWithSameMark } from '@modusoperandi/licit-ui-commands';
+import {
+  applyMark, findNodesWithSameMark, createPopUp
+} from '@modusoperandi/licit-ui-commands';
 import LinkURLEditor from './ui/LinkURLEditor.js';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
-
+import {
+  UICommand
+} from '@modusoperandi/licit-doc-attrs-step';
 import { INNER_LINK } from './Types.js';
 
 class LinkSetURLCommand extends UICommand {

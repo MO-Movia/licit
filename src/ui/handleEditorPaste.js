@@ -20,7 +20,7 @@ export default function handleEditorPaste(
   }
 
   const { files } = clipboardData;
-  if (!files || !files.length) {
+  if (!files?.length) {
     return false;
   }
   const filesList = Array.from(files);

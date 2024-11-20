@@ -1,7 +1,6 @@
 // @flow
 
-import { Schema } from 'prosemirror-model';
-import { Node } from 'prosemirror-model';
+import { Schema, Node } from 'prosemirror-model';
 import { EditorState } from 'prosemirror-state';
 import { CellSelection, mergeCells } from 'prosemirror-tables';
 import { Transform } from 'prosemirror-transform';
@@ -55,7 +54,9 @@ function purgeConsecutiveBlankParagraphNodes(
       return true;
     }
   });
-  paragraphPoses.reverse().forEach((pos) => {
+  paragraphPoses.reverse();
+  const reversedParagraphPoses = paragraphPoses;
+  reversedParagraphPoses.forEach((pos) => {
     const cell = tr.doc.nodeAt(pos);
     tr = tr.delete(pos, pos + cell.nodeSize);
   });

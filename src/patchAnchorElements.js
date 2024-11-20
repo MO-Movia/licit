@@ -23,7 +23,7 @@ function patchAnchorElement(node: HTMLElement): void {
     //   <a id="t.0"></a>
     //   <table class="c23">
     // and these anchor link should not be visible.
-    const visible = node.id.indexOf('t.') !== 0;
+    const visible = !node.id.startsWith('t.');
 
     visible && node.setAttribute(ATTRIBUTE_BOOKMARK_VISIBLE, 'true');
   }

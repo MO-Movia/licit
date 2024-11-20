@@ -11,11 +11,11 @@ describe('<Licit />', () => {
         content: [{ type: 'text', text: ' ' }],
       },
     ],
-    onReady:() => {},
-    autoFocus:true,
-    children:'',
-    className:'licit',
-    disabled:true,
+    onReady: () => {},
+    autoFocus: true,
+    children: '',
+    className: 'licit',
+    disabled: true,
   };
 
   const fakeEditorView = {
@@ -91,7 +91,7 @@ describe('<Licit with HTML input/>', () => {
     '</strong></p>';
 
   beforeEach(() => {
-    wrapper = new Licit({data},DataType.HTML);
+    wrapper = new Licit({ data }, DataType.HTML);
   });
 
   it('should render a <RichTextEditor /> ', () => {

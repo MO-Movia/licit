@@ -2,9 +2,8 @@
 
 import * as React from 'react';
 import { LAYOUT } from '../DocNodeSpec.js';
-import { CustomButton } from '@modusoperandi/licit-ui-commands';
+import { CustomButton, preventEventDefault } from '@modusoperandi/licit-ui-commands';
 import CustomRadioButton from './CustomRadioButton.js';
-import { preventEventDefault } from '@modusoperandi/licit-ui-commands';
 
 import './czi-body-layout-editor.css';
 import './czi-form.css';

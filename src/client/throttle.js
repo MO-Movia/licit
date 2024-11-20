@@ -17,11 +17,11 @@ export default function throttle(
       clearTimeout(deferTimer);
       deferTimer = setTimeout(() => {
         last = now;
-        boundFn.apply(null, args);
+        boundFn(...args);
       }, threshhold);
     } else {
       last = now;
-      boundFn.apply(null, args);
+      boundFn(...args);
     }
   };
 }

@@ -5,14 +5,10 @@ import PropTypes from 'prop-types';
 
 import sanitizeURL from '../sanitizeURL.js';
 import {
-  CustomButton
+  CustomButton,
+  preventEventDefault,
 } from '@modusoperandi/licit-ui-commands';
-import {
-  ENTER
-} from './KeyCodes.js';
-import {
-  preventEventDefault
-} from '@modusoperandi/licit-ui-commands';
+import { ENTER } from './KeyCodes.js';
 import uuid from '../uuid.js';
 
 import './czi-form.css';
@@ -90,7 +86,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     const error = url ? BAD_CHARACTER_PATTER.test(url) : false;
 
     let label = 'Apply';
-    let disabled = !!error;
+    let disabled;
     if (this.props.href) {
       label = url ? 'Apply' : 'Remove';
       disabled = error;
@@ -118,7 +114,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
             </button>
           </div>
 
-          <div className="tabcontent" id="webpage" >
+          <div className="tabcontent" id="webpage">
             <form onSubmit={preventEventDefault}>
               <fieldset>
                 <label>Add a Link : </label>
@@ -153,8 +149,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
               </div>
             </div>
           ) : (
-
-            <div className="tabcontent" id="innerlink"   >
+            <div className="tabcontent" id="innerlink">
               <form action="#">
                 <label>Select the Inner Link</label>
                 <br></br>

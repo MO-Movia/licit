@@ -34,13 +34,13 @@ const CHAR_CIRCLE = '\u25cb';
 const CHAR_SQUARE = '\u25a0';
 const CHAR_BOX = '\u274f';
 const CHAR_ZERO_SPACE = '\u200B';
-const INLINE_NODE_NAME_PATTERN = /^(#text)|(A|SPAN|B|STRONG)$/;
+const INLINE_NODE_NAME_PATTERN = /^(#text|(A|SPAN|B|STRONG))$/;
 
 function patchListElementsElement(listElement: HTMLElement): void {
   // If the children of `listElement` all have teh same marginLeft, assume
   // it to be indented.
-  let marginLeft = undefined;
-  let beforeContent = undefined;
+  let marginLeft;
+  let beforeContent;
   const { parentElement, children } = listElement;
 
   // A workaround to patch the issue when <ul /> or <ol /> is pasted as the
@@ -68,7 +68,7 @@ function patchListElementsElement(listElement: HTMLElement): void {
       beforeContent = null;
     }
 
-    const ml = (style && style.marginLeft) || '';
+    const ml = (style?.marginLeft) || '';
     if (marginLeft === undefined) {
       marginLeft = ml;
     }
@@ -238,7 +238,7 @@ function liftNestedListElements(doc: Document): void {
     // <ol><li>CCC</li></ol>
 
     // Close the parent list before the list.
-    htmlMutator.insertHTMLBefore(`<\/${parentListNodeName}>`, list);
+    htmlMutator.insertHTMLBefore(`</${parentListNodeName}>`, list);
     // Open a new list after list.
     htmlMutator.insertHTMLAfter(
       `<${parentListNodeName}

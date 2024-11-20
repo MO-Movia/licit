@@ -12,7 +12,7 @@ import Icon from './Icon.js';
 const ICON_LABEL_PATTERN = /\[([A-Za-z_\d]+)\](.*)/;
 
 export function parseLabel(input: string): Object {
-  const matched = input.match(ICON_LABEL_PATTERN);
+  const matched = ICON_LABEL_PATTERN.exec(input);
   if (matched) {
     const [
       // eslint-disable-next-line no-unused-vars
