@@ -15,6 +15,8 @@ import './czi-form.css';
 import './czi-image-url-editor.css';
 import { EditorView } from 'prosemirror-view';
 import { INNER_LINK } from '../Types.js';
+import 'react-tooltip/dist/react-tooltip.css'
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 const BAD_CHARACTER_PATTER = /\s/;
 
@@ -34,12 +36,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
 
   componentDidMount() {
     const { selectionId } = this.state;
-    let defaultTab;
-    if (selectionId) {
-      defaultTab = 'innerlink';
-    } else {
-      defaultTab = 'webpage';
-    }
+    const defaultTab = selectionId ? 'innerlink' : 'webpage';
 
     const selectedTab = this.props.selectedTab || defaultTab;
     this.openForm(selectedTab);
@@ -71,7 +68,21 @@ class LinkURLEditor extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const { url, TOCselectedNode_, view_, selectionId } = this.state;
+    const { url, TOCselectedNode_, view_, selectionId } =
+      this.state;
+
+    const isTOCValid = () => {
+      if (!TOCselectedNode_ || TOCselectedNode_.length === 0) {
+        return false;
+      }
+
+      return TOCselectedNode_.some(
+        item => item.node_ && item.node_.textContent.trim() !== ""
+      );
+    };
+    const isValid = isTOCValid();
+    console.log("isTOCValid:", isValid);
+   
     const error = url ? BAD_CHARACTER_PATTER.test(url) : false;
 
     let label = 'Apply';
@@ -85,7 +96,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
 
     return (
       <div className="czi-image-url-editor">
-        <div className="czi-form">
+        <div className="czi-form" style={{padding:'10px', display:'flex'}}>
           <div className="tab">
             <button
               className="tablinks"
@@ -114,7 +125,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                   placeholder="Paste a URL"
                   spellCheck={false}
                   type="text"
-                  value={selectionId === null ? url || '' : null}
+                  value={selectionId ? null : url}
                 />
               </fieldset>
               <div className="czi-form-buttons">
@@ -130,8 +141,8 @@ class LinkURLEditor extends React.PureComponent<any, any> {
               </div>
             </form>
           </div>
-          {TOCselectedNode_.length === 0 ? (
-            <div className="tabcontent" id="innerlink">
+          {!isValid ? (
+            <div className="tabcontent" id="innerlink" >
               <p>No TOC styles</p>
               <div className="czi-form-buttons">
                 <CustomButton label="Cancel" onClick={this._cancel} />
@@ -143,12 +154,14 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                 <label>Select the Inner Link</label>
                 <br></br>
                 <select
-                  defaultValue={selectionId ? url : null}
+                  defaultValue={
+                    TOCselectedNode_.some(res => res.node_.textContent === url) ? url : null
+                  }
                   id="toc"
                   name="toccontents"
                   size="3"
                 >
-                  {TOCselectedNode_?.map((res, index) => (
+                  {TOCselectedNode_?.filter(res => res.node_.textContent.trim() !== "").map((res, index) => (
                     <option
                       key={index}
                       onClick={() => {
@@ -159,12 +172,18 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                         );
                       }}
                       value={res.node_.textContent}
+                      data-tooltip-id="select-toc-tooltip"
+                      data-tooltip-content={res.node_.textContent}
                     >
                       {res.node_.textContent}
                     </option>
                   ))}
                 </select>
-
+                <ReactTooltip
+                  id="select-toc-tooltip"
+                  place="bottom"
+                  effect="solid"
+                />
                 <br></br>
                 <div className="czi-form-buttons">
                   <CustomButton label="Cancel" onClick={this._cancel} />
