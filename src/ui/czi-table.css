@@ -4,7 +4,6 @@
 
 .ProseMirror .tableWrapper {
   overflow-x: auto;
-  cursor: default;
 }
 .ProseMirror .tableWrapper::-webkit-scrollbar{
   height: 12px;
