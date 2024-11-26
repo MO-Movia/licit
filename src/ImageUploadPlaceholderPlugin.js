@@ -1,6 +1,5 @@
 // @flow
 
-import nullthrows from 'nullthrows';
 import { EditorState, TextSelection, Plugin, PluginKey } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { Decoration, DecorationSet, EditorView } from 'prosemirror-view';
@@ -102,7 +101,7 @@ export function uploadImageFiles(
       }
       view.dispatch(trNext);
     };
-    const ff = nullthrows(imageFiles.shift());
+    const ff = imageFiles?.shift();
     uploadImage(ff)
       .then(done)
       .catch(done.bind(null, { src: null }));

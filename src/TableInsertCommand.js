@@ -1,6 +1,5 @@
 // @flow
 
-import nullthrows from 'nullthrows';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
@@ -53,7 +52,7 @@ class TableInsertCommand extends UICommand {
     if (this._popUp) {
       return Promise.resolve(undefined);
     }
-    const target = nullthrows(event).currentTarget;
+    const target = event?.currentTarget;
     if (!(target instanceof HTMLElement)) {
       return Promise.resolve(undefined);
     }

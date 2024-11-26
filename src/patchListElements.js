@@ -1,7 +1,6 @@
 // @flow
 
 import HTMLMutator from './HTMLMutator.js';
-import nullthrows from 'nullthrows';
 import uuid from './ui/uuid.js';
 
 import { ATTRIBUTE_LIST_STYLE_TYPE } from './ListItemNodeSpec.js';
@@ -211,8 +210,8 @@ function liftNestedListElements(doc: Document): void {
     const indent = findIndentLevel(list);
     list.setAttribute('data-indent', String(indent));
 
-    const parentListItem = nullthrows(list.parentElement);
-    const parentList = nullthrows(parentListItem.parentElement);
+    const parentListItem = list?.parentElement;
+    const parentList = parentListItem?.parentElement;
     const parentListNodeName = parentList.nodeName.toLowerCase();
     const isLast = parentList.lastElementChild === parentListItem;
     const style = parentList.getAttribute('style') || '';

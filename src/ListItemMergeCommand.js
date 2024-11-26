@@ -1,6 +1,5 @@
 // @flow
 
-import nullthrows from 'nullthrows';
 import { Fragment, Schema } from 'prosemirror-model';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
@@ -110,7 +109,7 @@ function mergeListItemDown(tr: Transform, schema: Schema): Transform {
   switch (nextNode.type) {
     case listItem: {
       // List item should only have one child (paragraph).
-      const paragraphNode = nullthrows(nextNode.firstChild);
+      const paragraphNode = nextNode?.firstChild;
       nextContent = Fragment.from(paragraphNode.content);
       break;
     }
