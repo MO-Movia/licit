@@ -35,7 +35,6 @@ import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { Decoration, DecorationSet, EditorView } from 'prosemirror-view';
 import { findParentNodeOfTypeClosestToPos } from 'prosemirror-utils';
-import nullthrows from 'nullthrows';
 import {
   cellAround,
   pointsAtCell,
@@ -359,7 +358,7 @@ function handleDragEnd(view: EditorView, event: any): void {
       $cell,
       view.state.schema.nodes[nodeType.name]
     );
-    const tablePos = nullthrows(tableLookup && tableLookup.pos);
+    const tablePos = tableLookup && tableLookup?.pos;
     tr = tr.setNodeMarkup(tablePos, nodeType, attrs);
   }
 
