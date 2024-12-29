@@ -2,8 +2,6 @@
 import cx from 'classnames';
 import * as React from 'react';
 
-import './czi-editor-frameset.css';
-
 export type EditorFramesetProps = {
   body: ?React.Element<any>,
   className: ?string,

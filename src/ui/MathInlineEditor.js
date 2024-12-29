@@ -1,6 +1,5 @@
 // @flow
 
-import './czi-inline-editor.css';
 import { CustomButton, createPopUp } from '@modusoperandi/licit-ui-commands';
 import CustomEditorView from './CustomEditorView.js';
 import MathEditor from './MathEditor.js';

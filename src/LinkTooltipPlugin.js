@@ -21,8 +21,6 @@ import LinkTooltip from './ui/LinkTooltip.js';
 import LinkURLEditor from './ui/LinkURLEditor.js';
 import { INNER_LINK } from './Types.js';
 
-import '@modusoperandi/licit-ui-commands/ui/czi-pop-up.css';
-
 // https://prosemirror.net/examples/tooltip/
 const SPEC = {
   // [FS] IRAD-1005 2020-07-07

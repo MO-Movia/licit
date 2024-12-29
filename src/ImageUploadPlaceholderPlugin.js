@@ -7,8 +7,6 @@ import { Decoration, DecorationSet, EditorView } from 'prosemirror-view';
 import { IMAGE } from './NodeNames.js';
 import uuid from './ui/uuid.js';
 
-import './ui/czi-image-upload-placeholder.css';
-
 const IMAGE_FILE_TYLES = new Set([
   'image/jpeg',
   'image/gif',

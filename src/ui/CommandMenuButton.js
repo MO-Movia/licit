@@ -11,8 +11,6 @@ import { CustomButton, createPopUp } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import uuid from './uuid.js';
 
-import './czi-custom-menu-button.css';
-
 class CommandMenuButton extends React.PureComponent<any, any> {
   props: {
     className?: ?string,
