@@ -1,6 +1,5 @@
 // @flow
 
-import nullthrows from 'nullthrows';
 import { EditorState } from 'prosemirror-state';
 import { setCellAttr } from 'prosemirror-tables';
 import { Transform } from 'prosemirror-transform';
@@ -31,7 +30,7 @@ class TableCellColorCommand extends UICommand {
     if (this._popUp) {
       return Promise.resolve(undefined);
     }
-    const target = nullthrows(event).currentTarget;
+    const target = event?.currentTarget;
     if (!(target instanceof HTMLElement)) {
       return Promise.resolve(undefined);
     }
