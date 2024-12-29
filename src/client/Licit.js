@@ -19,7 +19,6 @@ import {
 } from '@modusoperandi/licit-ui-commands';
 import AlertInfo from '../ui/AlertInfo.js';
 import { SetDocAttrStep } from '@modusoperandi/licit-doc-attrs-step';
-import './licit.css';
 import DefaultEditorPlugins from '../buildEditorPlugins.js';
 import EditorMarks from '../EditorMarks.js';
 import EditorNodes from '../EditorNodes.js';

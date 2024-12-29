@@ -1,6 +1,5 @@
 // @flow
 
-import './czi-loading-indicator.css';
 import * as React from 'react';
 
 // https://loading.io/css/

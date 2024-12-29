@@ -8,9 +8,6 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import webfontloader from 'webfontloader';
 
-import 'prosemirror-gapcursor/style/gapcursor.css';
-import 'prosemirror-view/style/prosemirror.css';
-
 import {
   exportJSON,
   registerEditorView,
@@ -31,7 +28,6 @@ import handleEditorDrop from './handleEditorDrop.js';
 import handleEditorKeyDown from './handleEditorKeyDown.js';
 import handleEditorPaste from './handleEditorPaste.js';
 import uuid from './uuid.js';
-import './czi-editor.css';
 import type { EditorRuntime } from '../Types.js';
 
 export type EditorProps = {

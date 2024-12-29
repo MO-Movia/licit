@@ -5,9 +5,6 @@ import { LAYOUT } from '../DocNodeSpec.js';
 import { CustomButton, preventEventDefault } from '@modusoperandi/licit-ui-commands';
 import CustomRadioButton from './CustomRadioButton.js';
 
-import './czi-body-layout-editor.css';
-import './czi-form.css';
-
 export type DocLayoutEditorValue = {
   layout: ?string,
   width: ?number,

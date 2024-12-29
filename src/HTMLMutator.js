@@ -1,6 +1,5 @@
 // @flow
 
-import nullthrows from 'nullthrows';
 import uuid from './ui/uuid.js';
 
 // Utility Class that allows developer to insert HTML snippets then updates
@@ -24,7 +23,7 @@ export default class HTMLMutator {
 
   execute(): void {
     const doc = this._doc;
-    const root = nullthrows(doc.body || doc.documentElement);
+    const root = doc?.body || doc?.documentElement;
     let newHtml = root.innerHTML;
     this._htmls.forEach((html, token) => {
       newHtml = newHtml.replace(token, html);
@@ -45,7 +44,7 @@ export default class HTMLMutator {
     // later.
     const token = `\u200b_HTMLMutator_token_${uuid()}_\u200b`;
     const node = this._doc.createComment(token);
-    const parentElement = nullthrows(el.parentElement);
+    const parentElement = el?.parentElement;
     if (position === 'before') {
       parentElement.insertBefore(node, el);
     } else if (position === 'after') {

@@ -10,7 +10,6 @@ import { atAnchorTopRight, createPopUp } from '@modusoperandi/licit-ui-commands'
 import TableCellMenu from './ui/TableCellMenu.js';
 import bindScrollHandler from './ui/bindScrollHandler.js';
 import isElementFullyVisible from './ui/isElementFullyVisible.js';
-import '@modusoperandi/licit-ui-commands/ui/czi-pop-up.css';
 import { CellSelection } from 'prosemirror-tables';
 
 class TableCellTooltipView {

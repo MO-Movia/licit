@@ -1,6 +1,5 @@
 // @flow
 
-import './czi-math-view.css';
 import CustomNodeView from './CustomNodeView.js';
 import MathInlineEditor from './MathInlineEditor.js';
 import * as React from 'react';
