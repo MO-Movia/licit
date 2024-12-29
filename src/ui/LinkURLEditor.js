@@ -10,12 +10,8 @@ import {
 } from '@modusoperandi/licit-ui-commands';
 import { ENTER } from './KeyCodes.js';
 import uuid from '../uuid.js';
-
-import './czi-form.css';
-import './czi-image-url-editor.css';
 import { EditorView } from 'prosemirror-view';
 import { INNER_LINK } from '../Types.js';
-import 'react-tooltip/dist/react-tooltip.css';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 const BAD_CHARACTER_PATTER = /\s/;

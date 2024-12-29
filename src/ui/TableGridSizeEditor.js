@@ -3,15 +3,13 @@
 import cx from 'classnames';
 import * as React from 'react';
 
-import { clamp } from '@modusoperandi/licit-ui-commands';
 import htmlElementToRect from './htmlElementToRect.js';
 import {
+  clamp,
   fromHTMlElement,
   fromXY,
   isIntersected,
 } from '@modusoperandi/licit-ui-commands';
-
-import './czi-table-grid-size-editor.css';
 
 export type TableGridSizeEditorValue = {
   cols: number,

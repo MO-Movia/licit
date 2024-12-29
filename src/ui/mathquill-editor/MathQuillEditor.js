@@ -1,6 +1,5 @@
 // @flow
 
-import './czi-mathquill-editor.css';
 import * as MathQuillEditorSymbols from './MathQuillEditorSymbols.js';
 import MathQuillEditorSymbolsPanel from './MathQuillEditorSymbolsPanel.js';
 import * as React from 'react';

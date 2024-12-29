@@ -15,8 +15,6 @@ import ResizeObserver from './ResizeObserver.js';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import isReactClass from './isReactClass.js';
 
-import './czi-editor-toolbar.css';
-
 class EditorToolbar extends React.PureComponent<any, any> {
   _body = null;
 

@@ -11,8 +11,6 @@ import {
 import CustomNodeView from './CustomNodeView.js';
 import Icon from './Icon.js';
 
-import './czi-bookmark-view.css';
-
 import type { NodeViewProps } from './CustomNodeView.js';
 
 class BookmarkViewBody extends React.PureComponent<any, any> {

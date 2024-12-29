@@ -1,6 +1,5 @@
 // @flow
 
-import './czi-inline-editor.css';
 import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
 

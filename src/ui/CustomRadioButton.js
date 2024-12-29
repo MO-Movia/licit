@@ -1,6 +1,5 @@
 // @flow
 
-import './czi-custom-radio-button.css';
 import { PointerSurface, preventEventDefault } from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
 import cx from 'classnames';

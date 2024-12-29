@@ -1,6 +1,5 @@
 import * as React from 'react';
 import uuid from './uuid';
-import './listType.css';
 
 // [FS] IRAD-1076 2020-10-15
 // Popup menu UI with paste options.

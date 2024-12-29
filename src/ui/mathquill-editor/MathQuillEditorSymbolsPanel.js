@@ -1,7 +1,6 @@
 // @flow
 
 import renderLaTeXAsHTML from '../renderLaTeXAsHTML.js';
-import './czi-mathquill-editor-symbols-panel.css';
 import { CustomButton } from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
 

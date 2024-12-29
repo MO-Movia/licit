@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import { CustomButton, preventEventDefault } from '@modusoperandi/licit-ui-commands';
 import MathQuillEditor from './mathquill-editor/MathQuillEditor.js';
 
-import './czi-form.css';
-
 class MathEditor extends React.PureComponent<any, any> {
   // [FS] IRAD-1005 2020-07-07
   // Upgrade outdated packages.
