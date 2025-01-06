@@ -75,7 +75,7 @@
     "exports-loader": "^5.0.0",
     "express": "^4.17.1",
     "file-loader": "^6.2.0",
-    "flow-bin": "^0.254.2",
+    "flow-bin": "^0.258.0",
     "flow-copy-source": "^2.0.9",
     "flow-typed": "^4.0.0",
     "flow-webpack-plugin": "^1.2.0",
