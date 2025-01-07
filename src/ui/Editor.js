@@ -14,7 +14,7 @@ import {
   registeryKeys,
   releaseEditorView,
 } from '../CZIProseMirror.js';
-import { BOOKMARK, LIST_ITEM, MATH } from '../NodeNames.js';
+import { BOOKMARK, LIST_ITEM } from '../NodeNames.js';
 import WebFontLoader from '../WebFontLoader.js';
 import { preLoadFonts } from '../FontTypeMarkSpec.js';
 import createEmptyEditorState from '../createEmptyEditorState.js';
