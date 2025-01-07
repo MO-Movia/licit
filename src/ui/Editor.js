@@ -23,7 +23,6 @@ import BookmarkNodeView from './BookmarkNodeView.js';
 import CustomEditorView from './CustomEditorView.js';
 import CustomNodeView from './CustomNodeView.js';
 import ListItemNodeView from './ListItemNodeView.js';
-import MathNodeView from './MathNodeView.js';
 import handleEditorDrop from './handleEditorDrop.js';
 import handleEditorKeyDown from './handleEditorKeyDown.js';
 import handleEditorPaste from './handleEditorPaste.js';
@@ -57,7 +56,6 @@ const AUTO_FOCUS_DELAY = 350;
 
 // Default custom node views.
 export const DEFAULT_NODE_VIEWS = Object.freeze({
-  [MATH]: MathNodeView,
   [BOOKMARK]: BookmarkNodeView,
   [LIST_ITEM]: ListItemNodeView,
 });
