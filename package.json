@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "type": "module",
   "subversion": "1",
   "description": "Rich text editor built with React and ProseMirror",
