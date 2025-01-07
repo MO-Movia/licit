@@ -97,7 +97,6 @@ class DocLayoutEditor extends React.PureComponent<any, any> {
               onSelect={this._onSelect}
               value={LAYOUT.A4_LANDSCAPE}
             />
-      
             {customOption}
           </fieldset>
           <hr />

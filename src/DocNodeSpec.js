@@ -3,7 +3,6 @@
 import convertToCSSPTValue from './convertToCSSPTValue.js';
 
 export const LAYOUT = {
-  
   US_LETTER_LANDSCAPE: 'us_letter_landscape',
   US_LETTER_PORTRAIT: 'us_letter_portrait',
   A4_LANDSCAPE: 'a4_landscape',
