@@ -102,18 +102,6 @@
   width: var(--czi-doc-width-a4-landscape);
 }
 
-.ProseMirror[data-layout='desktop_screen_4_3'] {
-  min-height: 90vh;
-  padding: var(--czi-doc-padding-default);
-  width: var(--czi-doc-width-us-desktop-screen-4-3);
-}
-
-.ProseMirror[data-layout='desktop_screen_16_9'] {
-  min-height: 80vh;
-  padding: var(--czi-doc-padding-default);
-  width: var(--czi-doc-width-us-desktop-screen-16-9);
-}
-
 .prosemirror-editor-wrapper.embedded .ProseMirror {
   background: unset;
   border-radius: unset;
