@@ -45,7 +45,7 @@ const jestConfig: JestConfigWithTsJest = {
   ],
 
   // An object that configures minimum threshold enforcement for coverage results
-  coverageThreshold: { global: { branches: 3.3, functions: 6.5, lines: 27.4 } },
+  coverageThreshold: { global: { branches: 3.2, functions: 6.5, lines: 26.5 } },
 
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,

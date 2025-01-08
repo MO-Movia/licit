@@ -43,7 +43,6 @@ const {
   INDENT_LESS,
   INDENT_MORE,
   LINK_SET_URL,
-  MATH_EDIT,
   STRIKE,
   STRONG,
   SUPER,
@@ -149,7 +148,6 @@ export const COMMAND_GROUPS = [
     '[link] Apply link': LINK_SET_URL,
     '[grid_on] Table...': TABLE_COMMANDS_GROUP,
     '[hr] Horizontal line': HR,
-    '[functions] Math': MATH_EDIT,
 
     // [FS][07-MAY-2020][IRAD-956]
     // '[format_quote] Block quote': BLOCKQUOTE_TOGGLE,
