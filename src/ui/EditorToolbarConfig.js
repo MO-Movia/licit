@@ -152,9 +152,10 @@ export const COMMAND_GROUPS = [
     // [FS][07-MAY-2020][IRAD-956]
     // '[format_quote] Block quote': BLOCKQUOTE_TOGGLE,
   },
-  {
-    '[settings_overscan] Page layout': DOC_LAYOUT,
-  },
+  // Removed page layout icon from Editor
+  // {
+  //   '[settings_overscan] Page layout': DOC_LAYOUT,
+  // },
   {
     '[undo] Undo': HISTORY_UNDO,
     '[redo] Redo': HISTORY_REDO,

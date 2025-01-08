@@ -23,6 +23,7 @@ import DefaultEditorPlugins from '../buildEditorPlugins.js';
 import EditorMarks from '../EditorMarks.js';
 import EditorNodes from '../EditorNodes.js';
 import convertFromHTML from '../convertFromHTML.js';
+import DocLayoutCommand from '../DocLayoutCommand.js';
 
 export const DataType = Object.freeze({
   JSON: Symbol('json'),
@@ -604,6 +605,14 @@ class Licit extends React.Component<any, any> {
       tr.setSelection(TextSelection.atEnd(view.state.doc)).scrollIntoView()
     );
     view.focus();
+  };
+
+  /**
+   * Method to open page layout
+   */
+  pageLayout = (state: EditorState): void => {
+    const DOC_LAYOUT = new DocLayoutCommand();
+    DOC_LAYOUT.waitForUserInput(state);
   };
 }
 
