@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "type": "module",
   "subversion": "1",
   "description": "Rich text editor built with React and ProseMirror",
@@ -110,7 +110,7 @@
     "write-file-webpack-plugin": "^4.5.1"
   },
   "dependencies": {
-    "@modusoperandi/color-picker": "^1.0.1",
+    "@modusoperandi/color-picker": "^1.0.4",
     "body-parser": "^1.19.0",
     "browserkeymap": "^2.0.2",
     "flatted": "^3.1.0",
@@ -126,7 +126,7 @@
     "webfontloader": "^1.6.28"
   },
   "peerDependencies": {
-    "@modusoperandi/licit-ui-commands": "^1.0.0",
+    "@modusoperandi/licit-ui-commands": "^1.0.8",
     "jquery": "^3.5.1",
     "prosemirror-collab": "^1.2.2",
     "prosemirror-tables": "^1.2.5"
