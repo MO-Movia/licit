@@ -91,6 +91,8 @@ export class Licit extends React.Component<any, any> {
   exportPDF();
 
   goToEnd(): void;
+
+  pageLayout(state: EditorState): void;
 }
 
 // from './Types';
