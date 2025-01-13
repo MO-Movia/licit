@@ -62,6 +62,15 @@ const ParagraphNodeSpec: NodeSpec = {
     overriddenIndent: {
       default: null,
     },
+    overriddenAlignValue: {
+      default: null,
+    },
+    overriddenLineSpacingValue: {
+      default: null,
+    },
+    overriddenIndentValue: {
+      default: null,
+    },
   },
   content: 'inline*',
   group: 'block',
@@ -98,8 +107,11 @@ function getAttrs(dom: HTMLElement): Object {
 
   const id = dom.getAttribute('id') || '';
   const overriddenAlign = dom.getAttribute('overriddenAlign') || '';
+  const overriddenAlignValue = dom.getAttribute('overriddenAlignValue') || '';
   const overriddenLineSpacing = dom.getAttribute('overriddenLineSpacing') || '';
+  const overriddenLineSpacingValue = dom.getAttribute('overriddenLineSpacingValue') || '';
   const overriddenIndent = dom.getAttribute('overriddenIndent') || '';
+  const overriddenIndentValue = dom.getAttribute('overriddenIndentValue') || '';
   const innerLink = dom.getAttribute('innerLink') || '';
   return {
     align,
@@ -109,8 +121,11 @@ function getAttrs(dom: HTMLElement): Object {
     paddingBottom,
     id,
     overriddenAlign,
+    overriddenAlignValue,
     overriddenLineSpacing,
+    overriddenLineSpacingValue,
     overriddenIndent,
+    overriddenIndentValue,
     innerLink,
   };
 }
@@ -150,7 +165,7 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
 }
 
 function toDOM(node: Node): Array<any> {
-  const { indent, id, overriddenAlign, overriddenLineSpacing, overriddenIndent, innerLink } = node.attrs;
+  const { indent, id, overriddenAlign,overriddenAlignValue, overriddenLineSpacing,overriddenLineSpacingValue, overriddenIndent,overriddenIndentValue, innerLink } = node.attrs;
   const attrs = {};
   const { style } = getStyle(node.attrs);
 
@@ -165,6 +180,10 @@ function toDOM(node: Node): Array<any> {
   attrs.overriddenAlign = overriddenAlign;
   attrs.overriddenLineSpacing = overriddenLineSpacing;
   attrs.overriddenIndent = overriddenIndent;
+  attrs.overriddenAlignValue = overriddenAlignValue;
+  attrs.overriddenLineSpacingValue = overriddenLineSpacingValue;
+  attrs.overriddenIndentValue = overriddenIndentValue;
+
   if (innerLink) {
     attrs.innerLink = innerLink;
   }
