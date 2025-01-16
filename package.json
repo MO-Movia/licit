@@ -75,7 +75,7 @@
     "exports-loader": "^5.0.0",
     "express": "^4.17.1",
     "file-loader": "^6.2.0",
-    "flow-bin": "^0.254.2",
+    "flow-bin": "^0.258.1",
     "flow-copy-source": "^2.0.9",
     "flow-typed": "^4.0.0",
     "flow-webpack-plugin": "^1.2.0",
@@ -105,7 +105,7 @@
     "ts-node": "^10.9.2",
     "typescript": "5.5.4",
     "webpack": "^5.74.0",
-    "webpack-cli": "^5.1.4",
+    "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.0.2",
     "write-file-webpack-plugin": "^4.5.1"
   },
