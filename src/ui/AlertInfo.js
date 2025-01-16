@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import './czi-form.css';
 
 class AlertInfo extends React.PureComponent<any, any> {
   _unmounted = false;

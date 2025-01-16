@@ -8,8 +8,6 @@ import CommandMenuButton from './CommandMenuButton.js';
 import { TABLE_COMMANDS_GROUP } from './EditorToolbarConfig.js';
 import Icon from './Icon.js';
 
-import './czi-table-cell-menu.css';
-
 type Props = {
   editorState: EditorState,
   editorView: EditorView,

@@ -1,14 +1,11 @@
 // @flow
 
-import nullthrows from 'nullthrows';
 import { EditorState, TextSelection, Plugin, PluginKey } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { Decoration, DecorationSet, EditorView } from 'prosemirror-view';
 
 import { IMAGE } from './NodeNames.js';
 import uuid from './ui/uuid.js';
-
-import './ui/czi-image-upload-placeholder.css';
 
 const IMAGE_FILE_TYLES = new Set([
   'image/jpeg',
@@ -102,7 +99,7 @@ export function uploadImageFiles(
       }
       view.dispatch(trNext);
     };
-    const ff = nullthrows(imageFiles.shift());
+    const ff = imageFiles?.shift();
     uploadImage(ff)
       .then(done)
       .catch(done.bind(null, { src: null }));

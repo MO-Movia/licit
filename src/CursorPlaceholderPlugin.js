@@ -4,8 +4,6 @@ import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 
-import './ui/czi-cursor-placeholder.css';
-
 const PLACE_HOLDER_ID = { name: 'CursorPlaceholderPlugin' };
 
 let singletonInstance = null;

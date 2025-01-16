@@ -7,8 +7,6 @@ import ReactDOM from 'react-dom';
 
 import isEditorStateEmpty from './isEditorStateEmpty.js';
 
-import './ui/czi-editor.css';
-
 const CLASS_NAME_HAS_PLACEHOLDER = 'czi-has-placeholder';
 
 class ContentPlaceholderView {

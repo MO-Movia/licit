@@ -1,6 +1,5 @@
 // @flow
 
-import nullthrows from 'nullthrows';
 import { EditorState } from 'prosemirror-state';
 import { setCellAttr } from 'prosemirror-tables';
 import { Transform } from 'prosemirror-transform';
@@ -31,7 +30,7 @@ class TableBackgroundColorCommand extends UICommand {
     if (this._popUp) {
       return Promise.resolve(undefined);
     }
-    const target = nullthrows(event).currentTarget;
+    const target = event?.currentTarget;
     if (!(target instanceof HTMLElement)) {
       return Promise.resolve(undefined);
     }
@@ -43,18 +42,18 @@ class TableBackgroundColorCommand extends UICommand {
     const hex = result ? result.mark.attrs.color : null;
 
     return new Promise((resolve) => {
-      this._popUp = createPopUp(ColorEditor,{ hex, runtime: view.runtime },
+      this._popUp = createPopUp(ColorEditor, { hex, runtime: view.runtime },
         {
-        anchor,
-        autoDismiss: false,
-        position: atAnchorRight,
-        onClose: (val) => {
-          if (this._popUp) {
-            this._popUp = null;
-            resolve(val);
-          }
-        },
-      });
+          anchor,
+          autoDismiss: false,
+          position: atAnchorRight,
+          onClose: (val) => {
+            if (this._popUp) {
+              this._popUp = null;
+              resolve(val);
+            }
+          },
+        });
     });
   };
 

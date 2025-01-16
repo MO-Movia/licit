@@ -5,9 +5,6 @@ import { LAYOUT } from '../DocNodeSpec.js';
 import { CustomButton, preventEventDefault } from '@modusoperandi/licit-ui-commands';
 import CustomRadioButton from './CustomRadioButton.js';
 
-import './czi-body-layout-editor.css';
-import './czi-form.css';
-
 export type DocLayoutEditorValue = {
   layout: ?string,
   width: ?number,
@@ -99,18 +96,6 @@ class DocLayoutEditor extends React.PureComponent<any, any> {
               label="A4 - Landscape"
               onSelect={this._onSelect}
               value={LAYOUT.A4_LANDSCAPE}
-            />
-            <CustomRadioButton
-              checked={selectedValue === LAYOUT.DESKTOP_SCREEN_4_3}
-              label="4:3 Desktop Screen"
-              onSelect={this._onSelect}
-              value={LAYOUT.DESKTOP_SCREEN_4_3}
-            />
-            <CustomRadioButton
-              checked={selectedValue === LAYOUT.DESKTOP_SCREEN_16_9}
-              label="16:9 Desktop Screen"
-              onSelect={this._onSelect}
-              value={LAYOUT.DESKTOP_SCREEN_16_9}
             />
             {customOption}
           </fieldset>
