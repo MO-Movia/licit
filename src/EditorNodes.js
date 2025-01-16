@@ -8,7 +8,6 @@ import DocNodeSpec from './DocNodeSpec.js';
 import HardBreakNodeSpec from './HardBreakNodeSpec.js';
 import HorizontalRuleNodeSpec from './HorizontalRuleNodeSpec.js';
 import ListItemNodeSpec from './ListItemNodeSpec.js';
-import MathNodeSpec from './MathNodeSpec.js';
 import * as NodeNames from './NodeNames.js';
 import OrderedListNodeSpec from './OrderedListNodeSpec.js';
 import ParagraphNodeSpec from './ParagraphNodeSpec.js';
@@ -25,7 +24,6 @@ const {
   HEADING,
   HORIZONTAL_RULE,
   LIST_ITEM,
-  MATH,
   ORDERED_LIST,
   PARAGRAPH,
   TEXT,
@@ -44,7 +42,6 @@ const nodes = {
   [HORIZONTAL_RULE]: HorizontalRuleNodeSpec,
   [HEADING]: ParagraphNodeSpec,
   [TEXT]: TextNodeSpec,
-  [MATH]: MathNodeSpec,
   [HARD_BREAK]: HardBreakNodeSpec,
   [BULLET_LIST]: BulletListNodeSpec,
   [ORDERED_LIST]: OrderedListNodeSpec,
