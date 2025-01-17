@@ -610,9 +610,15 @@ class Licit extends React.Component<any, any> {
   /**
    * Method to open page layout
    */
-  pageLayout = (state: EditorState): void => {
+  pageLayout = (
+    state: EditorState,
+    dispatch: ?(tr: Transform) => void,
+    view: ?EditorView
+  ): void => {
     const DOC_LAYOUT = new DocLayoutCommand();
-    DOC_LAYOUT.waitForUserInput(state);
+    DOC_LAYOUT.waitForUserInput(state, dispatch, view).then((inputs) => {
+      DOC_LAYOUT.executeWithUserInput(state, dispatch, view, inputs);
+    });
   };
 }
 
