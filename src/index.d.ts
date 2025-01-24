@@ -92,7 +92,7 @@ export class Licit extends React.Component<any, any> {
 
   goToEnd(): void;
 
-  pageLayout(state: EditorState): void;
+  pageLayout(): void;
 }
 
 // from './Types';
