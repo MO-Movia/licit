@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit",
-  "version": "1.0.12",
+  "version": "1.1.0",
   "type": "module",
   "subversion": "1",
   "description": "Rich text editor built with React and ProseMirror",
@@ -24,7 +24,7 @@
     "build:dist": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts && npm run build:bom && cp src/*.d.ts dist/",
     "build:licit": "node utils/build_bin.js",
     "ci:bom": "cyclonedx-npm --ignore-npm-errors --short-PURLs --output-format XML --output-file dist/bom.xml",
-    "ci:build": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts && npm run build:bom && copyfiles --up 1 \"src/**/*.d.ts\" dist/ && copyfiles --up 1 \"src/**/*.css\" dist && copyfiles package.json dist",
+    "ci:build": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts && npm run build:bom && copyfiles --up 1 \"src/**/*.d.ts\" dist/ && copyfiles --up 1 \"src/**/*.css\" dist && copyfiles package.json LICENSE dist",
     "flow": "flow --show-all-errors",
     "lint:css": "stylelint \"**/*.css\"",
     "lint:js": "eslint \"src/**/*.js\"",
