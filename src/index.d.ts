@@ -93,6 +93,8 @@ export class Licit extends React.Component<any, any> {
   goToEnd(): void;
 
   pageLayout(): void;
+
+  updateDocName(objectMetaData: any): void;
 }
 
 // from './Types';
