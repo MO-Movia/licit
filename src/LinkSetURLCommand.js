@@ -47,8 +47,8 @@ class LinkSetURLCommand extends UICommand {
     const styles = await stylePromise.fetchStyles();
 
     storeTOCvalue = styles
-      .filter((style) => style.styles.toc === true)
-      .map((style) => style.styleName);
+      .filter((style) => style?.styles?.toc === true)
+      .map((style) => style?.styleName);
 
     view.state.tr.doc.descendants((node, pos) => {
       if (node.attrs.styleName) {
