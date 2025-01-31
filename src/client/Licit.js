@@ -625,18 +625,6 @@ class Licit extends React.Component<any, any> {
       );
     });
   };
-
-  /**
-   *
-   * Method to update Doc name on name change in props
-   */
-
-  updateDocName = (objectMetaData: any): void => {
-    const view: EditorView = this.editorView;
-    let tr = view.state.tr;
-    tr = tr.step(new SetDocAttrStep('objectMetaData', objectMetaData || null));
-    view.dispatch(tr);
-  };
 }
 
 export default Licit;

@@ -4,7 +4,6 @@ import { Node, Schema } from 'prosemirror-model';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
-
 export default function isEditorStateEmpty(editorState: EditorState): boolean;
 
 // from "./ui/uuid";
@@ -93,8 +92,6 @@ export class Licit extends React.Component<any, any> {
   goToEnd(): void;
 
   pageLayout(): void;
-
-  updateDocName(objectMetaData: any): void;
 }
 
 // from './Types';
