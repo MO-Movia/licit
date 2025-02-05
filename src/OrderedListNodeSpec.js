@@ -21,8 +21,8 @@ const OrderedListNodeSpec: NodeSpec = {
     listStyleType: { default: null },
     name: { default: null },
     start: { default: 1 },
-    type: { default: 'decimal' },
-    styleName: { default: RESERVED_STYLE_NONE },
+    type: { default: 'decimal' }
+   
   },
   group: 'block',
   content: LIST_ITEM + '+',
