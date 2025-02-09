@@ -10,12 +10,12 @@ import {
   showSelectionPlaceholder,
 } from './SelectionPlaceholderPlugin.js';
 import {
-  applyMark, findNodesWithSameMark, createPopUp
+  applyMark,
+  findNodesWithSameMark,
+  createPopUp,
 } from '@modusoperandi/licit-ui-commands';
 import LinkURLEditor from './ui/LinkURLEditor.js';
-import {
-  UICommand
-} from '@modusoperandi/licit-doc-attrs-step';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { INNER_LINK } from './Types.js';
 
 class LinkSetURLCommand extends UICommand {
@@ -108,8 +108,7 @@ class LinkSetURLCommand extends UICommand {
     url: ?string
   ): boolean => {
     if (dispatch) {
-      const { selection, schema } = state;
-      let { tr } = state;
+      let { tr, selection, schema } = view.state;
       tr = view ? hideSelectionPlaceholder(view.state) : tr;
       tr = tr.setSelection(selection);
       if (url !== undefined) {
@@ -124,12 +123,7 @@ class LinkSetURLCommand extends UICommand {
         }
         const markType = schema.marks[MARK_LINK];
         const attrs = url ? { href, selectionId } : null;
-        tr = applyMark(
-          tr.setSelection(state.selection),
-          schema,
-          markType,
-          attrs
-        );
+        tr = applyMark(tr.setSelection(selection), schema, markType, attrs);
       }
       dispatch(tr);
     }
