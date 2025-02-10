@@ -108,7 +108,8 @@ class LinkSetURLCommand extends UICommand {
     url: ?string
   ): boolean => {
     if (dispatch) {
-      let { tr, selection, schema } = view.state;
+      const { selection, schema } = view.state;
+      let { tr } = view.state;
       tr = view ? hideSelectionPlaceholder(view.state) : tr;
       tr = tr.setSelection(selection);
       if (url !== undefined) {
