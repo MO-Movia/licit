@@ -41,10 +41,6 @@ const RESOLVED_FONT_NAMES = new Set([]);
 function loadAndCacheFont(name) {
   // Cache custom fonts
   RESOLVED_FONT_NAMES.add(name);
-  // https://github.com/typekit/webfontloader
-  // [FS] IRAD-1061 2020-09-19
-  // Now loaded locally, so that it work in closed network as well.
-  //WebFontLoader.load({google: {families: [name]}});
 }
 
 const FontTypeMarkSpec: MarkSpec = {
