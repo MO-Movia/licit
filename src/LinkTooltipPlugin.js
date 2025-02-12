@@ -59,7 +59,6 @@ class LinkTooltipView {
   }
 
   update(view: EditorView, lastState: EditorState): void {
-  
     const { state } = view;
     const { doc, selection, schema } = state;
     const markType = schema.marks[MARK_LINK];
