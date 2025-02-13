@@ -24,6 +24,7 @@ class LinkTooltip extends React.PureComponent<any, any> {
   render(): React.Element<any> {
     const { href, editorView, onEdit, onRemove, tocItemPos_, selectionId_ } =
       this.props;
+      const canEdit = editorView.editable;
     // [FS] IRAD-1013 2020-07-09
     const getLabel = () => {
       if (tocItemPos_ && selectionId_) {
@@ -53,8 +54,16 @@ class LinkTooltip extends React.PureComponent<any, any> {
               title={label}
               value={label}
             />
-            <CustomButton label="Change" onClick={onEdit} value={editorView} />
-            <CustomButton label="Remove" onClick={onRemove} value={editorView} />
+            {canEdit && (
+              <CustomButton label="Change" onClick={onEdit} value={editorView} />
+            )}
+            {canEdit && (
+              <CustomButton
+                label="Remove"
+                onClick={onRemove}
+                value={editorView}
+              />
+            )}
           </div>
         </div>
       </div>
