@@ -113,6 +113,7 @@ function getAttrs(dom: HTMLElement): Object {
   const overriddenIndent = dom.getAttribute('overriddenIndent') || '';
   const overriddenIndentValue = dom.getAttribute('overriddenIndentValue') || '';
   const innerLink = dom.getAttribute('innerLink') || '';
+  const objectId = dom.getAttribute('objectId') || '';
   return {
     align,
     indent,
@@ -127,6 +128,7 @@ function getAttrs(dom: HTMLElement): Object {
     overriddenIndent,
     overriddenIndentValue,
     innerLink,
+    objectId
   };
 }
 
