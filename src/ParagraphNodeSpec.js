@@ -168,7 +168,7 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
 
 function toDOM(node: Node): Array<any> {
   const { indent, id, overriddenAlign,overriddenAlignValue, overriddenLineSpacing,overriddenLineSpacingValue, overriddenIndent,overriddenIndentValue, innerLink } = node.attrs;
-  const attrs = {};
+  const attrs = { ...node.attrs };
   const { style } = getStyle(node.attrs);
 
   style && (attrs.style = style);
