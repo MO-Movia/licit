@@ -9,26 +9,33 @@ import type { MarkSpec } from './Types.js';
 const TextColorMarkSpec: MarkSpec = {
   attrs: {
     color: '',
+    overridden: { default: false },
   },
   inline: true,
   group: 'inline',
   parseDOM: [
     {
-      style: 'color',
-      getAttrs: (color) => {
+      tag: 'span[style*=color]',
+      getAttrs: (dom: HTMLElement) => {
+        const { color } = dom.style;
+        const overridden = dom.getAttribute('overridden') === 'true'; // Extract overridden flag
         return {
           color: toCSSColor(color),
+          overridden
         };
       },
     },
   ],
   toDOM(node: Node) {
-    const { color } = node.attrs;
-    let style = '';
+    const { color, overridden } = node.attrs;
+    const attrs = {};
+    // let style = '';
     if (color) {
-      style += `color: ${color};`;
+      // style += `color: ${color};`;
+      attrs.style = `color: ${color};`;
+      attrs['overridden'] = overridden.toString();
     }
-    return ['span', { style }, 0];
+    return ['span', attrs, 0];
   },
 };
 

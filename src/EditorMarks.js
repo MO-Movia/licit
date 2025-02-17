@@ -20,6 +20,7 @@ import TextSelectionMarkSpec from './TextSelectionMarkSpec.js';
 import TextSuperMarkSpec from './TextSuperMarkSpec.js';
 import TextSubMarkSpec from './TextSubMarkSpec.js';
 import TextUnderlineMarkSpec from './TextUnderlineMarkSpec.js';
+import OverrideMarkSpec from './OverrideMarkSpec.js';
 
 const {
   MARK_CODE,
@@ -37,6 +38,7 @@ const {
   MARK_TEXT_SELECTION,
   MARK_UNDERLINE,
   MARK_SPACER,
+  MARK_OVERRIDE
 } = MarkNames;
 
 // These nodes are required to build basic marks.
@@ -64,7 +66,8 @@ const marks = {
   [MARK_TEXT_HIGHLIGHT]: TextHighlightMarkSpec,
   [MARK_TEXT_SELECTION]: TextSelectionMarkSpec,
   [MARK_UNDERLINE]: TextUnderlineMarkSpec,
-};
+  [MARK_OVERRIDE]: OverrideMarkSpec,
+}
 
 const schema = new Schema({ nodes, marks });
 const EditorMarks = schema.spec.marks;
