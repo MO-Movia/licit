@@ -3,19 +3,12 @@
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
-import path, {
-  dirname
-} from 'path';
-import {
-  CleanWebpackPlugin
-} from 'clean-webpack-plugin';
-import {
-  fileURLToPath
-} from 'url';
+import path, { dirname } from 'path';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import { fileURLToPath } from 'url';
 
 import env from './utils/env.js';
-const __filename = fileURLToPath(
-  import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // [FS] IRAD-1005 2020-07-07
@@ -88,18 +81,15 @@ var options = {
         resolve: {
           fullySpecified: false,
         },
-      }
+      },
     ],
   },
   resolve: {
     alias: {},
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      // jQuery (for Mathquill)
-      'window.jQuery': 'jquery',
-    }),
-    // type checker 
+    new webpack.ProvidePlugin({}),
+    // type checker
     // ... (isDev ? [new FlowWebpackPlugin({flowArgs: ['--show-all-errors']})] : []),
     // clean the web folder
     new CleanWebpackPlugin(),
