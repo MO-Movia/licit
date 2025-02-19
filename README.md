@@ -233,12 +233,6 @@ in the default global CSS file *src\styles.scss*, add
 *@import  "~licit/dist/styles.css"*
 
 
-MathQuill requires jQuery 1.5.2+ to be loaded first:
-In *angular.json*, add
- *"scripts": [
- "node_modules/jquery/dist/jquery.min.js",
-]*
-
 Run *npm start* to see the licit editor inside the angular application.
 
 Note: there is a nice Angular test app designed to test the component interface of licit here: https://github.com/melgish/licit-playground - which also allows you to load and save the JSON file.
