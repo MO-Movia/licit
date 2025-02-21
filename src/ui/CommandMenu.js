@@ -34,7 +34,7 @@ class CommandMenu extends React.PureComponent<any, any> {
           // Disable the Clear style menu when no styles applied to a paragraph
           disabled =
             !editorView || !command.isEnabled(editorState, editorView, label);
-        } catch (ex) {
+        } catch {
           disabled = false;
         }
         children.push(

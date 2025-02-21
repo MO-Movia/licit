@@ -42,7 +42,7 @@ export function toCSSColor(source: any): string {
     hex = Color(source).hex().toLowerCase();
     ColorMaping[source] = hex;
   } catch (ex) {
-    console.warn('unable to convert to hex', source);
+    console.warn('unable to convert to hex', source, ex);
     ColorMaping[source] = '';
   }
   return hex;

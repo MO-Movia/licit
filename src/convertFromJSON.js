@@ -27,14 +27,10 @@ export default function convertFromJSON(
     error = true;
   }
 
-  if(error) {
+  if (error) {
     // [FS] IRAD-1455 2021-06-16
     // Use the effectivePlugins, editor hangs, b'coz of missing default core plugins
-    return createEmptyEditorState(
-      schema,
-      defaultSchema,
-      effectivePlugins
-    );
+    return createEmptyEditorState(schema, defaultSchema, effectivePlugins);
   }
 
   // [FS] IRAD-1067 2020-09-19
@@ -43,7 +39,7 @@ export default function convertFromJSON(
 
   try {
     doc = editorSchema.nodeFromJSON(json);
-  } catch (error) {
+  } catch {
     return null;
   }
 
