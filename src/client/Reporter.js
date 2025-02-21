@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 class Reporter {
   constructor() {
     this.setAt = 0;
