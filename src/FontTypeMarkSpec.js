@@ -54,7 +54,7 @@ const FontTypeMarkSpec: MarkSpec = {
         let name = domNode.style.fontFamily || '';
         let parentFontName = domNode.parentNode?.style.fontFamily || '';
         const _mOverriden = domNode.getAttribute('overridden');
-        const mparent_overriden = domNode.parentNode?.getAttribute("overridden");
+        const mparent_overriden = domNode.parentNode?.getAttribute('overridden');
 
         if (name !== '') {
           name = name ? name.replace(/["']/g, '') : '';

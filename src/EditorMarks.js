@@ -67,7 +67,7 @@ const marks = {
   [MARK_TEXT_SELECTION]: TextSelectionMarkSpec,
   [MARK_UNDERLINE]: TextUnderlineMarkSpec,
   [MARK_OVERRIDE]: OverrideMarkSpec,
-}
+};
 
 const schema = new Schema({ nodes, marks });
 const EditorMarks = schema.spec.marks;

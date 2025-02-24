@@ -21,7 +21,7 @@ const FontSizeMarkSpec: MarkSpec = {
         let _mptValue = 0;
 
         const parentFontsize = domNode.parentNode?.style.fontSize || '';
-        const mparent_overriden = domNode.parentNode?.getAttribute("overridden");
+        const mparent_overriden = domNode.parentNode?.getAttribute('overridden');
         if (fontSize !== '') {
           ptValue = toClosestFontPtSize(fontSize);
         }

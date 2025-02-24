@@ -1,7 +1,6 @@
 
 import type { MarkSpec } from './Types.js';
 
-const EM_DOM = ['em', { overridden: false }, 0];
 
 const EMMarkSpec: MarkSpec = {
   attrs: {

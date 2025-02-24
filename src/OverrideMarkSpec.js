@@ -1,3 +1,4 @@
+import type { MarkSpec } from './Types.js';
 const OverrideMarkSpec: MarkSpec = {
     attrs: {
         strong: { default: false },
