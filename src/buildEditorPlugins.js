@@ -14,6 +14,7 @@ import SelectionPlaceholderPlugin from './SelectionPlaceholderPlugin.js';
 import TablePlugins from './TablePlugins.js';
 import buildInputRules from './buildInputRules.js';
 import createEditorKeyMap from './createEditorKeyMap.js';
+import FullParagraphSelectionPlugin from './FullParagraphSelectionPlugin.js';
 
 // Creates the default plugin for the editor.
 export default class DefaultEditorPlugins {
@@ -32,6 +33,7 @@ export default class DefaultEditorPlugins {
       history(),
       this.setPluginKey(keymap(createEditorKeyMap()), 'EditorKeyMap'),
       this.setPluginKey(keymap(baseKeymap), 'BaseKeymap'),
+      new FullParagraphSelectionPlugin(),
     ].concat(TablePlugins);
   }
   // [FS] IRAD-1005 2020-07-07
