@@ -14,7 +14,6 @@ import SelectionPlaceholderPlugin from './SelectionPlaceholderPlugin.js';
 import TablePlugins from './TablePlugins.js';
 import buildInputRules from './buildInputRules.js';
 import createEditorKeyMap from './createEditorKeyMap.js';
-import PreserveAttributesPlugin from './preserveAttributesPlugin.js';
 // Creates the default plugin for the editor.
 export default class DefaultEditorPlugins {
   plugins: Array<Plugin>;
@@ -32,8 +31,6 @@ export default class DefaultEditorPlugins {
       history(),
       this.setPluginKey(keymap(createEditorKeyMap()), 'EditorKeyMap'),
       this.setPluginKey(keymap(baseKeymap), 'BaseKeymap'),
-      new PreserveAttributesPlugin()
-
     ].concat(TablePlugins);
   }
   // [FS] IRAD-1005 2020-07-07
