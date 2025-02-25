@@ -74,6 +74,7 @@ const ParagraphNodeSpec: NodeSpec = {
   },
   content: 'inline*',
   group: 'block',
+  definingForContent: true,
   parseDOM: [
     {
       tag: 'p',
