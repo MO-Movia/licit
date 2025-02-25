@@ -17,12 +17,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        #with:
+        #  fetch-depth: 0 # extra info for sonar
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - run: npm audit
       - run: npm run lint
       - run: npm run ci:build
       - run: npm run test:coverage

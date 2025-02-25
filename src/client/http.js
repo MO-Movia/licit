@@ -1,18 +1,16 @@
-/* eslint-disable */
-
 // A simple wrapper for XHR.
 export function req(conf) {
-  let req = new XMLHttpRequest(),
+  const req = new XMLHttpRequest(),
     aborted = false;
-  let result = new Promise((success, failure) => {
+  const result = new Promise((success, failure) => {
     req.open(conf.method, conf.url, true);
     req.addEventListener('load', () => {
       if (aborted) return;
       if (req.status < 400) {
         success(req.responseText);
       } else {
-        let text = req.responseText;
-        let err = new Error(
+        const text = req.responseText;
+        const err = new Error(
           'Request failed: ' + req.statusText + (text ? '\n\n' + text : '')
         );
         err.status = req.status;
@@ -24,7 +22,7 @@ export function req(conf) {
       if (!aborted) failure(new Error('Network error'));
     });
     if (conf.headers)
-      for (let header in conf.headers)
+      for (const header in conf.headers)
         req.setRequestHeader(header, conf.headers[header]);
     req.send(conf.body || null);
   });
