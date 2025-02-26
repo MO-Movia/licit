@@ -93,7 +93,7 @@ function getAttrs(dom: HTMLElement): Object {
     paddingBottom,
   } = dom.style;
 
-  let align = dom.getAttribute('align') || textAlign || '';
+  let align = dom.getAttribute('align') || textAlign || 'left';
   align = ALIGN_PATTERN.test(align) ? align : null;
 
   let indent = parseInt(dom.getAttribute(ATTRIBUTE_INDENT), 10);
@@ -166,7 +166,7 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
 }
 
 function toDOM(node: Node): Array<any> {
-  const { indent, id, overriddenAlign,overriddenAlignValue, overriddenLineSpacing,overriddenLineSpacingValue, overriddenIndent,overriddenIndentValue, innerLink } = node.attrs;
+  const { indent, id, overriddenAlign, overriddenAlignValue, overriddenLineSpacing, overriddenLineSpacingValue, overriddenIndent, overriddenIndentValue, innerLink } = node.attrs;
   const attrs = {};
   const { style } = getStyle(node.attrs);
 
