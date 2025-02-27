@@ -29,9 +29,7 @@ const TextColorMarkSpec: MarkSpec = {
   toDOM(node: Node) {
     const { color, overridden } = node.attrs;
     const attrs = {};
-    // let style = '';
     if (color) {
-      // style += `color: ${color};`;
       attrs.style = `color: ${color};`;
       attrs['overridden'] = overridden.toString();
     }

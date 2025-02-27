@@ -15,14 +15,6 @@ const TextUnderlineMarkSpec: MarkSpec = {
         return { overridden: _overridden === 'true' };
       }
     },
-    // {
-    //   style: 'text-decoration-line',
-    //   getAttrs: (value) => (value === 'underline' ? { overridden: false } : null),
-    // },
-    // {
-    //   style: 'text-decoration',
-    //   getAttrs: (value) => (value === 'underline' ? { overridden: false } : null),
-    // },
   ],
   toDOM(mark) {
     return ['u', { overridden: mark.attrs.overridden }, 0];
