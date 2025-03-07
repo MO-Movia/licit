@@ -42,6 +42,9 @@ class ListTypeMenu extends React.PureComponent<any, any> {
             id={label}
             key={label}
             onClick={(e) => this._onUIEnter(command, e)}
+            onMouseDown={preventEventDefault}
+            onMouseEnter={preventEventDefault}
+            onMouseUp={preventEventDefault}
             value={command}
           >
             {command.label}
@@ -64,6 +67,12 @@ class ListTypeMenu extends React.PureComponent<any, any> {
       onCommand?.();
     }
   };
+}
+
+
+
+export function preventEventDefault(e: React.SyntheticEvent): void {
+  e.preventDefault();
 }
 
 export default ListTypeMenu;

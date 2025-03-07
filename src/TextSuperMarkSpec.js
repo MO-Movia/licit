@@ -3,17 +3,18 @@
 import type { MarkSpec } from './Types.js';
 
 const TextSuperMarkSpec: MarkSpec = {
+  attrs: {
+    overridden: { default: false },
+  },
   parseDOM: [
-    { tag: 'sup' },
+    { tag: 'sup', getAttrs: () => ({ overridden: false }) },
     {
       style: 'vertical-align',
-      getAttrs: (value) => {
-        return value === 'super' && null;
-      },
+      getAttrs: (value) => (value === 'super' ? { overridden: false } : null),
     },
   ],
-  toDOM() {
-    return ['sup', 0];
+  toDOM(mark) {
+    return ['sup', { overridden: mark.attrs.overridden }, 0];
   },
 };
 

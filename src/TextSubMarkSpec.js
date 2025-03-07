@@ -3,17 +3,18 @@
 import type { MarkSpec } from './Types.js';
 
 const TextSubMarkSpec: MarkSpec = {
+  attrs: {
+    overridden: { default: false },
+  },
   parseDOM: [
-    { tag: 'sub' },
+    { tag: 'sub', getAttrs: () => ({ overridden: false }) },
     {
       style: 'vertical-align',
-      getAttrs: (value) => {
-        return value === 'sub' && null;
-      },
+      getAttrs: (value) => (value === 'sub' ? { overridden: false } : null),
     },
   ],
-  toDOM() {
-    return ['sub', 0];
+  toDOM(mark) {
+    return ['sub', { overridden: mark.attrs.overridden }, 0];
   },
 };
 
