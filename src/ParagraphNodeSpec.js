@@ -85,13 +85,8 @@ const ParagraphNodeSpec: NodeSpec = {
 };
 
 function getAttrs(dom: HTMLElement): Object {
-  const {
-    lineHeight,
-    textAlign,
-    marginLeft,
-    paddingTop,
-    paddingBottom,
-  } = dom.style;
+  const { lineHeight, textAlign, marginLeft, paddingTop, paddingBottom } =
+    dom.style;
 
   let align = dom.getAttribute('align') || textAlign || 'left';
   align = ALIGN_PATTERN.test(align) ? align : null;
@@ -110,10 +105,12 @@ function getAttrs(dom: HTMLElement): Object {
   const overriddenAlign = dom.getAttribute('overriddenAlign') || '';
   const overriddenAlignValue = dom.getAttribute('overriddenAlignValue') || '';
   const overriddenLineSpacing = dom.getAttribute('overriddenLineSpacing') || '';
-  const overriddenLineSpacingValue = dom.getAttribute('overriddenLineSpacingValue') || '';
+  const overriddenLineSpacingValue =
+    dom.getAttribute('overriddenLineSpacingValue') || '';
   const overriddenIndent = dom.getAttribute('overriddenIndent') || '';
   const overriddenIndentValue = dom.getAttribute('overriddenIndentValue') || '';
   const innerLink = dom.getAttribute('innerLink') || '';
+  const objectId = dom.getAttribute('objectId') || '';
   return {
     align,
     indent,
@@ -128,6 +125,7 @@ function getAttrs(dom: HTMLElement): Object {
     overriddenIndent,
     overriddenIndentValue,
     innerLink,
+    objectId,
   };
 }
 
@@ -136,7 +134,7 @@ function getStyle(attrs: Object) {
     attrs.align,
     attrs.lineSpacing,
     attrs.paddingTop,
-    attrs.paddingBottom,
+    attrs.paddingBottom
   );
 }
 
@@ -162,12 +160,21 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
     style += `padding-bottom: ${paddingBottom};`;
   }
   return { style };
-
 }
 
 function toDOM(node: Node): Array<any> {
-  const { indent, id, overriddenAlign, overriddenAlignValue, overriddenLineSpacing, overriddenLineSpacingValue, overriddenIndent, overriddenIndentValue, innerLink } = node.attrs;
-  const attrs = {};
+  const {
+    indent,
+    id,
+    overriddenAlign,
+    overriddenAlignValue,
+    overriddenLineSpacing,
+    overriddenLineSpacingValue,
+    overriddenIndent,
+    overriddenIndentValue,
+    innerLink,
+  } = node.attrs;
+  const attrs = { ...node.attrs };
   const { style } = getStyle(node.attrs);
 
   style && (attrs.style = style);
@@ -197,7 +204,10 @@ export const getParagraphStyle = getStyle;
 
 export function convertMarginLeftToIndentValue(marginLeft: string): number {
   const ptValue = convertToCSSPTValue(marginLeft);
-  return Math.min(Math.max(Math.floor(ptValue / INDENT_MARGIN_PT_SIZE), MIN_INDENT_LEVEL), MAX_INDENT_LEVEL);
+  return Math.min(
+    Math.max(Math.floor(ptValue / INDENT_MARGIN_PT_SIZE), MIN_INDENT_LEVEL),
+    MAX_INDENT_LEVEL
+  );
 }
 
 export default ParagraphNodeSpec;
