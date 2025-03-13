@@ -25,6 +25,7 @@ class ListItemNodeView {
   ) {
     const dom = document.createElement('li');
     this.dom = dom;
+    this._editorView = editorView;
     this.contentDOM = dom;
     this._updateDOM(node);
   }
@@ -49,11 +50,13 @@ class ListItemNodeView {
 
     // This resolves the styles for the counter by examines the marks for the
     // first text node of the list item.
-    const marks =
+    let marks =
       initialContent && initialContent.isText && initialContent.textContent
         ? initialContent.marks
         : null;
-
+    if (!marks) {
+      marks = this._editorView.state.tr.storedMarks
+    }
     let cssColor;
     let cssFontSize;
     let cssText = '';
