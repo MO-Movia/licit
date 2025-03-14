@@ -55,7 +55,7 @@ class ListItemNodeView {
         ? initialContent.marks
         : null;
     if (!marks) {
-      marks = this._editorView.state.tr.storedMarks
+      marks = this._editorView.state.tr.storedMarks;
     }
     let cssColor;
     let cssFontSize;
