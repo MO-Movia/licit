@@ -7,7 +7,7 @@ import type { MarkSpec } from './Types.js';
 
 const TextHighlightMarkSpec: MarkSpec = {
   attrs: {
-    highlightColor: '',
+    highlightColor: { default: null }, // Allow missing color
     overridden: { default: false },
   },
   inline: true,

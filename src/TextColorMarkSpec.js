@@ -8,7 +8,7 @@ import type { MarkSpec } from './Types.js';
 
 const TextColorMarkSpec: MarkSpec = {
   attrs: {
-    color: '',
+    color: { default: null }, //  Allow missing color
     overridden: { default: false },
   },
   inline: true,
