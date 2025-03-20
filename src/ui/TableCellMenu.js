@@ -1,5 +1,5 @@
 // @flow
-import { EditorState, PluginView } from 'prosemirror-state';
+import type { EditorState, PluginView } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { Node } from 'prosemirror-model';
 import * as React from 'react';

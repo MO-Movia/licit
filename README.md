@@ -226,11 +226,11 @@ To set data to editor:
 To load the styles:
 Either in *angular.json*, add
  *"styles": [
- "node_modules/licit/dist/styles.css",
+ "node_modules/@modusoperandi/licit/styles.css",
 ]*
 OR
 in the default global CSS file *src\styles.scss*, add
-*@import  "~licit/dist/styles.css"*
+*@import  "@modusoperandi/licit/styles.css"*
 
 
 Run *npm start* to see the licit editor inside the angular application.
