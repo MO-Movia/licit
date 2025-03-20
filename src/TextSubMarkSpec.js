@@ -7,10 +7,17 @@ const TextSubMarkSpec: MarkSpec = {
     overridden: { default: false },
   },
   parseDOM: [
-    { tag: 'sub', getAttrs: () => ({ overridden: false }) },
+    {
+      tag: 'sub',
+      priority: 150,
+      getAttrs: (dom: HTMLElement) => {
+        const _overridden = dom.getAttribute('overridden');
+        return { overridden: _overridden === 'true' };
+      }
+    },
     {
       style: 'vertical-align',
-      getAttrs: (value) => (value === 'sub' ? { overridden: false } : null),
+      getAttrs: (value) => (value === 'sub' ? { overridden: true } : null),
     },
   ],
   toDOM(mark) {

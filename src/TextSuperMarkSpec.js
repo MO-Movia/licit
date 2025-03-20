@@ -7,10 +7,17 @@ const TextSuperMarkSpec: MarkSpec = {
     overridden: { default: false },
   },
   parseDOM: [
-    { tag: 'sup', getAttrs: () => ({ overridden: false }) },
+    {
+      tag: 'sup',
+      getAttrs: (dom: HTMLElement) => {
+        const _overridden = dom.getAttribute('overridden');
+        return { overridden: _overridden === 'true' };
+      }
+    },
+
     {
       style: 'vertical-align',
-      getAttrs: (value) => (value === 'super' ? { overridden: false } : null),
+      getAttrs: (value) => (value === 'sup' ? { overridden: true } : null),
     },
   ],
   toDOM(mark) {
