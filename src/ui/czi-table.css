@@ -9,7 +9,6 @@
   height: 12px;
  }
 .ProseMirror table {
-  border: 1px solid var(--czi-table-border-color);
   border-collapse:collapse;
   border-spacing: 0;
   border: none;
