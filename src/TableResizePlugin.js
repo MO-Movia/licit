@@ -149,8 +149,8 @@ function handleMouseMove(view: EditorView, event: PointerEvent): void {
   }
 
   if (
-    cell === resizeState.cellPos &&
-    forMarginLeft === resizeState.forMarginLeft
+    cell === resizeState?.cellPos &&
+    forMarginLeft === resizeState?.forMarginLeft
   ) {
     return;
   }
@@ -338,12 +338,18 @@ function handleDragEnd(view: EditorView, event: any): void {
       if (attrs.colwidth && compareNumbersList(attrs.colwidth, colwidth)) {
         continue;
       }
-      attrs.colwidth = colwidth;
-      tr = tr.setNodeMarkup(
-        start + pos,
-        null,
-        attrs
-      );
+      if (colwidth && colwidth.length > 0 && !isNaN(colwidth[0])) {
+        const newAttrs = {
+          ...attrs,
+          colwidth: colwidth
+        };
+        tr = tr.setNodeMarkup(
+          start + pos,
+          null,
+          newAttrs
+        );
+        tr = tr.setNodeMarkup(start + pos, null, newAttrs);
+      }
     }
   }
 
@@ -606,7 +612,7 @@ export default class TableResizePlugin extends Plugin {
       props: {
         attributes(state: EditorState): ?Object {
           const resizeState = PLUGIN_KEY.getState(state);
-          return resizeState.cellPos > -1 ? { class: 'resize-cursor' } : null;
+          return resizeState?.cellPos > -1 ? { class: 'resize-cursor' } : null;
         },
         handleDOMEvents: {
           // Move events should be batched to avoid over-handling the mouse
@@ -619,7 +625,7 @@ export default class TableResizePlugin extends Plugin {
           const resizeState = PLUGIN_KEY.getState(state);
           // [FS] IRAD-1008 2020-07-16
           // Does not allow Table cell Resize in disable mode
-          return resizeState.cellPos > -1 && isEnabled
+          return resizeState?.cellPos > -1 && isEnabled
             ? handleDecorations(state, resizeState)
             : undefined;
         },
