@@ -40,6 +40,8 @@
 @import 'react-tooltip/dist/react-tooltip.css';
 @import './ui/listType.css';
 
+/**
 .ProseMirror {
-    content-visibility: auto /* (browser) Only render visable content */
+    content-visibility: auto /* (browser) Only render visable content /
 }
+*/
