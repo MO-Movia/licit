@@ -76,7 +76,7 @@
     "babel-loader": "^10.0.0",
     "babel-plugin-flow-react-proptypes": "^26.0.0",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
-    "body-parser": "^1.19.0",
+    "body-parser": "^2.2.0",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^13.0.0",
     "copyfiles": "^2.4.1",
