@@ -48,6 +48,9 @@ const ParagraphNodeSpec: NodeSpec = {
     paddingTop: {
       default: null,
     },
+    reset: {
+      default: null,
+    },
     innerLink: {
       default: null,
     },
@@ -102,6 +105,7 @@ function getAttrs(dom: HTMLElement): Object {
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
 
   const id = dom.getAttribute('id') || '';
+  const reset = dom.getAttribute('reset') || '';
   const overriddenAlign = dom.getAttribute('overriddenAlign') || '';
   const overriddenAlignValue = dom.getAttribute('overriddenAlignValue') || '';
   const overriddenLineSpacing = dom.getAttribute('overriddenLineSpacing') || '';
@@ -166,6 +170,7 @@ function toDOM(node: Node): Array<any> {
   const {
     indent,
     id,
+    reset,
     overriddenAlign,
     overriddenAlignValue,
     overriddenLineSpacing,
@@ -185,6 +190,7 @@ function toDOM(node: Node): Array<any> {
   if (id) {
     attrs.id = id;
   }
+  attrs.reset = reset;
   attrs.overriddenAlign = overriddenAlign;
   attrs.overriddenLineSpacing = overriddenLineSpacing;
   attrs.overriddenIndent = overriddenIndent;
