@@ -71,7 +71,7 @@
     "@babel/preset-env": "^7.19.4",
     "@babel/preset-flow": "^7.10.4",
     "@babel/preset-react": "^7.18.6",
-    "@cyclonedx/cyclonedx-npm": "^2.0.0",
+    "@cyclonedx/cyclonedx-npm": "^3.0.0",
     "babel-jest": "^29.2.0",
     "babel-loader": "^10.0.0",
     "babel-plugin-flow-react-proptypes": "^26.0.0",
