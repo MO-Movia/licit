@@ -40,18 +40,18 @@ const ParagraphNodeSpec: NodeSpec = {
     lineSpacing: {
       default: null,
     },
-    // TODO: Add UI to let user edit / clear padding.
     paddingBottom: {
       default: null,
     },
-    // TODO: Add UI to let user edit / clear padding.
     paddingTop: {
+      default: null,
+    },
+    reset: {
       default: null,
     },
     innerLink: {
       default: null,
     },
-    // [KNITE-1465] 24-12-2024
     // added attributes for indent, align and linespacing overrides.
     overriddenAlign: {
       default: null,
@@ -102,6 +102,7 @@ function getAttrs(dom: HTMLElement): Object {
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
 
   const id = dom.getAttribute('id') || '';
+  const reset = dom.getAttribute('reset') || '';
   const overriddenAlign = dom.getAttribute('overriddenAlign') || '';
   const overriddenAlignValue = dom.getAttribute('overriddenAlignValue') || '';
   const overriddenLineSpacing = dom.getAttribute('overriddenLineSpacing') || '';
@@ -117,6 +118,7 @@ function getAttrs(dom: HTMLElement): Object {
     lineSpacing,
     paddingTop,
     paddingBottom,
+    reset,
     id,
     overriddenAlign,
     overriddenAlignValue,
@@ -166,6 +168,7 @@ function toDOM(node: Node): Array<any> {
   const {
     indent,
     id,
+    reset,
     overriddenAlign,
     overriddenAlignValue,
     overriddenLineSpacing,
@@ -185,6 +188,7 @@ function toDOM(node: Node): Array<any> {
   if (id) {
     attrs.id = id;
   }
+  attrs.reset = reset;
   attrs.overriddenAlign = overriddenAlign;
   attrs.overriddenLineSpacing = overriddenLineSpacing;
   attrs.overriddenIndent = overriddenIndent;
