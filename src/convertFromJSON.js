@@ -38,6 +38,9 @@ export default function convertFromJSON(
   let doc = null;
 
   try {
+    if (undefined === json.content) {
+      json.content = [{ type: 'paragraph' }];
+    }
     doc = editorSchema.nodeFromJSON(json);
   } catch {
     return null;
