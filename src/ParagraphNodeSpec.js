@@ -40,11 +40,9 @@ const ParagraphNodeSpec: NodeSpec = {
     lineSpacing: {
       default: null,
     },
-    // TODO: Add UI to let user edit / clear padding.
     paddingBottom: {
       default: null,
     },
-    // TODO: Add UI to let user edit / clear padding.
     paddingTop: {
       default: null,
     },
@@ -54,7 +52,6 @@ const ParagraphNodeSpec: NodeSpec = {
     innerLink: {
       default: null,
     },
-    // [KNITE-1465] 24-12-2024
     // added attributes for indent, align and linespacing overrides.
     overriddenAlign: {
       default: null,
@@ -121,6 +118,7 @@ function getAttrs(dom: HTMLElement): Object {
     lineSpacing,
     paddingTop,
     paddingBottom,
+    reset,
     id,
     overriddenAlign,
     overriddenAlignValue,
