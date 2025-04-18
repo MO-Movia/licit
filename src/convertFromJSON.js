@@ -28,12 +28,10 @@ export default function convertFromJSON(
   }
 
   if (error) {
-    // [FS] IRAD-1455 2021-06-16
     // Use the effectivePlugins, editor hangs, b'coz of missing default core plugins
     return createEmptyEditorState(schema, defaultSchema, effectivePlugins);
   }
 
-  // [FS] IRAD-1067 2020-09-19
   // Handle gracefully when error thrown on invalid json
   let doc = null;
 
@@ -42,7 +40,8 @@ export default function convertFromJSON(
       json.content = [{ type: 'paragraph' }];
     }
     doc = editorSchema.nodeFromJSON(json);
-  } catch {
+  } catch (error) {
+    console.error('Failed to convert JSON to valid ProseMirror: ', error);
     return null;
   }
 
