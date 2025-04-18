@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "license": "MIT",
   "type": "module",
   "subversion": "1",
@@ -118,7 +118,7 @@
     "ts-jest": "^29.1.2",
     "ts-loader": "^9.5.0",
     "ts-node": "^10.9.2",
-    "typescript": "5.5.4",
+    "typescript": "5.8.3",
     "webpack": "^5.74.0",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.0.2",
