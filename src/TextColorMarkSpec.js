@@ -31,7 +31,7 @@ const TextColorMarkSpec: MarkSpec = {
     const attrs = {};
     if (color) {
       attrs.style = `color: ${color};`;
-      attrs['overridden'] = overridden.toString();
+      attrs['overridden'] = overridden?.toString();
     }
     return ['span', attrs, 0];
   },

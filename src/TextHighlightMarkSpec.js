@@ -38,7 +38,7 @@ const TextHighlightMarkSpec: MarkSpec = {
     }
 
     // Store overridden flag properly as a data attribute
-    attrs['overridden'] = overridden.toString();
+    attrs['overridden'] = overridden?.toString();
 
     return ['span', attrs, 0];
   },

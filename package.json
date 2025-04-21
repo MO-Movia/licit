@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "license": "MIT",
   "type": "module",
   "subversion": "1",
@@ -90,7 +90,7 @@
     "exports-loader": "^5.0.0",
     "express": "^5.1.0",
     "file-loader": "^6.2.0",
-    "flow-bin": "^0.267.0",
+    "flow-bin": "^0.268.0",
     "flow-copy-source": "^2.0.9",
     "flow-typed": "^4.0.0",
     "flow-webpack-plugin": "^1.2.0",
