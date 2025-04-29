@@ -138,7 +138,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
           </div>
           {!isValid ? (
             <div className="tabcontent" id="innerlink">
-              <p>No TOC styles</p>
+              <p>No TOC/TOT/TOF styles</p>
               <div className="czi-form-buttons">
                 <CustomButton label="Cancel" onClick={this._cancel} />
               </div>
