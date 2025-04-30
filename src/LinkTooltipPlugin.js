@@ -139,7 +139,14 @@ class LinkTooltipView {
       const styles = await stylePromise.fetchStyles();
 
       storeTOCvalue = styles
-        .filter((style) => style?.styles?.toc === true)
+        .filter(
+          (
+            style // Added TOT/TOF selected styles to be listed as well
+          ) =>
+            style?.styles?.toc === true ||
+            style?.styles?.tot === true ||
+            style?.styles?.tof === true
+        )
         .map((style) => style?.styleName);
       view.state.tr.doc.descendants((node, pos) => {
         if (node.attrs.styleName) {
