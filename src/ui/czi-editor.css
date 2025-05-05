@@ -187,6 +187,10 @@
   letter-spacing: 280px;
 }
 
+.prosemirror-editor-wrapper.readOnly a {
+  pointer-events: none; /* Disable interaction */
+}
+
 .ProseMirror hr[data-page-break] {
   height: 0;
   margin: 0;
