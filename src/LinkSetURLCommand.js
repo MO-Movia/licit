@@ -86,7 +86,7 @@ class LinkSetURLCommand extends UICommand {
       return Promise.resolve(undefined);
     }
     const { from, to } = selection;
-    const result = findNodesWithSameMark(doc, from, to, markType);
+    const result = findNodesWithSameMark(doc, from, to - 1, markType);
     const href = result ? result.mark.attrs.href : null;
     const tocItemsNode = await this.showTocList(view);
     const viewPops = {
