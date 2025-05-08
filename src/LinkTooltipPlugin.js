@@ -1,15 +1,10 @@
 // @flow
 
-import {
-  Plugin,
-  PluginKey,
-  TextSelection,
-} from 'prosemirror-state';
+import { Plugin, PluginKey, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 
 import { MARK_LINK } from './MarkNames.js';
 import {
-
   atAnchorTopCenter,
   createPopUp,
   findNodesWithSameMark,
@@ -62,26 +57,29 @@ class LinkTooltipView {
   }
 
   _handleMouseOver(event) {
-
     const anchor = event.target?.closest('a');
     if (!anchor || anchor === this._anchorEl) return;
 
     this._anchorEl = anchor;
     const href = anchor.getAttribute('href');
     this._popup?.close();
-    this._popup = createPopUp(LinkTooltip, {
-      href,
-      selectionId: null,
-      editorView: this._view,
-    }, {
-      anchor,
-      autoDismiss: true,
-      onClose: () => {
-        this._popup = null;
-        this._anchorEl = null;
+    this._popup = createPopUp(
+      LinkTooltip,
+      {
+        href,
+        selectionId: null,
+        editorView: this._view,
       },
-      position: atAnchorTopCenter,
-    });
+      {
+        anchor,
+        autoDismiss: true,
+        onClose: () => {
+          this._popup = null;
+          this._anchorEl = null;
+        },
+        position: atAnchorTopCenter,
+      }
+    );
   }
   _handleClick(event) {
     const { state } = this.dom._linkTooltipView._view;
@@ -91,21 +89,20 @@ class LinkTooltipView {
 
     const result = findNodesWithSameMark(doc, from, to, markType);
     if (!result) {
-      return;
+      return false;
     }
     const domFound = this.dom._linkTooltipView._view.domAtPos(from);
     if (!domFound) {
-      return;
+      return false;
     }
 
     const anchor = lookUpElement(domFound.node, (el) => el.nodeName === 'A');
     if (!anchor) {
-      return;
+      return false;
     }
 
     const href = anchor.getAttribute('href');
     const selectionId = anchor.getAttribute('selectionid');
-
 
     const tocItemPos = this.dom._linkTooltipView.getInnerlinkSelected_position(
       this.dom._linkTooltipView._view,
@@ -123,10 +120,7 @@ class LinkTooltipView {
   }
 
   _handleMouseOut(event) {
-    if (
-      this._anchorEl &&
-      !this._anchorEl.contains(event.relatedTarget)
-    ) {
+    if (this._anchorEl && !this._anchorEl.contains(event.relatedTarget)) {
       this._popup?.close();
       this._popup = null;
       this._anchorEl = null;
@@ -153,7 +147,7 @@ class LinkTooltipView {
     view.dispatch(tr.scrollIntoView(true));
     const dom = view.domAtPos(tocItemPos?.position + 1).node;
     if (dom?.scrollIntoView) {
-      dom.scrollIntoView({ behavior: "smooth", block: "start" });
+      dom.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
@@ -206,9 +200,7 @@ class LinkTooltipView {
       });
     }
     return tocItemPos;
-  }
-
-
+  };
 }
 
 export default LinkTooltipPlugin;
