@@ -14,7 +14,6 @@ import LinkTooltip from './ui/LinkTooltip.js';
 import scrollIntoView from 'smooth-scroll-into-view-if-needed';
 
 import sanitizeURL from './sanitizeURL.js';
-import '@modusoperandi/licit-ui-commands/ui/czi-pop-up.css';
 
 const SPEC = {
   key: new PluginKey('LinkTooltipPlugin'),
