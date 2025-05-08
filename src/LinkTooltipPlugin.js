@@ -1,33 +1,43 @@
 // @flow
 
-import {
-  EditorState,
-  Plugin,
-  PluginKey,
-  TextSelection,
-} from 'prosemirror-state';
+import { Plugin, PluginKey, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 
 import { MARK_LINK } from './MarkNames.js';
-import { hideSelectionPlaceholder } from './SelectionPlaceholderPlugin.js';
 import {
-  applyMark,
-  findNodesWithSameMark,
   atAnchorTopCenter,
   createPopUp,
+  findNodesWithSameMark,
 } from '@modusoperandi/licit-ui-commands';
 import lookUpElement from './lookUpElement.js';
 import LinkTooltip from './ui/LinkTooltip.js';
-import LinkURLEditor from './ui/LinkURLEditor.js';
-import { INNER_LINK } from './Types.js';
+import scrollIntoView from 'smooth-scroll-into-view-if-needed';
 
-// https://prosemirror.net/examples/tooltip/
+import sanitizeURL from './sanitizeURL.js';
+
 const SPEC = {
-  // [FS] IRAD-1005 2020-07-07
-  // Upgrade outdated packages.
   key: new PluginKey('LinkTooltipPlugin'),
+  props: {
+    handleDOMEvents: {
+      mouseover(view, event) {
+        const pluginView = view.dom._linkTooltipView;
+        return pluginView?._handleMouseOver(event) ?? false;
+      },
+      mouseout(view, event) {
+        const pluginView = view.dom._linkTooltipView;
+        return pluginView?._handleMouseOut.call(view, event);
+      },
+      click(view, event) {
+        const pluginView = view.dom._linkTooltipView;
+        return pluginView?._handleClick.call(view, event);
+      },
+    },
+  },
   view(editorView: EditorView) {
-    return new LinkTooltipView(editorView);
+    const pluginView = new LinkTooltipView(editorView);
+    // Store the instance for use in DOM handlers
+    editorView.dom._linkTooltipView = pluginView;
+    return pluginView;
   },
 };
 
@@ -36,17 +46,150 @@ class LinkTooltipPlugin extends Plugin {
     super(SPEC);
   }
 }
-
 class LinkTooltipView {
-  _anchorEl = null;
   _popup = null;
-  _editor = null;
+  _anchorEl = null;
+  _view = null;
 
-  constructor(editorView: EditorView) {
-    this.update(editorView, null);
+  constructor(view) {
+    this._view = view;
   }
 
-  getInnerlinkSelected_position(view: EditorView, selectionId): void {
+  _handleMouseOver(event) {
+    const anchor = event.target?.closest('a');
+    if (!anchor || anchor === this._anchorEl) return;
+
+    this._anchorEl = anchor;
+    const href = anchor.getAttribute('href');
+    this._popup?.close();
+    this._popup = createPopUp(
+      LinkTooltip,
+      {
+        href,
+        selectionId: null,
+        editorView: this._view,
+      },
+      {
+        anchor,
+        autoDismiss: true,
+        onClose: () => {
+          this._popup = null;
+          this._anchorEl = null;
+        },
+        position: atAnchorTopCenter,
+      }
+    );
+  }
+  _handleClick(event) {
+    const { state } = this.dom._linkTooltipView._view;
+    const { doc, selection, schema } = state;
+    const { from, to } = selection;
+    const markType = schema.marks[MARK_LINK];
+
+    const result = findNodesWithSameMark(doc, from, to, markType);
+    if (!result) {
+      return false;
+    }
+    const domFound = this.dom._linkTooltipView._view.domAtPos(from);
+    if (!domFound) {
+      return false;
+    }
+
+    const anchor = lookUpElement(domFound.node, (el) => el.nodeName === 'A');
+    if (!anchor) {
+      return false;
+    }
+
+    const href = anchor.getAttribute('href');
+    const selectionId = anchor.getAttribute('selectionid');
+
+    const tocItemPos = this.dom._linkTooltipView.getInnerlinkSelected_position(
+      this.dom._linkTooltipView._view,
+      result.mark.attrs.selectionId
+    );
+
+    this.dom._linkTooltipView.jumpLink(
+      this.dom._linkTooltipView._view,
+      tocItemPos,
+      href,
+      selectionId
+    );
+    event.preventDefault(); // prevent default browser navigation
+    return true;
+  }
+
+  _handleMouseOut(event) {
+    if (this._anchorEl && !this._anchorEl.contains(event.relatedTarget)) {
+      this._popup?.close();
+      this._popup = null;
+      this._anchorEl = null;
+    }
+  }
+
+  destroy() {
+    this._popup?.close();
+  }
+
+  jumpLink = (view: EditorView, tocItemPos, href, selectionId): void => {
+    if (selectionId || (selectionId === 0 && tocItemPos)) {
+      this.jumpInnerLink(view, tocItemPos);
+    } else {
+      this._openLink(href);
+    }
+  };
+
+  jumpInnerLink = (view: EditorView, tocItemPos): void => {
+    const transaction = view.state.tr;
+    const tr = transaction.setSelection(
+      TextSelection.create(transaction.doc, tocItemPos.position + 1)
+    );
+    view.dispatch(tr.scrollIntoView(true));
+    const dom = view.domAtPos(tocItemPos?.position + 1).node;
+    if (dom?.scrollIntoView) {
+      dom.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  _openLink = (href: string): void => {
+    if (this.isBookMarkHref(href)) {
+      const id = href.substr(1);
+      const el = document.getElementById(id);
+      if (el) {
+        const { onCancel, editorView } = this.props;
+        onCancel(editorView);
+        (async () => {
+          // https://www.npmjs.com/package/smooth-scroll-into-view-if-needed
+          await scrollIntoView(el, {
+            scrollMode: 'if-needed',
+            behavior: 'smooth',
+          });
+        })();
+      }
+      return;
+    }
+    if (href) {
+      const url = sanitizeURL(href);
+      let popupString;
+
+      if (this._view.editable) {
+        popupString = 'Any unsaved changes will be lost';
+      } else {
+        popupString = '';
+      }
+
+      if (this._view?.runtime?.openLinkDialog) {
+        this._view.runtime.openLinkDialog(url, popupString);
+      } else {
+        window.open(url);
+      }
+    }
+  };
+
+  isBookMarkHref = (href: string): boolean => {
+    return !!href && href.startsWith('#') && href.length >= 2;
+  };
+
+  getInnerlinkSelected_position = (view: EditorView, selectionId): void => {
     let tocItemPos = null;
     if (selectionId) {
       view.state.tr.doc.descendants((node, pos) => {
@@ -56,205 +199,6 @@ class LinkTooltipView {
       });
     }
     return tocItemPos;
-  }
-
-  update(view: EditorView, lastState: EditorState): void {
-    const { state } = view;
-    const { doc, selection, schema } = state;
-    const markType = schema.marks[MARK_LINK];
-    if (!markType) {
-      return;
-    }
-    const { from, to } = selection;
-    const result = findNodesWithSameMark(doc, from, to, markType);
-
-    if (!result) {
-      this.destroy();
-      return;
-    }
-    const domFound = view.domAtPos(from);
-    if (!domFound) {
-      this.destroy();
-      return;
-    }
-    const anchorEl = lookUpElement(domFound.node, (el) => el.nodeName === 'A');
-    if (!anchorEl) {
-      this.destroy();
-      return;
-    }
-    const tocItemPos = this.getInnerlinkSelected_position(
-      view,
-      result.mark.attrs.selectionId
-    );
-    const popup = this._popup;
-    const viewPops = {
-      editorState: state,
-      editorView: view,
-      href: result.mark.attrs.href,
-      selectionId_: result.mark.attrs.selectionId,
-      onCancel: this._onCancel,
-      onEdit: this._onEdit,
-      onRemove: this._onRemove,
-      tocItemPos_: tocItemPos,
-    };
-
-    if (popup && anchorEl === this._anchorEl) {
-      popup.update(viewPops);
-    } else {
-      popup?.close();
-      this._anchorEl = anchorEl;
-      this._popup = createPopUp(LinkTooltip, viewPops, {
-        anchor: anchorEl,
-        autoDismiss: false,
-        onClose: this._onClose,
-        position: atAnchorTopCenter,
-      });
-    }
-  }
-
-  destroy() {
-    this._popup?.close();
-    this._editor?.close();
-  }
-
-  _onCancel = (view: EditorView): void => {
-    this.destroy();
-    view.focus();
-  };
-
-  _onClose = (): void => {
-    this._anchorEl = null;
-    this._editor = null;
-    this._popup = null;
-  };
-
-  showTocList = async (view) => {
-    let storeTOCvalue = [];
-    const TOCselectedNode = [];
-
-    const stylePromise = view.runtime;
-    if (stylePromise === null || undefined) {
-      return TOCselectedNode;
-    } else {
-      const styles = await stylePromise.fetchStyles();
-
-      storeTOCvalue = styles
-        .filter(
-          (
-            style // Added TOT/TOF selected styles to be listed as well
-          ) =>
-            style?.styles?.toc === true ||
-            style?.styles?.tot === true ||
-            style?.styles?.tof === true
-        )
-        .map((style) => style?.styleName);
-      view.state.tr.doc.descendants((node, pos) => {
-        if (node.attrs.styleName) {
-          for (let i = 0; i <= storeTOCvalue.length; i++) {
-            if (storeTOCvalue[i] === node.attrs.styleName) {
-              TOCselectedNode.push({ node_: node, pos_: pos });
-            }
-          }
-        }
-      });
-      return TOCselectedNode;
-    }
-  };
-
-  _onEdit = (view: EditorView): void => {
-    this._popup.close();
-    if (this._editor) {
-      return;
-    }
-
-    const { state } = view;
-    const { schema, doc, selection } = state;
-    const { from, to } = selection;
-    const markType = schema.marks[MARK_LINK];
-    const result = findNodesWithSameMark(doc, from, to, markType);
-    if (!result) {
-      return;
-    }
-
-    this.showTocList(view).then((data) => {
-      const tocItemsNode = data;
-      const href = result.mark.attrs.href;
-      const viewPops = {
-        selectionId_: result.mark.attrs.selectionId,
-        href_: href,
-        TOCselectedNode_: tocItemsNode,
-        view_: view,
-      };
-
-      this._editor = createPopUp(LinkURLEditor, viewPops, {
-        onClose: (value) => {
-          this._editor = null;
-          this._onEditEnd(view, selection, value);
-        },
-      });
-    });
-  };
-
-  _onRemove = (view: EditorView): void => {
-    this._popup.close();
-    this._onEditEnd(view, view.state.selection, null);
-  };
-
-  _onEditEnd = (
-    view: EditorView,
-    initialSelection: TextSelection,
-    url: ?string
-  ): void => {
-    const { state, dispatch } = view;
-    let tr = hideSelectionPlaceholder(state);
-
-    if (url !== undefined) {
-      const { schema } = state;
-      const markType = schema.marks[MARK_LINK];
-      if (markType) {
-        const result = findNodesWithSameMark(
-          tr.doc,
-          initialSelection.from,
-          initialSelection.to,
-          markType
-        );
-        if (result) {
-          const linkSelection = TextSelection.create(
-            tr.doc,
-            result.from.pos,
-            result.to.pos + 1
-          );
-          tr = tr.setSelection(linkSelection);
-          let selectionId;
-          let href;
-          if (url === null) {
-            selectionId = null;
-            href = null;
-          } else if (url.includes(INNER_LINK)) {
-            selectionId = url.split(INNER_LINK)[0];
-            href = url.split(INNER_LINK)[1];
-          } else {
-            selectionId = null;
-            href = url;
-          }
-
-          const attrs = href ? { href, selectionId } : null;
-          tr = applyMark(tr, schema, markType, attrs);
-
-          // [FS] IRAD-1005 2020-07-09
-          // Upgrade outdated packages.
-          // reset selection to original using the latest doc.
-          const origSelection = TextSelection.create(
-            tr.doc,
-            initialSelection.from,
-            initialSelection.to
-          );
-          tr = tr.setSelection(origSelection);
-        }
-      }
-    }
-    dispatch(tr);
-    view.focus();
   };
 }
 
