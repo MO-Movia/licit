@@ -167,6 +167,7 @@ class LinkTooltipView {
       }
       return;
     }
+    const urlObj = new URL(href);
     if (href) {
       const url = sanitizeURL(href);
       let popupString;
@@ -177,7 +178,7 @@ class LinkTooltipView {
         popupString = '';
       }
 
-      if (this._view?.runtime?.openLinkDialog) {
+      if (this._view?.runtime?.openLinkDialog && urlObj.hostname !== window.location.hostname) {
         this._view.runtime.openLinkDialog(url, popupString);
       } else {
         window.open(url);
