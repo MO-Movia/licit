@@ -6,7 +6,7 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import { clearMarks, clearHeading } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { CellSelection } from "prosemirror-tables";
+import { CellSelection } from 'prosemirror-tables';
 
 class MarksClearCommand extends UICommand {
   isActive = (state: EditorState): boolean => {
