@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "license": "MIT",
   "type": "module",
   "subversion": "1",
@@ -106,7 +106,7 @@
     "jest-junit": "^16.0.0",
     "jest-prosemirror": "^3.0.0",
     "jest-sonar-reporter": "^2.0.0",
-    "lint-staged": "^15.2.2",
+    "lint-staged": "^16.0.0",
     "mkdirp": "^3.0.1",
     "mv": "^2.1.1",
     "prettier": "^3.2.5",
