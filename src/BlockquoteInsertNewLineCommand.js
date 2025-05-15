@@ -24,11 +24,6 @@ function insertNewLine(tr: Transform, schema: Schema): Transform {
   if (!br) {
     return tr;
   }
-  const blockquote = schema.nodes[BLOCKQUOTE];
-  const result = findParentNodeOfType(blockquote)(selection);
-  if (!result) {
-    return tr;
-  }
   tr = tr.insert(from, Fragment.from(br.create()));
   tr = tr.setSelection(TextSelection.create(tr.doc, from + 1, from + 1));
   return tr;
