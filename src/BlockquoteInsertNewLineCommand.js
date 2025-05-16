@@ -3,10 +3,9 @@
 import { Fragment, Schema } from 'prosemirror-model';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
-import { BLOCKQUOTE, HARD_BREAK } from './NodeNames';
+import { HARD_BREAK } from './NodeNames';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 // This handles the case when user press SHIFT + ENTER key to insert a new line
