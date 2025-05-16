@@ -34,16 +34,8 @@ export const KEY_INSERT_HORIZONTAL_RULE = makeKeyMapWithCommon(
   'Insert horizontal rule',
   'Mod-Shift--'
 );
-export const KEY_INSERT_NEW_LINE = makeKeyMapWithCommon(
-  'Insert new line',
-  'Shift-Enter'
-);
 export const KEY_INSERT_NEW_LINE_IN_BLOCKQUOTE = makeKeyMapWithCommon(
   'Insert new line in blockquote',
-  'Shift-Enter'
-);
-export const KEY_INSERT_NEW_LINE_IN_LIST_ITEM = makeKeyMapWithCommon(
-  'Insert new line in list item',
   'Shift-Enter'
 );
 export const KEY_REDO = makeKeyMapWithCommon('Redo', 'Mod-Shift-z');
@@ -134,9 +126,7 @@ export const ALL_KEYS = [
   KEY_BACK_DELETE,
   KEY_FORWARD_DELETE,
   KEY_INSERT_HORIZONTAL_RULE,
-  KEY_INSERT_NEW_LINE,
   KEY_INSERT_NEW_LINE_IN_BLOCKQUOTE,
-  KEY_INSERT_NEW_LINE_IN_LIST_ITEM,
   KEY_SET_NORMAL_TEXT,
   KEY_SHIFT_BACKSPACE,
   KEY_SPLIT_LIST_ITEM,
