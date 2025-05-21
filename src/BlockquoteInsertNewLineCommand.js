@@ -3,10 +3,9 @@
 import { Fragment, Schema } from 'prosemirror-model';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { findParentNodeOfType } from 'prosemirror-utils';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
-import { BLOCKQUOTE, HARD_BREAK } from './NodeNames';
+import { HARD_BREAK } from './NodeNames';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 // This handles the case when user press SHIFT + ENTER key to insert a new line
@@ -22,11 +21,6 @@ function insertNewLine(tr: Transform, schema: Schema): Transform {
   }
   const br = schema.nodes[HARD_BREAK];
   if (!br) {
-    return tr;
-  }
-  const blockquote = schema.nodes[BLOCKQUOTE];
-  const result = findParentNodeOfType(blockquote)(selection);
-  if (!result) {
     return tr;
   }
   tr = tr.insert(from, Fragment.from(br.create()));
