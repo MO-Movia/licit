@@ -107,7 +107,11 @@ class LinkTooltipView {
       this.dom._linkTooltipView._view,
       result.mark.attrs.selectionId
     );
-
+    if (null === tocItemPos) {
+      this.dom._linkTooltipView.openSelectedSection(selectionId);
+      event.preventDefault(); // prevent default browser navigation
+      return true;
+    }
     this.dom._linkTooltipView.jumpLink(
       this.dom._linkTooltipView._view,
       tocItemPos,
@@ -130,6 +134,13 @@ class LinkTooltipView {
     this._popup?.close();
   }
 
+  openSelectedSection = (selectionId): void => {
+    if (selectionId) {
+      if (this._view?.runtime?.openLinkDialog) {
+        this._view.runtime.goToInnerLinkSection(selectionId);
+      }
+    }
+  };
   jumpLink = (view: EditorView, tocItemPos, href, selectionId): void => {
     if (selectionId || (selectionId === 0 && tocItemPos)) {
       this.jumpInnerLink(view, tocItemPos);
