@@ -38,7 +38,8 @@ const TableNodesSpecs = tableNodes({
       setDOMAttr(value, attrs) {
         if (value) {
           const colorValue = String(value);
-          attrs.style = (attrs.style || '') + `;background-color: ${colorValue};`;
+          attrs.style =
+            (attrs.style || '') + `;background-color: ${colorValue};`;
         }
       },
     },
@@ -49,16 +50,21 @@ const TableNodesSpecs = tableNodes({
 const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
   attrs: {
     marginLeft: { default: null },
+    dirty: { default: false },
   },
   parseDOM: [
     {
       tag: 'table',
       getAttrs(dom: HTMLElement): ?Object {
+        const dirty = dom.getAttribute('dirty') || false;
         const { marginLeft } = dom.style;
+        const attrs = { dirty };
+
         if (marginLeft && /\d+px/.test(marginLeft)) {
-          return { marginLeft: parseFloat(marginLeft) };
+          attrs.marginLeft = parseFloat(marginLeft);
         }
-        return null;
+
+        return attrs;
       },
     },
   ],
@@ -67,10 +73,13 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
     // `TableNodeView`. This method is only called when user selects a
     // table node and copies it, which triggers the "serialize to HTML" flow
     //  that calles this method.
-    const { marginLeft } = node.attrs;
+    const { marginLeft, dirty } = node.attrs;
     const domAttrs = {};
     if (marginLeft) {
       domAttrs.style = `margin-left: ${marginLeft}px`;
+    }
+    if (dirty) {
+      domAttrs.dirty = dirty;
     }
     return ['table', domAttrs, 0];
   },
