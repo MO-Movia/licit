@@ -9,8 +9,6 @@ import {
   preventEventDefault,
 } from '@modusoperandi/licit-ui-commands';
 import { ENTER } from './KeyCodes.js';
-import uuid from '../uuid.js';
-import { EditorView } from 'prosemirror-view';
 import { INNER_LINK } from '../Types.js';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 
@@ -26,7 +24,6 @@ class LinkURLEditor extends React.PureComponent<any, any> {
   state = {
     url: this.props.href_,
     TOCselectedNode_: this.props.TOCselectedNode_,
-    view_: this.props.view_,
     selectionId: this.props.selectionId_,
   };
 
@@ -64,7 +61,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
   };
 
   render(): React.Element<any> {
-    const { url, TOCselectedNode_, view_, selectionId } = this.state;
+    const { url, TOCselectedNode_, selectionId } = this.state;
 
     const isTOCValid = () => {
       if (!TOCselectedNode_ || TOCselectedNode_.length === 0) {
@@ -72,7 +69,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
       }
 
       return TOCselectedNode_.some(
-        (item) => item.node_ && item.node_.textContent.trim() !== ''
+        (item) => item.node_ && item.node_?.content[0]?.text.trim() !== ''
       );
     };
     const isValid = isTOCValid();
@@ -151,7 +148,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                 <select
                   defaultValue={
                     TOCselectedNode_.some(
-                      (res) => res.node_.textContent === url
+                      (res) => res.node_?.content[0]?.text === url
                     )
                       ? url
                       : null
@@ -161,22 +158,21 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                   size="3"
                 >
                   {TOCselectedNode_?.filter(
-                    (res) => res.node_.textContent.trim() !== ''
+                    (res) => res.node_?.content[0]?.text.trim() !== ''
                   ).map((res, index) => (
                     <option
-                      data-tooltip-content={res.node_.textContent}
+                      data-tooltip-content={res.node_?.content[0]?.text}
                       data-tooltip-id="select-toc-tooltip"
                       key={index}
                       onClick={() => {
                         this.handleOptionChange(
-                          res.node_.textContent,
-                          res.pos_,
-                          view_
+                          res.node_?.content[0]?.text,
+                          res.node_?.attrs.selectionId
                         );
                       }}
-                      value={res.node_.textContent}
+                      value={res.node_?.content[0]?.text}
                     >
-                      {res.node_.textContent}
+                      {res.node_?.content[0]?.text}
                     </option>
                   ))}
                 </select>
@@ -197,22 +193,10 @@ class LinkURLEditor extends React.PureComponent<any, any> {
     );
   }
 
-  handleOptionChange = (textContent_, tocNodePosition_, view: EditorView) => {
-    let tr = view.state.tr;
-    const TocNode = view.state.doc.nodeAt(tocNodePosition_);
-    let textContent;
-    if (!TocNode?.attrs?.innerLink) {
-      const nodeUUID = uuid();
-      const texthash = '#';
-      const nodeAttrs = { ...TocNode.attrs };
-      const nodeconcat_UUID = texthash.concat(nodeUUID);
-      nodeAttrs.innerLink = nodeconcat_UUID;
-      tr = tr.setNodeMarkup(tocNodePosition_, undefined, nodeAttrs);
-      textContent = nodeconcat_UUID.concat(INNER_LINK, textContent_);
-    } else {
-      textContent = TocNode.attrs.innerLink.concat(INNER_LINK, textContent_);
-    }
-    view.dispatch(tr);
+  handleOptionChange = (textContent_, selectionId) => {
+    const texthash = '';
+    const nodeconcat_UUID = texthash.concat(selectionId);
+    const textContent = nodeconcat_UUID.concat(INNER_LINK, textContent_);
     this.props.close(textContent);
   };
 

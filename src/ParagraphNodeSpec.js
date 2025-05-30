@@ -3,7 +3,6 @@
 import convertToCSSPTValue from './convertToCSSPTValue.js';
 import toCSSLineSpacing from './ui/toCSSLineSpacing.js';
 import { Node } from 'prosemirror-model';
-
 import type { NodeSpec } from './Types.js';
 
 // This assumes that every 36pt maps to one indent level.
@@ -49,9 +48,7 @@ const ParagraphNodeSpec: NodeSpec = {
     reset: {
       default: null,
     },
-    innerLink: {
-      default: null,
-    },
+
     // added attributes for indent, align and linespacing overrides.
     overriddenAlign: {
       default: null,
@@ -110,7 +107,7 @@ function getAttrs(dom: HTMLElement): Object {
     dom.getAttribute('overriddenLineSpacingValue') || '';
   const overriddenIndent = dom.getAttribute('overriddenIndent') || '';
   const overriddenIndentValue = dom.getAttribute('overriddenIndentValue') || '';
-  const innerLink = dom.getAttribute('innerLink') || '';
+  const selectionId = dom.getAttribute('selectionId') || '';
   const objectId = dom.getAttribute('objectId') || '';
   return {
     align,
@@ -126,7 +123,7 @@ function getAttrs(dom: HTMLElement): Object {
     overriddenLineSpacingValue,
     overriddenIndent,
     overriddenIndentValue,
-    innerLink,
+    selectionId,
     objectId,
   };
 }
@@ -175,7 +172,7 @@ function toDOM(node: Node): Array<any> {
     overriddenLineSpacingValue,
     overriddenIndent,
     overriddenIndentValue,
-    innerLink,
+    selectionId,
   } = node.attrs;
   const attrs = { ...node.attrs };
   const { style } = getStyle(node.attrs);
@@ -196,9 +193,10 @@ function toDOM(node: Node): Array<any> {
   attrs.overriddenLineSpacingValue = overriddenLineSpacingValue;
   attrs.overriddenIndentValue = overriddenIndentValue;
 
-  if (innerLink) {
-    attrs.innerLink = innerLink;
+  if (selectionId) {
+    attrs.selectionId = selectionId;
   }
+
   return ['p', attrs, 0];
 }
 
