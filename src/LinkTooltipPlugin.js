@@ -205,7 +205,7 @@ class LinkTooltipView {
     let tocItemPos = null;
     if (selectionId) {
       view.state.tr.doc.descendants((node, pos) => {
-        if (node.attrs.styleName && node.attrs.innerLink === selectionId) {
+        if (node.attrs.styleName && node.attrs.selectionId === selectionId) {
           tocItemPos = { position: pos, textContent: node.textContent };
         }
       });

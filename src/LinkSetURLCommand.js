@@ -37,7 +37,7 @@ class LinkSetURLCommand extends UICommand {
 
   showTocList = async (view) => {
     let storeTOCvalue = [];
-    const TOCselectedNode = [];
+    let TOCselectedNode = [];
 
     const stylePromise = view.runtime;
 
@@ -56,17 +56,7 @@ class LinkSetURLCommand extends UICommand {
           style?.styles?.tof === true
       )
       .map((style) => style?.styleName);
-
-    view.state.tr.doc.descendants((node, pos) => {
-      if (node.attrs.styleName) {
-        for (let i = 0; i <= storeTOCvalue.length; i++) {
-          if (storeTOCvalue[i] === node.attrs.styleName) {
-            TOCselectedNode.push({ node_: node, pos_: pos });
-          }
-        }
-      }
-    });
-
+    TOCselectedNode = stylePromise.fetchInnerLinkSelectionIds(storeTOCvalue); // Fetching the selection IDs for the TOC items from MSD
     return TOCselectedNode;
   };
 
@@ -91,8 +81,7 @@ class LinkSetURLCommand extends UICommand {
     const tocItemsNode = await this.showTocList(view);
     const viewPops = {
       href_: href,
-      TOCselectedNode_: tocItemsNode,
-      view_: view,
+      TOCselectedNode_: tocItemsNode
     };
 
     return new Promise((resolve) => {
