@@ -31,9 +31,6 @@ const ParagraphNodeSpec: NodeSpec = {
     color: {
       default: null,
     },
-    id: {
-      default: null,
-    },
     indent: {
       default: null,
     },
@@ -101,7 +98,6 @@ function getAttrs(dom: HTMLElement): Object {
 
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
 
-  const id = dom.getAttribute('id') || '';
   const reset = dom.getAttribute('reset') || '';
   const overriddenAlign = dom.getAttribute('overriddenAlign') || '';
   const overriddenAlignValue = dom.getAttribute('overriddenAlignValue') || '';
@@ -119,7 +115,6 @@ function getAttrs(dom: HTMLElement): Object {
     paddingTop,
     paddingBottom,
     reset,
-    id,
     overriddenAlign,
     overriddenAlignValue,
     overriddenLineSpacing,
@@ -167,7 +162,6 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
 function toDOM(node: Node): Array<any> {
   const {
     indent,
-    id,
     reset,
     overriddenAlign,
     overriddenAlignValue,
@@ -184,9 +178,6 @@ function toDOM(node: Node): Array<any> {
 
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);
-  }
-  if (id) {
-    attrs.id = id;
   }
   attrs.reset = reset;
   attrs.overriddenAlign = overriddenAlign;
