@@ -136,7 +136,7 @@ class LinkTooltipView {
 
   openSelectedSection = (selectionId): void => {
     if (selectionId) {
-      if (this._view?.runtime?.openLinkDialog) {
+      if (this._view?.runtime?.goToInnerLinkSection) {
         this._view.runtime.goToInnerLinkSection(selectionId);
       }
     }

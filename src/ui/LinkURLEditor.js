@@ -69,12 +69,10 @@ class LinkURLEditor extends React.PureComponent<any, any> {
       }
 
       return TOCselectedNode_.some(
-        (item) => item.node_ && item.node_?.content[0]?.text.trim() !== ''
+        (item) => item.node_?.content[0]?.text?.trim() !== ''
       );
     };
     const isValid = isTOCValid();
-    console.log('isTOCValid:', isValid);
-
     const error = url ? BAD_CHARACTER_PATTER.test(url) : false;
 
     let label = 'Apply';
@@ -158,7 +156,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                   size="3"
                 >
                   {TOCselectedNode_?.filter(
-                    (res) => res.node_?.content[0]?.text.trim() !== ''
+                    (res) => res.node_?.content[0]?.text?.trim() !== ''
                   ).map((res, index) => (
                     <option
                       data-tooltip-content={res.node_?.content[0]?.text}

@@ -36,17 +36,15 @@ class LinkSetURLCommand extends UICommand {
   };
 
   showTocList = async (view) => {
-    let storeTOCvalue = [];
-    let TOCselectedNode = [];
 
     const stylePromise = view.runtime;
 
     if (stylePromise === null || undefined) {
-      return TOCselectedNode;
+      return [];
     }
     const styles = await stylePromise.fetchStyles();
 
-    storeTOCvalue = styles
+    const storeTOCvalue = styles
       .filter(
         (
           style // Added TOT/TOF selected styles to be listed as well
@@ -56,8 +54,7 @@ class LinkSetURLCommand extends UICommand {
           style?.styles?.tof === true
       )
       .map((style) => style?.styleName);
-    TOCselectedNode = stylePromise.fetchInnerLinkSelectionIds(storeTOCvalue); // Fetching the selection IDs for the TOC items from MSD
-    return TOCselectedNode;
+    return stylePromise.fetchInnerLinkSelectionIds(storeTOCvalue); // Fetching the selection IDs for the TOC items from MSD
   };
 
   waitForUserInput = async (
