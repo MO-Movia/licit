@@ -1,43 +1,43 @@
 /* Indent */
 
 .ProseMirror p[data-indent='1'] {
-  margin-left: 18pt !important;
+  margin-left: 15pt !important;
 }
 
 .ProseMirror p[data-indent='2'] {
-  margin-left: 36pt !important;
+  margin-left: 30pt !important;
 }
 
 .ProseMirror p[data-indent='3'] {
-  margin-left: 54pt !important;
+  margin-left: 45pt !important;
 }
 
 .ProseMirror p[data-indent='4'] {
-  margin-left: 72pt !important;
+  margin-left: 60pt !important;
 }
 
 .ProseMirror p[data-indent='5'] {
-  margin-left: 90pt !important;
+  margin-left: 75pt !important;
 }
 
 .ProseMirror p[data-indent='6'] {
-  margin-left: 108pt !important;
+  margin-left: 90pt !important;
 }
 
 .ProseMirror p[data-indent='7'] {
-  margin-left: 126pt !important;
+  margin-left: 105pt !important;
 }
 
 .ProseMirror p[data-indent='8'] {
-  margin-left: 144pt !important;
+  margin-left: 120pt !important;
 }
 
 .ProseMirror p[data-indent='9'] {
-  margin-left: 162pt !important;
+  margin-left: 135pt !important;
 }
 
 .ProseMirror p[data-indent='10'] {
-  margin-left: 180pt !important;
+  margin-left: 150pt !important;
 }
 
 /* list item indents */
