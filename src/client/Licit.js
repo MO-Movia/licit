@@ -124,17 +124,17 @@ class Licit extends React.Component<any, any> {
     const setState = this.setState.bind(this);
     this._connector = collaborative
       ? new CollabConnector(
-          editorState,
-          setState,
-          {
-            docID,
-            collabServiceURL,
-          },
-          this._defaultEditorSchema,
-          this._defaultEditorPlugins,
-          // [FS] IRAD-1578 2021-09-27
-          this.onReady.bind(this)
-        )
+        editorState,
+        setState,
+        {
+          docID,
+          collabServiceURL,
+        },
+        this._defaultEditorSchema,
+        this._defaultEditorPlugins,
+        // [FS] IRAD-1578 2021-09-27
+        this.onReady.bind(this)
+      )
       : new SimpleConnector(editorState, setState);
 
     this._connector._dataDefined = !!props.data;
@@ -429,17 +429,17 @@ class Licit extends React.Component<any, any> {
     // create new connector
     this._connector = collabEditing
       ? new CollabConnector(
-          editorState,
-          setState,
-          {
-            docID,
-            collabServiceURL,
-          },
-          this._defaultEditorSchema,
-          this._defaultEditorPlugins,
-          // [FS] IRAD-1578 2021-09-27
-          this.onReady.bind(this)
-        )
+        editorState,
+        setState,
+        {
+          docID,
+          collabServiceURL,
+        },
+        this._defaultEditorSchema,
+        this._defaultEditorPlugins,
+        // [FS] IRAD-1578 2021-09-27
+        this.onReady.bind(this)
+      )
       : new SimpleConnector(editorState, setState);
 
     // FS IRAD-1592 2021-11-10
@@ -508,8 +508,8 @@ class Licit extends React.Component<any, any> {
         this._connector.onEdit(transaction, this._editorView);
       }
 
-      if (transaction.docChanged) {
-        const docJson = transaction.doc.toJSON();
+      if (transaction.docChanged || !isSameState) {
+        let docJson = this._editorView?.state?.doc?.toJSON();
         if (!Object.isFrozen(docJson?.attrs?.objectMetaData)) {
           docJson.attrs.objectMetaData = {
             ...docJson.attrs.objectMetaData,
