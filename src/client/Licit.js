@@ -559,7 +559,20 @@ class Licit extends React.Component<any, any> {
     this._editorView = editorView;
     const tr = state.tr;
     dispatch(tr.scrollIntoView());
-
+    if (!this._editorView.editable) {
+      let _tr = this._editorView.state.tr;
+      let modified = false;
+      this._editorView.state.doc.descendants((node, pos) => {
+        if (node.type.name === 'table') {
+          // Apply setNodeMarkup with same type and attrs to force a refresh
+          _tr = _tr?.setNodeMarkup(pos, undefined, { ...node.attrs, Id: pos });
+          modified = true;
+        }
+      });
+      if (modified) {
+        this._editorView.dispatch(_tr);
+      }
+    }
     // [FS] IRAD-1578 2021-09-27
     // In collab mode, fire onRead only after getting the response from collab server.
     if (this.state.onReadyCB && this.state.docID === '') {
