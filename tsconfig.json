@@ -5,7 +5,7 @@
     "target": "ES2022",
     "module": "esnext",
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,    
+    "allowSyntheticDefaultImports": true,
     "lib": [
       "es2018",
       "dom",
@@ -27,9 +27,11 @@
   "typeAcquisition": {
     "enable": true
   },
-  "include": ["src/**/*.ts", "src/**/*.js"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js"
+  ],
   "exclude": [
     "node_modules",
-
   ]
 }
