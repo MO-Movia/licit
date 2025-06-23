@@ -11,6 +11,60 @@ const TableNodesSpecs = tableNodes({
   tableGroup: 'block',
   cellContent: 'block+',
   cellAttributes: {
+    borderTopColor: {
+      default: null,
+      getFromDOM(dom) {
+        const val = dom.style.borderTopColor;
+        return val ? toCSSColor(val) : null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value) {
+          attrs.style = (attrs.style || '') + `;border-top-color: ${value};`;
+        }
+      },
+    },
+    borderRightColor: {
+      default: null,
+      getFromDOM(dom) {
+        const val = dom.style.borderRightColor;
+        return val ? toCSSColor(val) : null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value) {
+          attrs.style = (attrs.style || '') +
+            ';border-right-color: ' + value +
+            ';border-right-style: solid' +
+            ';border-right-width: 1px';
+        }
+      },
+    },
+    borderBottomColor: {
+      default: null,
+      getFromDOM(dom) {
+        const val = dom.style.borderBottomColor;
+        return val ? toCSSColor(val) : null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value) {
+          attrs.style = (attrs.style || '') +
+            ';border-bottom-color: ' + value +
+            ';border-bottom-style: solid' +
+            ';border-bottom-width: 1px';
+        }
+      },
+    },
+    borderLeftColor: {
+      default: null,
+      getFromDOM(dom) {
+        const val = dom.style.borderLeftColor;
+        return val ? toCSSColor(val) : null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value) {
+          attrs.style = (attrs.style || '') + `;border-left-color: ${value};`;
+        }
+      },
+    },
     borderColor: {
       default: null,
       getFromDOM(dom) {
