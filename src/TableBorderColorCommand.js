@@ -1,7 +1,7 @@
 // @flow
 
-import { EditorState  } from 'prosemirror-state';
-import { TableMap, setCellAttr,CellSelection  } from 'prosemirror-tables';
+import { EditorState } from 'prosemirror-state';
+import { setCellAttr } from 'prosemirror-tables';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import { ColorEditor } from '@modusoperandi/color-picker';
@@ -85,14 +85,11 @@ class TableBorderColorCommand extends UICommand {
   setTableCellClass(view, pos, direction, selectedColor) {
     const { state, dispatch } = view;
     const node = state.doc.nodeAt(pos);
-    if (!node) return view;
     const classPrefix = `custom-${direction.toLowerCase()}-`;
     const color = this.getBaseColor(selectedColor);
-    const directions = ['Right', 'Bottom', 'Left', 'Top'];
-    if (!directions.includes(direction)) return view;
     const className = `custom-${direction.toLowerCase()}-${color}`;
     if (node && (node.type.name === 'table_cell' || node.type.name === 'table_header')) {
-      const existingClass = node.attrs.className || '';      
+      const existingClass = node.attrs.className || '';
       const classList = new Set(
         existingClass
           .split(/\s+/)
