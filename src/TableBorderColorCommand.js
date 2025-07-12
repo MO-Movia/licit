@@ -65,9 +65,10 @@ class TableBorderColorCommand extends UICommand {
     color
   ): boolean => {
     if (dispatch && color !== undefined) {
-     view =  this.clearAdjacentCellBorder(view, color.selectedPosition,color.color,dispatch);
-      const cmd = this.setCellBorderSideColor(color.selectedPosition, color.color);
-      cmd(state, dispatch, view);
+      const pos = this.findCellPosFromSelection(view.state);
+      if (pos !== null) {
+        this.setTableCellClass(view, pos, color.selectedPosition, color.color);
+      }
       return true;
     }
     return false;
@@ -76,98 +77,104 @@ class TableBorderColorCommand extends UICommand {
   cancel(): void {
     this._popUp?.close(undefined);
   }
-  setCellBorderSideColor(side: 'top' | 'right' | 'bottom' | 'left', color: string) {
+  setCellBorderSideColor(side, color) {
     const attrName = `border${side[0].toUpperCase() + side.slice(1)}Color`;
     return setCellAttr(attrName, color);
   }
 
-  findCellAround($pos) {
-  for (let depth = $pos.depth; depth > 0; depth--) {
-    const node = $pos.node(depth);
-    if (node.type.spec.tableRole === 'cell' || node.type.spec.tableRole === 'header_cell') {
-      return {
-        pos: $pos.before(depth),
-        start: $pos.start(depth),
-        node,
-      };
+  setTableCellClass(view, pos, direction, selectedColor) {
+    const { state, dispatch } = view;
+    const node = state.doc.nodeAt(pos);
+    if (!node) return view;
+    const classPrefix = `custom-${direction.toLowerCase()}-`;
+    const color = this.getBaseColor(selectedColor);
+    const directions = ['Right', 'Bottom', 'Left', 'Top'];
+    if (!directions.includes(direction)) return view;
+    const className = `custom-${direction.toLowerCase()}-${color}`;
+    if (node && (node.type.name === 'table_cell' || node.type.name === 'table_header')) {
+      const existingClass = node.attrs.className || '';      
+      const classList = new Set(
+        existingClass
+          .split(/\s+/)
+          .filter(cls => cls && !cls.startsWith(classPrefix))
+      );
+
+      classList.add(className);
+
+      const updatedClass = Array.from(classList).join(' ');
+
+      dispatch(
+        state.tr.setNodeMarkup(pos, null, {
+          ...node.attrs,
+          className: updatedClass,
+        })
+      );
     }
   }
-  return null;
-}
 
-getCellSelectionForSelectedCell(state) {
-  const { selection } = state;
-  const $from = selection.$from;
-  const cell = this.findCellAround($from);
-
-  if (cell) {
-    const $cellPos = state.doc.resolve(cell.pos);
-    return new CellSelection($cellPos);
-  }
-
-  return null;
-  }
-
-  findTable(selection) {
-    const { $from } = selection;
+  findCellPosFromSelection(state) {
+    const { $from } = state.selection;
     for (let d = $from.depth; d > 0; d--) {
       const node = $from.node(d);
-      if (node.type.spec.tableRole === 'table') {
-        return {
-          node,
-          pos: $from.before(d),
-          start: $from.start(d),
-          depth: d,
-        };
+      if (node.type.spec.tableRole === 'cell' || node.type.spec.tableRole === 'header_cell') {
+        return $from.before(d);
       }
     }
     return null;
   }
-  clearAdjacentCellBorder(view, direction, selectedBorderColor, dispatch) {
-  const { state } = view;
-  const { doc, selection } = state;
 
-  const table = this.findTable(selection);
-  if (!table) return view;
+  colorMap = {
+    '#000000': 'black', '#444444': 'darkgrey', '#666666': 'grey', '#999999': 'basaltgrey', '#acacac': 'silvergrey',
+    '#c8c8c8': 'lightgrey', '#e1e1e1': 'greywhite', '#f3f3f3': 'whitesmoke', '#ffffff': 'white',
+    // Red group
+    '#ff0000': 'red', '#fcf0f0': 'red', '#fadcd9': 'red', '#fabbb4': 'red',
+    '#fc9086': 'red', '#fa5343': 'red', '#d91f11': 'red', '#a1160a': 'red',
+    '#75160c': 'red',
 
-  const cellSelection = this.getCellSelectionForSelectedCell(state);
-  const $refCell = cellSelection?.$anchorCell;
-  if (!$refCell) return view;
+    // Light yellow group
+    '#ffc000': 'lightyellow', '#fcf2eb': 'lightyellow', '#fcddc7': 'lightyellow', '#fcbc97': 'lightyellow',
+    '#fc9162': 'lightyellow', '#e86427': 'lightyellow', '#bf4815': 'lightyellow', '#8f3415': 'lightyellow',
+    '#632b17': 'lightyellow',
 
-  const tableMap = TableMap.get(table.node);
-  const cellStartInTable = $refCell.pos - table.pos - 1;
+    // Yellow group
+    '#ffff00': 'yellow', '#faf6cf': 'yellow', '#f7e379': 'yellow', '#f5c518': 'yellow',
+    '#d9a514': 'yellow', '#b3870e': 'yellow', '#946613': 'yellow', '#70491c': 'yellow',
+    '#54341f': 'yellow',
 
-  const tr = state.tr;
+    // Light Green group
+    '#92d050': 'lightgreen', '#ebf7da': 'lightgreen', '#d5f0b1': 'lightgreen', '#aad971': 'lightgreen',
+    '#78bf39': 'lightgreen', '#52a31d': 'lightgreen', '#3c7d0e': 'lightgreen', '#2e5c0e': 'lightgreen',
+    '#254211': 'lightgreen',
 
-  let adjacentCellPos = null;
-  let borderAttr = null;
+    // Green group
+    '#00b050': 'green', '#ebf7ed': 'green', '#c7ebd1': 'green', '#88dba8': 'green',
+    '#43c478': 'green', '#16a163': 'green', '#077d55': 'green', '#075e45': 'green',
+    '#094536': 'green',
 
-  switch (direction) {
-    case 'Right':
-      adjacentCellPos = tableMap.nextCell(cellStartInTable, 'horiz', 1);
-      borderAttr = 'borderLeftColor';
-      break;
-    case 'Bottom':
-      adjacentCellPos = tableMap.nextCell(cellStartInTable, 'vert', 1);
-      borderAttr = 'borderTopColor';
-      break;
-    default:
-      return view;
+    // Light Blue group
+    '#00b0f0': 'lightblue', '#ebf3f7': 'lightblue', '#c9e7f5': 'lightblue', '#8bd3f7': 'lightblue',
+    '#48b8f0': 'lightblue', '#1195d6': 'lightblue', '#0073ba': 'lightblue', '#08548a': 'lightblue',
+    '#0e3d66': 'lightblue',
+
+    // Blue group
+    '#0070c0': 'blue', '#f0f4fa': 'blue', '#d5e4fa': 'blue', '#adccf7': 'blue',
+    '#75b1ff': 'blue', '#3d8df5': 'blue', '#186ade': 'blue', '#0d4ea6': 'blue',
+    '#103a75': 'blue',
+
+    // Pink group
+    '#ff00ff': 'pink', '#fcf0f8': 'pink', '#f7daed': 'pink', '#f7b7e2': 'pink',
+    '#fa87d4': 'pink', '#ed4cb7': 'pink', '#cc1d92': 'pink', '#961574': 'pink',
+    '#6b155a': 'pink',
+
+    // Purple group
+    '#7030a0': 'purple', '#f7f2fc': 'purple', '#eadcfc': 'purple', '#dabefa': 'purple',
+    '#c89afc': 'purple', '#ac71f0': 'purple', '#8f49de': 'purple', '#6b30ab': 'purple',
+    '#4c277d': 'purple'
+  };
+
+  getBaseColor(inputColor) {
+    return this.colorMap[inputColor.toLowerCase()] || null;
   }
-
-  if (adjacentCellPos !== null) {
-    const docPos = table.pos + 1 + adjacentCellPos;
-    const node = doc.nodeAt(docPos);
-    if (node) {
-      tr.setNodeMarkup(docPos, null, {
-        ...node.attrs,
-        [borderAttr]: selectedBorderColor,
-      });
-    }
-     dispatch(tr);
-  }
-  return view;
-}
 }
 
 export default TableBorderColorCommand;
