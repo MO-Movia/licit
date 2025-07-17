@@ -22,6 +22,50 @@ const TableNodesSpecs = tableNodes({
         }
       },
     },
+    borderTop: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderTop || null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value) {
+          attrs.style = (attrs.style || '') + `;border-top: ${value};`;
+        }
+      },
+    },
+    borderRight: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderRight || null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value) {
+          attrs.style = (attrs.style || '') + `;border-right: ${value};`;
+        }
+      },
+    },
+    borderBottom: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderBottom || null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value) {
+          attrs.style = (attrs.style || '') + `;border-bottom: ${value};`;
+        }
+      },
+    },
+    borderLeft: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderLeft || null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value) {
+          attrs.style = (attrs.style || '') + `;border-left: ${value};`;
+        }
+      },
+    },
     borderColor: {
       default: null,
       getFromDOM(dom) {

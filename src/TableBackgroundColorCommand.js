@@ -61,7 +61,7 @@ class TableBackgroundColorCommand extends UICommand {
     state: EditorState,
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView,
-    hex
+    hex: ?{ color: string, selectedPosition?: string }
   ): boolean => {
     if (dispatch && hex !== undefined) {
       const cmd = setCellAttr('background', hex.color);
