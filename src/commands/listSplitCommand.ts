@@ -22,7 +22,7 @@ class ListSplitCommand extends UICommand {
   ): boolean => {
     const { selection, schema } = state;
     const tr = splitListItem(
-      state.tr.setSelection(selection),
+      state.tr?.setSelection(selection),
       schema
     ) as Transaction;
     if (tr.docChanged) {

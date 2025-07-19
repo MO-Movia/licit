@@ -7,12 +7,8 @@
   overflow: auto;
 }
 
-.czi-custom-menu.light {
-  background: #d8d6d6;
- 
-}
-.czi-custom-menu.dark {
-  background: #444;
+.czi-custom-menu {
+  background: var(--czi-bg);
   
 }
 .czi-horizontal-menu {

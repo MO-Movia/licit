@@ -6,19 +6,13 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 
 class HistoryRedoCommand extends UICommand {
-
-  getEditor = (): Editor => {
-    return UICommand.prototype.editor as Editor;
+  getEditor = (): Editor | null => {
+    return UICommand.prototype.editor || null;
   };
 
   isEnabled = (_state: EditorState): boolean => {
     const history = (_state as any).history$;
-    if (history.undone.eventCount === 0) {
-      return false;
-    }
-    else {
-      return true;
-    }
+    return history?.undone?.eventCount > 0 || false;
   };
 
   execute = (
@@ -26,22 +20,23 @@ class HistoryRedoCommand extends UICommand {
     _dispatch?: (tr: Transform) => void,
     _view?: EditorView
   ): boolean => {
-    return this.getEditor().commands.redo();
+    const editor = this.getEditor();
+    if (!editor) {
+      console.error('Editor instance is not available.');
+      return false;
+    }
+    return editor.commands.redo();
   };
 
-  waitForUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, event?: any): Promise<any> {
-    return Promise.resolve(null);
-  }
-  executeWithUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, inputs?: any): boolean {
-    return false
-  }
-  cancel(): void {
-    return null;
-  }
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
-    return tr;
-  }
+  waitForUserInput = (): Promise<null> => Promise.resolve(null);
 
+  executeWithUserInput = (): boolean => false;
+
+  cancel = (): void => {
+    console.log('Cancel called on HistoryRedoCommand.');
+  };
+
+  executeCustom = (state: EditorState, tr: Transform): Transform => tr;
 }
 
 export default HistoryRedoCommand;

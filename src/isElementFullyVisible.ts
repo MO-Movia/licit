@@ -12,7 +12,9 @@ export default function isElementFullyVisible(el: HTMLElement): boolean {
   if (nwEl === el) {
     return true;
   }
-
+  if (nwEl?.tagName === 'TABLE' && el?.tagName === 'TD') {
+    return true;
+  }
   if (el.contains(nwEl)) {
     return true;
   }

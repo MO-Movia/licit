@@ -10,14 +10,9 @@
   padding-top: 4px;
 }
 
-.czi-body-layout-editor.light {
-  background-color: #d8d6d6;
-
-}
-
-.czi-body-layout-editor.dark {
-  background: #444;
-  color: #b7b7b7;
+.czi-body-layout-editor {
+  background: var(--czi-bg);
+  color: var(--czi-text-color);
 }
 .czi-body-layout-editor .czi-form {
   width: 300px;

@@ -31,7 +31,7 @@ const COMMAND_GROUPS = [
 ];
 
 class FontSizeCommandMenuButton extends React.PureComponent<PropsType> {
-  props: PropsType;
+  declare props: PropsType;
   render(): React.ReactElement<CommandMenuButton> {
     const { dispatch, editorState, editorView } = this.props;
     const fontSize = findActiveFontSize(editorState);

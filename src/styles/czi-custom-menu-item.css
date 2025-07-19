@@ -3,61 +3,52 @@
   border-radius: 0;
   display: block;
   margin: 0;
-  padding-bottom: 8px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-top: 8px;
   height: 100%;
+  padding: 4px 20px;
 }
 
 .czi-custom-menu-item.czi-custom-button:hover {
   background-color: var(--czi-button-hover-background-color);
+  border: 1px solid;
+  border-radius: 6px;
 }
 
 .czi-custom-menu-item-button.czi-custom-button {
   border: none;
   border-radius: 0;
-  height: 30px;
-  line-height: 28px;
-  padding-bottom: 0;
-  padding-left: 6px;
-  padding-right: 6px;
-  padding-top: 0;
+  height: 24px;
+  line-height: 25px;
+  padding: 0;
   pointer-events: auto;
-  width: 44px;
+  width: 24px;
+  margin: 0 1px;
+}
+
+.czi-custom-menu-item-button.czi-custom-button:focus, .czi-custom-menu-item-button.czi-custom-button:hover {
+  border: 1px solid;
+  border-radius: 6px;
 }
 
 .czi-horizontal-menu .czi-tooltip-surface .czi-custom-button {
   box-sizing: border-box;
-  height: 35px;
-  width: 35px;
-  line-height: 28px;
-  padding-bottom: 0;
-  padding-left: 6px;
-  padding-right: 6px;
-  padding-top: 0;
+  height: 24px;
+  width: 24px;
+  line-height: 22px;
+  padding: 0;
   pointer-events: auto;
 }
 
-.czi-custom-menu-item.dark img {
-  width: 35px;
-  height: 35px;
-}
-.czi-custom-menu-item.light img {
-  width: 35px;
-  height: 35px;
+.czi-custom-menu-item img {
+  width: 24px;
+  height: 24px;
 }
 
-.czi-custom-menu-item.light {
-  background-color: #d8d6d6;
+.czi-custom-menu-item {
+  background-color: var(--czi-bg);
 }
 
-.czi-custom-menu-item-button.dark {
-  background-color: #444;
-}
-
-.czi-custom-menu-item-button.light {
-  /* background-color: #d8d6d6; */
+.czi-custom-menu-item-button {
+  background-color: var(--czi-bg);
 }
 
 /* [FS] IRAD-1044 2020-09-22

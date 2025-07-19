@@ -12,7 +12,7 @@ import { Arr } from './commandMenuButton';
 
 class ListTypeMenu extends React.PureComponent {
   _activeCommand: UICommand = null;
-  props: {
+  declare props: {
     className?: string;
     commandGroups: Array<any>,
     disabled?: boolean;

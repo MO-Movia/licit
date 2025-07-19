@@ -1,12 +1,12 @@
 @import './styles0.css';
-@import './czi-loading-indicator.css';
 @import './czi-math-view.css';
 @import './czi-pop-up.css';
 @import './czi-selection-placeholder.css';
 @import './czi-table-cell-menu.css';
 @import './czi-table-grid-size-editor.css';
-@import './czi-tooltip-surface.css';
-@import './client/licit.css';
+@import './licit.css';
+@import '@modusoperandi/licit-ui-commands/ui/czi-pop-up.css';
+@import '@modusoperandi/licit-ui-commands/ui/czi-tooltip-surface.css';
 
 /* [FS] IRAD-1061 2020-09-19 */
 

@@ -5,10 +5,12 @@ import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 
 import {
-  ColorEditor,
   atAnchorRight,
   createPopUp,
+  RuntimeService,
+  // ColorEditor
 } from '@modusoperandi/licit-ui-commands';
+import { ColorEditor } from '@modusoperandi/color-picker';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 
@@ -50,9 +52,11 @@ class TableColorCommand extends UICommand {
 
     const anchor = event ? event.currentTarget : null;
     return new Promise((resolve) => {
-      this._popUp = createPopUp(ColorEditor, null, {
+      this._popUp = createPopUp(ColorEditor, { hex: null, runtime: RuntimeService.Runtime, Textcolor: null }, {
         anchor,
+        popUpId: 'mo-menuList-child',
         position: atAnchorRight,
+        autoDismiss: true,
         onClose: (val) => {
           if (this._popUp) {
             this._popUp = null;

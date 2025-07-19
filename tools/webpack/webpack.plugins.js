@@ -3,6 +3,7 @@ import { inDev } from './webpack.helpers.js';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 // import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
 const plugins = [
@@ -17,6 +18,9 @@ const plugins = [
   new MiniCssExtractPlugin({
     filename: '[name].[chunkhash].css',
     chunkFilename: '[name].[chunkhash].chunk.css',
+  }),
+  new CopyWebpackPlugin({
+    patterns: [{ from: 'src/assets', to: 'assets', noErrorOnMissing: true }],
   }),
 ].filter(Boolean);
 

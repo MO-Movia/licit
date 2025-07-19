@@ -1,0 +1,9 @@
+.dark {
+  --czi-bg: #444;
+  --czi-text-color: #d8d6d6;
+  --czi-toolbar-body-border:transparent;
+  --czi-ol-container-border:1px solid #444;
+  --czi-list-type-btn-border: 1px solid #444;
+  --czi-glossary-row-bg: #5a5858;
+  --czi-molsp-dropbtn-border-color:#555
+}

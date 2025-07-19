@@ -33,9 +33,9 @@ function findActionableCellFromSelection(
   return posFound === null
     ? null
     : {
-        node: nodeFound,
-        pos: posFound,
-      };
+      node: nodeFound,
+      pos: posFound,
+    };
 }
 
 export default function findActionableCell(state: EditorState): Result | null {
@@ -65,7 +65,6 @@ export default function findActionableCell(state: EditorState): Result | null {
       CellSelection.create(doc, result.pos)
     );
   }
-
   if (userSelection instanceof CellSelection) {
     return findActionableCellFromSelection(userSelection);
   }

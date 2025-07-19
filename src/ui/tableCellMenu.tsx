@@ -1,4 +1,4 @@
-import { EditorState } from 'prosemirror-state';
+import { EditorState, PluginView } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 
@@ -11,19 +11,32 @@ import '../styles/czi-table-cell-menu.css';
 type TableCellMenuProps = {
   editorState: EditorState;
   editorView: EditorView;
+  pluginView: PluginView,
+  actionNode: Node,
 };
 
 class TableCellMenu extends React.PureComponent<TableCellMenuProps> {
   _menu = null;
 
-  props: TableCellMenuProps;
+  declare props: TableCellMenuProps;
 
   render(): React.ReactElement<CommandMenuButton> {
-    const { editorState, editorView } = this.props;
+    // const { editorState, editorView } = this.props;
+    const { editorState, editorView, pluginView, actionNode } = this.props;
+    let cmdGrps = null;
+
+    if (pluginView['_menu']) {
+      cmdGrps = pluginView['_menu'](editorState, actionNode, TABLE_COMMANDS_GROUP);
+    }
+
+    if (!cmdGrps) {
+      cmdGrps = TABLE_COMMANDS_GROUP;
+    }
+
     return (
       <CommandMenuButton
         className="czi-table-cell-menu"
-        commandGroups={TABLE_COMMANDS_GROUP}
+        commandGroups={cmdGrps}
         dispatch={editorView.dispatch}
         editorState={editorState}
         editorView={editorView}

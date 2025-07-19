@@ -9,7 +9,7 @@ import cx from 'classnames';
 import uuid from './uuid';
 
 class CustomRadioButton extends React.PureComponent {
-  props: PointerSurfaceProps & {
+  declare props: PointerSurfaceProps & {
     checked?: boolean;
     inline?: boolean;
     label?: string | React.ReactElement | null;

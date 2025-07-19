@@ -24,7 +24,7 @@ FONT_TYPE_NAMES.forEach((name) => {
 const COMMAND_GROUPS = [FONT_TYPE_COMMANDS];
 
 class FontTypeCommandMenuButton extends React.PureComponent<PropsType> {
-  props: PropsType;
+  declare props: PropsType;
 
   render(): React.ReactElement<CommandMenuButton> {
     const { dispatch, editorState, editorView } = this.props;

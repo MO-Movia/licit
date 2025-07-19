@@ -22,7 +22,7 @@ class CustomMenuItemSeparator extends React.PureComponent {
 class CustomMenuItem extends React.PureComponent {
   static Separator = CustomMenuItemSeparator;
   static contextType = ThemeContext;
-  props: CustomButtonProps;
+  declare props: CustomButtonProps;
 
   render(): React.ReactElement<CustomButton> {
     // [FS] IRAD-1044 2020-09-22

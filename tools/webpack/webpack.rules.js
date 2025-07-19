@@ -40,14 +40,29 @@ const rules = [
     ],
   },
   {
-    // Assets loader
-    // More information here https://webpack.js.org/guides/asset-modules/
-    test: /\.(gif|jpe?g|tiff|png|webp|bmp|svg|eot|ttf|woff|woff2)$/i,
-    type: 'asset',
+    test: /\.(gif|jpe?g|tiff|png|webp|bmp|eot|ttf|woff|woff2)$/i,
+    type: 'asset/resource',
     generator: {
-      filename: 'assets/[hash][ext][query]',
+      filename: 'assets/[name][ext][query]', // No hash, keeps original file names
     },
   },
+  {
+    test: /\.svg$/i,
+    oneOf: [
+      {
+        issuer: /\.[jt]sx?$/,
+        resourceQuery: /raw/, // Usage: import icon from './icon.svg?raw';
+        type: 'asset/source',
+      },
+      {
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/[path][name][ext]',
+        },
+      },
+    ],
+  },
+
   {
     test: /\.(js|mjs|jsx)$/,
     include: /node_modules/,

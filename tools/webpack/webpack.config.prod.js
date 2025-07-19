@@ -3,42 +3,32 @@ import plugins from './webpack.plugins.js';
 import aliases from './webpack.aliases.js';
 
 const config = {
-  mode: 'production',
+  mode: 'development',
   entry: ['./licit/client/index.tsx'],
   module: {
     rules,
   },
   output: {
-    filename: '[name].[chunkhash].js',
-    chunkFilename: '[name].[chunkhash].chunk.js',
-    clean: true,
+    filename: '[name].js',
+    chunkFilename: '[name].chunk.js',
   },
-  plugins: [...plugins],
+  plugins,
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
-    alias: {
-      // Custom Aliases
-      ...aliases,
-    },
+    alias: aliases,
   },
   stats: 'errors-warnings',
+  devtool: 'cheap-module-source-map',
+  devServer: {
+    open: true,
+  },
   optimization: {
-    minimize: true,
-    sideEffects: true,
-    concatenateModules: true,
-    runtimeChunk: 'single',
     splitChunks: {
       chunks: 'all',
-      maxInitialRequests: 10,
-      minSize: 0,
-      cacheGroups: {
-        vendor: {
-          name: 'vendors',
-          test: /[\\/]node_modules[\\/]/,
-          chunks: 'all',
-        },
-      },
     },
+  },
+  performance: {
+    hints: false,
   },
 };
 

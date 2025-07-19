@@ -1,3 +1,6 @@
+@import './czi-dark-theme.css';
+@import './czi-light-theme.css';
+
 :root {
   --czi-blockquote-background-color: rgb(0 0 0 / 5%);
   --czi-blockquote-border: solid 8px rgb(0 0 0 / 60%);
@@ -43,3 +46,4 @@
   --czi-content-line-height: 138%;
   --czi-content-link-color: rgb(0 0 238);
 }
+

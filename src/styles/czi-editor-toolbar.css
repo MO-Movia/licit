@@ -1,8 +1,8 @@
 .czi-editor-toolbar {
   /* background: #fff;
    For Them changescommented above */
-  height: 36px;
-  line-height: 32px;
+  height: 28px;
+  line-height: 20px;
   pointer-events: none;
   position: relative;
   user-select: none;
@@ -36,7 +36,7 @@
   /* 0.162 =~ 36px */
 
   /* flex: 0.162; */
-  flex: 0.172;
+  flex: 0.135;
   overflow: hidden;
 
   /* See https://css-tricks.com/using-css-transitions-auto-dimensions/ */
@@ -66,27 +66,24 @@
 }
 
 /* Theme based styles */
-.czi-editor-toolbar-body-content.dark {
-  background: #444;
-  border-color: transparent;
+.czi-editor-toolbar-body-content {
+  background: var(--czi-bg);
+  border-color: var(--czi-toolbar-body-border);
   /* color: #c7c7c7; */
-}
-
-.czi-editor-toolbar-body-content.light {
-  border-color: transparent;
-  background-color: #d8d6d6;
-  /* color: black; */
 }
 
 .czi-editor-toolbar .czi-custom-button {
   box-sizing: border-box;
-  height: 30px;
-  line-height: 28px;
-  padding-bottom: 0;
-  padding-left: 6px;
-  padding-right: 6px;
-  padding-top: 0;
+  height: 25px;
+  line-height: 24px;
+  padding: 0;
   pointer-events: auto;
+}
+
+.czi-editor-toolbar .czi-custom-button:hover{
+  background-color: var(--czi-button-hover-background-color);
+  border: 1px solid;
+  border-radius: 6px;
 }
 
 .czi-editor-toolbar .czi-custom-buttons {
@@ -96,14 +93,11 @@
   border-right-style: solid;
   border-right-width: 1px;
   display: inline-block;
-  margin-left: 0;
-  margin-right: 0;
-  padding-left: 4px;
-  padding-right: 4px;
+  margin: 0;
+  padding: 0;
   position: relative;
   white-space: nowrap;
   text-align: center;
-  margin-bottom: 3px;
 }
 
 .czi-editor-toolbar .czi-custom-button.czi-custom-button.czi-custom-button {
@@ -137,7 +131,7 @@
   */
   box-shadow: 0 1px 0 0.2px #6e6e6e;
   box-sizing: border-box;
-  height: 41px;
+  height: 26px;
 }
 
 @media only print {

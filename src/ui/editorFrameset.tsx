@@ -26,12 +26,13 @@ function toCSS(val?: number | string): string {
   if (isNaN(val as number)) {
     return `${val}`;
   }
-  return `${val}px`;
+  // return `${val}px`;
+  return `${val}vh`;
 }
 
 class EditorFrameset extends React.PureComponent {
   static contextType = ThemeContext;
-  props: EditorFramesetProps;
+  declare props: EditorFramesetProps;
 
   render(): React.ReactElement {
     const {

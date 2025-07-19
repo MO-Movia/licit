@@ -3,7 +3,7 @@
  * https://jestjs.io/docs/configuration
  */
 
-import type {JestConfigWithTsJest} from 'ts-jest';
+import type { JestConfigWithTsJest } from 'ts-jest';
 
 const jestConfig: JestConfigWithTsJest = {
   // All imported modules in your tests should be mocked automatically
@@ -207,7 +207,7 @@ const jestConfig: JestConfigWithTsJest = {
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  transformIgnorePatterns: ['node_modules/(?!@modusoperandi)'],
+  transformIgnorePatterns: ['node_modules/(?!(@modusoperandi/.*|color.*)/)'],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,

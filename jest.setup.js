@@ -5,18 +5,20 @@
 document.execCommand = document.execCommand || function execCommandMock() {};
 
 // indexedDB mock
-// require('fake-indexeddb/auto');
+require('fake-indexeddb/auto');
 
 // mock fonts API
-// Object.defineProperty(document, 'fonts', {
-//   value: {
-//     ready: Promise.resolve({}),
-//     check: () => {
-//       /* empty */
-//     },
-//     status: ' ',
-//     values: () => {
-//       /* empty */
-//     },
-//   },
-// });
+    Object.defineProperty(document, 'fonts', {
+      value: {
+        ready: Promise.resolve({}),
+        check: jest.fn().mockReturnValue(true),
+        status: 'loaded',
+        values: jest.fn(() => [ // returns existing fonts
+          { family: 'Roboto-Regular' },
+          { family: 'Roboto-Bold' },
+          { family: 'Arial' }
+        ])
+      },
+      writable: true,
+      configurable: true, // Allows redefining in tests
+    });

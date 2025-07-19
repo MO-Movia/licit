@@ -24,7 +24,7 @@ class EditorToolbar extends React.PureComponent {
   static contextType = ThemeContext;
   _body = null;
 
-  props: {
+  declare props: {
     disabled?: boolean;
     dispatchTransaction?: (tr: Transform) => void;
     editorState: EditorState;
@@ -36,7 +36,7 @@ class EditorToolbar extends React.PureComponent {
 
   state = {
     expanded: false,
-    wrapped: null,
+    wrapped: false,
   };
 
   render(): React.ReactElement<CustomButton> {
@@ -242,23 +242,21 @@ class EditorToolbar extends React.PureComponent {
     return groups;
   };
 
-  sortGroupItems = (items) => items.sort((a, b) => a.order - b.order);
+  /*sortGroupItems = (items) => items.sort((a, b) => a.order - b.order);
   orderedMenuData = (menuData) => Object.entries(menuData).reduce((acc, [groupName, items]) => {
     acc[groupName] = this.sortGroupItems(items);
     return acc;
-  }, {});
+  }, {});*/
 
   _renderButtonsGroup = (
     group: Record<string, UICommand | React.PureComponent>,
     index: number
   ): React.ReactElement => {
-
     const theme = this.context;
     console.log('se ' + theme);
     const buttons = Object.keys(group)
       .map((label) => {
         const obj = group[label];
-
         if (isReactClass(obj)) {
           // JSX requies the component to be named with upper camel case.
           const ThatComponent = obj as any;
@@ -461,6 +459,7 @@ class EditorToolbar extends React.PureComponent {
   _checkIfContentIsWrapped = (): void => {
     const ref = this._body;
     const el = ref && ReactDOM.findDOMNode(ref);
+    debugger;
     const startAnchor = el && el.firstChild;
     const endAnchor = el && el.lastChild;
     if (startAnchor && endAnchor) {

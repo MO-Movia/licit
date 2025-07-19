@@ -27,7 +27,7 @@ type ListTypeButtonType = {
 };
 class ListTypeButton extends React.PureComponent<ListTypeButtonType> {
   static contextType = ThemeContext;
-  props: ListTypeButtonType;
+ declare  props: ListTypeButtonType;
 
   _menu = null;
   _id = uuid();

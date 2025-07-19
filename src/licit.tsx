@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Extension, Editor } from '@tiptap/core';
 import { EditorEvents, getSchema, JSONContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import './styles/licit.scss';
+import './styles/licit.css';
 import Underline from '@tiptap/extension-underline';
 import { v4 as uuidv4 } from 'uuid';
 import Collaboration from '@tiptap/extension-collaboration';
@@ -12,7 +12,7 @@ import * as Y from 'yjs';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import RichTextEditor from './ui/richTextEditor';
 import DefaultEditorPlugins from './defaultEditorPlugins';
-import { Plugin } from 'prosemirror-state';
+import { Plugin, TextSelection } from 'prosemirror-state';
 import { getEffectiveSchema } from './convertFromJSON';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Schema, NodeSpec } from 'prosemirror-model';
@@ -350,7 +350,7 @@ const getCollabExtensions = (
     : [];
 };
 
-const Licit = ({
+export const Licit = ({
   docID,
   plugins,
   width,
@@ -393,7 +393,7 @@ const Licit = ({
   plugins = plugins || null;
 
   // Theme property for toolbar. By default uses light theme.
-  theme = theme || 'light';
+  theme = theme || 'dark';
   toolbarConfig = toolbarConfig || null;
 
   let currentUser = null;
@@ -438,6 +438,16 @@ const Licit = ({
     content: data,
   });
 
+  const goToEnd = (): void => {
+
+    const view = editor.view;
+    const tr = view.state.tr;
+    view.dispatch(
+      tr.setSelection(TextSelection.atEnd(view.state.doc)).scrollIntoView()
+    );
+    view.focus();
+
+  };
   if (editor) {
     editor.on('create', (props: EditorEvents['create']) => {
       // The editor is ready.
@@ -456,7 +466,8 @@ const Licit = ({
 
     const eView: EditorViewEx = editor.view;
     eView.runtime = runtime;
-    const mainClassName = cx('prosemirror-editor-wrapper', {
+    let wrapperClass = 'prosemirror-editor-wrapper' + ' ' + theme;
+    const mainClassName = cx(wrapperClass, {
       embedded: embedded,
     });
     return (
@@ -481,4 +492,4 @@ const Licit = ({
   }
 };
 
-export default Licit;
+

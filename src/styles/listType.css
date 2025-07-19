@@ -2,38 +2,30 @@
   background: #fffefe;
   border: 1px solid #bdb5b5;
   display: grid;
-  grid-gap: 10px;
+  grid-gap: 5px;
   grid-template-columns: auto auto auto;
   padding: 5px;
 }
 
-.ol-container.light {
-  background: #fffefe;
-  border: 1px solid #bdb5b5;
+.ol-container {
+  background: var(--czi-bg);
+  border: var(--czi-ol-container-border);
 }
 
-.ol-container.dark {
-  background: #2c2c2c;
-  border: 1px solid #444;
-}
 
 .buttonsize {
-  height: 50px;
-  width: 50px;
+  height: 36px;
+  width: 36px;
+  padding: 0;
+  cursor: pointer;
+  background: var(--czi-bg);
+  border: var(--czi-list-type-btn-border);
+  color: var(--czi-text-color);
 }
 
-.buttonsize.dark {
-  background: #2c2c2c;
-  border: 1px solid #444;
-  color: #c7c7c7;
+.buttonsize:focus, .buttonsize:hover {
+  background-color: var(--czi-button-hover-background-color);
 }
-
-.buttonsize.light {
-  background: #fffefe;
-  border: 1px solid #bdb5b5;
-  color: black;
-}
-
 
 /* [FS] IRAD-1076 2020-10-15
  Style for paste popup menu */

@@ -21,7 +21,7 @@ type CommandButtonProps = {
 };
 class CommandButton extends React.PureComponent<CommandButtonProps> {
   static contextType = ThemeContext;
-  props: CommandButtonProps;
+  declare  props: CommandButtonProps;
 
   render(): React.ReactElement<CustomButton> {
     const {

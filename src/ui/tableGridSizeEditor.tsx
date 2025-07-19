@@ -59,7 +59,7 @@ class TableGridSizeEditor extends React.PureComponent<
   _ref = null;
   _entered = false;
 
-  props: {
+  declare props: {
     close: (val: TableGridSizeEditorState) => void;
   };
 

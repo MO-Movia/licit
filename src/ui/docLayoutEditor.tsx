@@ -51,7 +51,7 @@ class DocLayoutEditor extends React.PureComponent<DocLayoutEditorProps> {
     },
   };
 
-  state: DocLayoutEditorState;
+  declare state: DocLayoutEditorState;
 
   constructor(props: DocLayoutEditorProps) {
     super(props);
@@ -109,18 +109,6 @@ class DocLayoutEditor extends React.PureComponent<DocLayoutEditorProps> {
               label="A4 - Landscape"
               onSelect={this._onSelect}
               value={LAYOUT.A4_LANDSCAPE}
-            />
-            <CustomRadioButton
-              checked={selectedValue === LAYOUT.DESKTOP_SCREEN_4_3}
-              label="4:3 Desktop Screen"
-              onSelect={this._onSelect}
-              value={LAYOUT.DESKTOP_SCREEN_4_3}
-            />
-            <CustomRadioButton
-              checked={selectedValue === LAYOUT.DESKTOP_SCREEN_16_9}
-              label="16:9 Desktop Screen"
-              onSelect={this._onSelect}
-              value={LAYOUT.DESKTOP_SCREEN_16_9}
             />
             {customOption}
           </fieldset>

@@ -15,7 +15,9 @@ import { Plugin } from 'prosemirror-state';
 // : (NodeType) → InputRule
 // Given a list node type, returns an input rule that turns a number
 // followed by a dot at the start of a textblock into an ordered list.
-function orderedListRule(nodeType: NodeType): InputRule {
+/// Given a list node type, returns an input rule that turns a number
+/// followed by a dot at the start of a textblock into an ordered list.
+export function orderedListRule(nodeType: NodeType) {
   return wrappingInputRule(
     /^(\d+)\.\s$/,
     nodeType,
@@ -28,10 +30,8 @@ function orderedListRule(nodeType: NodeType): InputRule {
 // A set of input rules for creating the basic block quotes, lists,
 // code blocks, and heading.
 export default function buildInputRules(schema: Schema): Plugin {
-  const rules = smartQuotes.concat(ellipsis, emDash);
-  let type;
-  if ((type == schema.nodes.ordered_list)) {
-    rules.push(orderedListRule(type));
-  }
+  let rules = smartQuotes.concat(ellipsis, emDash),
+    type;
+  if ((type = schema.nodes.ordered_list)) rules.push(orderedListRule(type));
   return inputRules({ rules });
 }

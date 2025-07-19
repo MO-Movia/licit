@@ -24,7 +24,7 @@ class CommandMenu extends React.PureComponent<PropsType> {
   // static contextType = ThemeContext;
   _activeCommand?: UICommand = null;
 
-  props: PropsType;
+ declare  props: PropsType;
 
   render(): React.ReactElement {
     const { commandGroups, editorState, editorView, title, theme } = this.props;
@@ -93,7 +93,7 @@ class CommandMenu extends React.PureComponent<PropsType> {
     );
   };
 
-  _renderCommandButton = (
+  /*_renderCommandButton = (
     label: string,
     command: UICommand,
     disabled: boolean,
@@ -117,7 +117,7 @@ class CommandMenu extends React.PureComponent<PropsType> {
         title={title}
       />
     );
-  };
+  };*/
 
   _renderMenuButton = (
     label: string,
@@ -158,7 +158,7 @@ class CommandMenu extends React.PureComponent<PropsType> {
   _execute = (command: UICommand, e: React.SyntheticEvent): void => {
     const { dispatch, editorState, editorView, onCommand } = this.props;
     if (command.execute(editorState, dispatch, editorView, e)) {
-      onCommand && onCommand();
+      onCommand?.();
     }
   };
 }

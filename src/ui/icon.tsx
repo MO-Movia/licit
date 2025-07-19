@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 
 import canUseCSSFont from '../canUseCSSFont';
 import { ThemeContext } from '@modusoperandi/licit-ui-commands'
-import myico from '@assets/images/dark/Icon_Bullets.svg';
 // import { ReactComponent as UndoIcon } from '../../images/dark/undo.svg';
 
 import '../styles/czi-icon.css';
@@ -20,8 +19,8 @@ const CSS_FONT = 'Material Icons';
   await canUseCSSFont(CSS_FONT);
 })();
 
-const importImage = (filename) => import(`@assets/images/${filename}`);
-class SuperscriptIcon extends React.PureComponent {
+// const importImage = (filename) => import(`@assets/images/${filename}`);
+/*class SuperscriptIcon extends React.PureComponent {
   render(): React.ReactElement {
     return (
       <span className="superscript-wrap">
@@ -30,7 +29,7 @@ class SuperscriptIcon extends React.PureComponent {
       </span>
     );
   }
-}
+}*/
 
 /*function useDynamicSVGImport(name, options = {}) {
   const ImportedIconRef = useRef();
@@ -78,7 +77,7 @@ function IconEx({name, onCompleted, onError, ...rest}) {
   }
 }
 */
-class SubscriptIcon extends React.PureComponent {
+/*class SubscriptIcon extends React.PureComponent {
   render(): React.ReactElement {
     return (
       <span className="subscript-wrap">
@@ -87,7 +86,7 @@ class SubscriptIcon extends React.PureComponent {
       </span>
     );
   }
-}
+}*/
 
 class Icon extends React.PureComponent {
   static contextType = ThemeContext;
@@ -105,7 +104,7 @@ class Icon extends React.PureComponent {
   }
 
 
-  props: {
+  declare props: {
     type: string;
     title?: string;
     theme?: string
@@ -144,6 +143,7 @@ class Icon extends React.PureComponent {
         case 'format_bold':
         case 'format_italic':
         case 'format_list_bulleted':
+        case 'format_list_numbered':
         case 'format_underline':
         case 'functions':
         case 'grid_on':
@@ -237,6 +237,7 @@ class Icon extends React.PureComponent {
         case 'format_bold':
         case 'format_italic':
         case 'format_list_bulleted':
+        case 'format_list_numbered':
         case 'format_underline':
         case 'functions':
         case 'grid_on':
@@ -272,11 +273,12 @@ class Icon extends React.PureComponent {
       console.log('fromicon ' + t);
       try {
         // Dynamically load the image
-        const imageModule = await import(`@assets/images/${t}/${fileName}.svg`);
-        const image1 = imageModule.default;
+        //  const imageModule = await import(`@assets/images/${t}/${fileName}.svg`);
+        //  const image1 = imageModule.default;
+        const image1 = `assets/images/${t}/${fileName}.svg`;
         this.setState({ image1 });
       } catch (error) {
-        console.error(`Error loading image: ${error}`);
+        // console.error(`Error loading image: ${error}`);
       }
     }
 

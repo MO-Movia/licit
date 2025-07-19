@@ -66,40 +66,40 @@ export const Indent = Extension.create<IndentOptions, never>({
     return {
       indent:
         () =>
-        ({ tr, state, dispatch, editor }: CommandProps) => {
-          const { selection } = state;
-          tr = tr.setSelection(selection);
-          tr = updateIndentLevel(
-            tr,
-            this.options,
-            editor.extensionManager.extensions,
-            'indent'
-          );
-          if (tr.docChanged && dispatch) {
-            dispatch(tr);
-            return true;
-          }
-          editor.chain().focus().run();
-          return false;
-        },
+          ({ tr, state, dispatch, editor }: CommandProps) => {
+            const { selection } = state;
+            tr = tr.setSelection(selection);
+            tr = updateIndentLevel(
+              tr,
+              this.options,
+              editor.extensionManager.extensions,
+              'indent'
+            );
+            if (tr.docChanged && dispatch) {
+              dispatch(tr);
+              return true;
+            }
+            editor.chain().focus().run();
+            return false;
+          },
       outdent:
         () =>
-        ({ tr, state, dispatch, editor }: CommandProps) => {
-          const { selection } = state;
-          tr = tr.setSelection(selection);
-          tr = updateIndentLevel(
-            tr,
-            this.options,
-            editor.extensionManager.extensions,
-            'outdent'
-          );
-          if (tr.docChanged && dispatch) {
-            dispatch(tr);
-            return true;
-          }
-          editor.chain().focus().run();
-          return false;
-        },
+          ({ tr, state, dispatch, editor }: CommandProps) => {
+            const { selection } = state;
+            tr = tr.setSelection(selection);
+            tr = updateIndentLevel(
+              tr,
+              this.options,
+              editor.extensionManager.extensions,
+              'outdent'
+            );
+            if (tr.docChanged && dispatch) {
+              dispatch(tr);
+              return true;
+            }
+            editor.chain().focus().run();
+            return false;
+          },
     };
   },
 
@@ -174,27 +174,27 @@ const updateIndentLevel = (
 
 const indent: () => KeyboardShortcutCommand =
   () =>
-  ({ editor }) => {
-    if (
-      !isList(editor.state.doc.type.name, editor.extensionManager.extensions)
-    ) {
-      return editor.commands.indent();
-    }
-    return false;
-  };
+    ({ editor }) => {
+      if (
+        !isList(editor.state.doc.type.name, editor.extensionManager.extensions)
+      ) {
+        return editor.commands.indent();
+      }
+      return false;
+    };
 const outdent: (outdentOnlyAtHead: boolean) => KeyboardShortcutCommand =
   (outdentOnlyAtHead) =>
-  ({ editor }) => {
-    if (
-      !(
-        isList(
-          editor.state.doc.type.name,
-          editor.extensionManager.extensions
-        ) ||
-        (outdentOnlyAtHead && editor.state.selection.$head.parentOffset !== 0)
-      )
-    ) {
-      return editor.commands.outdent();
-    }
-    return false;
-  };
+    ({ editor }) => {
+      if (
+        !(
+          isList(
+            editor.state.doc.type.name,
+            editor.extensionManager.extensions
+          ) ||
+          (outdentOnlyAtHead && editor.state.selection.$head.parentOffset !== 0)
+        )
+      ) {
+        return editor.commands.outdent();
+      }
+      return false;
+    };

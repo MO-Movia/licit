@@ -1,4 +1,4 @@
-  // [FS] IRAD-1039 2020-09-23
+// [FS] IRAD-1039 2020-09-23
 // Command button to handle different type of list types
 // Need to add Icons instead of label
 import * as React from 'react';
@@ -8,6 +8,7 @@ import { ListToggleCommand, hasImageNode } from '../commands/listToggleCommand';
 import ListTypeButton from './listTypeButton';
 import { EditorViewEx } from '../constants';
 import { ThemeContext } from '@modusoperandi/licit-ui-commands';
+import Icon from './icon';
 const LIST_TYPE_NAMES = [
   {
     name: 'decimal',
@@ -50,7 +51,7 @@ const COMMAND_GROUPS = [LIST_TYPE_COMMANDS];
 
 class ListTypeCommandButton extends React.PureComponent {
   static contextType = ThemeContext;
-  props: {
+ declare props: {
     dispatch: (tr: Transform) => void;
     editorState: EditorState;
     editorView?: EditorViewEx;
@@ -74,7 +75,7 @@ class ListTypeCommandButton extends React.PureComponent {
         dispatch={dispatch}
         editorState={editorState}
         editorView={editorView}
-        icon={'format_list_numbered'}
+        icon={Icon.get('format_list_numbered')}
         theme={theme.toString()}
       />
     );

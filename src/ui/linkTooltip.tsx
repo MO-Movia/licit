@@ -12,7 +12,7 @@ function isBookMarkHref(href: string): boolean {
 }
 
 class LinkTooltip extends React.PureComponent {
-  props: {
+  declare props: {
     editorView: EditorView;
     href: string;
     onCancel: (view: EditorView) => void;

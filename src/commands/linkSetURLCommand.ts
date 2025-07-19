@@ -84,7 +84,7 @@ class LinkSetURLCommand extends UICommand {
       const { selection, schema } = state;
       let { tr } = state;
       (tr as Transform) = view ? hideSelectionPlaceholder(view.state) : tr;
-      tr = tr.setSelection(selection);
+      tr = tr?.setSelection(selection);
       if (href !== undefined) {
         const markType = schema.marks[MARK_LINK];
         const attrs = href ? { href } : null;

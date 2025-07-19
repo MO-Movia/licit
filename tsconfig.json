@@ -1,29 +1,39 @@
 {
  
   "compilerOptions": {
-    "jsx": "react",
     "allowJs": true,
-    "target": "ES6",
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "outDir": "dist",
+    "jsx": "react",
+    "target": "ES2022",
+    "module": "esnext",
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,    
+    "lib": [
+      "es2018",
+      "dom",
+      "dom.Iterable"
+    ],
+    "outDir": "dist",
+    "baseUrl": ".",
     "resolveJsonModule": true,
-    "strict": false,
+   "pretty": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
      "types": [
       "jest",
       "node",
-      "jest-prosemirror"
+      "jest-prosemirror",
+      "@testing-library/jest-dom"
     ],
+     "declaration": true,
     "paths": {
       "@assets/*": ["./assets/*"],
       "@src/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "tools/**/*"],
+  "typeAcquisition": {
+    "enable": true
+  },
+  "include": ["src/**/*.ts","src/**/*.js" ],
   "exclude": [
     "node_modules",
   ]

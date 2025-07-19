@@ -7,14 +7,9 @@
   padding: 4px 10px;
 }
 
-.czi-image-url-editor.light {
-  background-color: #d8d6d6;
-
-}
-
-.czi-image-url-editor.dark {
-  background: #444;
-  color: #b7b7b7;
+.czi-image-url-editor {
+  background: var(--czi-bg);
+  color: var(--czi-text-color);
 }
 
 .czi-image-url-editor .czi-form {

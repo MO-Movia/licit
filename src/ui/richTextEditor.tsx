@@ -10,13 +10,13 @@ import uuid from './uuid';
 import type { EditorFramesetProps } from './editorFrameset';
 import type { EditorProps } from './editor';
 import { Transaction } from 'prosemirror-state';
-
+// import { EditorToolbar } from '@modusoperandi/licit-toolbar';
 type EditorContainer = { editor?: Editor };
 
 type RichTextEditorProps = EditorContainer &
   EditorFramesetProps &
   EditorProps &
-  RichTextEditorState & { children? };
+  RichTextEditorState & { children?};
 
 type RichTextEditorState = {
   editorView?: EditorView;
@@ -26,9 +26,9 @@ class RichTextEditor extends React.PureComponent<
   RichTextEditorProps,
   RichTextEditorState
 > {
-  props: RichTextEditorProps;
+  declare props: RichTextEditorProps;
 
-  state: RichTextEditorState;
+ declare  state: RichTextEditorState;
 
   _id: string;
 
@@ -61,8 +61,8 @@ class RichTextEditor extends React.PureComponent<
 
     const { editorState /*, runtime*/ } = this.props;
     const { editorView } = this.props;
-
-    this.props.editor.setEditable(!readOnly);
+    //Seybi : This causes delay in edit
+    // this.props.editor.setEditable(!readOnly);
 
     const toolbar =
       !!readOnly === true ? null : (

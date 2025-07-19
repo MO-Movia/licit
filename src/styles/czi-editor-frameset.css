@@ -55,13 +55,10 @@
   display: flex;
 }
 
-.czi-editor-frame-head.dark {
-  background-color: #444;
+.czi-editor-frame-head {
+  background-color: var(--czi-bg);
 }
 
-.czi-editor-frame-head.light {
-  background-color: #d8d6d6;
-}
 
 @media only print {
   .czi-editor-frame-body {

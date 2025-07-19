@@ -36,7 +36,7 @@ type StateType = {
 };
 
 class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
-  props: PropsType;
+  declare props: PropsType;
   static contextType = ThemeContext;
   _menu = null;
   _id = uuid();
