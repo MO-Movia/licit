@@ -39,7 +39,7 @@ class TableCellColorCommand extends UICommand {
     return new Promise((resolve) => {
       this._popUp = createPopUp(ColorEditor, null, {
         anchor,
-        autoDismiss:false,
+        autoDismiss: false,
         position: atAnchorRight,
         onClose: (val) => {
           if (this._popUp) {
@@ -55,10 +55,10 @@ class TableCellColorCommand extends UICommand {
     state: EditorState,
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView,
-    hex: ?string
+    hex: ?{ color: string, selectedPosition?: string }
   ): boolean => {
     if (dispatch && hex !== undefined) {
-      const cmd = setCellAttr('background', hex);
+      const cmd = setCellAttr('background', hex.color);
       cmd(state, dispatch, view);
       return true;
     }

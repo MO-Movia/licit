@@ -209,3 +209,8 @@
 .ProseMirror-hideselection *::-moz-selection {
   background-color: transparent;
 }
+
+td[fullsize="1"] .czi-font-size-mark {
+  line-height: unset
+ 
+}

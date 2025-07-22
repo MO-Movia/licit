@@ -43,7 +43,7 @@ class TableBorderColorCommand extends UICommand {
     const hex = result ? result.mark.attrs.color : null;
 
     return new Promise((resolve) => {
-      this._popUp = createPopUp(ColorEditor, { hex, runtime: view.runtime },
+      this._popUp = createPopUp(ColorEditor, { hex, runtime: view.runtime, showCheckbox: true },
         {
           anchor,
           autoDismiss: false,
@@ -62,11 +62,13 @@ class TableBorderColorCommand extends UICommand {
     state: EditorState,
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView,
-    color: ?string
+    color: ?{ color: string, selectedPosition?: string }
   ): boolean => {
     if (dispatch && color !== undefined) {
-      const cmd = setCellAttr('borderColor', color);
-      cmd(state, dispatch, view);
+      const pos = this.findCellPosFromSelection(view.state);
+      if (pos !== null) {
+        this.setCellBorder(view, pos, color.selectedPosition, color.color);
+      }
       return true;
     }
     return false;
@@ -74,6 +76,31 @@ class TableBorderColorCommand extends UICommand {
 
   cancel(): void {
     this._popUp?.close(undefined);
+  }
+
+  setCellBorder(view: ?EditorView, pos: Number, side: string, color: string) {
+    const width = '0.25px';
+    const style = 'solid';
+    const { state, dispatch } = view;
+    const node = state.doc.nodeAt(pos);
+    if (!node || !['table_cell', 'table_header'].includes(node.type.name)) return;
+
+    const newAttrs = { ...node.attrs };
+    const cssValue = `${width} ${style} ${color}`;
+    const attrName = `border${side.charAt(0).toUpperCase() + side.slice(1)}`;
+    newAttrs[attrName] = cssValue;
+    dispatch(state.tr.setNodeMarkup(pos, null, newAttrs));
+  }
+
+  findCellPosFromSelection(state: EditorState) {
+    const { $from } = state.selection;
+    for (let d = $from.depth; d > 0; d--) {
+      const node = $from.node(d);
+      if (['cell', 'header_cell'].includes(node.type.spec.tableRole)) {
+        return $from.before(d);
+      }
+    }
+    return null;
   }
 }
 
