@@ -508,13 +508,14 @@ class Licit extends React.Component<any, any> {
         this._connector.onEdit(transaction, this._editorView);
       }
 
-      if (transaction.docChanged || !isSameState) {
+      if (transaction.docChanged || (!isSameState && !transaction.getMeta('suppressOnChange'))) {
         const docJson = this._editorView?.state?.doc?.toJSON();
         if (!Object.isFrozen(docJson?.attrs?.objectMetaData)) {
           docJson.attrs.objectMetaData = {
             ...docJson.attrs.objectMetaData,
-            lastEditedOn: new Date().toISOString().replace('Z', '+00:00'),
+            lastEditedOn: new Date().toISOString().replace('Z', '+00:00')
           };
+
         }
         let isEmpty = false;
         if (docJson.content && docJson.content.length === 1) {
@@ -560,14 +561,14 @@ class Licit extends React.Component<any, any> {
     const tr = state.tr;
     dispatch(tr.scrollIntoView());
     if (!this._editorView.editable) {
-      let _tr = this._editorView.state.tr;
-      let modified = false;
-      this._editorView.state.doc.descendants((node, pos) => {
-        if (node.type.name === 'table') {
+    let _tr = this._editorView.state.tr;
+    let modified = false;
+    this._editorView.state.doc.descendants((node, pos) => {
+      if (node.type.name === 'table') {
           // Apply setNodeMarkup with same type and attrs to force a refresh
-          _tr = _tr?.setNodeMarkup(pos, undefined, { ...node.attrs, Id: pos });
-          modified = true;
-        }
+        _tr = _tr?.setNodeMarkup(pos, undefined, { ...node.attrs, Id: pos });
+        modified = true;
+       }
       });
       if (modified) {
         this._editorView.dispatch(_tr);
