@@ -1,0 +1,52 @@
+# Manual action for incrementing the version
+
+name: Bump Version
+
+on: 
+  workflow_dispatch:
+    inputs:
+      type:
+        description: 'Version Type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+        - patch
+        - minor
+        - major
+
+jobs:
+  bump:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    timeout-minutes: 60 # Default 5 days for self hosted
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        name: Use Node.js ${{ matrix.node-version }}
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Bump Version
+        run: npm version ${{ inputs.type }} --no-commit-hooks --no-git-tag-version
+      - name: Update Packages
+        # update non-peer deps to latest in package.json
+        # npm update to update all lock dependencies
+        # npm i to fix any lock descrepencies from update
+        run: |
+          npx npm-check-updates --peer --target semver -u
+          npm update
+          npm i
+      - name: Prepare Release Branch
+        run: |
+          TAG=v$(npm pkg get version --workspaces=false | tr -d \")
+          git checkout -b "Release/${TAG}"
+          git commit -a -m "Bump version to ${TAG}"
+          git push -u origin "Release/${TAG}"
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        # PR must be done manually. PR with GITHUB_TOKEN won't trigger workflows.

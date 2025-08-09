@@ -1,0 +1,49 @@
+# This workflow will attest and publish build artifacts ready for release
+
+name: publish
+
+on:
+  push:
+    branches: [main, master]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest # GitHub hosted runner required for provenance
+    permissions:
+      contents: write # write for release
+      id-token: write # required for provenance cert #https://docs.npmjs.com/generating-provenance-statements
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    timeout-minutes: 30 # Default 5 days for self hosted
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        name: Use Node.js ${{ matrix.node-version }}
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+          # generates a '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}'' >> .npmrc
+      - run: npm ci
+        
+      - name: Build
+        run: npm run ci:build
+
+      - name: NPM Publish
+        env: 
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish ./dist --access public --provenance # provenance requires a github hosted runner
+        continue-on-error: true
+
+      - name: Set Version number
+        run: echo "TAG=$(npm pkg get version --workspaces=false | tr -d \")" >> "$GITHUB_ENV"
+
+      - name: Release
+        # https://github.com/softprops/action-gh-release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          target_commitish: main
+          generate_release_notes: true
