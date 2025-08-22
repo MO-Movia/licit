@@ -68,6 +68,16 @@ const ParagraphNodeSpec: NodeSpec = {
     overriddenIndentValue: {
       default: null,
     },
+    //for Hanging indent
+    indentPosition: {
+      default: null,
+    },
+    isHangingIndentApplied: {
+      default: null,
+    },
+    isHangingIndentTab: {
+      default: null,
+    },
   },
   content: 'inline*',
   group: 'block',
@@ -173,12 +183,17 @@ function toDOM(node: Node): Array<any> {
     overriddenIndent,
     overriddenIndentValue,
     selectionId,
+    isHangingIndentApplied, indentPosition, isHangingIndentTab
   } = node.attrs;
   const attrs = { ...node.attrs };
   const { style } = getStyle(node.attrs);
 
   style && (attrs.style = style);
 
+  if (indentPosition && isHangingIndentTab) {
+    attrs['data-hanging-indent'] = 'true';
+    attrs.isHangingIndentTab = false;
+  }
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);
   }
@@ -192,6 +207,7 @@ function toDOM(node: Node): Array<any> {
   attrs.overriddenAlignValue = overriddenAlignValue;
   attrs.overriddenLineSpacingValue = overriddenLineSpacingValue;
   attrs.overriddenIndentValue = overriddenIndentValue;
+  attrs.isHangingIndentApplied = isHangingIndentApplied;
 
   if (selectionId) {
     attrs.selectionId = selectionId;

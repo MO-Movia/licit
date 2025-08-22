@@ -9,7 +9,6 @@ import LinkMarkSpec from './LinkMarkSpec.js';
 import * as MarkNames from './MarkNames.js';
 import { DOC, PARAGRAPH, TEXT } from './NodeNames.js';
 import ParagraphNodeSpec from './ParagraphNodeSpec.js';
-import SpacerMarkSpec from './SpacerMarkSpec.js';
 import StrikeMarkSpec from './StrikeMarkSpec.js';
 import StrongMarkSpec from './StrongMarkSpec.js';
 import TextColorMarkSpec from './TextColorMarkSpec.js';
@@ -37,7 +36,6 @@ const {
   MARK_TEXT_HIGHLIGHT,
   MARK_TEXT_SELECTION,
   MARK_UNDERLINE,
-  MARK_SPACER,
   MARK_OVERRIDE
 } = MarkNames;
 
@@ -57,7 +55,6 @@ const marks = {
   [MARK_EM]: EMMarkSpec,
   [MARK_FONT_SIZE]: FontSizeMarkSpec,
   [MARK_FONT_TYPE]: FontTypeMarkSpec,
-  [MARK_SPACER]: SpacerMarkSpec,
   [MARK_STRIKE]: StrikeMarkSpec,
   [MARK_STRONG]: StrongMarkSpec,
   [MARK_SUPER]: TextSuperMarkSpec,
