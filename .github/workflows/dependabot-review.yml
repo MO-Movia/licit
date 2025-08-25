@@ -1,3 +1,5 @@
+# This workflow automates resolving dependabot PRs that don't intoduce issues.
+
 name: Dependabot approval
 on: pull_request_target
 
@@ -8,6 +10,7 @@ permissions:
 jobs:
   review-dependabot-pr:
     runs-on: self-hosted
+    timeout-minutes: 60 # Default 5 days for self hosted
     if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
     steps:
       - name: Dependabot metadata

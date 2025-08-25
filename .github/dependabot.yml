@@ -8,7 +8,8 @@ updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: weekly
+      day: sunday
     # Raise pull requests for version updates
     # to npm against the `develop` branch
     target-branch: "develop"
