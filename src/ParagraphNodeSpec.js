@@ -182,7 +182,7 @@ function toDOM(node: Node): Array<any> {
     overriddenIndent,
     overriddenIndentValue,
     selectionId,
-    hangingiIndent,
+    hangingIndent,
     indentPosition
   } = node.attrs;
   const attrs = { ...node.attrs };
@@ -190,9 +190,11 @@ function toDOM(node: Node): Array<any> {
 
   style && (attrs.style = style);
 
-  if (indentPosition && hangingiIndent) {
+  if (indentPosition && hangingIndent) {
     attrs['hangingIndent'] = 'true';
     attrs['indentPosition'] = indentPosition;
+    const hIndentpx = Number(indentPosition) * 96;
+    document.documentElement.style.setProperty(`--hangingIndentMargin`, `${hIndentpx}px`);
   }
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);
@@ -207,7 +209,7 @@ function toDOM(node: Node): Array<any> {
   attrs.overriddenAlignValue = overriddenAlignValue;
   attrs.overriddenLineSpacingValue = overriddenLineSpacingValue;
   attrs.overriddenIndentValue = overriddenIndentValue;
-  attrs.hangingiIndent = hangingiIndent;
+  attrs.hangingIndent = hangingIndent;
 
   if (selectionId) {
     attrs.selectionId = selectionId;
