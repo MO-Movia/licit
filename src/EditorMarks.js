@@ -9,6 +9,7 @@ import LinkMarkSpec from './LinkMarkSpec.js';
 import * as MarkNames from './MarkNames.js';
 import { DOC, PARAGRAPH, TEXT } from './NodeNames.js';
 import ParagraphNodeSpec from './ParagraphNodeSpec.js';
+import SpacerMarkSpec from './SpacerMarkSpec.js';
 import StrikeMarkSpec from './StrikeMarkSpec.js';
 import StrongMarkSpec from './StrongMarkSpec.js';
 import TextColorMarkSpec from './TextColorMarkSpec.js';
@@ -20,6 +21,7 @@ import TextSuperMarkSpec from './TextSuperMarkSpec.js';
 import TextSubMarkSpec from './TextSubMarkSpec.js';
 import TextUnderlineMarkSpec from './TextUnderlineMarkSpec.js';
 import OverrideMarkSpec from './OverrideMarkSpec.js';
+import HangingIndentMarkSpec from './HangingIndentMarkSpec.js';
 
 const {
   MARK_CODE,
@@ -36,7 +38,9 @@ const {
   MARK_TEXT_HIGHLIGHT,
   MARK_TEXT_SELECTION,
   MARK_UNDERLINE,
-  MARK_OVERRIDE
+  MARK_SPACER,
+  MARK_OVERRIDE,
+  MARK_HANGING_INDENT
 } = MarkNames;
 
 // These nodes are required to build basic marks.
@@ -49,12 +53,14 @@ const nodes = {
 const marks = {
   // Link mark should be rendered first.
   // https://discuss.prosemirror.net/t/prevent-marks-from-breaking-up-links/401/5
+  [MARK_HANGING_INDENT]: HangingIndentMarkSpec,
   [MARK_LINK]: LinkMarkSpec,
   [MARK_NO_BREAK]: TextNoWrapMarkSpec,
   [MARK_CODE]: CodeMarkSpec,
   [MARK_EM]: EMMarkSpec,
   [MARK_FONT_SIZE]: FontSizeMarkSpec,
   [MARK_FONT_TYPE]: FontTypeMarkSpec,
+  [MARK_SPACER]: SpacerMarkSpec,
   [MARK_STRIKE]: StrikeMarkSpec,
   [MARK_STRONG]: StrongMarkSpec,
   [MARK_SUPER]: TextSuperMarkSpec,

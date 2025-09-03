@@ -13,7 +13,6 @@ import OrderedListNodeSpec from './OrderedListNodeSpec.js';
 import ParagraphNodeSpec from './ParagraphNodeSpec.js';
 import TableNodesSpecs from './TableNodesSpecs.js';
 import TextNodeSpec from './TextNodeSpec.js';
-import SpacerNodeSpec from './SpacerNodeSpec.js';
 
 const {
   BLOCKQUOTE,
@@ -28,7 +27,6 @@ const {
   ORDERED_LIST,
   PARAGRAPH,
   TEXT,
-  SPACER,
 } = NodeNames;
 
 // https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
@@ -49,7 +47,6 @@ const nodes = {
   [ORDERED_LIST]: OrderedListNodeSpec,
   [LIST_ITEM]: ListItemNodeSpec,
   [BOOKMARK]: BookmarkNodeSpec,
-  [SPACER]: SpacerNodeSpec,
 };
 
 const marks = {};
