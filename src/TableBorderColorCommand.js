@@ -62,7 +62,7 @@ class TableBorderColorCommand extends UICommand {
     state: EditorState,
     dispatch: ?(tr: Transform) => void,
     view: ?EditorView,
-    color: ?{ color: string, selectedPosition?: string }
+    color: ?{ color: string, selectedPosition?: string[] }
   ): boolean => {
     if (dispatch && color !== undefined) {
       const pos = this.findCellPosFromSelection(view.state);
@@ -78,7 +78,7 @@ class TableBorderColorCommand extends UICommand {
     this._popUp?.close(undefined);
   }
 
-  setCellBorder(view: ?EditorView, pos: Number, side: string, color: string) {
+  setCellBorder(view: ?EditorView, pos: Number, sides: string, color: string) {
     const width = '0.25px';
     const style = 'solid';
     const { state, dispatch } = view;
@@ -87,8 +87,10 @@ class TableBorderColorCommand extends UICommand {
 
     const newAttrs = { ...node.attrs };
     const cssValue = `${width} ${style} ${color}`;
-    const attrName = `border${side.charAt(0).toUpperCase() + side.slice(1)}`;
-    newAttrs[attrName] = cssValue;
+    sides.forEach(side => {
+      const attrName = `border${side.charAt(0).toUpperCase() + side.slice(1)}`;
+      newAttrs[attrName] = cssValue;
+    });
     dispatch(state.tr.setNodeMarkup(pos, null, newAttrs));
   }
 
