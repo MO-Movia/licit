@@ -194,7 +194,7 @@ function toDOM(node: Node): Array<any> {
     attrs['hangingIndent'] = 'true';
     attrs['indentPosition'] = indentPosition;
     const hIndentpx = Number(indentPosition) * 96;
-    document.documentElement.style.setProperty(`--hangingIndentMargin`, `${hIndentpx}px`);
+    document.documentElement.style.setProperty('--hangingIndentMargin', `${hIndentpx}px`);
   }
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);
