@@ -7,9 +7,7 @@ import { MARK_LINK } from './MarkNames.js';
 import {
   atAnchorTopCenter,
   createPopUp,
-  findNodesWithSameMark,
 } from '@modusoperandi/licit-ui-commands';
-import lookUpElement from './lookUpElement.js';
 import LinkTooltip from './ui/LinkTooltip.js';
 import scrollIntoView from 'smooth-scroll-into-view-if-needed';
 
@@ -27,10 +25,21 @@ const SPEC = {
         const pluginView = view.dom._linkTooltipView;
         return pluginView?._handleMouseOut.call(view, event);
       },
-      click(view, event) {
-        const pluginView = view.dom._linkTooltipView;
-        return pluginView?._handleClick.call(view, event);
-      },
+    },
+    // https://prosemirror.net/docs/ref/#view.EditorProps.handleClickOn
+    handleClickOn: (view, pos, node, nodePos, event, direct) => {
+      if (!direct) {
+        return false;
+      }
+
+      node = view.state.doc.nodeAt(pos);
+      const linkMark = node.marks?.find((m) => m?.type?.name === MARK_LINK);
+      if (!linkMark) {
+        return false;
+      }
+
+      const pluginView = view.dom._linkTooltipView;
+      return pluginView?._handleClick(view, linkMark);
     },
   },
   view(editorView: EditorView) {
@@ -80,46 +89,22 @@ class LinkTooltipView {
       }
     );
   }
-  _handleClick(event) {
-    const { state } = this.dom._linkTooltipView._view;
-    const { doc, selection, schema } = state;
-    const { from, to } = selection;
-    const markType = schema.marks[MARK_LINK];
-
-    const result = findNodesWithSameMark(doc, from, to, markType);
-    if (!result) {
-      return false;
-    }
-    const domFound = this.dom._linkTooltipView._view.domAtPos(from);
-    if (!domFound) {
-      return false;
-    }
-
-    const anchor = lookUpElement(domFound.node, (el) => el.nodeName === 'A');
-    if (!anchor) {
-      return false;
-    }
-
-    const href = anchor.getAttribute('href');
-    const selectionId = anchor.getAttribute('selectionid');
+  _handleClick(view, mark) {
+    const href = mark.attrs['href'];
+    const selectionId = mark.attrs['selectionId'];
     let tocItemPos = null;
     if (selectionId) {
-      tocItemPos = this.dom._linkTooltipView.getInnerlinkSelected_position(
-        this.dom._linkTooltipView._view,
-        result.mark.attrs.selectionId
+      tocItemPos = this.getInnerlinkSelected_position(
+        view,
+        mark.attrs.selectionId
       );
-    if (null === tocItemPos) {
-      this.dom._linkTooltipView.openSelectedSection(selectionId);
-      event.preventDefault(); // prevent default browser navigation
-      return true;
+      if (null === tocItemPos) {
+        this.openSelectedSection(selectionId);
+        event.preventDefault(); // prevent default browser navigation
+        return true;
+      }
     }
-   }
-    this.dom._linkTooltipView.jumpLink(
-      this.dom._linkTooltipView._view,
-      tocItemPos,
-      href,
-      selectionId
-    );
+    this.jumpLink(view, tocItemPos, href, selectionId);
     event.preventDefault(); // prevent default browser navigation
     return true;
   }
@@ -194,7 +179,7 @@ class LinkTooltipView {
       if (this._view?.runtime?.openLinkDialog && urlObj.hostname !== window.location.hostname) {
         this._view.runtime.openLinkDialog(url, popupString);
       } else {
-        window.open(url);
+        window.open(url, '_blank', 'noopener,noreferrer');
       }
     }
   };
