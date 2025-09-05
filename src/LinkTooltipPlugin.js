@@ -102,16 +102,18 @@ class LinkTooltipView {
 
     const href = anchor.getAttribute('href');
     const selectionId = anchor.getAttribute('selectionid');
-
-    const tocItemPos = this.dom._linkTooltipView.getInnerlinkSelected_position(
-      this.dom._linkTooltipView._view,
-      result.mark.attrs.selectionId
-    );
+    let tocItemPos = null;
+    if (selectionId) {
+      tocItemPos = this.dom._linkTooltipView.getInnerlinkSelected_position(
+        this.dom._linkTooltipView._view,
+        result.mark.attrs.selectionId
+      );
     if (null === tocItemPos) {
       this.dom._linkTooltipView.openSelectedSection(selectionId);
       event.preventDefault(); // prevent default browser navigation
       return true;
     }
+   }
     this.dom._linkTooltipView.jumpLink(
       this.dom._linkTooltipView._view,
       tocItemPos,
