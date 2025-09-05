@@ -210,7 +210,36 @@
   background-color: transparent;
 }
 
-td[fullsize="1"] .czi-font-size-mark {
-  line-height: unset
- 
+td[fullsize='1'] .czi-font-size-mark {
+  line-height: unset;
+}
+
+.ProseMirror p[hangingindent='true'] {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+/* neutralize all prefix=0 spans */
+.ProseMirror p[hangingindent='true'] [prefix='0'] {
+  display: contents;
+}
+
+/* but make the *first* one become the gutter */
+.ProseMirror p[hangingindent='true'] [prefix='0']:first-of-type {
+  display: inline-block;
+  min-width: var(--hangingIndentMargin);
+  flex-shrink: 0;
+}
+
+/* after spacer (prefix=1) should flow normally */
+.ProseMirror p[hangingindent='true'] [prefix='1'] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* remove wrapper interference */
+.ProseMirror p[hangingindent='true'] > span.czi-font-size-mark,
+.ProseMirror p[hangingindent='true'] > span.czi-font-size-mark > span {
+  display: contents;
 }
