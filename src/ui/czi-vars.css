@@ -1,45 +1,47 @@
 :root {
-    --czi-blockquote-background-color: rgb(0 0 0 / 5%);
-    --czi-blockquote-border: solid 8px rgb(0 0 0 / 60%);
-    --czi-blockquote-color: #555;
-    --czi-blockquote-font-family: "Open Sans";
-    --czi-border-blue: solid 1px #5882eb;
-    --czi-border-grey: solid 1px #ccc;
-    --czi-border-red: solid 1px #f00;
-    --czi-button-hover-background-color: rgb(0 0 0 / 50%);
-    --czi-button-radius: 5px;
-    --czi-button-text-color: #666;
-    --czi-color-grey-200: rgb(0 0 0 / 46%);
-    --czi-font-family: helvetica;
-    --czi-font-size-small: 12px;
-    --czi-font-size: 13px;
-    --czi-link-color: rgb(0 0 238);
-    --czi-overlay-radius: 3px;
-    --czi-overlay-shadow: 0 1px 2px rgb(0 0 0 / 46%);
-    --czi-page-background-color: #e6e6e6;
-    --czi-placeholder-text-color: #dedede;
-    --czi-selection-highlight-color-dark: rgb(152 204 253 / 80%);
-    --czi-selection-highlight-color: rgb(152 204 253 / 40%);
-    --czi-table-header-background-color: rgb(0 0 0 / 5%);
-    --czi-table-border-color: #000;
-    --czi-doc-padding-default: 14.5mm;
-    --czi-doc-width-us-letter-portrait: 216mm;
-    --czi-doc-width-us-letter-landscape: 279mm;
-    --czi-doc-width-a4-portrait: 210mm;
-    --czi-doc-width-a4-landscape: 297mm;
-    --czi-doc-width-us-desktop-screen-4-3: 120vh;
-    --czi-doc-width-us-desktop-screen-16-9: 142vh;
+  --czi-blockquote-background-color: rgb(0 0 0 / 5%);
+  --czi-blockquote-border: solid 8px rgb(0 0 0 / 60%);
+  --czi-blockquote-color: #555;
+  --czi-blockquote-font-family: 'Open Sans';
+  --czi-border-blue: solid 1px #5882eb;
+  --czi-border-grey: solid 1px #ccc;
+  --czi-border-red: solid 1px #f00;
+  --czi-button-hover-background-color: rgb(0 0 0 / 50%);
+  --czi-button-radius: 5px;
+  --czi-button-text-color: #666;
+  --czi-color-grey-200: rgb(0 0 0 / 46%);
+  --czi-font-family: helvetica;
+  --czi-font-size-small: 12px;
+  --czi-font-size: 13px;
+  --czi-link-color: rgb(0 0 238);
+  --czi-overlay-radius: 3px;
+  --czi-overlay-shadow: 0 1px 2px rgb(0 0 0 / 46%);
+  --czi-page-background-color: #e6e6e6;
+  --czi-placeholder-text-color: #dedede;
+  --czi-selection-highlight-color-dark: rgb(152 204 253 / 80%);
+  --czi-selection-highlight-color: rgb(152 204 253 / 40%);
+  --czi-table-header-background-color: rgb(0 0 0 / 5%);
+  --czi-table-border-color: #000;
+  --czi-doc-padding-default: 14.5mm;
+  --czi-doc-width-us-letter-portrait: 216mm;
+  --czi-doc-width-us-letter-landscape: 279mm;
+  --czi-doc-width-a4-portrait: 210mm;
+  --czi-doc-width-a4-landscape: 297mm;
+  --czi-doc-width-us-desktop-screen-4-3: 120vh;
+  --czi-doc-width-us-desktop-screen-16-9: 142vh;
 
-    /* content styles */
-    --czi-content-body-background-color: #fff;
-    --czi-content-font-color: #000;
-    --czi-content-font-family: arial;
-    --czi-content-font-size-h1: 18px;
-    --czi-content-font-size-h2: 16px;
-    --czi-content-font-size-h3: 13px;
-    --czi-content-font-size: 11pt;
+  /* content styles */
+  --czi-content-body-background-color: #fff;
+  --czi-content-font-color: #000;
+  --czi-content-font-family: arial;
+  --czi-content-font-size-h1: 18px;
+  --czi-content-font-size-h2: 16px;
+  --czi-content-font-size-h3: 13px;
+  --czi-content-font-size: 11pt;
 
-    /* This maps to the default line spacing value of 1.5 in Google Doc */
-    --czi-content-line-height: 138%;
-    --czi-content-link-color: rgb(0 0 238);
+  /* This maps to the default line spacing value of 1.5 in Google Doc */
+  --czi-content-line-height: 138%;
+  --czi-content-link-color: rgb(0 0 238);
+  /* hanging indent */
+  --hangingIndentMargin: 250px;
 }

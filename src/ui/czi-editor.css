@@ -210,7 +210,34 @@
   background-color: transparent;
 }
 
-td[fullsize="1"] .czi-font-size-mark {
-  line-height: unset
- 
+td[fullsize='1'] .czi-font-size-mark {
+  line-height: unset;
+}
+
+.ProseMirror p[hangingindent='true'] {
+  display: flex;
+  align-items: flex-start; /* align top edges */
+  flex-wrap: wrap; /* allow wrapping if content is long */
+  margin: 0 0 1em;
+}
+
+/* First span (prefix=0) gets reserved width */
+.ProseMirror p[hangingindent='true'] span[prefix='0'] {
+  min-width: 250px; /* always reserve 250px */
+  display: inline-block;
+  flex-shrink: 0; /* don’t shrink below 250px */
+}
+
+/* All other spans should take remaining space */
+.ProseMirror p[hangingindent='true'] span[prefix]:not([prefix='0']) {
+  flex: 1;
+  min-width: 0; /* allows text to wrap properly */
+}
+
+/* Remove wrapper interference (like .czi-font-size-mark spans) */
+.ProseMirror p[hangingindent='true'] > span.czi-font-size-mark {
+  display: contents;
+}
+.ProseMirror p[hangingindent='true'] > span.czi-font-size-mark > span {
+  display: contents;
 }
