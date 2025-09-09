@@ -68,6 +68,12 @@ const ParagraphNodeSpec: NodeSpec = {
     overriddenIndentValue: {
       default: null,
     },
+    hangingIndent: {
+      default: null,
+    },
+    indentPosition: {
+      default: null,
+    },
   },
   content: 'inline*',
   group: 'block',
@@ -103,12 +109,13 @@ function getAttrs(dom: HTMLElement): Object {
   const overriddenAlign = dom.getAttribute('overriddenAlign') || '';
   const overriddenAlignValue = dom.getAttribute('overriddenAlignValue') || '';
   const overriddenLineSpacing = dom.getAttribute('overriddenLineSpacing') || '';
-  const overriddenLineSpacingValue =
-    dom.getAttribute('overriddenLineSpacingValue') || '';
+  const overriddenLineSpacingValue = dom.getAttribute('overriddenLineSpacingValue') || '';
   const overriddenIndent = dom.getAttribute('overriddenIndent') || '';
   const overriddenIndentValue = dom.getAttribute('overriddenIndentValue') || '';
   const selectionId = dom.getAttribute('selectionId') || '';
   const objectId = dom.getAttribute('objectId') || '';
+  const hangingIndent = dom.getAttribute('hangingIndent') || '';
+  const indentPosition = dom.getAttribute('indentPosition') || '';
   return {
     align,
     indent,
@@ -125,6 +132,8 @@ function getAttrs(dom: HTMLElement): Object {
     overriddenIndentValue,
     selectionId,
     objectId,
+    hangingIndent,
+    indentPosition
   };
 }
 
@@ -173,12 +182,20 @@ function toDOM(node: Node): Array<any> {
     overriddenIndent,
     overriddenIndentValue,
     selectionId,
+    hangingIndent,
+    indentPosition
   } = node.attrs;
   const attrs = { ...node.attrs };
   const { style } = getStyle(node.attrs);
 
   style && (attrs.style = style);
 
+  if (indentPosition && hangingIndent) {
+    attrs['hangingIndent'] = 'true';
+    attrs['indentPosition'] = indentPosition;
+    const hIndentpx = Number(indentPosition) * 96;
+    document.documentElement.style.setProperty('--hangingIndentMargin', `${hIndentpx}px`);
+  }
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);
   }
@@ -192,6 +209,7 @@ function toDOM(node: Node): Array<any> {
   attrs.overriddenAlignValue = overriddenAlignValue;
   attrs.overriddenLineSpacingValue = overriddenLineSpacingValue;
   attrs.overriddenIndentValue = overriddenIndentValue;
+  attrs.hangingIndent = hangingIndent;
 
   if (selectionId) {
     attrs.selectionId = selectionId;

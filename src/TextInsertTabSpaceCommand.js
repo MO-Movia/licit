@@ -46,9 +46,6 @@ function insertTabSpace(
     return tr;
   }
 
-  if (found.node.type === paragraph && found.pos === from - 1) {
-    return tr;
-  }
   const textNode = schema.text(HAIR_SPACE_CHAR);
   tr = tr.insert(to, Fragment.from(textNode));
   const attrs = {

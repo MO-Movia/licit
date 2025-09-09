@@ -17,3 +17,4 @@ export const MARK_TEXT_SELECTION = 'mark-text-selection';
 export const MARK_UNDERLINE = 'underline';
 export const MARK_SPACER = 'spacer';
 export const MARK_OVERRIDE = 'override';
+export const MARK_HANGING_INDENT = 'mark-hanging-indent';
