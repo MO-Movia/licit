@@ -26,6 +26,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
           # generates a '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}'' >> .npmrc
+      
+      # Ensure npm 11.5.1 or later is installed
+      - name: Update npm
+        run: npm install -g npm@latest
+
       - run: npm ci
         
       - name: Build
