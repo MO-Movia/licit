@@ -53,7 +53,6 @@ jobs:
       - name: Sync
         # Workflow actions will not trigger new workflows
         run: |
-          git checkout develop
-          git merge main
-          git commit -a -m 'Sync master branch to develop'
-          git push -u origin "develop"
+          git checkout -b develop origin/develop
+          git merge --no-ff main -m "Sync master back to develop"
+          git push -u origin develop
