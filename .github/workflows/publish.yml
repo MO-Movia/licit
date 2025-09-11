@@ -32,10 +32,8 @@ jobs:
         run: npm run ci:build
 
       - name: NPM Publish
-        env: 
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # This workflow is the auth
         run: npm publish ./dist --access public --provenance # provenance requires a github hosted runner
-        continue-on-error: true
 
       - name: Set Version number
         run: echo "TAG=$(npm pkg get version --workspaces=false | tr -d \")" >> "$GITHUB_ENV"
