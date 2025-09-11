@@ -25,17 +25,19 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
-          # generates a '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}'' >> .npmrc
+      
+      # Ensure npm 11.5.1 or later is installed for secure auth
+      - name: Update npm
+        run: npm install -g npm@latest
+
       - run: npm ci
         
       - name: Build
         run: npm run ci:build
 
       - name: NPM Publish
-        env: 
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # Using trusted provider auth https://docs.npmjs.com/trusted-publishers#supported-cicd-providers
         run: npm publish ./dist --access public --provenance # provenance requires a github hosted runner
-        continue-on-error: true
 
       - name: Set Version number
         run: echo "TAG=$(npm pkg get version --workspaces=false | tr -d \")" >> "$GITHUB_ENV"
@@ -47,3 +49,11 @@ jobs:
           tag_name: ${{ env.TAG }}
           target_commitish: main
           generate_release_notes: true
+
+      - name: Sync
+        # Workflow actions will not trigger new workflows
+        run: |
+          git checkout develop
+          git merge main
+          git commit -a -m 'Sync master branch to develop'
+          git push -u origin "develop"
