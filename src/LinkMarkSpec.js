@@ -30,8 +30,11 @@ const LinkMarkSpec: MarkSpec = {
     },
   ],
   toDOM(node) {
-    node.attrs.onclick = 'return false';
-    return ['a', node.attrs, 0];
+    const attrs = {
+      ...node.attrs,
+      onclick: 'return false',
+    };
+    return ['a', attrs, 0];
   },
 };
 
