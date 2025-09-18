@@ -33,6 +33,9 @@ const SPEC = {
       }
 
       node = view.state.doc.nodeAt(pos);
+      if (!node) {
+        return false;
+      }
       const linkMark = node.marks?.find((m) => m?.type?.name === MARK_LINK);
       if (!linkMark) {
         return false;
