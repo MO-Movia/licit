@@ -140,8 +140,6 @@ describe('ListToggleCommand', () => {
 
       const result = command.execute(dummyState, mockDispatch);
 
-      debugger;
-
       expect(dummyState.tr).toBe(mocktr);
     });
   });

@@ -1,7 +1,8 @@
-import { Mark, MarkSpec, Node } from 'prosemirror-model';
+import { Mark, MarkSpec } from 'prosemirror-model';
+import { AttrType } from './paragraphNodeSpec';
 
 // [FS] IRAD-1061 2020-09-19
-// Now loaded locally, so that it works in closed networks as well.
+// Now loaded locally, so that it work in closed network as well.
 
 export const FONT_TYPE_NAMES = [
   // SERIF
@@ -9,6 +10,7 @@ export const FONT_TYPE_NAMES = [
   'Acme',
   'Alegreya',
   'Arial',
+  //'Arial',//??? - Commented out fonts that are not available to download using https://fonts.googleapis.com/css?family=
   'Arial Black',
   'Georgia',
   'Tahoma',
@@ -17,6 +19,9 @@ export const FONT_TYPE_NAMES = [
   'Verdana',
   // MONOSPACE
   'Courier New',
+  //'Lucida Console',//???
+  //'Monaco',//???
+  //'monospace',//???
 ];
 
 // FS IRAD-988 2020-06-18
@@ -37,43 +42,27 @@ function loadAndCacheFont(name) {
 }
 
 const FontTypeMarkSpec: MarkSpec = {
-
   attrs: {
-    name: { default: 'Arial' }, // Default font name
-    overridden: { default: false },
+    name: { default: '' },
   },
   inline: true,
   group: 'inline',
   parseDOM: [
     {
-      tag: 'span[style*=font-family]',
-      getAttrs: (domNode) => {
-
-        let name = domNode.style?.fontFamily || '';
-        let parentFontName = (domNode.parentNode as HTMLElement | null)?.style?.fontFamily || '';
-        const _mOverriden = (domNode.parentNode as HTMLElement | null)?.getAttribute('overridden');
-        const mparent_overriden = (domNode.parentNode as HTMLElement | null)?.getAttribute('overridden');
-
-        if (name !== '') {
-          name = name ? name.replace(/["']/g, '') : '';
-        }
-        if (parentFontName !== '') {
-          parentFontName = parentFontName ? parentFontName.replace(/["']/g, '') : '';
-        }
-
-        const overridden = (_mOverriden === 'true' && name !== '') || (parentFontName !== '' && mparent_overriden === 'true');  // Check if the font is overridden
-
+      style: 'font-family',
+      getAttrs: (name: string): AttrType => {
         return {
-          name: name || parentFontName || 'Arial',  // Clean up the font name
-          overridden: overridden,
+          name: name ? name.replace(/[\"\']/g, '') : '',
         };
-      }
-    }
+      },
+    },
   ],
 
-  toDOM(node: Mark | Node) {
-    const { name, overridden } = node.attrs;
-    const attrs = { overridden, style: '' };
+  toDOM(mark: Mark) {
+    const { name } = mark.attrs;
+    const attrs = {
+      style: '',
+    };
     if (name) {
       if (!RESOLVED_FONT_NAMES.has(name)) {
         loadAndCacheFont(name);
@@ -81,7 +70,7 @@ const FontTypeMarkSpec: MarkSpec = {
       attrs.style = `font-family: ${name}`;
     }
     return ['span', attrs, 0];
-  }
+  },
 };
 
 export default FontTypeMarkSpec;

@@ -1,25 +1,17 @@
 import type { MarkSpec } from 'prosemirror-model';
 
 const TextSubMarkSpec: MarkSpec = {
-  attrs: {
-    overridden: { default: false },
-  },
   parseDOM: [
-    {
-      tag: 'sub',
-      priority: 150,
-      getAttrs: (dom: HTMLElement) => {
-        const _overridden = dom.getAttribute('overridden');
-        return { overridden: _overridden === 'true' };
-      }
-    },
+    { tag: 'sub' },
     {
       style: 'vertical-align',
-      getAttrs: (value) => (value === 'sub' ? { overridden: true } : null),
+      getAttrs: (value: string): { [key: string]: unknown } | false => {
+        return value === 'sub' && null;
+      },
     },
   ],
-  toDOM(mark) {
-    return ['sub', { overridden: mark.attrs.overridden }, 0];
+  toDOM() {
+    return ['sub', 0];
   },
 };
 

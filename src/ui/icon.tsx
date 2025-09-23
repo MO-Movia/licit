@@ -134,7 +134,7 @@ class Icon extends React.PureComponent {
     }*/
     let image = null;
 
-    if (type.startsWith('http')) {
+    if (type.startsWith('assets/')) {
       image = type;
     } else {
       let fileName = 'Icon_Source';
@@ -227,7 +227,7 @@ class Icon extends React.PureComponent {
     }*/
     // let image = null;
 
-    if (type.startsWith('http') || type.startsWith('data:image/svg+xml')) {
+    if (type.startsWith('assets/') || type.startsWith('data:image/svg+xml')) {
       // image1 = type;
       this.setState({ image1: type });
     } else {

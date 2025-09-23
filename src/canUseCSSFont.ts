@@ -3,15 +3,16 @@ const cached = {};
 export default function canUseCSSFont(fontName: string): Promise<boolean> {
   const doc = document;
 
-  if (cached.hasOwnProperty(fontName)) {
+  if (Object.prototype.hasOwnProperty.call(cached, fontName)) {
     return Promise.resolve(cached[fontName]);
   }
 
   if (
-    !doc.fonts?.check ||
-    !doc.fonts?.ready ||
-    !doc.fonts?.status ||
-    !doc.fonts?.values
+    !doc.fonts ||
+    !doc.fonts.check ||
+    !doc.fonts.ready ||
+    !doc.fonts.status ||
+    !doc.fonts.values
   ) {
     // Feature is not supported, install the CSS anyway
     // https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/check#Browser_compatibility
@@ -30,7 +31,7 @@ export default function canUseCSSFont(fontName: string): Promise<boolean> {
       }
       // Do not use `doc.fonts.check()` because it may return falsey result.
       const fontFaces = Array.from(doc.fonts.values());
-      const matched = fontFaces.find((ff) => ff.family === fontName);
+      const matched = fontFaces.find((ff) => ff['family'] === fontName);
       const result = !!matched;
       cached[fontName] = result;
       resolve(result);

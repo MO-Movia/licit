@@ -6,9 +6,6 @@ const LinkMarkSpec: MarkSpec = {
     rel: { default: 'noopener noreferrer nofollow' },
     target: { default: 'blank' },
     title: { default: null },
-    selectionId: {
-      default: null,
-    },
   },
   inclusive: false,
   parseDOM: [
@@ -17,18 +14,16 @@ const LinkMarkSpec: MarkSpec = {
       getAttrs: (dom: HTMLElement): Attrs => {
         const href = dom.getAttribute('href');
         const target = href && href.indexOf('#') === 0 ? '' : 'blank';
-          const selectionId = dom.getAttribute('selectionId') || '';
         return {
           href: dom.getAttribute('href'),
           title: dom.getAttribute('title'),
           target,
-          selectionId,
         };
       },
     },
   ],
-  toDOM(node) {
-    return ['a', node.attrs, 0];
+  toDOM(mark) {
+    return ['a', mark.attrs, 0];
   },
 };
 

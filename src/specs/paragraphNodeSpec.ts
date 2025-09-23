@@ -56,39 +56,17 @@ const ParagraphNodeSpec: NodeSpec = {
     lineSpacing: {
       default: null,
     },
+    // TODO: Add UI to let user edit / clear padding.
     paddingBottom: {
       default: null,
     },
+    // TODO: Add UI to let user edit / clear padding.
     paddingTop: {
-      default: null,
-    },
-    reset: {
-      default: null,
-    },
-
-    // added attributes for indent, align and linespacing overrides.
-    overriddenAlign: {
-      default: null,
-    },
-    overriddenLineSpacing: {
-      default: null,
-    },
-    overriddenIndent: {
-      default: null,
-    },
-    overriddenAlignValue: {
-      default: null,
-    },
-    overriddenLineSpacingValue: {
-      default: null,
-    },
-    overriddenIndentValue: {
       default: null,
     },
   },
   content: 'inline*',
   group: 'block',
-  defining: true,
   parseDOM: [
     {
       tag: 'p',
@@ -102,7 +80,7 @@ function getAttrs(dom: HTMLElement): Record<string, unknown> {
   const { lineHeight, textAlign, marginLeft, paddingTop, paddingBottom } =
     dom.style;
 
-  let align = dom.getAttribute('align') || textAlign || 'left';
+  let align = dom.getAttribute('align') || textAlign || '';
   align = ALIGN_PATTERN.test(align) ? align : null;
 
   let indent = parseInt(dom.getAttribute(ATTRIBUTE_INDENT), 10);
@@ -116,32 +94,13 @@ function getAttrs(dom: HTMLElement): Record<string, unknown> {
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
 
   const id = dom.getAttribute('id') || '';
-  const reset = dom.getAttribute('reset') || '';
-  const overriddenAlign = dom.getAttribute('overriddenAlign') || '';
-  const overriddenAlignValue = dom.getAttribute('overriddenAlignValue') || '';
-  const overriddenLineSpacing = dom.getAttribute('overriddenLineSpacing') || '';
-  const overriddenLineSpacingValue =
-    dom.getAttribute('overriddenLineSpacingValue') || '';
-  const overriddenIndent = dom.getAttribute('overriddenIndent') || '';
-  const overriddenIndentValue = dom.getAttribute('overriddenIndentValue') || '';
-  const selectionId = dom.getAttribute('selectionId') || '';
-  const objectId = dom.getAttribute('objectId') || '';
   return {
     align,
     indent,
     lineSpacing,
     paddingTop,
     paddingBottom,
-    reset,
     id,
-    overriddenAlign,
-    overriddenAlignValue,
-    overriddenLineSpacing,
-    overriddenLineSpacingValue,
-    overriddenIndent,
-    overriddenIndentValue,
-    selectionId,
-    objectId,
   };
 }
 
@@ -179,19 +138,8 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom): string {
 }
 
 function toDOM(node: Node): DOMOutputSpec {
-  const {
-    indent,
-    id,
-    reset,
-    overriddenAlign,
-    overriddenAlignValue,
-    overriddenLineSpacing,
-    overriddenLineSpacingValue,
-    overriddenIndent,
-    overriddenIndentValue,
-    selectionId,
-  } = node.attrs;
-  const attrs = { ...node.attrs };
+  const { indent, id } = node.attrs;
+  const attrs = { style: '', id: '' };
   const style = getStyle(node.attrs);
 
   style && (attrs.style = style);
@@ -201,17 +149,6 @@ function toDOM(node: Node): DOMOutputSpec {
   }
   if (id) {
     attrs.id = id;
-  }
-  attrs.reset = reset;
-  attrs.overriddenAlign = overriddenAlign;
-  attrs.overriddenLineSpacing = overriddenLineSpacing;
-  attrs.overriddenIndent = overriddenIndent;
-  attrs.overriddenAlignValue = overriddenAlignValue;
-  attrs.overriddenLineSpacingValue = overriddenLineSpacingValue;
-  attrs.overriddenIndentValue = overriddenIndentValue;
-
-  if (selectionId) {
-    attrs.selectionId = selectionId;
   }
 
   return ['p', attrs, 0];
@@ -223,10 +160,7 @@ export const getParagraphStyle = getStyle;
 
 export function convertMarginLeftToIndentValue(marginLeft: string): number {
   const ptValue = convertToCSSPTValue(marginLeft);
-  return Math.min(
-    Math.max(Math.floor(ptValue / INDENT_MARGIN_PT_SIZE), MIN_INDENT_LEVEL),
-    MAX_INDENT_LEVEL
-  );
+  return Math.min(Math.max(Math.floor(ptValue / INDENT_MARGIN_PT_SIZE), MIN_INDENT_LEVEL), MAX_INDENT_LEVEL);
 }
 
 export default ParagraphNodeSpec;

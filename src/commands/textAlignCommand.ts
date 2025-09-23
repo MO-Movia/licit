@@ -3,11 +3,10 @@ import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { TextAlignCommand as TextalignCommandOld } from '@modusoperandi/licit-ui-commands';
 import { Editor } from '@tiptap/react';
 
 class TextAlignCommand extends UICommand {
-  waitForUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, event?: any): Promise<any> {
+waitForUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, event?: any): Promise<any> {
     return Promise.resolve(null);
   }
   executeWithUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, inputs?: any): boolean {
@@ -39,7 +38,6 @@ class TextAlignCommand extends UICommand {
     _dispatch?: (tr: Transform) => void,
     _view?: EditorView
   ): boolean => {
-    new TextalignCommandOld(this.alignment).execute(_state, _dispatch, _view);
     return this.getEditor().commands.setTextAlign(this.alignment);
   };
 }

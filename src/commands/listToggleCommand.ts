@@ -108,3 +108,5 @@ export function hasImageNode(state: EditorState): boolean {
   const imageNodeType = schema.nodes[IMAGE];
   return imageNodeType && isNodeSelectionForNodeType(selection, imageNodeType);
 }
+
+export default ListToggleCommand;

@@ -4,7 +4,6 @@ import { EditorView } from 'prosemirror-view';
 
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
-import { IndentCommand } from '@modusoperandi/licit-ui-commands';
 
 class IndentMoreCommand extends UICommand {
 
@@ -21,7 +20,6 @@ class IndentMoreCommand extends UICommand {
     _dispatch?: (tr: Transform) => void,
     _view?: EditorView
   ): boolean => {
-    new IndentCommand(1).execute(_state, _dispatch, _view);
     return this.getEditor().commands.indent();
   };
 

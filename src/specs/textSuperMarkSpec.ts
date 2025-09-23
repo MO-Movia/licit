@@ -1,25 +1,17 @@
 import type { MarkSpec } from 'prosemirror-model';
 
 const TextSuperMarkSpec: MarkSpec = {
-  attrs: {
-    overridden: { default: false },
-  },
   parseDOM: [
-    {
-      tag: 'sup',
-      getAttrs: (dom: HTMLElement) => {
-        const _overridden = dom.getAttribute('overridden');
-        return { overridden: _overridden === 'true' };
-      }
-    },
-
+    { tag: 'sup' },
     {
       style: 'vertical-align',
-      getAttrs: (value) => (value === 'sup' ? { overridden: true } : null),
+      getAttrs: (value: string): { [key: string]: unknown } | false => {
+        return value === 'super' && null;
+      },
     },
   ],
-  toDOM(mark) {
-    return ['sup', { overridden: mark.attrs.overridden }, 0];
+  toDOM() {
+    return ['sup', 0];
   },
 };
 

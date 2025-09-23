@@ -1,38 +1,25 @@
-import type { MarkSpec } from 'prosemirror-model';
+import type { MarkSpec, DOMOutputSpec } from 'prosemirror-model';
 
-// import type { MarkSpec } from './Types.js';
+const STRONG_DOM: DOMOutputSpec = ['strong', 0];
+const CSS_BOLD_PATTERN = /^(bold(er)?|[5-9]\d{2,})$/;
 
 const StrongMarkSpec: MarkSpec = {
-  attrs: {
-    overridden: { default: false }
-  },
   parseDOM: [
-
-    {
-      tag: 'strong',
-      getAttrs: (dom: HTMLElement) => {
-        const _overridden = dom.getAttribute('overridden');
-        return { overridden: _overridden === 'true' };
-      }
-    },
+    { tag: 'strong' },
+    // This works around a Google Docs misbehavior where
+    // pasted content will be inexplicably wrapped in `<b>`
+    // tags with a font-weight normal.
     {
       tag: 'b',
-      getAttrs: (dom: HTMLElement) => {
-        const _overridden = dom.getAttribute('overridden');
-        return { overridden: _overridden === 'true' };
-      }
+      getAttrs: (el: HTMLElement) => el.style.fontWeight != 'normal' && null,
     },
     {
-      tag: 'span[style*=font-weight]',
-      getAttrs: (dom: HTMLElement) => {
-        const _overridden = dom.getAttribute('overridden');
-        return { overridden: _overridden === 'true' };
-
-      },
+      style: 'font-weight',
+      getAttrs: (value: string) => CSS_BOLD_PATTERN.test(value) && null,
     },
   ],
-  toDOM(mark) {
-    return ['strong', { overridden: mark.attrs.overridden }, 0];
+  toDOM() {
+    return STRONG_DOM;
   },
 };
 

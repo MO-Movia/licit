@@ -34,7 +34,7 @@ export default function bindScrollHandler(
     dispose() {
       while (onScroll && els.length) {
         el = els.pop();
-        el?.removeEventListener('scroll', onScroll, false);
+        el && el.removeEventListener('scroll', onScroll, false);
       }
       onScroll = null;
       rid && window.cancelAnimationFrame(rid);

@@ -1,35 +1,30 @@
-import { Mark, MarkSpec, Node } from 'prosemirror-model';
+import { Mark, MarkSpec } from 'prosemirror-model';
 
 import toCSSColor from '../toCSSColor';
 
 const TextColorMarkSpec: MarkSpec = {
   attrs: {
-    color: { default: null }, //  Allow missing color
-    overridden: { default: false },
+    color: { default: '' },
   },
   inline: true,
   group: 'inline',
   parseDOM: [
     {
-      tag: 'span[style*=color]',
-      getAttrs: (dom: HTMLElement) => {
-        const { color } = dom.style;
-        const overridden = dom.getAttribute('overridden') === 'true'; // Extract overridden flag
+      style: 'color',
+      getAttrs: (color: string): { [key: string]: unknown } | false => {
         return {
           color: toCSSColor(color),
-          overridden
         };
       },
     },
   ],
-  toDOM(node: Mark | Node) {
-    const { color, overridden } = node.attrs;
-    const attrs = { style: '' };
+  toDOM(mark: Mark) {
+    const { color } = mark.attrs;
+    let style = '';
     if (color) {
-      attrs.style = `color: ${color};`;
-      attrs['overridden'] = overridden?.toString();
+      style += `color: ${color};`;
     }
-    return ['span', attrs, 0];
+    return ['span', { style }, 0];
   },
 };
 
