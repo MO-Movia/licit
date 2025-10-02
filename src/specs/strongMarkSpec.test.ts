@@ -1,69 +1,49 @@
-import StrongMarkSpec from './strongMarkSpec'; // Adjust the import path as needed
-import { Mark } from 'prosemirror-model';
+import StrongMarkSpec from './strongMarkSpec';
 
 describe('StrongMarkSpec', () => {
-
   describe('parseDOM', () => {
-
-    it('should parse <b> tags with non-normal font weight correctly', () => {
-      const mockBElement:any = {
-        tag: 'b',
-        style: {
-          fontWeight: 'bold', // Non-normal font weight
-        },
-      };
-
-      const result = StrongMarkSpec.parseDOM[1].getAttrs(mockBElement);
-
-      expect(result).toBeNull();
+    it('<strong> with overridden="true" → {overridden:true}', () => {
+      const el = document.createElement('strong');
+      el.setAttribute('overridden', 'true');
+      expect(StrongMarkSpec.parseDOM[0].getAttrs(el as any)).toEqual({ overridden: true });
     });
 
-    it('should ignore <b> tags with normal font weight', () => {
-      const mockBElement:any = {
-        tag: 'b',
-        style: {
-          fontWeight: 'normal', // Normal font weight
-        },
-      };
-
-      const result = StrongMarkSpec.parseDOM[1].getAttrs(mockBElement);
-
-      expect(result).toBeFalsy(); 
+    it('<strong> without attribute → {overridden:false}', () => {
+      const el = document.createElement('strong');
+      expect(StrongMarkSpec.parseDOM[0].getAttrs(el as any)).toEqual({ overridden: false });
     });
 
-    it('should parse style font-weight with bold or similar value', () => {
-        const mockElement : any = {
-            style: {
-              fontWeight: 'bold',
-            },
-          };
-
-      const result = StrongMarkSpec.parseDOM[2].getAttrs(mockElement.style.fontWeight);
-
-      expect(result).toBeNull(); // Should return null when the style is a valid bold pattern
+    it('<b> with overridden="false" → {overridden:false}', () => {
+      const el = document.createElement('b');
+      el.setAttribute('overridden', 'false');
+      expect(StrongMarkSpec.parseDOM[1].getAttrs(el as any)).toEqual({ overridden: false });
     });
 
-    it('should ignore invalid font-weight style', () => {
-      const mockElement:any = {
-        style: {
-          fontWeight: 'italic', // Invalid value
-        },
-      };
+    it('<span style="font-weight:700"> with overridden="true" → {overridden:true}', () => {
+      const el = document.createElement('span');
+      el.style.fontWeight = '700';
+      el.setAttribute('overridden', 'true');
+      expect(StrongMarkSpec.parseDOM[2].getAttrs(el as any)).toEqual({ overridden: true });
+    });
 
-      const result = StrongMarkSpec.parseDOM[2].getAttrs(mockElement);
-
-      expect(result).toBeFalsy(); // Should return false for invalid font-weight style
+    it('<span style="font-weight:bold"> without attribute → {overridden:false}', () => {
+      const el = document.createElement('span');
+      el.style.fontWeight = 'bold';
+      expect(StrongMarkSpec.parseDOM[2].getAttrs(el as any)).toEqual({ overridden: false });
     });
   });
 
   describe('toDOM', () => {
-    it('should generate <strong> element', () => {
-      const mockMark = {} as Mark;
+    it('emits strong with overridden=true', () => {
+      const mark = { attrs: { overridden: true } } as any;
+      const out = StrongMarkSpec.toDOM!(mark, false);
+      expect(out).toEqual(['strong', { overridden: true }, 0]);
+    });
 
-      const result = StrongMarkSpec.toDOM(mockMark,false);
-
-      expect(result).toEqual(['strong', 0]);
+    it('emits strong with overridden=false', () => {
+      const mark = { attrs: { overridden: false } } as any;
+      const out = StrongMarkSpec.toDOM!(mark, false);
+      expect(out).toEqual(['strong', { overridden: false }, 0]);
     });
   });
-
 });

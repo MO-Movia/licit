@@ -1,48 +1,57 @@
-import TextSuperMarkSpec from './textSuperMarkSpec'; // Adjust the import path as needed
-import { Mark } from 'prosemirror-model';
+import TextSuperMarkSpec from './textSuperMarkSpec';
+
+type TagRule = { tag: string; getAttrs: (el: HTMLElement) => any };
+type StyleRule = { style: string; getAttrs: (value: string) => any };
 
 describe('TextSuperMarkSpec', () => {
-
   describe('parseDOM', () => {
+    it('<sup> with overridden="true" → {overridden:true}', () => {
+      const tagRule = TextSuperMarkSpec.parseDOM.find(
+        (r: any) => r.tag === 'sup'
+      ) as TagRule;
 
-    it('should parse vertical-align: super style correctly', () => {
-      const mockElement = {
-        style: {
-          verticalAlign: 'super',
-        },
-      } as any;
-
-      const result = TextSuperMarkSpec.parseDOM[1].getAttrs(mockElement.style.verticalAlign);
-
-      // Since the style is 'super', it should return null
-      expect(result).toBeNull();
+      const el = document.createElement('sup');
+      el.setAttribute('overridden', 'true');
+      expect(tagRule.getAttrs(el as any)).toEqual({ overridden: true });
     });
 
-    it('should not parse if vertical-align is not super', () => {
-      const mockElement = {
-        style: {
-          verticalAlign: 'normal',
-        },
-      } as any;
+    it('<sup> without overridden → {overridden:false}', () => {
+      const tagRule = TextSuperMarkSpec.parseDOM.find(
+        (r: any) => r.tag === 'sup'
+      ) as TagRule;
 
-      const result = TextSuperMarkSpec.parseDOM[1].getAttrs(mockElement.style.verticalAlign);
+      const el = document.createElement('sup');
+      expect(tagRule.getAttrs(el as any)).toEqual({ overridden: false });
+    });
 
-      // Since the style is not 'super', it should return false
-      expect(result).toBe(false);
+    it('style vertical-align="sup" → {overridden:true}', () => {
+      const styleRule = TextSuperMarkSpec.parseDOM.find(
+        (r: any) => r.style === 'vertical-align'
+      ) as StyleRule;
+
+      expect(styleRule.getAttrs('sup')).toEqual({ overridden: true });
+    });
+
+    it('style vertical-align not "sup" → null', () => {
+      const styleRule = TextSuperMarkSpec.parseDOM.find(
+        (r: any) => r.style === 'vertical-align'
+      ) as StyleRule;
+
+      expect(styleRule.getAttrs('baseline')).toBeNull();
     });
   });
 
   describe('toDOM', () => {
-    it('should generate a <sup> element', () => {
-      const mockMark = {
-        attrs: {}, // No specific attributes in this case
-      } as Mark;
+    it('emits <sup> with overridden=true', () => {
+      const mark = { attrs: { overridden: true } } as any;
+      const out = TextSuperMarkSpec.toDOM!(mark, false); // pass inline boolean to satisfy types
+      expect(out).toEqual(['sup', { overridden: true }, 0]);
+    });
 
-      const result = TextSuperMarkSpec.toDOM(mockMark,false);
-
-      // The expected result is a <sup> element with no attributes or content
-      expect(result).toEqual(['sup', 0]);
+    it('emits <sup> with overridden=false', () => {
+      const mark = { attrs: { overridden: false } } as any;
+      const out = TextSuperMarkSpec.toDOM!(mark, false);
+      expect(out).toEqual(['sup', { overridden: false }, 0]);
     });
   });
-
 });

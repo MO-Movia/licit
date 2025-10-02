@@ -12,6 +12,10 @@ import { Plugin } from 'prosemirror-state';
 // This file is forked from
 // // https://github.com/ProseMirror/prosemirror-example-setup/blob/master/src/inputrules.js
 
+export function shouldJoinOrderedList(match: RegExpMatchArray, node: { childCount: number; attrs: { order: number } }) {
+  return node.childCount + node.attrs.order == +match[1];
+}
+
 // : (NodeType) → InputRule
 // Given a list node type, returns an input rule that turns a number
 // followed by a dot at the start of a textblock into an ordered list.
@@ -22,7 +26,7 @@ export function orderedListRule(nodeType: NodeType) {
     /^(\d+)\.\s$/,
     nodeType,
     (match) => ({ order: +match[1] }),
-    (match, node) => node.childCount + node.attrs.order == +match[1]
+    (match, node) => shouldJoinOrderedList(match, node as any)
   );
 }
 
