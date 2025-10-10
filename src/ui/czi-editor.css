@@ -222,13 +222,7 @@ td[fullsize='1'] .czi-font-size-mark {
   min-width: var(--hangingIndentMargin);
   display: inline-block;
   flex-shrink: 0; /* don’t shrink below 250px */
-}
-
-/* All other spans should take remaining space */
-.ProseMirror p[hangingindent='true'] span[prefix]:not([prefix='0']) {
-  flex: 1;
-  min-width: 0; /* allows text to wrap properly */
-}
+} 
 
 /* Remove wrapper interference (like .czi-font-size-mark spans) */
 .ProseMirror p[hangingindent='true'] > span.czi-font-size-mark {
