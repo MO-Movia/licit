@@ -47,6 +47,9 @@ function insertTabSpace(
   }
 
   const textNode = schema.text(HAIR_SPACE_CHAR);
+  if (paragraphHasSpacerMark(found.node)) {
+    return tr;
+  }
   tr = tr.insert(to, Fragment.from(textNode));
   const attrs = {
     size: SPACER_SIZE_TAB,
@@ -59,6 +62,19 @@ function insertTabSpace(
   tr = tr.setSelection(TextSelection.create(tr.doc, to + 1, to + 1));
 
   return tr;
+}
+// Check if a paragraph node has a hanging indent mark applied to any of its text nodes
+// if yes, return true otherwise false, to avoid strange behavior with multiple hanging indent marks
+function paragraphHasSpacerMark(node) {
+  let found = false;
+  node.descendants((child) => {
+    if (child.isText && child.marks.some(m => m.type.name === 'mark-hanging-indent')) {
+      found = true;
+      return false; // stop traversal
+    }
+    return true;
+  });
+  return found;
 }
 
 class TextInsertTabSpaceCommand extends UICommand {
