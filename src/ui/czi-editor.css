@@ -213,8 +213,6 @@ td[fullsize='1'] .czi-font-size-mark {
 .ProseMirror p[hangingindent='true'] {
   display: flex;
   align-items: flex-start; /* align top edges */
-  flex-wrap: wrap; /* allow wrapping if content is long */
-  margin: 0 0 1em;
 }
 
 /* First span (prefix=0) gets reserved width */
