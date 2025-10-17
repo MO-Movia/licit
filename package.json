@@ -16,7 +16,7 @@
     "test": "jest --coverage",
     "test:unit": "jest",
     "test:coverage": "jest --coverage",
-    "build:bom": "cyclonedx-npm --ignore-npm-errors --short-PURLs --output-format XML --output-file dist/bom.xml",
+    "build:bom": "npx cyclonedx-npm --ignore-npm-errors --short-PURLs --output-format XML --output-file dist/bom.xml",
     "build:clean": "rm -rf dist/ && rm -f modusoperandi-licit-*.*.*.tgz",
     "build:css": "cp src/ui/*.css dist/ui && cp src/client/*.css dist/client && cp src/*.css dist",
     "build:fonts": "mkdirp ./dist/fonts && cp -r src/fonts/* dist/fonts",
@@ -24,7 +24,7 @@
     "build:flow": "flow-copy-source -v -i '**/__tests__/**' src dist",
     "build:dist": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts && npm run build:bom && cp src/*.d.ts dist/",
     "build:licit": "node utils/build_bin.js",
-    "ci:bom": "cyclonedx-npm --ignore-npm-errors --short-PURLs --output-format XML --output-file dist/bom.xml",
+    "ci:bom": "npx cyclonedx-npm --ignore-npm-errors --short-PURLs --output-format XML --output-file dist/bom.xml",
     "ci:build": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts && npm run build:bom && copyfiles --up 1 \"src/**/*.d.ts\" dist/ && copyfiles --up 1 \"src/**/*.css\" dist && copyfiles package.json LICENSE dist",
     "lint:css": "stylelint \"**/*.css\"",
     "lint:js": "eslint \"src/**/*.js\"",
@@ -71,7 +71,6 @@
     "@babel/preset-env": "^7.28.3",
     "@babel/preset-flow": "^7.27.1",
     "@babel/preset-react": "^7.27.1",
-    "@cyclonedx/cyclonedx-npm": "^4.0.3",
     "babel-jest": "^30.2.0",
     "babel-loader": "^10.0.0",
     "babel-plugin-flow-react-proptypes": "^26.0.0",
@@ -123,9 +122,6 @@
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.2",
     "write-file-webpack-plugin": "^4.5.1"
-  },
-  "overrides": {
-    "libxmljs2": "^1.0.0"
   },
   "importSort": {
     ".js": {
