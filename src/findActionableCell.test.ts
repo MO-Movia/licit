@@ -12,17 +12,17 @@ jest.mock('prosemirror-utils', () => ({
 
 const tableNodes = {
     table: {
-        content: "tableRow+",
-        group: "block",
+        content: 'tableRow+',
+        group: 'block',
     },
     tableRow: {
-        content: "tableCell+",
+        content: 'tableCell+',
     },
     tableCell: {
-        content: "block+",
+        content: 'block+',
     },
     tableHeader: {
-        content: "block+",
+        content: 'block+',
     },
 };
 

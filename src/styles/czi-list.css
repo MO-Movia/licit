@@ -1,4 +1,4 @@
-@import './czi-vars.css';
+@import url('./czi-vars.css');
 
 html {
   counter-reset: czi-counter-0;
@@ -22,8 +22,7 @@ html {
   display: flow-root;
   list-style-type: none;
   margin: 0;
-  margin-block-end: 0;
-  margin-block-start: 0;
+  margin-block: 0;
   padding: 0;
 }
 
@@ -40,8 +39,7 @@ html {
 
 .ProseMirror li > p {
   margin: 0;
-  margin-block-end: 0;
-  margin-block-start: 0;
+  margin-block: 0;
   padding-left: 24pt;
 }
 

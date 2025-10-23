@@ -1,4 +1,4 @@
-@import './czi-vars.css';
+@import url('./czi-vars.css');
 
 .czi-form {
   border: none;
@@ -15,10 +15,7 @@
 .czi-form legend {
   border: none;
   font-size: var(--czi-content-font-size-h2);
-  margin-top: 0;
-  margin-right: 0;
-  margin-bottom: 20px;
-  margin-left: 0;
+  margin: 0 0 20px;
   padding: 0;
   user-select: none;
 }
@@ -26,13 +23,10 @@
 .czi-form hr {
   background: #fff;
   border: var(--czi-border-grey);
-  border-width: 1px 0 0 0;
+  border-width: 1px 0 0;
   box-sizing: border-box;
   height: 1px;
-  margin-bottom: 20px;
-  margin-left: 0;
-  margin-right: 0;
-  margin-top: 20px;
+  margin: 20px 0;
 }
 
 .czi-form fieldset {
@@ -42,21 +36,15 @@
 }
 
 .czi-form input[type='text'] {
-  border-width: 0 0 2px 0;
+  border-width: 0 0 2px;
   border: var(--czi-border-blue);
   box-sizing: border-box;
   display: block;
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
-  margin-top: 0;
-  margin-right: 0;
-  margin-bottom: 8px;
-  margin-left: 0;
+  margin: 0 0 8px;
   outline: none;
-  padding-bottom: 12px;
-  padding-left: 0;
-  padding-right: 0;
-  padding-top: 12px;
+  padding: 12px 0;
   text-indent: 12px;
   width: 100%;
 }
@@ -66,10 +54,7 @@
   display: block;
   font-size: var(--czi-font-size-small);
   font-style: normal;
-  margin-top: 0;
-  margin-right: 0;
-  margin-bottom: 8px;
-  margin-left: 0;
+  margin: 0 0 8px;
   user-select: none;
 }
 

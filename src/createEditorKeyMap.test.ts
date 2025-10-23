@@ -25,7 +25,7 @@ describe('createEditorKeyMap', () => {
     // Assert: Check if the key map contains the correct mapping
     expect(keyMap).toHaveProperty(EditorKeyMap.KEY_SPLIT_LIST_ITEM.common);
     expect(keyMap[EditorKeyMap.KEY_SPLIT_LIST_ITEM.common]).toBe(mockExecute);
-    
+
     // Optional: You can also test that `execute` is a mock function
     expect(mockExecute).toHaveBeenCalledTimes(0); // Ensure it hasn't been called yet
   });

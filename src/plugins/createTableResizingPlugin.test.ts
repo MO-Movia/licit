@@ -98,20 +98,20 @@ describe('createTableResizingPlugin', () => {
     const table = document.createElement('table');
     const colgroup = document.createElement('colgroup');
     const col = document.createElement('col');
-  
+
     colgroup.appendChild(col);
     table.appendChild(colgroup);
     editorDom.appendChild(table);
-  
+
     const colCount = colgroup.querySelectorAll('col').length;
-  
+
     expect(colCount).toBe(1);
   });
 
   it('should calculate maxClientX correctly', () => {
     const table = document.createElement('table');
     editorDom.appendChild(table);
-  
+
     jest.spyOn(table, 'getBoundingClientRect').mockReturnValue({
       left: 100,
       width: 400,
@@ -122,17 +122,17 @@ describe('createTableResizingPlugin', () => {
       y: 0,
       toJSON: () => {},
     } as DOMRect);
-  
+
     const mockEvent = new MouseEvent('mousemove', { clientX: 450 });
     const maxClientX = calculateMaxClientX(mockEvent, table);
-  
+
     expect(maxClientX).toBeLessThanOrEqual(500);
   });
-  
+
   /*it('should prevent resizing when clientX exceeds maxClientX', () => {
     const table = document.createElement('table');
     editorDom.appendChild(table);
-  
+
     jest.spyOn(table, 'getBoundingClientRect').mockReturnValue({
       left: 100,
       width: 300,
@@ -143,22 +143,22 @@ describe('createTableResizingPlugin', () => {
       y: 0,
       toJSON: () => {},
     } as DOMRect);
-  
+
     const preventDefaultMock = jest.fn();
     const event = Object.assign(new MouseEvent('mousemove', { clientX: 500 }), {
       preventDefault: preventDefaultMock,
     });
-  
+
     const maxClientX = calculateMaxClientX(event, table);
-  
+
     if (event.clientX > maxClientX) {
       event.preventDefault();
     }
-  
+
     expect(preventDefaultMock).toHaveBeenCalled();
   });*/
-  
-  
+
+
 });
 
 describe('lookUpTableWrapper', () => {

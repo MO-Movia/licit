@@ -1,5 +1,5 @@
 /* <CustomRadioButton /> */
-@import './czi-vars.css';
+@import url('./czi-vars.css');
 
 .czi-custom-radio-button {
   cursor: pointer;
@@ -7,14 +7,8 @@
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
   line-height: 25px;
-  margin-bottom: 12px;
-  margin-left: 0;
-  margin-right: 12px;
-  margin-top: 0;
-  padding-top: 0;
-  padding-right: 0;
-  padding-bottom: 0;
-  padding-left: 36px;
+  margin: 0 12px 12px 0;
+  padding: 0 0 0 36px;
   position: relative;
   user-select: none;
 }
@@ -31,10 +25,7 @@
 
 .czi-custom-radio-button.inline {
   display: inline-block;
-  margin-top: 0;
-  margin-right: 12px;
-  margin-bottom: 0;
-  margin-left: 0;
+  margin: 0 12px 0 0;
 }
 
 .czi-custom-radio-button-icon {

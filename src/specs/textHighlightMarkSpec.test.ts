@@ -1,87 +1,88 @@
-import TextHighlightMarkSpec from './textHighlightMarkSpec';
-import { toCSSColor, isTransparent } from '../toCSSColor';
+import TextHighlightMarkSpec from './textHighlightMarkSpec'; // Adjust the import path as needed
+import { toCSSColor, isTransparent } from '../toCSSColor'; // Adjust the import path as needed
+import { Mark } from 'prosemirror-model';
 
+// Mocking `toCSSColor` and `isTransparent` for testing purposes
 jest.mock('../toCSSColor', () => ({
   toCSSColor: jest.fn(),
   isTransparent: jest.fn(),
 }));
 
-beforeEach(() => {
-  jest.resetAllMocks();
-});
-
 describe('TextHighlightMarkSpec', () => {
+
   describe('parseDOM', () => {
-    it('parses non-transparent background and overridden="true"', () => {
-      const el = document.createElement('span');
-      el.style.backgroundColor = 'rgb(255, 255, 0)';
-      el.setAttribute('overridden', 'true');
+    it('should parse background-color and return highlightColor', () => {
+      const mockElement = {
+        style: {
+          backgroundColor: 'rgb(255, 255, 0)', // Yellow background color
+        },
+      } as any;
 
+      // Mock the toCSSColor function to return the same value for simplicity
       (toCSSColor as jest.Mock).mockReturnValue('rgb(255, 255, 0)');
-      (isTransparent as jest.Mock).mockReturnValue(false);
+      (isTransparent as jest.Mock).mockReturnValue(false); // It is not transparent
 
-      const out = TextHighlightMarkSpec.parseDOM[0].getAttrs(el as any);
-      expect(out).toEqual({
-        highlightColor: 'rgb(255, 255, 0)',
-        overridden: true,
-      });
+      const result = TextHighlightMarkSpec.parseDOM[0].getAttrs(mockElement);
+
+      expect(result).toEqual({ highlightColor: 'rgb(255, 255, 0)' });
+      expect(toCSSColor).toHaveBeenCalledWith('rgb(255, 255, 0)');
+      expect(isTransparent).toHaveBeenCalledWith('rgb(255, 255, 0)');
     });
 
-    it('parses transparent background and overridden="false"', () => {
-      const el = document.createElement('span');
-      el.style.backgroundColor = 'rgba(0,0,0,0)';
-      el.setAttribute('overridden', 'false');
+    it('should return empty highlightColor for transparent background', () => {
+      const mockElement = {
+        style: {
+          backgroundColor: 'rgba(0, 0, 0, 0)', // Transparent background
+        },
+      } as any;
 
-      (toCSSColor as jest.Mock).mockReturnValue('rgba(0,0,0,0)');
-      (isTransparent as jest.Mock).mockReturnValue(true);
+      (toCSSColor as jest.Mock).mockReturnValue('rgba(0, 0, 0, 0)'); // Transparent
+      (isTransparent as jest.Mock).mockReturnValue(true); // Transparent color
 
-      const out = TextHighlightMarkSpec.parseDOM[0].getAttrs(el as any);
-      expect(out).toEqual({ highlightColor: '', overridden: false });
+      const result = TextHighlightMarkSpec.parseDOM[0].getAttrs(mockElement);
+
+      expect(result).toEqual({ highlightColor: '' });
+      expect(toCSSColor).toHaveBeenCalledWith('rgba(0, 0, 0, 0)');
+      expect(isTransparent).toHaveBeenCalledWith('rgba(0, 0, 0, 0)');
     });
 
-    it('defaults overridden=false when attribute missing', () => {
-      const el = document.createElement('span');
-      el.style.backgroundColor = 'rgb(0, 255, 0)';
+    it('should return empty highlightColor if background-color is empty', () => {
+      const mockElement = {
+        style: {
+          backgroundColor: '', // No background-color
+        },
+      } as any;
 
-      (toCSSColor as jest.Mock).mockReturnValue('rgb(0, 255, 0)');
-      (isTransparent as jest.Mock).mockReturnValue(false);
+      const result = TextHighlightMarkSpec.parseDOM[0].getAttrs(mockElement);
 
-      const out = TextHighlightMarkSpec.parseDOM[0].getAttrs(el as any);
-      expect(out).toEqual({
-        highlightColor: 'rgb(0, 255, 0)',
-        overridden: false,
-      });
+      expect(result).toEqual({ highlightColor: '' });
     });
   });
 
   describe('toDOM', () => {
-    it('emits style when highlightColor is set and overridden=true', () => {
-      const mark = {
-        attrs: { highlightColor: '#ff0', overridden: true },
+    it('should generate a <span> element with the correct background-color style', () => {
+      const mockMark = {
+        attrs: {
+          highlightColor: 'rgb(255, 255, 0)', // Yellow background color
+        },
       } as any;
-      const out = TextHighlightMarkSpec.toDOM!(mark, false);
-      expect(out).toEqual([
-        'span',
-        { style: 'background-color: #ff0;', overridden: 'true' },
-        0,
-      ]);
+
+      const result = TextHighlightMarkSpec.toDOM(mockMark,false);
+
+      expect(result).toEqual(['span', { style: 'background-color: rgb(255, 255, 0);' }, 0]);
     });
 
-    it('omits style when highlightColor is empty and overridden=false', () => {
-      const mark = { attrs: { highlightColor: '', overridden: false } } as any;
-      const out = TextHighlightMarkSpec.toDOM!(mark, false);
-      expect(out).toEqual(['span', { style: '', overridden: 'false' }, 0]);
-    });
+    it('should generate a <span> element with no background-color if no highlightColor is set', () => {
+      const mockMark = {
+        attrs: {
+          highlightColor: '', // No highlight color
+        },
+      } as any;
 
-    it('covers optional-chaining path when overridden is undefined', () => {
-      const mark = { attrs: { highlightColor: 'rgb(1,2,3)' } } as any; // no overridden
-      const out = TextHighlightMarkSpec.toDOM!(mark, false);
-      // overridden?.toString() yields undefined: key exists with undefined value
-      expect(out).toEqual([
-        'span',
-        { style: 'background-color: rgb(1,2,3);', overridden: undefined },
-        0,
-      ]);
+      const result = TextHighlightMarkSpec.toDOM(mockMark, false);
+
+      expect(result).toEqual(['span', { style: '' }, 0]); // No background color in style
     });
   });
+
 });

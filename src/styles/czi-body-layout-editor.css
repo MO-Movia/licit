@@ -1,19 +1,17 @@
-@import './czi-vars.css';
+@import url('./czi-vars.css');
 
 .czi-body-layout-editor {
   box-shadow: var(--czi-overlay-shadow);
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
-  padding-bottom: 4px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 4px;
+  padding: 4px 10px;
 }
 
 .czi-body-layout-editor {
   background: var(--czi-bg);
   color: var(--czi-text-color);
 }
+
 .czi-body-layout-editor .czi-form {
   width: 300px;
 }

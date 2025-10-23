@@ -141,6 +141,6 @@ describe('CursorPlaceholderPlugin', () => {
   test('should return transaction if plugin is not initialized or selection is missing', () => {
     resetSingletonInstance(); // Simulate missing plugin instance
     const tr = showCursorPlaceholder(view.state);
-    expect(tr).toStrictEqual(view.state.tr); // Deep equality check, Should return the original transaction    
+    expect(tr).toStrictEqual(view.state.tr); // Deep equality check, Should return the original transaction
   });
 });

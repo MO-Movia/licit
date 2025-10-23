@@ -1,8 +1,8 @@
 .light {
   --czi-bg: #d8d6d6;
   --czi-text-color: #444;
-  --czi-ol-container-border:1px solid #bdb5b5;
+  --czi-ol-container-border: 1px solid #bdb5b5;
   --czi-list-type-btn-border: 1px solid #bdb5b5;
   --czi-glossary-row-bg: #eaeaea;
-  --czi-molsp-dropbtn-border-color:#cec7c7;
-  }
+  --czi-molsp-dropbtn-border-color: #cec7c7;
+}

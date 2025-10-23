@@ -18,17 +18,17 @@
   -moz-osx-font-smoothing: grayscale;
 
   /* Support for Safari and Chrome. */
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   text-transform: none;
   white-space: nowrap;
-  word-wrap: normal;
+  overflow-wrap: normal;
 }
 
 .czi-icon.h1,
 .czi-icon.h2,
 .czi-icon.h3,
 .czi-icon.hn {
-  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   font-size: 13px;
   text-transform: capitalize;
 }
@@ -39,10 +39,7 @@
   Temporary Fix need to bring image instead of content */
   content: '---';
   height: 30px;
-  margin-bottom: 0 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  margin-top: -12px !important;
+  margin: -12px 0 0 !important;
   width: 20px;
 }
 
@@ -54,7 +51,7 @@
 .czi-icon.superscript,
 .czi-icon.subscript {
   display: inline-block;
-  font-family: 'Arial', sans-serif;
+  font-family: Arial, sans-serif;
   font-size: 12px;
   height: 16px;
   text-align: center;

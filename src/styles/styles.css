@@ -1,15 +1,15 @@
-@import './styles0.css';
-@import './czi-math-view.css';
-@import './czi-pop-up.css';
-@import './czi-selection-placeholder.css';
-@import './czi-table-cell-menu.css';
-@import './czi-table-grid-size-editor.css';
-@import './licit.css';
-@import '@modusoperandi/licit-ui-commands/ui/czi-pop-up.css';
-@import '@modusoperandi/licit-ui-commands/ui/czi-tooltip-surface.css';
+@import url('./styles0.css');
+@import url('./czi-math-view.css');
+@import url('./czi-pop-up.css');
+@import url('./czi-selection-placeholder.css');
+@import url('./czi-table-cell-menu.css');
+@import url('./czi-table-grid-size-editor.css');
+@import url('./licit.css');
+@import url('@modusoperandi/licit-ui-commands/ui/czi-pop-up.css');
+@import url('@modusoperandi/licit-ui-commands/ui/czi-tooltip-surface.css');
 
 /* [FS] IRAD-1061 2020-09-19 */
 
 /* Now loaded locally, so that it work in closed network as well. */
-@import './fonts.css';
-@import './icon-font.css';
+@import url('./fonts.css');
+@import url('./icon-font.css');

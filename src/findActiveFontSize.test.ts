@@ -81,8 +81,8 @@ describe('findActiveFontSize', () => {
 
     it('returns default size when no markType is present', () => {
         (findActiveMark as jest.Mock).mockReturnValue({ attrs: { pt: 14 } });
-        const doc = schema.node("doc", null, [
-            schema.node("paragraph", null, [schema.text("Hello, world!")])
+        const doc = schema.node('doc', null, [
+            schema.node('paragraph', null, [schema.text('Hello, world!')])
         ]);
 
         const selection = { ...EditorState.create({ doc }).selection, empty: false };
@@ -105,8 +105,8 @@ describe('findActiveFontSize', () => {
 
     it('returns font size from active mark in selection', () => {
         (findActiveMark as jest.Mock).mockReturnValue({ attrs: { pt: 14 } });
-        const doc = schema.node("doc", null, [
-            schema.node("paragraph", null, [schema.text("Hello, world!")])
+        const doc = schema.node('doc', null, [
+            schema.node('paragraph', null, [schema.text('Hello, world!')])
         ]);
         const state = createState({ ...EditorState.create({ doc }).selection, empty: false });
 
@@ -118,8 +118,8 @@ describe('findActiveFontSize', () => {
         (findActiveMark as jest.Mock).mockReturnValue(null);
 
 
-        const doc = schema.node("doc", null, [
-            schema.node("paragraph", null, [schema.text("Hello, world!")])
+        const doc = schema.node('doc', null, [
+            schema.node('paragraph', null, [schema.text('Hello, world!')])
         ]);
 
         const selection = { ...EditorState.create({ doc }).selection, empty: false };
@@ -145,8 +145,8 @@ describe('findActiveFontSize', () => {
         (findActiveMark as jest.Mock).mockReturnValue(null);
         (findParentNodeOfType as jest.Mock).mockReturnValue(jest.fn().mockReturnValue(null));
 
-        const doc = schema.node("doc", null, [
-            schema.node("paragraph", null, [schema.text("Hello, world!")])
+        const doc = schema.node('doc', null, [
+            schema.node('paragraph', null, [schema.text('Hello, world!')])
         ]);
         const state = createState({ ...EditorState.create({ doc }).selection, empty: false });
         expect(findActiveFontSize(state)).toBe('11');
@@ -158,8 +158,8 @@ describe('findActiveFontSize', () => {
             node: { attrs: { level: '2' } },
         }));
 
-        const doc = schema.node("doc", null, [
-            schema.node("paragraph", null, [schema.text("Hello, world!")])
+        const doc = schema.node('doc', null, [
+            schema.node('paragraph', null, [schema.text('Hello, world!')])
         ]);
         const state = createState({ ...EditorState.create({ doc }).selection, empty: false });
         expect(findActiveFontSize(state)).toBe(18);

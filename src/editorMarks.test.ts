@@ -1,5 +1,5 @@
 import OrderedMap from 'orderedmap'; // Ensure it's imported
-import { 
+import {
   MARK_LINK,
   MARK_NO_BREAK,
   MARK_CODE,
@@ -15,7 +15,7 @@ import {
   MARK_TEXT_HIGHLIGHT,
   MARK_TEXT_SELECTION,
   MARK_UNDERLINE
-} from '@modusoperandi/licit-ui-commands'; 
+} from '@modusoperandi/licit-ui-commands';
 import { updateEditorMarks } from './editorMarks';
 import CodeMarkSpec from './specs/codeMarkSpec';
 import EMMarkSpec from './specs/emMarkSpec';
@@ -44,7 +44,7 @@ jest.mock('orderedmap', () => {
 describe('updateEditorMarks', () => {
   it('should add the correct MarkSpec objects to the OrderedMap', () => {
     // Mock instance of OrderedMap
-    const OrderedMapMock = new (OrderedMap as unknown as jest.Mock)(); 
+    const OrderedMapMock = new (OrderedMap as unknown as jest.Mock)();
 
     // Call the function
     const updatedMap = updateEditorMarks(OrderedMapMock);

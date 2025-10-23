@@ -1,8 +1,8 @@
-@import './czi-heading.css';
-@import './czi-indent.css';
-@import './czi-list.css';
-@import './czi-table.css';
-@import './czi-vars.css';
+@import url('./czi-heading.css');
+@import url('./czi-indent.css');
+@import url('./czi-list.css');
+@import url('./czi-table.css');
+@import url('./czi-vars.css');
 
 .czi-text-selection {
   /* var(--czi-selection-highlight-color-dark); */
@@ -16,13 +16,13 @@
 .ProseMirror {
   background: var(--czi-content-body-background-color);
   border-radius: 1px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 3px 6px rgb(0 0 0 / 16%), 0 3px 6px rgb(0 0 0 / 23%);
   box-sizing: border-box;
   color: var(--czi-content-font-color);
   font-family: var(--czi-content-font-family);
   font-size: var(--czi-content-font-size);
   line-height: var(--czi-content-line-height);
-  margin: 0 auto 0 auto;
+  margin: 0 auto;
   -moz-osx-font-smoothing: grayscale;
   outline: none;
   position: relative;
@@ -162,7 +162,7 @@
   font-style: italic;
   line-height: 1.6;
   margin: 50px auto;
-  padding: 1.2em 10% 1.2em 10%;
+  padding: 1.2em 10%;
   position: relative;
 }
 
@@ -205,7 +205,7 @@
 .ProseMirror hr[data-page-break] {
   height: 0;
   margin: 0;
-  page-break-before: always;
+  break-before: always;
   visibility: hidden;
 }
 
@@ -217,6 +217,6 @@
   background-color: transparent;
 }
 
-.ProseMirror-hideselection *::-moz-selection {
+.ProseMirror-hideselection *::selection {
   background-color: transparent;
 }

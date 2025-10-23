@@ -13,7 +13,7 @@ body {
 
 /* Basic editor styles */
 .ProseMirror {
-  >*+* {
+  >* + * {
     margin-top: 0.75em;
     width: 100%;
   }
@@ -40,7 +40,7 @@ body {
   pre {
     background: #0d0d0d;
     color: #fff;
-    font-family: 'JetBrainsMono', monospace;
+    font-family: JetBrainsMono, monospace;
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
 

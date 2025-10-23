@@ -1,5 +1,5 @@
-import { Mark } from "@tiptap/react";
-import StrikeMarkSpec from "./strikeMarkSpec";
+import { Mark } from '@tiptap/react';
+import StrikeMarkSpec from './strikeMarkSpec';
 
 describe('StrikeMarkSpec', () => {
   describe('parseDOM', () => {

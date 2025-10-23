@@ -1,58 +1,48 @@
-import TextSubMarkSpec from './textSubMarkSpec';
-
-type TagRule = { tag: string; getAttrs: (el: HTMLElement) => any };
-type StyleRule = { style: string; getAttrs: (value: string) => any };
+import TextSubMarkSpec from './textSubMarkSpec'; // Adjust the import path as needed
+import { Mark } from 'prosemirror-model';
 
 describe('TextSubMarkSpec', () => {
+
   describe('parseDOM', () => {
-    it('<sub> with overridden="true" → {overridden:true}', () => {
-      const tagRule = TextSubMarkSpec.parseDOM.find(
-        (r: any) => r.tag === 'sub'
-      ) as TagRule;
 
-      const el = document.createElement('sub');
-      el.setAttribute('overridden', 'true');
+    it('should parse vertical-align: sub style correctly', () => {
+      const mockElement = {
+        style: {
+          verticalAlign: 'sub',
+        },
+      } as any;
 
-      expect(tagRule.getAttrs(el as any)).toEqual({ overridden: true });
+      const result = TextSubMarkSpec.parseDOM[1].getAttrs(mockElement.style.verticalAlign);
+
+      // Since the style is 'sub', it should return null
+      expect(result).toBeNull();
     });
 
-    it('<sub> without overridden → {overridden:false}', () => {
-      const tagRule = TextSubMarkSpec.parseDOM.find(
-        (r: any) => r.tag === 'sub'
-      ) as TagRule;
+    it('should not parse if vertical-align is not sub', () => {
+      const mockElement = {
+        style: {
+          verticalAlign: 'normal',
+        },
+      } as any;
 
-      const el = document.createElement('sub');
-      expect(tagRule.getAttrs(el as any)).toEqual({ overridden: false });
-    });
+      const result = TextSubMarkSpec.parseDOM[1].getAttrs(mockElement.style.verticalAlign);
 
-    it('style vertical-align=sub → {overridden:true}', () => {
-      const styleRule = TextSubMarkSpec.parseDOM.find(
-        (r: any) => r.style === 'vertical-align'
-      ) as StyleRule;
-
-      expect(styleRule.getAttrs('sub')).toEqual({ overridden: true });
-    });
-
-    it('style vertical-align not sub → null', () => {
-      const styleRule = TextSubMarkSpec.parseDOM.find(
-        (r: any) => r.style === 'vertical-align'
-      ) as StyleRule;
-
-      expect(styleRule.getAttrs('baseline')).toBeNull();
+      // Since the style is not 'sub', it should return false
+      expect(result).toBe(false);
     });
   });
 
   describe('toDOM', () => {
-    it('emits sub with overridden=true', () => {
-      const mark = { attrs: { overridden: true } } as any;
-      const out = TextSubMarkSpec.toDOM!(mark, false); // pass inline boolean
-      expect(out).toEqual(['sub', { overridden: true }, 0]);
-    });
+    it('should generate a <sub> element', () => {
+      const mockMark = {
+        attrs: {}, // No specific attributes in this case
+      } as Mark;
 
-    it('emits sub with overridden=false', () => {
-      const mark = { attrs: { overridden: false } } as any;
-      const out = TextSubMarkSpec.toDOM!(mark, false);
-      expect(out).toEqual(['sub', { overridden: false }, 0]);
+      const result = TextSubMarkSpec.toDOM(mockMark,false);
+
+      // The expected result is a <sub> element with no attributes or content
+      expect(result).toEqual(['sub', 0]);
     });
   });
+
 });

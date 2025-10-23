@@ -70,7 +70,7 @@ describe('ListSplitCommand', () => {
       expect(result).toBe(false);
     });
 
-  
+
   });
 
   describe('waitForUserInput', () => {

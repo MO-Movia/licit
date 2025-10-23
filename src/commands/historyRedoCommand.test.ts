@@ -45,7 +45,7 @@ describe('HistoryRedoCommand', () => {
   describe('execute', () => {
     it('should call the getEditor method', () => {
       // Call the method
-      let result = hisrdcommand.getEditor();
+      const result = hisrdcommand.getEditor();
 
       // Verify that getEditor was called
       expect(result).toHaveProperty('view');
@@ -53,7 +53,7 @@ describe('HistoryRedoCommand', () => {
     it('getEditor should return null', () => {
       UICommand.prototype.editor = null;
       // Call the method
-      let result = hisrdcommand.getEditor();
+      const result = hisrdcommand.getEditor();
 
       // Verify that getEditor was called
       expect(result).toBeNull();

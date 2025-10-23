@@ -9,7 +9,7 @@ const PLACE_HOLDER_ID = {name: 'CursorPlaceholderPlugin'};
 let singletonInstance = null;
 
 // https://prosemirror.net/examples/upload/
-export const SPEC = {
+const SPEC = {
   // [FS] IRAD-1005 2020-07-07
   // Upgrade outdated packages.
   key: new PluginKey('CursorPlaceholderPlugin'),
@@ -60,11 +60,7 @@ function specFinder(spec: Record<string, unknown>): boolean {
   return spec.id === PLACE_HOLDER_ID;
 }
 
-export function resetSingletonInstance() {
-  singletonInstance = null;
-}
-
-export function findCursorPlaceholderPos(state: EditorState): number | null {
+function findCursorPlaceholderPos(state: EditorState): number | null {
   if (!singletonInstance) {
     return null;
   }

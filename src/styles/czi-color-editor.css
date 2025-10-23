@@ -1,14 +1,11 @@
-@import './czi-vars.css';
+@import url('./czi-vars.css');
 
 .czi-color-editor {
   background: #fff;
   box-shadow: var(--czi-overlay-shadow);
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
-  padding-bottom: 4px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 4px;
+  padding: 4px 10px;
 }
 
 .czi-color-editor .czi-custom-button {
@@ -44,10 +41,7 @@
 }
 
 .czi-color-editor-section {
-  margin-bottom: 8px;
-  margin-left: 0;
-  margin-right: 0;
-  margin-top: 8px;
+  margin: 8px 0;
   width: 200px;
 }
 

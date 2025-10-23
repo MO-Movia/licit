@@ -29,7 +29,7 @@ describe('HistoryRedoCommand', () => {
       commands: { redo: jest.fn() },
     } as unknown as Editor;
     // Call the method
-    let result = hisrdcommand.getEditor();
+    const result = hisrdcommand.getEditor();
 
     // Verify that getEditor was called
     expect(result).toHaveProperty('view');

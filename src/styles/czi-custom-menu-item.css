@@ -24,7 +24,8 @@
   margin: 0 1px;
 }
 
-.czi-custom-menu-item-button.czi-custom-button:focus, .czi-custom-menu-item-button.czi-custom-button:hover {
+.czi-custom-menu-item-button.czi-custom-button:focus,
+.czi-custom-menu-item-button.czi-custom-button:hover {
   border: 1px solid;
   border-radius: 6px;
 }

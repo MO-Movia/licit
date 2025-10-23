@@ -2,7 +2,7 @@
 
 /* latin */
 @font-face {
-  font-family: 'Aclonica';
+  font-family: Aclonica;
   font-style: normal;
   font-weight: 400;
   src:
@@ -34,7 +34,7 @@
 /* latin */
 
 @font-face {
-  font-family: 'Acme';
+  font-family: Acme;
   font-style: normal;
   font-weight: 400;
   src:
@@ -65,7 +65,7 @@
 
 /* cyrillic-ext */
 @font-face {
-  font-family: 'Alegreya';
+  font-family: Alegreya;
   font-style: normal;
   font-weight: 400;
   src:
@@ -83,7 +83,7 @@
 
 /* cyrillic */
 @font-face {
-  font-family: 'Alegreya';
+  font-family: Alegreya;
   font-style: normal;
   font-weight: 400;
   src:
@@ -95,7 +95,7 @@
 
 /* greek-ext */
 @font-face {
-  font-family: 'Alegreya';
+  font-family: Alegreya;
   font-style: normal;
   font-weight: 400;
   src:
@@ -107,7 +107,7 @@
 
 /* greek */
 @font-face {
-  font-family: 'Alegreya';
+  font-family: Alegreya;
   font-style: normal;
   font-weight: 400;
   src:
@@ -119,7 +119,7 @@
 
 /* vietnamese */
 @font-face {
-  font-family: 'Alegreya';
+  font-family: Alegreya;
   font-style: normal;
   font-weight: 400;
   src:
@@ -139,7 +139,7 @@
 
 /* latin-ext */
 @font-face {
-  font-family: 'Alegreya';
+  font-family: Alegreya;
   font-style: normal;
   font-weight: 400;
   src:
@@ -160,7 +160,7 @@
 
 /* latin */
 @font-face {
-  font-family: 'Alegreya';
+  font-family: Alegreya;
   font-style: normal;
   font-weight: 400;
   src:
@@ -257,7 +257,7 @@
 
 /* cyrillic-ext */
 @font-face {
-  font-family: 'Georgia';
+  font-family: Georgia;
   font-style: normal;
   font-weight: 400;
   src:
@@ -274,7 +274,7 @@
 
 /* cyrillic */
 @font-face {
-  font-family: 'Georgia';
+  font-family: Georgia;
   font-style: normal;
   font-weight: 400;
   src:
@@ -285,7 +285,7 @@
 
 /* greek-ext */
 @font-face {
-  font-family: 'Georgia';
+  font-family: Georgia;
   font-style: normal;
   font-weight: 400;
   src:
@@ -296,7 +296,7 @@
 
 /* greek */
 @font-face {
-  font-family: 'Georgia';
+  font-family: Georgia;
   font-style: normal;
   font-weight: 400;
   src:
@@ -307,7 +307,7 @@
 
 /* latin-ext */
 @font-face {
-  font-family: 'Georgia';
+  font-family: Georgia;
   font-style: normal;
   font-weight: 400;
   src:
@@ -327,7 +327,7 @@
 
 /* latin */
 @font-face {
-  font-family: 'Georgia';
+  font-family: Georgia;
   font-style: normal;
   font-weight: 400;
   src:
@@ -357,7 +357,7 @@
 
 /* cyrillic-ext */
 @font-face {
-  font-family: 'Tahoma';
+  font-family: Tahoma;
   font-style: normal;
   font-weight: 400;
   src:
@@ -374,7 +374,7 @@
 
 /* cyrillic */
 @font-face {
-  font-family: 'Tahoma';
+  font-family: Tahoma;
   font-style: normal;
   font-weight: 400;
   src: local('Tahoma'), url('../fonts/tahoma/Tahoma-C.woff2') format('woff2');
@@ -383,7 +383,7 @@
 
 /* greek-ext */
 @font-face {
-  font-family: 'Tahoma';
+  font-family: Tahoma;
   font-style: normal;
   font-weight: 400;
   src:
@@ -394,7 +394,7 @@
 
 /* greek */
 @font-face {
-  font-family: 'Tahoma';
+  font-family: Tahoma;
   font-style: normal;
   font-weight: 400;
   src:
@@ -405,7 +405,7 @@
 
 /* latin-ext */
 @font-face {
-  font-family: 'Tahoma';
+  font-family: Tahoma;
   font-style: normal;
   font-weight: 400;
   src:
@@ -425,7 +425,7 @@
 
 /* latin */
 @font-face {
-  font-family: 'Tahoma';
+  font-family: Tahoma;
   font-style: normal;
   font-weight: 400;
   src: local('Tahoma'), url('../fonts/tahoma/Tahoma-L.woff2') format('woff2');
@@ -579,7 +579,7 @@
 
 /* latin-ext */
 @font-face {
-  font-family: 'Times';
+  font-family: Times;
   font-style: normal;
   font-weight: 400;
   src:
@@ -600,7 +600,7 @@
 
 /* latin */
 @font-face {
-  font-family: 'Times';
+  font-family: Times;
   font-style: normal;
   font-weight: 400;
   src:
@@ -631,7 +631,7 @@
 
 /* cyrillic-ext */
 @font-face {
-  font-family: 'Verdana';
+  font-family: Verdana;
   font-style: normal;
   font-weight: 400;
   src:
@@ -648,7 +648,7 @@
 
 /* cyrillic */
 @font-face {
-  font-family: 'Verdana';
+  font-family: Verdana;
   font-style: normal;
   font-weight: 400;
   src:
@@ -659,7 +659,7 @@
 
 /* greek-ext */
 @font-face {
-  font-family: 'Verdana';
+  font-family: Verdana;
   font-style: normal;
   font-weight: 400;
   src:
@@ -670,7 +670,7 @@
 
 /* greek */
 @font-face {
-  font-family: 'Verdana';
+  font-family: Verdana;
   font-style: normal;
   font-weight: 400;
   src:
@@ -681,7 +681,7 @@
 
 /* vietnamese */
 @font-face {
-  font-family: 'Verdana';
+  font-family: Verdana;
   font-style: normal;
   font-weight: 400;
   src:
@@ -700,7 +700,7 @@
 
 /* latin-ext */
 @font-face {
-  font-family: 'Verdana';
+  font-family: Verdana;
   font-style: normal;
   font-weight: 400;
   src:
@@ -720,7 +720,7 @@
 
 /* latin */
 @font-face {
-  font-family: 'Verdana';
+  font-family: Verdana;
   font-style: normal;
   font-weight: 400;
   src:

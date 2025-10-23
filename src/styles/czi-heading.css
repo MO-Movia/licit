@@ -23,18 +23,18 @@
 }
 
 .ProseMirror h4 {
-  color: rgb(67, 67, 67);
+  color: rgb(67 67 67);
   font-size: 14pt;
 }
 
 .ProseMirror h5 {
-  color: rgb(102, 102, 102);
+  color: rgb(102 102 102);
   font-size: 11pt;
   font-weight: 400;
 }
 
 .ProseMirror h6 {
-  color: rgb(102, 102, 102);
+  color: rgb(102 102 102);
   font-size: 11pt;
   font-weight: 400;
 }

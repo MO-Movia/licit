@@ -27,7 +27,7 @@ class IndentLessCommand extends UICommand {
     return Promise.resolve(null);
   }
   executeWithUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, inputs?: any): boolean {
-    return false
+    return false;
   }
   cancel(): void {
     return null;

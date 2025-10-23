@@ -1,11 +1,8 @@
 /* <CustomButton /> */
-@import './czi-vars.css';
+@import url('./czi-vars.css');
 
 .czi-custom-buttons {
-  margin-bottom: 0;
-  margin-left: 8px;
-  margin-right: 8px;
-  margin-top: 0;
+  margin: 0 8px;
   white-space: nowrap;
 }
 
@@ -23,10 +20,7 @@
   font-weight: normal;
   line-height: 1.2em;
   overflow: hidden;
-  padding-bottom: 6px;
-  padding-left: 12px;
-  padding-right: 12px;
-  padding-top: 6px;
+  padding: 6px 12px;
   position: relative;
   text-overflow: ellipsis;
   user-select: none;

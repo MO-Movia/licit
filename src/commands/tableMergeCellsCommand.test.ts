@@ -182,7 +182,7 @@ describe('TableMergeCellsCommand', () => {
     // Mock the selection as an instance of CellSelection
     const selection = new CellSelection($anchorCell, $headCell);
 
-    let cellSelection = {} as CellSelection;
+    const cellSelection = {} as CellSelection;
     mockState = {
       doc: doc,
       schema: schema,
@@ -256,7 +256,7 @@ describe('TableMergeCellsCommand', () => {
       ]),
     ]);
 
-    let cellSelection = {} as CellSelection;
+    const cellSelection = {} as CellSelection;
     mockState = {
       doc: doc,
       schema: schema,

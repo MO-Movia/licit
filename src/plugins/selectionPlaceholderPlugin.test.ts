@@ -48,7 +48,7 @@ describe('SelectionPlaceholderPlugin', () => {
         const { state } = view;
         const { tr } = state;
 
-        let newTr = showSelectionPlaceholder(state, tr) as Transaction;
+        const newTr = showSelectionPlaceholder(state, tr) as Transaction;
         newTr.getMeta = jest.fn().mockReturnValue({ add: { from: 1, to: 5 } });
         const plugin = view.state.plugins.find(
             (p) => p instanceof SelectionPlaceholderPlugin
@@ -67,7 +67,7 @@ describe('SelectionPlaceholderPlugin', () => {
         const selection = TextSelection.create(state.doc, 1, 5);
         const tr = state.tr.setSelection(selection);
 
-        let newTr = showSelectionPlaceholder(state, tr) as Transaction;
+        const newTr = showSelectionPlaceholder(state, tr) as Transaction;
         const plugin = view.state.plugins.find(
             (p) => p instanceof SelectionPlaceholderPlugin
         ) as Plugin;
@@ -84,7 +84,7 @@ describe('SelectionPlaceholderPlugin', () => {
         const { state } = view;
         const { tr } = state;
 
-        let newTr = showSelectionPlaceholder(state, tr) as Transaction;
+        const newTr = showSelectionPlaceholder(state, tr) as Transaction;
         newTr.getMeta = jest.fn().mockReturnValue({ remove: jest.fn() });
         const plugin = view.state.plugins.find(
             (p) => p instanceof SelectionPlaceholderPlugin
@@ -97,7 +97,7 @@ describe('SelectionPlaceholderPlugin', () => {
 
     it('should not add placeholder if selection is empty', () => {
         const emptyTr = view.state.tr.setSelection(view.state.selection);
-        const newTr = showSelectionPlaceholder(view.state, emptyTr) as Transaction;;
+        const newTr = showSelectionPlaceholder(view.state, emptyTr) as Transaction;
         expect(newTr.getMeta(SelectionPlaceholderPlugin as unknown as Plugin)).toBeUndefined();
     });
 
@@ -127,14 +127,14 @@ describe('SelectionPlaceholderPlugin', () => {
         const selection = TextSelection.create(state.doc, 1, 5);
         const tr = state.tr.setSelection(selection);
 
-        let newTr = showSelectionPlaceholder(state, tr) as Transaction;
+        const newTr = showSelectionPlaceholder(state, tr) as Transaction;
         const plugin = view.state.plugins.find(
             (p) => p instanceof SelectionPlaceholderPlugin
         ) as Plugin;
 
         const nextState = state.apply(newTr);
 
-        let result = hideSelectionPlaceholder(nextState, nextState.tr) as Transaction;
+        const result = hideSelectionPlaceholder(nextState, nextState.tr) as Transaction;
 
         expect((result as any).meta.SelectionPlaceholderPlugin$.remove).toBeDefined();
 
@@ -151,7 +151,7 @@ describe('SelectionPlaceholderPlugin', () => {
         const selection = TextSelection.create(stateWithoutPlugin.doc, 1, 5);
         const tr = stateWithoutPlugin.tr.setSelection(selection);
 
-        let newTr = showSelectionPlaceholder(stateWithoutPlugin, tr) as Transaction;
+        const newTr = showSelectionPlaceholder(stateWithoutPlugin, tr) as Transaction;
         expect(newTr).toBe(tr);
 
     });
@@ -164,7 +164,7 @@ describe('SelectionPlaceholderPlugin', () => {
             schema,
         });
 
-        let newTr = showSelectionPlaceholder(stateWithoutPlugin) as Transaction;
+        const newTr = showSelectionPlaceholder(stateWithoutPlugin) as Transaction;
         expect(newTr).toEqual(state.tr);
 
     });

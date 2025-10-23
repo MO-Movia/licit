@@ -74,8 +74,8 @@ describe('Indent extension commands', () => {
     test('indent command should return same transaction if doc is empty', () => {
         const dispatchMock = jest.fn();
         const command = editor.extensionManager.commands.indent;
-        const mockSelection = jest.fn().mockReturnValue({ test: "test" });
-        let mockTransaction = {
+        const mockSelection = jest.fn().mockReturnValue({ test: 'test' });
+        const mockTransaction = {
             selection: null,
             doc: {},
             setSelection: mockSelection,
@@ -94,15 +94,15 @@ describe('Indent extension commands', () => {
             view: {} as EditorViewEx
         });
 
-        expect(reult).toBe(false)
+        expect(reult).toBe(false);
     });
 
     test('indent command should return same transaction if selection is not instance of TextSelection', () => {
         const dispatchMock = jest.fn();
         const command = editor.extensionManager.commands.indent;
-        const mockSelection = jest.fn().mockReturnValue({ selection: { test: "" }, doc: { test: "'" } });
-        let mockTransaction = {
-            selection: { test: "" },
+        const mockSelection = jest.fn().mockReturnValue({ selection: { test: '' }, doc: { test: "'" } });
+        const mockTransaction = {
+            selection: { test: '' },
             doc: { test: "'" },
             setSelection: mockSelection,
             setNodeMarkup: jest.fn(),
@@ -120,7 +120,7 @@ describe('Indent extension commands', () => {
             view: {} as EditorViewEx
         });
 
-        expect(reult).toBe(false)
+        expect(reult).toBe(false);
     });
 });
 

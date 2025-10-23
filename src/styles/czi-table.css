@@ -1,4 +1,4 @@
-@import './czi-vars.css';
+@import url('./czi-vars.css');
 
 /* Table Styles */
 
@@ -13,7 +13,7 @@
   border-width: 0 thin thin 0;
   margin: 0;
   overflow: hidden;
-  page-break-inside: avoid;
+  break-inside: avoid;
   table-layout: fixed;
   width: 100%;
 }
@@ -69,13 +69,10 @@ Rezie cursor position issue fixed. */
 /* Give selected cells a blue overlay */
 .ProseMirror .selectedCell::after {
   background: var(--czi-selection-highlight-color);
-  bottom: 0;
+  inset: 0;
   content: '';
-  left: 0;
   pointer-events: none;
   position: absolute;
-  right: 0;
-  top: 0;
   z-index: 2;
 }
 

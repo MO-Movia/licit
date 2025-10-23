@@ -50,7 +50,7 @@ describe('TableColorCommand', () => {
 
   it('should call the getEditor method', () => {
     // Call the method
-    let result = command.getEditor();
+    const result = command.getEditor();
 
     // Verify that getEditor was called
     expect(result).toHaveProperty('view');
@@ -127,7 +127,7 @@ describe('TableColorCommand', () => {
   });
 
   it('executeWithUserInput should return false if hex is undefined', () => {
-    let result = command.executeWithUserInput(
+    const result = command.executeWithUserInput(
       stateMock,
       dispatchMock,
       viewMock,

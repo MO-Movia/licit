@@ -44,7 +44,7 @@ describe('findActiveFontType', () => {
             schema.node('paragraph', null, [schema.text('Test text')]),
         ]);
         const selection = TextSelection.create(doc, 0);
-        const storedMarks = [{ type: FontTypeMarkSpec, attrs: { name: "dummy-font" } }];
+        const storedMarks = [{ type: FontTypeMarkSpec, attrs: { name: 'dummy-font' } }];
 
         const state = createState(selection, storedMarks);
         expect(findActiveFontType(state)).toBe('dummy-font');
@@ -76,9 +76,9 @@ describe('findActiveFontType', () => {
     });
 
     it('returns default type when no markType is present', () => {
-        (findActiveMark as jest.Mock).mockReturnValue({ attrs: { name: "dummy-font" } });
-        const doc = schema.node("doc", null, [
-            schema.node("paragraph", null, [schema.text("Hello, world!")])
+        (findActiveMark as jest.Mock).mockReturnValue({ attrs: { name: 'dummy-font' } });
+        const doc = schema.node('doc', null, [
+            schema.node('paragraph', null, [schema.text('Hello, world!')])
         ]);
 
         const selection = { ...EditorState.create({ doc }).selection, empty: false };
@@ -100,21 +100,21 @@ describe('findActiveFontType', () => {
     });
 
     it('returns font type from active mark in selection', () => {
-        (findActiveMark as jest.Mock).mockReturnValue({ attrs: { name: "dummy-font" } });
-        const doc = schema.node("doc", null, [
-            schema.node("paragraph", null, [schema.text("Hello, world!")])
+        (findActiveMark as jest.Mock).mockReturnValue({ attrs: { name: 'dummy-font' } });
+        const doc = schema.node('doc', null, [
+            schema.node('paragraph', null, [schema.text('Hello, world!')])
         ]);
         const state = createState({ ...EditorState.create({ doc }).selection, empty: false });
 
-        expect(findActiveFontType(state)).toBe("dummy-font");
+        expect(findActiveFontType(state)).toBe('dummy-font');
     });
 
     it('if marks not having font type then shpuld return default font', () => {
         (findActiveMark as jest.Mock).mockReturnValue(null);
 
 
-        const doc = schema.node("doc", null, [
-            schema.node("paragraph", null, [schema.text("Hello, world!")])
+        const doc = schema.node('doc', null, [
+            schema.node('paragraph', null, [schema.text('Hello, world!')])
         ]);
         const state = createState({ ...EditorState.create({ doc }).selection, empty: false });
         expect(findActiveFontType(state)).toBe('Arial');

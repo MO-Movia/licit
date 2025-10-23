@@ -1,20 +1,20 @@
-@import 'czi-vars.css';
+@import url('czi-vars.css');
 
 .czi-selection-placeholder {
-  -webkit-animation-direction: alternate;
   animation-direction: alternate;
-  -webkit-animation-duration: 0.5s;
+  animation-direction: alternate;
   animation-duration: 0.5s;
-  -webkit-animation-iteration-count: infinite;
+  animation-duration: 0.5s;
   animation-iteration-count: infinite;
-  -webkit-animation-name: czi_selection_blink;
+  animation-iteration-count: infinite;
   animation-name: czi_selection_blink;
-  -webkit-animation-timing-function: ease-in-out;
+  animation-name: czi_selection_blink;
+  animation-timing-function: ease-in-out;
   animation-timing-function: ease-in-out;
   background-color: var(--czi-selection-highlight-color-dark) !important;
 }
 
-@-webkit-keyframes czi_selection_blink {
+@keyframes czi_selection_blink {
   from {
     opacity: 1;
   }

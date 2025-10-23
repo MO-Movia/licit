@@ -22,7 +22,7 @@ import '../styles/czi-pop-up.css';
 import { EditorViewEx } from '../constants';
 
 // https://prosemirror.net/examples/tooltip/
-export const SPEC = {
+const SPEC = {
   // [FS] IRAD-1005 2020-07-07
   // Upgrade outdated packages.
   key: new PluginKey('LinkTooltipPlugin'),

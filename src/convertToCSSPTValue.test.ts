@@ -1,4 +1,4 @@
-import convertToCSSPTValue, { PX_TO_PT_RATIO } from "./convertToCSSPTValue";
+import convertToCSSPTValue, { PX_TO_PT_RATIO } from './convertToCSSPTValue';
 
 describe('convertToCSSPTValue', () => {
 

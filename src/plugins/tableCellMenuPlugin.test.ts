@@ -191,7 +191,7 @@ describe('TableCellMenuPlugin', () => {
             ),
         );
 
-        let testState = EditorState.create({
+        const testState = EditorState.create({
             doc: t,
             selection: CellSelection.create(t, 2, 24),
         });
@@ -209,6 +209,6 @@ describe('TableCellMenuPlugin', () => {
 
         (tooltipView as any)._scrollHandle = { dispose: jest.fn() };
         (tooltipView as any)._onClose();
-        expect((tooltipView as any)._scrollHandle).toBeNull()
+        expect((tooltipView as any)._scrollHandle).toBeNull();
     });
 });

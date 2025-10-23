@@ -31,7 +31,7 @@
 }
 
 .czi-editor-frame-head {
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.21);
+  box-shadow: 0 1px 1px rgb(0 0 0 / 21%);
   position: relative;
   z-index: 2;
 }
@@ -43,12 +43,9 @@
 }
 
 .czi-editor-frameset.with-fixed-layout .czi-editor-frame-body-scroll {
-  bottom: 0;
-  left: 0;
+  inset: 0;
   overflow: auto;
   position: absolute;
-  right: 0;
-  top: 0;
 }
 
 .czi-editor-frame-footer {
@@ -58,7 +55,6 @@
 .czi-editor-frame-head {
   background-color: var(--czi-bg);
 }
-
 
 @media only print {
   .czi-editor-frame-body {

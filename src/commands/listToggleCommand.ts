@@ -67,7 +67,7 @@ export class ListToggleCommand extends UICommand {
   getEditor = (): Editor => {
     return UICommand.prototype.editor as Editor;
   };
-  
+
   executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
     return tr;
   }
@@ -108,5 +108,3 @@ export function hasImageNode(state: EditorState): boolean {
   const imageNodeType = schema.nodes[IMAGE];
   return imageNodeType && isNodeSelectionForNodeType(selection, imageNodeType);
 }
-
-export default ListToggleCommand;

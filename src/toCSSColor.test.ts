@@ -1,4 +1,4 @@
-import toCSSColor, { isTransparent } from "./toCSSColor";
+import toCSSColor, { isTransparent } from './toCSSColor';
 
 // Mocking the Color library to test if our code interacts correctly
 jest.mock('color', () => {
@@ -15,7 +15,7 @@ jest.mock('color', () => {
         if (input === 'invalid') {
             throw new Error('Invalid color');
         }
-        return input.toLowerCase()
+        return input.toLowerCase();
         }, // Just return the lowercased value for hex conversion
     };
   });

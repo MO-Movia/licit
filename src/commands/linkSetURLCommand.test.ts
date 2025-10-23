@@ -111,7 +111,7 @@ describe('LinkSetURLCommand', () => {
     ).toBeDefined();
   });
   it('should handle return false if markType is null ', () => {
-    let result = lsc.isEnabled({
+    const result = lsc.isEnabled({
       schema: { marks: {} },
       selection: TextSelection.create(state.doc, 0, 1),
     } as unknown as EditorState);
@@ -139,7 +139,7 @@ describe('LinkSetURLCommand', () => {
     ).toBeDefined();
   });
   it('waitForUserInput should return undefined if markType is empty', async () => {
-    let result = await lsc.waitForUserInput({
+    const result = await lsc.waitForUserInput({
       doc: { nodeAt: () => {} },
       schema: { marks: { link: null } },
       selection: TextSelection.create(state.doc, 0, 1),
@@ -174,7 +174,7 @@ describe('LinkSetURLCommand', () => {
     ).toBeDefined();
   });
   it('should handle executeWithUserInput with valid href ', () => {
-    let result = lsc.executeWithUserInput(
+    const result = lsc.executeWithUserInput(
       {
         doc: { nodeAt: () => {} },
         schema: { marks: { link: {} } },
@@ -203,7 +203,7 @@ describe('LinkSetURLCommand', () => {
 
   it('_popup should contain close once it created  ', async () => {
     lsc._popUp = null;
-    let response = lsc.waitForUserInput(
+    const response = lsc.waitForUserInput(
       {
         doc: { nodeAt: () => {} },
         schema: { marks: { link: {} } },
@@ -222,7 +222,7 @@ describe('LinkSetURLCommand', () => {
 
   describe('Marktype null', () => {
     it('should resolve immediately if no valid markType exists', async () => {
-      let mockData = {
+      const mockData = {
         doc: { nodeAt: () => {} },
         schema: { marks: { link: null } },
         selection: { from: 0, to: 1 },

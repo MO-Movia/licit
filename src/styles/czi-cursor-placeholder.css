@@ -1,4 +1,4 @@
-@import 'czi-vars.css';
+@import url('czi-vars.css');
 
 .czi-cursor-placeholder {
   display: inline-block;

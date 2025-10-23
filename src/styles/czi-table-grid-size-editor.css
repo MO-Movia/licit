@@ -10,13 +10,10 @@
 }
 
 .czi-table-grid-size-editor-body::after {
-  background: rgba(0, 0, 0, 0);
-  bottom: -50px;
+  background: rgb(0 0 0 / 0%);
+  inset: -50px -50px -50px 0;
   content: '';
-  left: 0;
   position: absolute;
-  right: -50px;
-  top: -50px;
 }
 
 .czi-table-grid-size-editor-cell {
