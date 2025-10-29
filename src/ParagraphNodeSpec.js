@@ -196,6 +196,12 @@ function toDOM(node: Node): Array<any> {
     const hIndentpx = Number(indentPosition) * 96;
     document.documentElement.style.setProperty('--hangingIndentMargin', `${hIndentpx}px`);
   }
+  else {
+    // Remove the css variable when unchecked
+    attrs['hangingIndent'] = 'false';
+    attrs['indentPosition'] = indentPosition;
+    document.documentElement.style.removeProperty('--hangingIndentMargin');
+  }
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);
   }
