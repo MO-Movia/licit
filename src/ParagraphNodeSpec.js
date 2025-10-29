@@ -74,6 +74,13 @@ const ParagraphNodeSpec: NodeSpec = {
     indentPosition: {
       default: null,
     },
+    isDeco: {
+    default: {
+      isTag: false,
+      isComment: false,
+      isSlice: false,
+    },
+},
   },
   content: 'inline*',
   group: 'block',
@@ -116,6 +123,11 @@ function getAttrs(dom: HTMLElement): Object {
   const objectId = dom.getAttribute('objectId') || '';
   const hangingIndent = dom.getAttribute('hangingIndent') || '';
   const indentPosition = dom.getAttribute('indentPosition') || '';
+    const isDeco = {
+    isTag: dom.getAttribute('isTag') === 'true',
+    isComment: dom.getAttribute('isComment') === 'true',
+    isSlice: dom.getAttribute('isSlice') === 'true',
+  };
   return {
     align,
     indent,
@@ -133,7 +145,8 @@ function getAttrs(dom: HTMLElement): Object {
     selectionId,
     objectId,
     hangingIndent,
-    indentPosition
+    indentPosition,
+    isDeco
   };
 }
 
@@ -183,7 +196,8 @@ function toDOM(node: Node): Array<any> {
     overriddenIndentValue,
     selectionId,
     hangingIndent,
-    indentPosition
+    indentPosition,
+    isDeco
   } = node.attrs;
   const attrs = { ...node.attrs };
   const { style } = getStyle(node.attrs);
@@ -214,6 +228,12 @@ function toDOM(node: Node): Array<any> {
   if (selectionId) {
     attrs.selectionId = selectionId;
   }
+
+if (isDeco) {
+  if (isDeco.isTag !== undefined) attrs.isTag = String(isDeco.isTag);
+  if (isDeco.isComment !== undefined) attrs.isComment = String(isDeco.isComment);
+  if (isDeco.isSlice !== undefined) attrs.isSlice = String(isDeco.isSlice);
+}
 
   return ['p', attrs, 0];
 }
