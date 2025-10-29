@@ -43,6 +43,7 @@
     "@modusoperandi/color-picker": "^1.0.7",
     "browserkeymap": "^2.0.2",
     "flatted": "^3.3.3",
+    "prop-types": "^15.8.1",
     "react-tooltip": "^5.30.0",
     "resize-observer-polyfill": "^1.5.1",
     "smooth-scroll-into-view-if-needed": "^2.0.2",
