@@ -1,6 +1,5 @@
 import { Schema } from 'prosemirror-model';
 import { Plugin } from 'prosemirror-state';
-import { keymap } from 'prosemirror-keymap';
 import DefaultEditorPlugins from './defaultEditorPlugins';
 import ContentPlaceholderPlugin from './plugins/contentPlaceholderPlugin';
 import CursorPlaceholderPlugin from './plugins/cursorPlaceholderPlugin';
@@ -10,7 +9,6 @@ import SelectionPlaceholderPlugin from './plugins/selectionPlaceholderPlugin';
 import buildInputRules from './buildInputRules';
 import { setPluginKey } from '@modusoperandi/licit-doc-attrs-step';
 import TableCellMenuPlugin from './plugins/tableCellMenuPlugin';
-import createEditorKeyMap from './createEditorKeyMap';
 
 jest.mock('./plugins/contentPlaceholderPlugin', () => jest.fn(() => new Plugin({})));
 jest.mock('./plugins/cursorPlaceholderPlugin', () => jest.fn(() => new Plugin({})));

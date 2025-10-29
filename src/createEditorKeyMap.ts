@@ -1,6 +1,5 @@
 import * as EditorCommands from './editorCommands';
 import * as EditorKeyMap from './editorKeyMap';
-import type { UserKeyMap } from '@modusoperandi/licit-doc-attrs-step';
 
 export default function createEditorKeyMap(): any {
   return {

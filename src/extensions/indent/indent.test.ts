@@ -1,7 +1,7 @@
 import { CanCommands, ChainedCommands, Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import { Indent } from './indent';
-import { EditorState, Transaction } from 'prosemirror-state';
+import { Transaction } from 'prosemirror-state';
 import { EditorViewEx } from '@src/constants';
 
 describe('Indent Extension', () => {
@@ -126,7 +126,6 @@ describe('Indent extension commands', () => {
 
 describe('Indent Extension - Keyboard Shortcuts', () => {
     let editor: any;
-    let mockEditor: any;
     let shortcuts;
 
     beforeEach(() => {

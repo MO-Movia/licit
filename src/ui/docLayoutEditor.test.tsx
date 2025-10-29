@@ -1,80 +1,121 @@
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import DocLayoutEditor from './docLayoutEditor';
-import {DocLayoutEditorValue} from './docLayoutEditor';
 import { LAYOUT } from '../constants';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import '@testing-library/jest-dom';
+import { DocLayoutEditorValue } from './docLayoutEditor';
 
-describe('DocLayoutEditor', () => {
-  let closeMock;
+describe('DocLayoutEditor (pure Jest)', () => {
+  let container: HTMLDivElement;
+  let closeMock: jest.Mock;
 
   beforeEach(() => {
     closeMock = jest.fn();
+    container = document.createElement('div');
+    document.body.appendChild(container);
   });
 
-  it('should render radio buttons for layout options', () => {
-    const { getByText } = render(<DocLayoutEditor close={closeMock} />);
-
-    // Check that the radio buttons are rendered for each layout option
-    expect(getByText('US Letter - Portrait')).toBeInTheDocument();
-    expect(getByText('US Letter - Landscape')).toBeInTheDocument();
-    expect(getByText('A4 - Portrait')).toBeInTheDocument();
-    expect(getByText('A4 - Landscape')).toBeInTheDocument();
-    expect(getByText('4:3 Desktop Screen')).toBeInTheDocument();
-    expect(getByText('16:9 Desktop Screen')).toBeInTheDocument();
+  afterEach(() => {
+    ReactDOM.unmountComponentAtNode(container);
+    container.remove();
   });
 
-  it('should select the radio button based on the selectedValue', () => {
-    const { getByText } = render(
-      <DocLayoutEditor initialValue={{ layout: LAYOUT.A4_PORTRAIT }} close={closeMock} />
+  const renderPure = (element: React.ReactElement) => {
+    ReactDOM.render(element, container);
+    return container;
+  };
+
+  it('renders radio buttons for layout options', () => {
+    renderPure(<DocLayoutEditor close={closeMock} />);
+    const html = container.innerHTML;
+    expect(html).toContain('US Letter - Portrait');
+    expect(html).toContain('US Letter - Landscape');
+    expect(html).toContain('A4 - Portrait');
+    expect(html).toContain('A4 - Landscape');
+  });
+
+  it('selects correct layout from initialValue', () => {
+    renderPure(
+      <DocLayoutEditor
+        initialValue={{ layout: LAYOUT.A4_PORTRAIT }}
+        close={closeMock}
+      />
     );
-
-    // Check that the A4 Portrait radio button is selected
-    expect(getByText('A4 - Portrait')).toBeDefined();
+    const html = container.innerHTML;
+    expect(html).toContain('A4 - Portrait');
   });
 
-  it('should create CustomRadioButton', () => {
-    const { getByText } = render(
-      <DocLayoutEditor initialValue={{ layout: LAYOUT.A4_PORTRAIT, width: 500 }} close={closeMock} />
+  it('creates CustomRadioButton when width is provided', () => {
+    renderPure(
+      <DocLayoutEditor
+        initialValue={{ layout: LAYOUT.A4_PORTRAIT, width: 500 }}
+        close={closeMock}
+      />
     );
-    // Check that the A4 Portrait radio button is selected
-    expect(getByText('A4 - Portrait')).toBeDefined();
+    const html = container.innerHTML;
+    expect(html).toContain('A4 - Portrait');
+    expect(html).toContain('Custom width: 500pt');
   });
 
-  it('_onSelect layout value should change', () => {   
-    let layout = new DocLayoutEditor({initialValue: { layout: LAYOUT.A4_PORTRAIT },  close:closeMock});
-    layout. _onSelect(LAYOUT.A4_PORTRAIT);
-    expect(layout.state.selectedValue).toBe(LAYOUT.A4_PORTRAIT);
+  it('_onSelect should change selectedValue in state', () => {
+    const comp = new DocLayoutEditor({
+      initialValue: { layout: LAYOUT.A4_PORTRAIT },
+      close: closeMock,
+    });
+    comp._onSelect(LAYOUT.A4_PORTRAIT);
+    expect(comp.state.selectedValue).toBe(LAYOUT.A4_PORTRAIT);
   });
 
-  it('_cancel should call props close', () => {   
-    let layout = new DocLayoutEditor({initialValue: { layout: LAYOUT.A4_PORTRAIT },  close:closeMock});
-    layout._cancel();
+  it('_cancel should call close()', () => {
+    const comp = new DocLayoutEditor({
+      initialValue: { layout: LAYOUT.A4_PORTRAIT },
+      close: closeMock,
+    });
+    comp._cancel();
     expect(closeMock).toHaveBeenCalled();
   });
 
-  it(' _apply should call props close with LAYOUT.A4_PORTRAIT', () => {  
-    let layout = new DocLayoutEditor({initialValue: { layout: LAYOUT.A4_PORTRAIT },  close:closeMock});
-    layout._apply ();
-    expect(closeMock).toHaveBeenCalledWith({ width: null, layout: LAYOUT.A4_PORTRAIT })
+  it('_apply should call close() with layout value', () => {
+    const comp = new DocLayoutEditor({
+      initialValue: { layout: LAYOUT.A4_PORTRAIT },
+      close: closeMock,
+    });
+    comp._apply();
+    expect(closeMock).toHaveBeenCalledWith({
+      width: null,
+      layout: LAYOUT.A4_PORTRAIT,
+    });
   });
 
-  it(' _apply should call props close with LAYOUT.A4_PORTRAIT', () => {  
-    let layout = new DocLayoutEditor({initialValue: { width: 500 },  close:closeMock});
-    layout._apply ();
-    expect(closeMock).toHaveBeenCalledWith({ width: 500, layout: null })
+  it('_apply should call close() with width value', () => {
+    const comp = new DocLayoutEditor({
+      initialValue: { width: 500 },
+      close: closeMock,
+    });
+    comp._apply();
+    expect(closeMock).toHaveBeenCalledWith({
+      width: 500,
+      layout: null,
+    });
   });
 
-  it(' propsTypes close should thow error if the parameter is a function', () => { 
-    const propName = "close";
+  it('propsTypes.close should return an Error if invalid', () => {
+    const propName = 'close';
     const output = new Error(
-        propName +
-          'must be a function with 1 arg of type DocLayoutEditorValue'
-      ) 
-  let result =  DocLayoutEditor.propsTypes.close({initialValue: { width: 500 },  close:(val?: DocLayoutEditorValue) => {}}, "close");
-  expect(result).toEqual(output);
+      `${propName}must be a function with 1 arg of type DocLayoutEditorValue`
+    );
+
+    const result = DocLayoutEditor.propsTypes.close(
+      { initialValue: { width: 500 }, close: (val?: DocLayoutEditorValue) => {} },
+      'close'
+    );
+
+    expect(result).toEqual(output);
+  });
+
+  it('renders Cancel and Apply buttons', () => {
+    renderPure(<DocLayoutEditor close={closeMock} />);
+    const html = container.innerHTML;
+    expect(html).toContain('Cancel');
+    expect(html).toContain('Apply');
   });
 });
-
-

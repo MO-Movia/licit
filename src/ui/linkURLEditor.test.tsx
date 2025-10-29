@@ -1,109 +1,93 @@
-import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import * as React from 'react';
 import LinkURLEditor from './linkURLEditor';
 
-// Mock the required components and functions
+jest.mock('../sanitizeURL', () => jest.fn((url) => `sanitized:${url}`));
+
 jest.mock('@modusoperandi/licit-ui-commands', () => ({
-  CustomButton: jest.fn(() => <button>Mocked CustomButton</button>),
-  preventEventDefault: jest.fn(),
+  CustomButton: 'CustomButton',
+  preventEventDefault: jest.fn((e?: any) => e?.preventDefault && e.preventDefault()),
 }));
 
-jest.mock('../sanitizeURL', () => jest.fn((url) => `sanitized-${url}`));
+jest.mock('@modusoperandi/licit-doc-attrs-step', () => ({
+  UICommand: { theme: 'dark' },
+}));
 
-describe('LinkURLEditor Component', () => {
-  const closeMock = jest.fn();
+describe('LinkURLEditor (pure Jest tests)', () => {
+  let mockProps: any;
+  const sanitizeURL = require('../sanitizeURL');
 
   beforeEach(() => {
-    closeMock.mockClear();
+    mockProps = {
+      href: '',
+      close: jest.fn(),
+    };
+    jest.clearAllMocks();
   });
 
-  it('should render correctly with initial props', () => {
-    render(<LinkURLEditor href="http://example.com" close={closeMock} />);
+  it('should render the main structure correctly', () => {
+    const instance = new LinkURLEditor(mockProps);
+    const result = instance.render() as any;
 
-    // Check if the URL input field is rendered with the correct initial value
-    const inputField = screen.getByPlaceholderText('Paste a URL');
-    expect(inputField).toHaveValue('http://example.com');
-
-    // Check if the Apply button is rendered
-    const linkText = screen.getByText('Add a Link');
-    expect(linkText).toBeInTheDocument();
+    expect(result.type).toBe('div');
+    expect(result.props.className).toContain('czi-image-url-editor dark');
   });
 
-  it('should render correctly if href is empty', () => {
-    render(<LinkURLEditor href="" close={closeMock} />);
+  it('should update state on _onURLChange', () => {
+    const instance = new LinkURLEditor(mockProps);
 
-    // Check if the URL input field is rendered with the correct initial value
-    const inputField = screen.getByPlaceholderText('Paste a URL');
-   
-    expect(inputField).toHaveValue('');
+    //  manually spy on setState to simulate synchronous update
+    const setStateSpy = jest.spyOn(instance, 'setState').mockImplementation((update: any) => {
+      instance.state = { ...instance.state, ...update };
+    });
 
-    // Check if the Apply button is rendered
-    const linkText = screen.getByText('Add a Link');
-    expect(linkText).toBeInTheDocument();
+    const event = { target: { value: 'http://example.com' } } as any;
+    instance._onURLChange(event);
+
+    expect(setStateSpy).toHaveBeenCalledWith({ url: 'http://example.com' });
+    expect(instance.state.url).toBe('http://example.com');
+
+    setStateSpy.mockRestore();
   });
 
-  it('should update URL state when input changes', () => {
-    render(<LinkURLEditor href="http://example.com" close={closeMock} />);
-
-    const inputField = screen.getByPlaceholderText('Paste a URL');
-    fireEvent.change(inputField, { target: { value: 'http://new-url.com' } });
-
-    // Check if the input field value has been updated
-    expect(inputField).toHaveValue('http://new-url.com');
+  it('should call close() on _cancel', () => {
+    const instance = new LinkURLEditor(mockProps);
+    instance._cancel();
+    expect(mockProps.close).toHaveBeenCalled();
   });
 
-  it('_onKeyDown should call _apply', () => {
-    let mockCLose = closeMock;
-let result = new LinkURLEditor({href: "http://example.com", close:mockCLose});
-result._onKeyDown({
-    key: 'Enter', code: 'Enter', charCode: 27,
-    altKey: false,
-    ctrlKey: false,
-    preventDefault: function (): void {
-    },
-    timeStamp: 0,
-    type: ''
-} as React.KeyboardEvent);
-  expect(result.props.close).toHaveBeenCalledWith("sanitized-http://example.com");
+  it('should sanitize and call close() with sanitized URL on _apply', () => {
+    const instance = new LinkURLEditor(mockProps);
+
+    //  force the state manually (no React lifecycle)
+    instance.state = { url: 'http://good.com' };
+
+    instance._apply();
+    expect(sanitizeURL).toHaveBeenCalledWith('http://good.com');
+    expect(mockProps.close).toHaveBeenCalledWith('sanitized:http://good.com');
   });
 
-  it('_cancel should call the close', () => {
-let result = new LinkURLEditor({href: "http://example.com", close:closeMock});
-result._cancel();
-  expect(result.props.close).toHaveBeenCalled();
+  it('should not call close() when URL has spaces in _apply', () => {
+    const instance = new LinkURLEditor(mockProps);
+    instance.state = { url: 'bad url' };
+    instance._apply();
+    expect(mockProps.close).not.toHaveBeenCalled();
   });
 
-  it(' propsTypes close should return null if its not constructor', () => { 
-    const propName = "close";
-    const output = new Error(
-        propName +
-          'must be a function with 1 arg of type string'
-      ) 
-      let result = LinkURLEditor.propsTypes.close({
-          href: "",
-          close: function (props?: any, propName?: string): Error {
-              return output;
-          }
-      }, "close");
-  expect(result).toEqual(null);
+  it('should prevent default and apply on Enter key', () => {
+    const instance = new LinkURLEditor(mockProps);
+    const preventDefault = jest.fn();
+    const applySpy = jest.spyOn(instance, '_apply');
+    const event = { key: 'Enter', preventDefault } as any;
+    instance._onKeyDown(event);
+    expect(preventDefault).toHaveBeenCalled();
+    expect(applySpy).toHaveBeenCalled();
   });
 
-  it(' propsTypes close should thow error if the parameter is a function', () => { 
-    const propName = "close";
-    const output = new Error(
-        propName +
-          'must be a function with 1 arg of type string'
-      ) 
-      let result = LinkURLEditor.propsTypes.close({
-          href: "",
-          close: (props?: any, propName?: string): Error => {
-              return output;
-          }
-      }, "close");;
-  expect(result).toEqual(output);
+  it('should not trigger _apply for non-Enter key', () => {
+    const instance = new LinkURLEditor(mockProps);
+    const applySpy = jest.spyOn(instance, '_apply');
+    const event = { key: 'A', preventDefault: jest.fn() } as any;
+    instance._onKeyDown(event);
+    expect(applySpy).not.toHaveBeenCalled();
   });
-
 });
-
-

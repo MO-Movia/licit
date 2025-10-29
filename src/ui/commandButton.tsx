@@ -7,7 +7,7 @@ import * as React from 'react';
 import { CustomButton, ThemeContext } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { EditorRuntime } from '../types';
-type CommandButtonProps = {
+export type CommandButtonProps = {
   className?: string;
   command: UICommand;
   disabled?: boolean;

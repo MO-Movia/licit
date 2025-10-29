@@ -60,4 +60,57 @@ describe('canUseCSSFont', () => {
     const result = await canUseCSSFont('Arial');
     expect(result).toBe(true);
   });
+it("should use setTimeout and wait for status to change from 'loading' to 'loaded'", async () => {
+  jest.useFakeTimers();
+
+  let status = 'loading';
+  const FONT_NAME = 'DelayedFont';
+  const loadDelay = 350;
+
+  // We'll manually control when ready resolves
+  let readyResolve!: () => void;
+  const readyPromise = new Promise<void>((resolve) => (readyResolve = resolve));
+
+  const mockFonts = {
+    check: jest.fn().mockReturnValue(true),
+    ready: readyPromise, // ready will resolve only when we call readyResolve()
+    get status() {
+      return status;
+    },
+    values: jest.fn().mockReturnValue([{ family: FONT_NAME }]),
+  };
+
+  Object.defineProperty(document, 'fonts', { value: mockFonts, configurable: true });
+
+  // Start the function — this will call doc.fonts.ready.then(check)
+  const promise = canUseCSSFont(FONT_NAME);
+
+  // Resolve the .ready promise (so check() runs)
+  readyResolve();
+
+  // First run: status = 'loading', so it should schedule a timeout
+  await Promise.resolve(); // let the check() run once
+  expect(mockFonts.status).toBe('loading');
+
+  // Advance time — this triggers setTimeout(check, 350)
+  jest.advanceTimersByTime(loadDelay - 1);
+
+  // Change status just before the final tick
+  status = 'loaded';
+
+  // Advance one more ms to reach 350
+  jest.advanceTimersByTime(1);
+
+  // Let the async microtasks (like the promise resolve) flush
+  await Promise.resolve();
+  await Promise.resolve();
+
+  const result = await promise;
+
+  expect(result).toBe(true);
+  expect(mockFonts.values).toHaveBeenCalledTimes(1);
+
+  jest.useRealTimers();
+});
+
 });

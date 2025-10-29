@@ -11,7 +11,7 @@ const columnResizingProps = {
   cellMinWidth: TABLE_CELL_MINWIDTH,
   View: TABLE_VIEW,
 };
-function lookUpTableWrapper(event: Event): HTMLElement | null {
+export function lookUpTableWrapper(event: Event): HTMLElement | null {
   const target = event.target;
   if (!target || !(target as Element).closest) {
     return null;
@@ -19,7 +19,7 @@ function lookUpTableWrapper(event: Event): HTMLElement | null {
   return (target as Element).closest('.tableWrapper');
 }
 
-function dispatchMouseEvent(type: string, clientX: number): void {
+export function dispatchMouseEvent(type: string, clientX: number): void {
   requestAnimationFrame(() => {
     const event = new MouseEvent(type, {
       view: window,
@@ -31,7 +31,7 @@ function dispatchMouseEvent(type: string, clientX: number): void {
   });
 }
 
-function calculateMaxClientX(
+export function calculateMaxClientX(
   event: MouseEvent,
   targetTable: HTMLElement
 ): number {

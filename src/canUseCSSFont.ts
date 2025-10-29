@@ -9,9 +9,9 @@ export default function canUseCSSFont(fontName: string): Promise<boolean> {
 
   if (
     !doc.fonts?.check ||
-    !doc.fonts?.ready ||
     !doc.fonts?.status ||
-    !doc.fonts?.values
+    !doc.fonts?.values ||
+    !('ready' in doc.fonts)
   ) {
     // Feature is not supported, install the CSS anyway
     // https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/check#Browser_compatibility

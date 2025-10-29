@@ -91,7 +91,7 @@ let ydoc: Y.Doc = null;
 let devTools: Promise<() => void>;
 let applyDevTools;
 
-const configCollab = (
+export const configCollab = (
   docID: string,
   instanceID: string,
   ref: { collaboration: boolean; currentUser: Record<string, unknown> },
@@ -221,7 +221,7 @@ const updateSpec = (
   }
 };
 
-const updateSpecAttrs = (
+export const updateSpecAttrs = (
   i: number,
   collection: Array<unknown>,
   existingSchema: Schema,

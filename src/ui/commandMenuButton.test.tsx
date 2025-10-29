@@ -1,120 +1,135 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import * as React from 'react';
 import CommandMenuButton from './commandMenuButton';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { EditorState } from 'prosemirror-state';
-import { EditorViewEx } from '../constants';
-import {createPopUp} from '@modusoperandi/licit-ui-commands';
-import React from 'react';
-import { STRONG, TABLE_INSERT_TABLE } from '../editorCommands';
-import '@testing-library/jest-dom';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 
-// Mocking the entire module
+//  Mock Dependencies
 jest.mock('@modusoperandi/licit-ui-commands', () => ({
-    ...jest.requireActual('@modusoperandi/licit-ui-commands'),
-    createPopUp: jest.fn().mockReturnValue({ close: jest.fn(), update: jest.fn() }) 
-  }));
+  CustomButton: (props: any) => React.createElement('button', props),
+  createPopUp: jest.fn(() => ({ close: jest.fn(), update: jest.fn() })),
+  atAnchorRight: jest.fn(),
+  ThemeContext: React.createContext('light'),
+}));
+
+jest.mock('@modusoperandi/licit-doc-attrs-step', () => ({
+  UICommand: { theme: 'light' },
+}));
+
+jest.mock('../constants', () => ({
+  EditorViewEx: jest.fn(),
+}));
+
+jest.mock('./editorToolbarConfig', () => ({
+  isExpandButton: jest.fn(() => false),
+}));
+
+jest.mock('./uuid', () => jest.fn(() => 'mock-uuid'));
+
+jest.mock('./commandMenu', () => 'CommandMenu');
+  
+const mockCommand = {
+  isEnabled: jest.fn(() => true),
+};
+
+const mockCommandGroups = [
+  { Bold: mockCommand },
+];
+
+const mockProps = {
+  commandGroups: mockCommandGroups,
+  dispatch: jest.fn(),
+  editorState: {} as EditorState,
+  editorView: {} as any,
+  title: 'Bold Menu',
+  label: 'Bold',
+  className: 'test-btn',
+};
 
 describe('CommandMenuButton', () => {
-    UICommand.theme = "dark";
-  const mockDispatch = jest.fn();
-  const mockEditorState = {
-          selection: {
-            node: null,
-            anchor: 0,
-            head: 0,
-            from: 1,
-            to: 2,
-          },
-          plugins: [],
-          tr: {
-            doc: {
-              nodeAt: (_x) => {
-                return {isAtom: true, isLeaf: true, isText: false};
-              },
-            },
-          },
-          schema: {marks: {'mark-font-type': undefined}},
-        } as unknown as EditorState;
-
-  const mockEditorView = {} as EditorViewEx;
-  
-  const commandGroups = [
-        {
-          'Insert Table...': TABLE_INSERT_TABLE,
-        },
-      ];
-
-  const mockProps = {
-    commandGroups,
-    dispatch: mockDispatch,
-    editorState: mockEditorState,
-    editorView: mockEditorView,
-    label: 'Insert Table',
-    title: 'Insert Table',
-    theme: 'dark',
-    disabled: false,
-  };
-
-  it('renders CommandMenuButton with correct props', () => {
-    const {getByText} = render(<CommandMenuButton {...mockProps} />);
-    expect(getByText("Insert Table")).toBeDefined();
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('should toggle the menu when clicked', () => {
-  const {getByText} = render(<CommandMenuButton {...mockProps} />);
-    
-    const button = getByText('Insert Table');
-
-    // Verify initial state (menu should not be expanded initially)
-    expect(button).toHaveClass('czi-custom-menu-button');
-    
+  test('renders without crashing', () => {
+    const element = React.createElement(CommandMenuButton, mockProps);
+    expect(element).toBeTruthy();
   });
 
-  it('_onClick called', () => {
-    
-    let button = new CommandMenuButton(mockProps);
-
-    button._onClick();
-
-    expect(createPopUp).toHaveBeenCalled()
+  test('initial state should not be expanded', () => {
+    const instance = new (CommandMenuButton as any)(mockProps);
+    expect(instance.state.expanded).toBe(false);
   });
 
-  it('menu should update if already open', () => {
-    
-    let button = new CommandMenuButton(mockProps);
-    button._menu = { close: jest.fn(), update: jest.fn() };
+  test('should toggle expanded state on click', () => {
+  const instance = new (CommandMenuButton as any)(mockProps);
+  const setStateSpy = jest.spyOn(instance, 'setState');
 
-    button._onClick();
+  // Simulate first click (expands)
+  instance._onClick();
+  expect(setStateSpy).toHaveBeenNthCalledWith(1, { expanded: true });
 
-    expect( button._menu).toBeDefined();
+  // Manually reflect the state change (React would normally do this)
+  instance.state.expanded = true;
+
+  // Simulate second click (collapses)
+  instance._onClick();
+  expect(setStateSpy).toHaveBeenNthCalledWith(2, { expanded: false });
+});
+
+  test('should call createPopUp when _showMenu is triggered', () => {
+    const { createPopUp } = require('@modusoperandi/licit-ui-commands');
+    const instance = new (CommandMenuButton as any)(mockProps);
+    instance._showMenu();
+
+    expect(createPopUp).toHaveBeenCalled();
   });
 
-  it('menu should close when expand is false', () => {
-    
-    let button = new CommandMenuButton(mockProps);
-    button._menu = { close: jest.fn(), update: jest.fn() };
-    button.state.expanded = true;
+  test('should close popup on _hideMenu', () => {
+    const closeMock = jest.fn();
+    const instance = new (CommandMenuButton as any)(mockProps);
+    instance._menu = { close: closeMock };
+    instance._hideMenu();
 
-    button._onClick();
-
-    expect(button._menu).toBeNull();
+    expect(closeMock).toHaveBeenCalled();
+    expect(instance._menu).toBeNull();
   });
 
-  it('menu should close on _onCommand', () => {
-    
-    let button = new CommandMenuButton(mockProps);
-    button._onCommand();
-    expect(button._menu).toBeNull();
+  test('should set expanded to false on _onCommand', () => {
+    const instance = new (CommandMenuButton as any)(mockProps);
+    instance.setState({ expanded: true });
+    instance._onCommand();
+    expect(instance.state.expanded).toBe(false);
   });
 
-  it('menu should close when _onClose called', () => {
-    
-    let button = new CommandMenuButton(mockProps);
-    button._menu = { close: jest.fn(), update: jest.fn() };
-
-    button._onClose();
-
-    expect(button._menu).toBeNull();
+  test('should nullify menu on _onClose', () => {
+    const instance = new (CommandMenuButton as any)(mockProps);
+    instance._menu = { dummy: true };
+    instance._onClose();
+    expect(instance._menu).toBeNull();
+    expect(instance.state.expanded).toBe(false);
   });
+
+  test('should set _menu to null on unmount', () => {
+    const instance = new (CommandMenuButton as any)(mockProps);
+    const hideMenuSpy = jest.spyOn(instance, '_hideMenu');
+    instance.componentWillUnmount();
+    expect(hideMenuSpy).toHaveBeenCalled();
+  });
+
+test('should pass correct theme to CustomButton', () => {
+  const instance = new (CommandMenuButton as any)(mockProps);
+  const rendered = instance.render();
+
+  // The rendered element is a React element of type 'button' (CustomButton mock)
+  expect(rendered.type).toBe(CustomButton);
+
+  // Props passed to CustomButton should include theme derived from UICommand.theme
+  expect(rendered.props.theme).toBe('light');
+  expect(rendered.props.className).toContain('czi-custom-menu-button');
+  expect(rendered.props.label).toBe('Bold');
+});
+
+
 });
 

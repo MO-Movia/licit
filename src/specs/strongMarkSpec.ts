@@ -1,7 +1,5 @@
 import type { MarkSpec } from 'prosemirror-model';
 
-// import type { MarkSpec } from './Types.js';
-
 const StrongMarkSpec: MarkSpec = {
   attrs: {
     overridden: { default: false }

@@ -1,12 +1,25 @@
-import { ATTRIBUTE_LIST_STYLE_TYPE } from './listItemNodeSpec';
-import OrderedListNodeSpec, { ATTRIBUTE_COUNTER_RESET, ATTRIBUTE_FOLLOWING } from './orderedListNodeSpec'; // Adjust the import path
-import { ATTRIBUTE_INDENT, MIN_INDENT_LEVEL, RESERVED_STYLE_NONE } from './paragraphNodeSpec';
+import {ATTRIBUTE_LIST_STYLE_TYPE} from './listItemNodeSpec';
+import OrderedListNodeSpec, {
+  ATTRIBUTE_COUNTER_RESET,
+  ATTRIBUTE_FOLLOWING,
+} from './orderedListNodeSpec'; // Adjust the import path
+import {
+  ATTRIBUTE_INDENT,
+  MIN_INDENT_LEVEL,
+  RESERVED_STYLE_NONE,
+} from './paragraphNodeSpec';
+import {Node} from 'prosemirror-model';
+
+type DOMSpecTuple = [
+  tag: string,
+  attrs: Record<string, string>,
+  content: number,
+];
 
 describe('OrderedListNodeSpec', () => {
-
   describe('parseDOM', () => {
     it('should correctly parse attributes from an <ol> element', () => {
-      const mockOlElement:any = {
+      const mockOlElement: any = {
         getAttribute: jest.fn((attr) => {
           const attrs = {
             [ATTRIBUTE_LIST_STYLE_TYPE]: 'decimal',
@@ -15,7 +28,7 @@ describe('OrderedListNodeSpec', () => {
             start: '5',
             name: 'myList',
             [ATTRIBUTE_FOLLOWING]: 'true',
-            type: 'x.x.x'
+            type: 'x.x.x',
           };
           return attrs[attr];
         }),
@@ -27,7 +40,7 @@ describe('OrderedListNodeSpec', () => {
             'start',
             'name',
             ATTRIBUTE_FOLLOWING,
-            'type'
+            'type',
           ];
           return attrs.includes(attr); // Returns true if the attribute is one of the known attributes
         }),
@@ -42,7 +55,7 @@ describe('OrderedListNodeSpec', () => {
         listStyleType: 'decimal',
         name: 'myList',
         start: 5,
-        type: 'x.x.x'
+        type: 'x.x.x',
       });
     });
 
@@ -51,7 +64,7 @@ describe('OrderedListNodeSpec', () => {
         getAttribute: jest.fn((attr) => {
           const attrs = {
             [ATTRIBUTE_LIST_STYLE_TYPE]: 'lower-roman',
-            start: '1'
+            start: '1',
             // Simulate missing optional attributes
           };
           return attrs[attr];
@@ -71,7 +84,7 @@ describe('OrderedListNodeSpec', () => {
         listStyleType: 'lower-roman',
         name: undefined,
         start: 1,
-        type: undefined
+        type: undefined,
       });
     });
   });
@@ -87,8 +100,8 @@ describe('OrderedListNodeSpec', () => {
           name: 'myList',
           start: 5,
           type: 'x.x.x',
-          styleName: RESERVED_STYLE_NONE
-        }
+          styleName: RESERVED_STYLE_NONE,
+        },
       };
 
       const result = OrderedListNodeSpec.toDOM(mockNode);
@@ -103,9 +116,9 @@ describe('OrderedListNodeSpec', () => {
           start: 5,
           name: 'myList',
           type: 'x.x.x',
-          style: expect.any(String) // Expect the style to be a string but we don't check the exact content here
+          style: expect.any(String), // Expect the style to be a string but we don't check the exact content here
         },
-        0
+        0,
       ]);
     });
 
@@ -119,8 +132,8 @@ describe('OrderedListNodeSpec', () => {
           name: 'myList',
           start: 5,
           type: 'x.x.x',
-          styleName: RESERVED_STYLE_NONE
-        }
+          styleName: RESERVED_STYLE_NONE,
+        },
       };
 
       const result = OrderedListNodeSpec.toDOM(mockNode);
@@ -135,10 +148,24 @@ describe('OrderedListNodeSpec', () => {
           start: 5,
           name: 'myList',
           type: 'x.x.x',
-          style: expect.any(String) // The style should still be generated, even if listStyleType is undefined
+          style: expect.any(String), // The style should still be generated, even if listStyleType is undefined
         },
-        0
+        0,
       ]);
     });
+  });
+
+  it('should generate correct counter reset styles', () => {
+    const node = {
+      attrs: {indent: 2, start: 3},
+    } as unknown as Node;
+
+    const result = OrderedListNodeSpec.toDOM!(node) as DOMSpecTuple;
+    const attrs = result[1];
+
+    expect(attrs.style).toContain('--czi-counter-name: czi-counter-2;');
+    expect(attrs.style).toContain(
+      '--czi-counter-name: czi-counter-2;--czi-counter-reset: 2;--czi-list-style-type: lower-roman'
+    );
   });
 });

@@ -1,31 +1,59 @@
 import EMMarkSpec from './emMarkSpec'; // Adjust import path
-import { Mark } from 'prosemirror-model';
+import {Attrs, Mark, MarkType} from 'prosemirror-model';
 
 describe('EMMarkSpec', () => {
-  it('parseDOM should parse <em> and <i> tags', () => {
-    const domElementI = { tagName: 'i' }; // Simulate <i> tag
-    const parsedAttrsI = EMMarkSpec.parseDOM.find(rule => rule.tag === domElementI.tagName);
-    expect(parsedAttrsI).toBeTruthy(); // Since we only care about whether <i> triggers this
+  it('parseDOM should parse <i>, <em>, and span with italic style', () => {
+    const parseRules = EMMarkSpec.parseDOM || [];
 
-    const domElementEm = { tagName: 'em' }; // Simulate <em> tag
-    const parsedAttrsEm = EMMarkSpec.parseDOM.find(rule => rule.tag === domElementEm.tagName);
-    expect(parsedAttrsEm).toBeTruthy(); // Check if <em> tag is recognized
+    // <i> tag
+    const domI = document.createElement('i');
+    domI.setAttribute('overridden', 'true');
+    const ruleI = parseRules.find((rule) => rule.tag === 'i');
+    expect(ruleI).toBeTruthy();
+    if (ruleI?.getAttrs) {
+      const attrs = ruleI.getAttrs(domI as HTMLElement & string);
+      if (attrs) expect(attrs.overridden).toBe(true);
+    }
 
-    const domElementStyle = { style: 'font-style=italic' }; // Simulate <em> tag
-    const parsedAttrsStyle = EMMarkSpec.parseDOM.find((rule:any) => rule.style === domElementStyle.style);
-    expect(parsedAttrsStyle).toBeTruthy(); // Check if <em> tag is recognized
+    // <em> tag
+    const domEm = document.createElement('em');
+    domEm.setAttribute('overridden', 'false');
+    const ruleEm = parseRules.find((rule) => rule.tag === 'em');
+    expect(ruleEm).toBeTruthy();
+    if (ruleEm?.getAttrs) {
+      const attrs = ruleEm.getAttrs(domEm as HTMLElement & string);
+      if (attrs) expect(attrs.overridden).toBe(false);
+    }
+
+    // <span style="font-style: italic">
+    const domSpan = document.createElement('span');
+    domSpan.setAttribute('overridden', 'true');
+    domSpan.setAttribute('style', 'font-style: italic');
+    const ruleSpan = parseRules.find(
+      (rule) => rule.tag === 'span[style*=font-style]'
+    );
+    expect(ruleSpan).toBeTruthy();
+    if (ruleSpan?.getAttrs) {
+      const attrs = ruleSpan.getAttrs(domSpan as HTMLElement & string);
+      if (attrs) expect(attrs.overridden).toBe(true);
+    }
   });
 
-  it('toDOM should return <em> tag with correct DOM structure', () => {
-    const markSpec = EMMarkSpec;
+  it('toDOM should return <em> tag with overridden attribute', () => {
+    const mockMarkType = {} as MarkType;
+    const mockMark: Mark = {
+      type: mockMarkType,
+      attrs: {overridden: true} as Attrs,
+      addToSet: (marks: readonly Mark[]) => [...marks],
+      removeFromSet: () => [],
+      isInSet: () => false,
+      eq: () => true,
+      toJSON: () => ({attrs: {overridden: true}, type: 'em'}),
+    };
 
-    // Create a mock Mark instance
-    const mockMark = {
-      attrs: {}
-    } as Mark;
+    if (!EMMarkSpec.toDOM) throw new Error('EMMarkSpec.toDOM is not defined');
 
-    // Check the output of the toDOM method
-    const domOutput = markSpec.toDOM(mockMark, false);
-    expect(domOutput).toEqual(['em', 0]); // Should return <em> with no additional attributes
+    const domOutput = EMMarkSpec.toDOM(mockMark, true);
+    expect(domOutput).toEqual(['em', {overridden: true}, 0]);
   });
 });

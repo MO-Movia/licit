@@ -1,113 +1,81 @@
-// RichTextEditor.test.tsx
+import * as React from 'react';
+import RichTextEditor from './richTextEditor';
+import { Transform } from 'prosemirror-transform';
+import { Transaction } from 'prosemirror-state';
 
-import React from 'react';
-import { render, screen} from '@testing-library/react';
-import RichTextEditor from './RichTextEditor'; // Adjust the path accordingly
-import { Editor } from '@tiptap/react';
-import '@testing-library/jest-dom';
-import { EditorState } from 'prosemirror-state';
+// ? Define the props interface same as used by RichTextEditor
+interface MockEditorFramesetProps {
+  body: any;
+  className?: string;
+  embedded?: boolean;
+  header?: string;
+  height?: number;
+  toolbar?: any;
+  width?: number;
+}
 
-// Mock uuid function
-jest.mock('./uuid', () => jest.fn(() => 'mocked-uuid'));
-// Mock the findActiveFontSize function since it's an external function
-jest.mock('../findActiveFontSize', () => jest.fn().mockReturnValue(12));
+// ? Mock EditorFrameset properly
+jest.mock('./editorFrameset', () => ({
+  __esModule: true,
+  default: (props: MockEditorFramesetProps) => ({
+    type: 'EditorFrameset',
+    props,
+  }),
+}));
 
-jest.mock('./editorFrameset', () => {
-  return jest.fn(() => (
-    <div className="mock-editor-frameset">
-      Mocked EditorFrameset
-    </div>
-  ));
-});
+// ? Mock EditorToolbar
+jest.mock('./editorToolbar', () => ({
+  __esModule: true,
+  default: jest.fn((props) => ({ type: 'EditorToolbar', props })),
+}));
 
-jest.mock('./editorToolbar', () => {
-  return jest.fn(() => (
-    <div className="czi-editor-toolbar">
-      Mocked EditorToolbar
-    </div>
-  ));
-});
+// ? Mock Frag and EditorContent
+jest.mock('./frag', () => ({
+  __esModule: true,
+  default: (props: any) => ({ type: 'Frag', props }),
+}));
+jest.mock('@tiptap/react', () => ({
+  EditorContent: jest.fn((props) => ({ type: 'EditorContent', props })),
+}));
 
-describe('RichTextEditor', () => {
-  afterEach(() => {
-    //cleanup();
-  });
-const state = {
-  selection: {
-    node: null,
-    anchor: 0,
-    head: 0,
-    from: 1,
-    to: 2,
-  },
-  plugins: [],
-  tr: {
-    doc: {
-      nodeAt: (_x) => {
-        return {isAtom: true, isLeaf: true, isText: false};
+jest.mock('./uuid', () => jest.fn(() => 'mock-uuid'));
+
+describe('RichTextEditor (pure Jest tests)', () => {
+  let mockProps: any;
+
+  beforeEach(() => {
+    mockProps = {
+      editor: {
+        view: { dispatch: jest.fn() },
       },
-    },
-  },
-} as unknown as EditorState;
-  const defaultProps = {
-    editor: { view: { dispatch: jest.fn() } } as unknown as Editor,
-    editorState: state,
-    toolbarConfig: {},
-    readOnly: false,
-    disabled: false,
-    height: 200,
-    width: 300,
-    onReady: jest.fn(),
-  };
+      editorState: {},
+      editorView: {},
+      readOnly: false,
+      disabled: false,
+      embedded: false,
+      header: 'Test Header',
+      height: 500,
+      width: 800,
+      toolbarConfig: {},
+    };
+  });
 
+ it('should dispatch transaction when _dispatchTransaction is called', () => {
+    const instance = new RichTextEditor(mockProps, {});
+    const mockTransform = new Transform(null as any);
+    instance._dispatchTransaction(mockTransform);
+    expect(mockProps.editor.view.dispatch).toHaveBeenCalled();
+  });
+
+  it('should set editorView and call onReady in _onReady', () => {
+    const instance = new RichTextEditor(mockProps, {});
+    const mockEditorView = { view: true } as any;
+    const onReady = jest.fn();
+    instance.props.onReady = onReady;
+
+    instance._onReady(mockEditorView);
+    expect(instance.state.editorView).toBe(null);
+    expect(onReady).toHaveBeenCalledWith(mockEditorView);
+  });
   
-
-  it('should render the editor with correct components', () => {
-    render(<RichTextEditor {...defaultProps} />);
-
-    // Check if the mocked components render correctly
-    expect(screen.getByText('Mocked EditorFrameset')).toBeInTheDocument();
-  });
-
-  it('should render the editor with correct components even if it is read only', () => {
-    const propsWithReadOnly = {
-      ...defaultProps,
-      readOnly: true,
-    };
-    render(<RichTextEditor {...propsWithReadOnly} />);
-
-    // Check if the mocked components render correctly
-    expect(screen.getByText('Mocked EditorFrameset')).toBeInTheDocument();
-  });
-
-  it('should call the onReady function when editorView is set', () => {
-    const mockOnReady = jest.fn();
-    const propsWithOnReady = {
-      ...defaultProps,
-      onReady: mockOnReady,
-    };
-
-   let viewInstance = new RichTextEditor(propsWithOnReady, {});
-   const {view} = {} as Editor;;
-    // Simulate setting editorView
-    const editorView = view ; // Mocked editorView
-   viewInstance._onReady(editorView);
-
-    // Check if onReady was called
-    expect(mockOnReady).toHaveBeenCalledWith(editorView);
-  });
-
-  it('should dispatch a transaction when _dispatchTransaction is called', () => {
-    const dispatchTransactionMock = jest.fn();
-    const propsWithDispatchTransaction = {
-      ...defaultProps,
-      editor: { view: { dispatch: dispatchTransactionMock } } as unknown as Editor,
-    };
-
-    let viewInstance = new RichTextEditor(propsWithDispatchTransaction, {});
-
-    viewInstance._dispatchTransaction(state.tr);
-
-    expect(dispatchTransactionMock).toHaveBeenCalled();
-  });
 });

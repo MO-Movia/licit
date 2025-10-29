@@ -1,6 +1,6 @@
 import { EditorView } from 'prosemirror-view';
 import { PluginKey } from 'prosemirror-state';
-import ContentPlaceholderPlugin from './ContentPlaceholderPlugin';
+import ContentPlaceholderPlugin from './contentPlaceholderPlugin';
 import isEditorStateEmpty from '../isEditorStateEmpty';
 import ReactDOM from 'react-dom';
 import * as React from 'react';

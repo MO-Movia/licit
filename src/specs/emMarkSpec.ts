@@ -1,4 +1,4 @@
-import type { MarkSpec, DOMOutputSpec } from 'prosemirror-model';
+import type { MarkSpec } from 'prosemirror-model';
 
 
 const EMMarkSpec: MarkSpec = {

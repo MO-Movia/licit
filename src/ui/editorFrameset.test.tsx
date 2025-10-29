@@ -1,63 +1,83 @@
-import { render, screen } from '@testing-library/react';
-import React from 'react';
-import EditorFrameset, { FRAMESET_BODY_CLASSNAME } from './editorFrameset'; 
-import { ThemeContext } from '@modusoperandi/licit-ui-commands';
-import '@testing-library/jest-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import EditorFrameset, { FRAMESET_BODY_CLASSNAME } from './editorFrameset';
 
-// Mock the ThemeContext to provide a theme
-const mockThemeContextValue = 'dark';
+//  Mock ThemeContext to avoid actual dependency
+jest.mock('@modusoperandi/licit-ui-commands', () => ({
+  ThemeContext: React.createContext('mock-theme'),
+}));
 
-describe('EditorFrameset', () => {
-  it('should render with correct classes and styles', () => {
-   const {container} = render(
-      <ThemeContext.Provider value={mockThemeContextValue}>
-        <EditorFrameset height={50} width={80} className="custom-class" />
-      </ThemeContext.Provider>
-    );
+describe('EditorFrameset (pure Jest)', () => {
+  let container: HTMLDivElement;
 
-    const editorFrame = container.firstChild; // Assuming it's a 'region' element
-    expect(editorFrame).toHaveClass('czi-editor-frameset');
-    expect(editorFrame).toHaveClass('with-fixed-layout');
-    expect(editorFrame).toHaveClass('custom-class');
-    expect(editorFrame).toHaveStyle('width: 80vh');
-    expect(editorFrame).toHaveStyle('height: 50vh');
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
   });
 
-  it('toCSS should return undefined if width is null', () => {
-    const {container} = render(
-       <ThemeContext.Provider value={mockThemeContextValue}>
-         <EditorFrameset height={50} width={null} className="custom-class" />
-       </ThemeContext.Provider>
-     );
- 
-     const editorFrame = container.firstChild; // Assuming it's a 'region' element
-     expect(editorFrame).toHaveClass('czi-editor-frameset');
-     expect(editorFrame).toHaveStyle('width: undefined');
-   });
+  afterEach(() => {
+    ReactDOM.unmountComponentAtNode(container);
+    document.body.removeChild(container);
+  });
 
-   it('toCSS should return undefined if width is auto', () => {
-    const {container} = render(
-       <ThemeContext.Provider value={mockThemeContextValue}>
-         <EditorFrameset height={50} width={'auto'} className="custom-class" />
-       </ThemeContext.Provider>
-     );
- 
-     const editorFrame = container.firstChild; // Assuming it's a 'region' element
-     expect(editorFrame).toHaveClass('czi-editor-frameset');
-     expect(editorFrame).toHaveStyle('width: undefined');
-   });
+  it('renders with base class and default layout', () => {
+    ReactDOM.render(<EditorFrameset />, container);
+    const root = container.querySelector('.czi-editor-frameset');
+    expect(root).not.toBeNull();
+    expect(root!.classList.contains('with-fixed-layout')).toBe(false);
+  });
 
-   it('toCSS should same value if it the parameter is string', () => {
-    const {container} = render(
-       <ThemeContext.Provider value={mockThemeContextValue}>
-         <EditorFrameset height={50} width={'500vh'} className="custom-class" />
-       </ThemeContext.Provider>
-     );
- 
-     const editorFrame = container.firstChild; // Assuming it's a 'region' element
-     expect(editorFrame).toHaveClass('czi-editor-frameset');
-     expect(editorFrame).toHaveStyle('width: 500vh');
-   });
+  it('adds with-fixed-layout when width or height is specified', () => {
+    ReactDOM.render(<EditorFrameset width={50} />, container);
+    const root = container.querySelector('.czi-editor-frameset');
+    expect(root).not.toBeNull();
+    expect(root!.classList.contains('with-fixed-layout')).toBe(true);
+    expect(root!.getAttribute('style')).toContain('width: 50vh;');
+  });
 
+  it('applies embedded class when embedded prop is true', () => {
+    ReactDOM.render(<EditorFrameset embedded />, container);
+    const root = container.querySelector('.czi-editor-frameset');
+    expect(root!.classList.contains('embedded')).toBe(true);
+  });
+
+  it('renders header and toolbar in the header section by default', () => {
+    const headerEl = <div id="header">Header</div>;
+    const toolbarEl = <div id="toolbar">Toolbar</div>;
+    ReactDOM.render(<EditorFrameset header={headerEl} toolbar={toolbarEl} />, container);
+
+    const head = container.querySelector('.czi-editor-frame-head');
+    expect(head!.querySelector('#header')).not.toBeNull();
+    expect(head!.querySelector('#toolbar')).not.toBeNull();
+  });
+
+  it('renders toolbar inside body when toolbarPlacement="body"', () => {
+    const toolbarEl = <div id="toolbar">Toolbar</div>;
+    ReactDOM.render(<EditorFrameset toolbar={toolbarEl} toolbarPlacement="body" />, container);
+
+    const body = container.querySelector(`.${FRAMESET_BODY_CLASSNAME}`);
+    expect(body!.querySelector('#toolbar')).not.toBeNull();
+  });
+
+  it('renders body content correctly', () => {
+    const bodyEl = <div id="body-content">Content</div>;
+    ReactDOM.render(<EditorFrameset body={bodyEl} />, container);
+
+    const scrollContainer = container.querySelector('.czi-editor-frame-body-scroll');
+    expect(scrollContainer!.querySelector('#body-content')).not.toBeNull();
+  });
+
+  it('applies theme class from context', () => {
+    // Create a custom theme context provider
+    const ThemeProvider = require('@modusoperandi/licit-ui-commands').ThemeContext.Provider;
+    ReactDOM.render(
+      <ThemeProvider value="dark-theme">
+        <EditorFrameset />
+      </ThemeProvider>,
+      container
+    );
+    const head = container.querySelector('.czi-editor-frame-head');
+    expect(head!.classList.contains('dark-theme')).toBe(true);
+  });
 });
 
