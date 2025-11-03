@@ -1,10 +1,8 @@
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { schema } from 'prosemirror-schema-basic';
-import { MARK_FONT_SIZE, HEADING, MARK_FONT_TYPE } from '@modusoperandi/licit-ui-commands';
+import {  HEADING, MARK_FONT_TYPE } from '@modusoperandi/licit-ui-commands';
 import findActiveFontType from './findActiveFontType';
 import findActiveMark from './findActiveMark';
-import { findParentNodeOfType } from 'prosemirror-utils';
-import StrongMarkSpec from './specs/strongMarkSpec';
 import FontTypeMarkSpec from './specs/fontTypeMarkSpec';
 
 jest.mock('./findActiveMark', () => jest.fn());

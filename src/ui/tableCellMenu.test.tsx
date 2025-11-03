@@ -1,76 +1,90 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import TableCellMenu from './TableCellMenu';
-import { EditorState, PluginView } from 'prosemirror-state';
-import { EditorView } from 'prosemirror-view';
-import '@testing-library/jest-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import TableCellMenu from './tableCellMenu';
+import CommandMenuButton from './commandMenuButton';
+import Icon from './icon';
+import { TABLE_COMMANDS_GROUP } from './editorToolbarConfig';
 
-// Mock the CommandMenuButton and Icon components
-jest.mock('./commandMenuButton', () => ({
-  __esModule: true,
-  default: ({ commandGroups, dispatch, editorState, editorView, icon, title }: any) => (
-    <div data-testid="command-menu-button">
-      {title}
-    </div>
-  ),
-}));
-
+// Mock dependencies
+jest.mock('./commandMenuButton', () => jest.fn(() => React.createElement('button')));
 jest.mock('./icon', () => ({
-  __esModule: true,
-  default: {
-    get: jest.fn(() => 'mock-icon'),
-  },
+  get: jest.fn(() => 'mock-icon'),
 }));
-
-// Define mock data for props
-const mockEditorState = {} as EditorState;
-const mockEditorView = {
-  dispatch: jest.fn(),
-} as unknown as EditorView;
-const mockPluginView = {
-  _menu: jest.fn(() => ['mock-group-1', 'mock-group-2']),
-} as PluginView;
-const mockActionNode = {} as Node;
 
 describe('TableCellMenu', () => {
-  it('should render the CommandMenuButton with correct props', () => {
-    render(
-      <TableCellMenu
-        editorState={mockEditorState}
-        editorView={mockEditorView}
-        pluginView={mockPluginView}
-        actionNode={mockActionNode}
-      />
-    );
+  let container: HTMLDivElement;
+  let mockEditorState: any;
+  let mockEditorView: any;
+  let mockPluginView: any;
+  let mockActionNode: Node;
 
-    // Ensure the CommandMenuButton is rendered
-    const buttonElement = screen.getByTestId('command-menu-button');
-    expect(buttonElement).toHaveTextContent('Edit'); // Ensure the title is correct
-    // Verify that the pluginView._menu function is called
-    expect((mockPluginView as any)._menu).toHaveBeenCalledWith(mockEditorState, mockActionNode, expect.anything());
-    
-    // Verify the dispatch function is passed to the button
-    expect(mockEditorView.dispatch).toBeDefined();
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+
+    mockEditorState = { doc: {} };
+    mockEditorView = { dispatch: jest.fn() };
+    mockActionNode = document.createElement('div');
+    mockPluginView = {};
+
+    jest.clearAllMocks();
   });
 
-  it('should use the default command groups if pluginView._menu is not present', () => {
-    // Override the mockPluginView to not have _menu
-    const mockPluginViewWithoutMenu = {} as PluginView;
+  afterEach(() => {
+    ReactDOM.unmountComponentAtNode(container);
+    document.body.removeChild(container);
+  });
 
-    render(
-      <TableCellMenu
-        editorState={mockEditorState}
-        editorView={mockEditorView}
-        pluginView={mockPluginViewWithoutMenu}
-        actionNode={mockActionNode}
-      />
+  test('renders with TABLE_COMMANDS_GROUP when pluginView._menu is not defined', () => {
+    const element = React.createElement(TableCellMenu, {
+      editorState: mockEditorState,
+      editorView: mockEditorView,
+      pluginView: mockPluginView,
+      actionNode: mockActionNode,
+    });
+
+    ReactDOM.render(element, container);
+
+    expect(CommandMenuButton).toHaveBeenCalledWith(
+      expect.objectContaining({
+        className: 'czi-table-cell-menu',
+        commandGroups: TABLE_COMMANDS_GROUP,
+        dispatch: mockEditorView.dispatch,
+        editorState: mockEditorState,
+        editorView: mockEditorView,
+        icon: 'mock-icon',
+        title: 'Edit',
+      }),
+      {}
     );
 
-    // Ensure the CommandMenuButton is rendered with the default command groups
-    const buttonElement = screen.getByTestId('command-menu-button');
-    expect(buttonElement).toHaveTextContent('Edit');
-    
-    // Verify _menu was not called
-    expect((mockPluginViewWithoutMenu as any)._menu).toBeUndefined();
+    expect(Icon.get).toHaveBeenCalledWith('icon_edit');
+  });
+
+  test('uses pluginView._menu return value if defined', () => {
+    const mockCmdGroups = [{ label: 'CustomCmd' }];
+    mockPluginView._menu = jest.fn(() => mockCmdGroups);
+
+    const element = React.createElement(TableCellMenu, {
+      editorState: mockEditorState,
+      editorView: mockEditorView,
+      pluginView: mockPluginView,
+      actionNode: mockActionNode,
+    });
+
+    ReactDOM.render(element, container);
+
+    expect(mockPluginView._menu).toHaveBeenCalledWith(
+      mockEditorState,
+      mockActionNode,
+      TABLE_COMMANDS_GROUP
+    );
+
+    expect(CommandMenuButton).toHaveBeenCalledWith(
+      expect.objectContaining({
+        commandGroups: mockCmdGroups,
+      }),
+      {}
+    );
   });
 });

@@ -7,25 +7,8 @@ import { Editor } from '@tiptap/core';
 import { JSONContent } from '@tiptap/react';
 
 import { Licit } from '../../src/';
-// import { ChangeCasePlugin } from "@modusoperandi/licit-changecase";
-// import { ExportPDFPlugin } from "@modusoperandi/licit-export-pdf";
-// import { MultimediaPlugin } from '@modusoperandi/licit-multimedia';
-// import { InfoIconPlugin } from '@modusoperandi/licit-info-icon';
-// import { CitationPlugin } from '@mo/licit-citation';
-// import { CustomstylePlugin } from '@modusoperandi/licit-custom-styles';
-import StyleRuntime from './CustomStyleRuntime';
 import CustomLicitRuntime from './runtime';
-import { ToolbarOrder } from './toolbar';
-import CustomStyleRuntime from './CustomStyleRuntime';
-// import { GlossaryPlugin } from '@modusoperandi/licit-glossary';
-// import { CapcoPlugin } from '@mo/licit-capco';
-// import { ObjectIdPlugin } from '@mo/licit-object-id';
-// import { PasteJSONPlugin } from '@modusoperandi/licit-paste-json'
-// import { ReferencingPlugin } from '@mo/licit-referencing';
-// import { RichCopyEmbedImagePlugin } from '@mo/licit-rich-copy-embed-images';
-// import { TableExtensionPlugin } from '@modusoperandi/licit-table-mods';
-// // import { VignettePlugin } from '@modusoperandi/licit-vignette'
-// import { VignettePlugins } from '@modusoperandi/licit-vignette'
+
 function main(): void {
   const el = document.createElement('div');
   el.id = 'licit-app';
@@ -365,14 +348,8 @@ function main(): void {
   // To pass prosemirror plugins to editor pass it to plugins property which accept array of plugin object.
   // null means no custom plugins to pass
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
-  const styleRuntime = new CustomStyleRuntime();
-
   //new ReferencingPlugin() doc top node not found issue
-  const runtime = new CustomLicitRuntime();
-  // const plugins = [new CustomstylePlugin(runtime, true), new ChangeCasePlugin(), new CapcoPlugin(1), new MultimediaPlugin(),
-  // new InfoIconPlugin(), new CitationPlugin(), new ExportPDFPlugin(true), new GlossaryPlugin(),
-  // new PasteJSONPlugin(), new RichCopyEmbedImagePlugin(), new ReferencingPlugin(), ...VignettePlugins, new ObjectIdPlugin()];
-  // 
+const runtime = new CustomLicitRuntime();
 const plugins= [];
   ReactDOM.render(
     <React.StrictMode>

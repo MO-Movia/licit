@@ -1,5 +1,4 @@
 import TextSelectionMarkSpec from './textSelectionMarkSpec'; // Adjust the import path as needed
-import { Mark } from 'prosemirror-model';
 
 describe('TextSelectionMarkSpec', () => {
 

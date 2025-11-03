@@ -1,4 +1,4 @@
-import toCSSColor, { isTransparent } from './toCSSColor';
+import toCSSColor, {isTransparent} from './toCSSColor';
 
 // Mocking the Color library to test if our code interacts correctly
 jest.mock('color', () => {
@@ -13,10 +13,10 @@ jest.mock('color', () => {
       toString: () => input,
       hex: () => {
         if (input === 'invalid') {
-            throw new Error('Invalid color');
+          throw new Error('Invalid color');
         }
         return input.toLowerCase();
-        }, // Just return the lowercased value for hex conversion
+      }, // Just return the lowercased value for hex conversion
     };
   });
 });
@@ -25,8 +25,8 @@ describe('colorUtils', () => {
   describe('toCSSColor', () => {
     it('should return an empty string for falsy input', () => {
       expect(toCSSColor('')).toBe('');
-      expect(toCSSColor(null as any)).toBe('');
-      expect(toCSSColor(undefined as any)).toBe('');
+      expect(toCSSColor(null as unknown as string)).toBe('');
+      expect(toCSSColor(undefined as unknown as string)).toBe('');
     });
 
     it('should return transparent rgba for the "transparent" keyword', () => {
@@ -67,8 +67,8 @@ describe('colorUtils', () => {
   describe('isTransparent', () => {
     it('should return true for empty or falsy input', () => {
       expect(isTransparent('')).toBe(true);
-      expect(isTransparent(null as any)).toBe(true);
-      expect(isTransparent(undefined as any)).toBe(true);
+      expect(isTransparent(null  as unknown as string)).toBe(true);
+      expect(isTransparent(undefined  as unknown as string)).toBe(true);
     });
 
     it('should return true for rgba(0,0,0,0)', () => {

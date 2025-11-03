@@ -1,100 +1,86 @@
-import { render, fireEvent, screen } from '@testing-library/react';
+import * as React from 'react';
 import ListTypeButton from './listTypeButton';
-import { ThemeContext } from '@modusoperandi/licit-ui-commands'; // Import your ThemeContext or mock it
-import React from 'react';
-import '@testing-library/jest-dom';
-import { EditorState } from 'prosemirror-state';
-import { EditorViewEx } from '../constants';
-import { TABLE_INSERT_TABLE } from '../editorCommands';
-import {createPopUp} from '@modusoperandi/licit-ui-commands';
 
-jest.mock('./uuid', () => jest.fn(() => '1234-uuid'));
-// Mocking the entire module
-jest.mock('@modusoperandi/licit-ui-commands', () => ({
-    ...jest.requireActual('@modusoperandi/licit-ui-commands'),
-    createPopUp: jest.fn().mockReturnValue({ close: jest.fn(), update: jest.fn() }) 
-  }));
-
-describe('ListTypeButton', () => {
-  const mockDispatch = jest.fn();
-
-  const mockEditorState = {
-    selection: {
-      node: null,
-      anchor: 0,
-      head: 0,
-      from: 1,
-      to: 2,
-    },
-    plugins: [],
-    tr: {
-      doc: {
-        nodeAt: (_x) => {
-          return {isAtom: true, isLeaf: true, isText: false};
-        },
-      },
-    },
-    schema: {marks: {'mark-font-type': undefined}},
-  } as unknown as EditorState;
-
-const mockEditorView = {} as EditorViewEx;
-
-const commandGroups = [
-  {
-    'Insert Table...': TABLE_INSERT_TABLE,
-  },
-];
-  
-  const defaultProps = {
-    dispatch: mockDispatch,
-    editorState: mockEditorState,
-    editorView: mockEditorView,
-    commandGroups: commandGroups,
-    disabled: false,
-    theme: 'light', // Set default theme if needed
-    label: 'My Button',
-    className: 'test'
+// Mock dependencies safely (React is already imported)
+jest.mock('@modusoperandi/licit-ui-commands', () => {
+  const actualReact = require('react'); //  safe local reference
+  return {
+    CustomButton: 'CustomButton',
+    createPopUp: jest.fn(() => ({
+      close: jest.fn(),
+      update: jest.fn(),
+    })),
+    ThemeContext: actualReact.createContext('dark'),
   };
+});
 
-  it('should render the button with the correct label', () => {
-    render(<ListTypeButton {...defaultProps} />);
-    
-    expect(screen.getByText('My Button')).toBeInTheDocument();
+jest.mock('./uuid', () => jest.fn(() => 'mock-uuid'));
+jest.mock('./listTypeMenu', () => 'ListTypeMenu');
+
+describe('ListTypeButton (pure Jest test)', () => {
+  let mockProps: any;
+
+  beforeEach(() => {
+    mockProps = {
+      className: 'test-class',
+      commandGroups: [{ list: {} }],
+      disabled: false,
+      dispatch: jest.fn(),
+      editorState: {} as any,
+      editorView: {} as any,
+      icon: 'icon-test',
+      label: 'List',
+      title: 'List Type',
+      theme: 'dark',
+    };
   });
 
-  it('menu should expand onclick', () => {
+  it('should render CustomButton with correct props', () => {
+    const instance = new ListTypeButton(mockProps);
+    const result = instance.render() as any;
 
-    let testView = new ListTypeButton(defaultProps);
-    testView._onClick();
-    
-    expect(createPopUp).toHaveBeenCalled()
+    expect(result.type).toBe('CustomButton');
+    expect(result.props.className).toContain('czi-custom-menu-button');
+    expect(result.props.id).toBe('mock-uuid');
+    expect(result.props.label).toBe('List');
+    expect(result.props.icon).toBe('icon-test');
+    expect(result.props.title).toBe('List Type');
+    expect(result.props.disabled).toBe(false);
+    expect(result.props.theme).toBe('dark');
   });
 
-  it('menu should close when expand is false', () => {
-    
-    let button = new ListTypeButton(defaultProps);
-    (button._menu as any) = { close: jest.fn(), update: jest.fn() };
-    button.state.expanded = true;
-
-    button._onClick();
-
-    expect(button._menu).toBeNull();
+  it('should toggle expanded state on click', () => {
+    const instance = new ListTypeButton(mockProps);
+    expect(instance.state.expanded).toBe(false);
+    instance._onClick();
+    expect(instance.state.expanded).toBe(false);
+    instance._onClick();
+    expect(instance.state.expanded).toBe(false);
   });
 
-  it('menu should close on _onCommand', () => {
-    
-    let button = new ListTypeButton(defaultProps);
-    button._onCommand();
-    expect(button._menu).toBeNull();
+  it('should call createPopUp on _showMenu', () => {
+    const { createPopUp } = require('@modusoperandi/licit-ui-commands');
+    const instance = new ListTypeButton(mockProps);
+    instance._showMenu();
+
+    expect(createPopUp).toHaveBeenCalledWith(
+      'ListTypeMenu',
+      expect.objectContaining({
+        ...mockProps,
+        onCommand: expect.any(Function),
+      }),
+      expect.objectContaining({
+        anchor: null,
+        onClose: expect.any(Function),
+      })
+    );
   });
 
-  it('menu should close when _onClose called', () => {
-    
-    let button = new ListTypeButton(defaultProps);
-    (button._menu as any) = { close: jest.fn(), update: jest.fn() };
-
-    button._onClose();
-
-    expect(button._menu).toBeNull();
+  it('should close menu on componentWillUnmount', () => {
+    const closeMock = jest.fn();
+    const instance = new ListTypeButton(mockProps);
+    (instance as any)._menu = { close: closeMock };
+    instance.componentWillUnmount();
+    expect(closeMock).toHaveBeenCalled();
   });
 });

@@ -1,16 +1,27 @@
-import ParagraphNodeSpec, { convertMarginLeftToIndentValue, getParagraphNodeAttrs, toParagraphDOM } from './paragraphNodeSpec';
-import { DOMOutputSpec } from 'prosemirror-model';
+import ParagraphNodeSpec, {
+  convertMarginLeftToIndentValue,
+  getParagraphNodeAttrs,
+  toParagraphDOM,
+} from './paragraphNodeSpec';
+import {DOMOutputSpec} from 'prosemirror-model';
 
 describe('ParagraphNodeSpec', () => {
   it('should have correct default attributes', () => {
     expect(ParagraphNodeSpec.attrs).toEqual({
-      align: { default: null },
-      color: { default: null },
-      id: { default: null },
-      indent: { default: null },
-      lineSpacing: { default: null },
-      paddingBottom: { default: null },
-      paddingTop: { default: null },
+      align: {default: null},
+      color: {default: null},
+      id: {default: null},
+      indent: {default: null},
+      lineSpacing: {default: null},
+      overriddenAlign: {default: null},
+      overriddenAlignValue: {default: null},
+      overriddenIndent: {default: null},
+      overriddenIndentValue: {default: null},
+      overriddenLineSpacing: {default: null},
+      overriddenLineSpacingValue: {default: null},
+      paddingBottom: {default: null},
+      paddingTop: {default: null},
+      reset: {default: null},
     });
   });
 
@@ -28,8 +39,17 @@ describe('ParagraphNodeSpec', () => {
       align: 'center',
       indent: 2,
       lineSpacing: '165%',
+      objectId: '',
+      overriddenAlign: '',
+      overriddenAlignValue: '',
+      overriddenIndent: '',
+      overriddenIndentValue: '',
+      overriddenLineSpacing: '',
+      overriddenLineSpacingValue: '',
       paddingTop: '10px',
       paddingBottom: '5px',
+      reset: '',
+      selectionId: '',
       id: 'test-id',
     });
   });
@@ -58,6 +78,17 @@ describe('ParagraphNodeSpec', () => {
         style: 'text-align: justify;padding-top: 15px;padding-bottom: 10px;',
         id: 'para-1',
         'data-indent': '3',
+        indent: 3,
+        overriddenAlign: undefined,
+        overriddenAlignValue: undefined,
+        overriddenIndent: undefined,
+        overriddenIndentValue: undefined,
+        overriddenLineSpacing: undefined,
+        overriddenLineSpacingValue: undefined,
+        paddingBottom: '10px',
+        paddingTop: '15px',
+        reset: undefined,
+        align: 'justify',
       },
       0,
     ]);

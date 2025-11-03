@@ -1,6 +1,6 @@
-import { Mark } from 'prosemirror-model';
+import {Mark, ParseRule} from 'prosemirror-model';
 import FontSizeMarkSpec from './fontSizeMarkSpec';
-import { toClosestFontPtSize } from '../toClosestFontPtSize';
+import {toClosestFontPtSize} from '../toClosestFontPtSize';
 
 jest.mock('../toClosestFontPtSize', () => ({
   toClosestFontPtSize: jest.fn(),
@@ -8,34 +8,140 @@ jest.mock('../toClosestFontPtSize', () => ({
 
 describe('FontSizeMarkSpec', () => {
   describe('parseDOM', () => {
-    it('should return empty attrs when font-size is not provided', () => {
-      expect(FontSizeMarkSpec.parseDOM[0].getAttrs('' as any)).toEqual({});
+    const getRule = (): ParseRule => {
+      const rule = FontSizeMarkSpec.parseDOM?.find(
+        (r) => r.tag === 'span[style*=font-size]'
+      );
+      if (!rule) throw new Error('parseDOM rule not found');
+      return rule;
+    };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
     });
 
-    it('should return correct pt value when valid font-size is provided', () => {
-      (toClosestFontPtSize as jest.Mock).mockReturnValue(12);
-      expect(FontSizeMarkSpec.parseDOM[0].getAttrs('16px' as any)).toEqual({ pt: 12 });
+    it('should return pt value from element font-size', () => {
+      const rule = getRule();
+      const spanEl = document.createElement('span');
+      spanEl.style.fontSize = '14pt';
+      spanEl.setAttribute('overridden', 'true');
+
+      (toClosestFontPtSize as jest.Mock).mockReturnValue(14);
+
+      const getAttrs = rule.getAttrs as (domNode: HTMLElement) => {
+        pt: number;
+        overridden: boolean;
+      };
+      const result = getAttrs(spanEl);
+
+      expect(toClosestFontPtSize).toHaveBeenCalledWith('14pt');
+      expect(result).toEqual({
+        pt: 14,
+        overridden: true,
+      });
     });
 
-    it('should return empty attrs when toClosestFontPtSize returns null', () => {
-      (toClosestFontPtSize as jest.Mock).mockReturnValue(null);
-      expect(FontSizeMarkSpec.parseDOM[0].getAttrs('invalid' as any)).toEqual({});
+    it('should return pt value inherited from parent when font-size not set', () => {
+      const rule = getRule();
+      const parentEl = document.createElement('span');
+      parentEl.style.fontSize = '12pt';
+      parentEl.setAttribute('overridden', 'true');
+      const childEl = document.createElement('span');
+      parentEl.appendChild(childEl);
+
+      (toClosestFontPtSize as jest.Mock).mockReturnValueOnce(12);
+
+      const getAttrs = rule.getAttrs as (domNode: HTMLElement) => {
+        pt: number;
+        overridden: boolean;
+      };
+      const result = getAttrs(childEl);
+
+      expect(toClosestFontPtSize).toHaveBeenCalledWith('12pt');
+      expect(result).toEqual({
+        pt: 12,
+        overridden: true,
+      });
+    });
+
+    it('should handle empty font-size and parent font-size gracefully', () => {
+      const rule = getRule();
+      const spanEl = document.createElement('span');
+
+      (toClosestFontPtSize as jest.Mock).mockReturnValue(0);
+
+      const getAttrs = rule.getAttrs as (domNode: HTMLElement) => {
+        pt: number;
+        overridden: boolean;
+      };
+      const result = getAttrs(spanEl);
+
+      expect(result).toEqual({
+        pt: 0,
+        overridden: false,
+      });
+    });
+
+    it('should detect overridden correctly when parent is overridden and child has font-size', () => {
+      const rule = getRule();
+      const parentEl = document.createElement('span');
+      parentEl.style.fontSize = '16pt';
+      parentEl.setAttribute('overridden', 'true');
+
+      const childEl = document.createElement('span');
+      childEl.style.fontSize = '10pt';
+      parentEl.appendChild(childEl);
+
+      (toClosestFontPtSize as jest.Mock).mockImplementation((size) =>
+        parseInt(size, 10)
+      );
+
+      const getAttrs = rule.getAttrs as (domNode: HTMLElement) => {
+        pt: number;
+        overridden: boolean;
+      };
+      const result = getAttrs(childEl);
+
+      expect(result).toEqual({
+        pt: 10,
+        overridden: true,
+      });
     });
   });
 
   describe('toDOM', () => {
+    const toDOM = FontSizeMarkSpec.toDOM!;
+
     it('should return correct DOM structure when pt is provided', () => {
-      const mark = { attrs: { pt: 12 } } as any;
-      expect(FontSizeMarkSpec.toDOM(mark,false)).toEqual([
+      const mockMark = {
+        attrs: {pt: 14, overridden: true},
+      } as unknown as Mark;
+
+      const result = toDOM(mockMark, false);
+
+      expect(result).toEqual([
         'span',
-        { style: 'font-size: 12pt;', class: 'czi-font-size-mark' },
+        {
+          overridden: true,
+          style: 'font-size: 14pt;',
+          class: 'czi-font-size-mark',
+        },
         0,
       ]);
     });
 
-    it('should return correct DOM structure when pt is null', () => {
-      const mark = { attrs: { pt: null } } as any;
-      expect(FontSizeMarkSpec.toDOM(mark,false)).toEqual(['span', null, 0]);
+    it('should return correct DOM structure when pt is not provided', () => {
+      const mockMark = {
+        attrs: {pt: '', overridden: false},
+      } as unknown as Mark;
+
+      const result = toDOM(mockMark, false);
+
+      expect(result).toEqual([
+        'span',
+        {overridden: false, style: '', class: ''},
+        0,
+      ]);
     });
   });
 });

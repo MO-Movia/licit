@@ -1,88 +1,59 @@
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import * as React from 'react';
 import LinkTooltip from './linkTooltip';
 import { EditorView } from 'prosemirror-view';
 import scrollIntoView from 'smooth-scroll-into-view-if-needed';
 import sanitizeURL from '../sanitizeURL';
-import '@testing-library/jest-dom'; // For custom matchers like 'toBeInTheDocument'
+import { CustomButton } from '@modusoperandi/licit-ui-commands';
 
-// Mock external dependencies
-jest.mock('smooth-scroll-into-view-if-needed', () => jest.fn());
-jest.mock('../sanitizeURL', () => jest.fn().mockReturnValue('https://sanitized-url.com'));
+// ---- Mock dependencies ----
+jest.mock('smooth-scroll-into-view-if-needed', () => jest.fn(() => Promise.resolve()));
+jest.mock('../sanitizeURL', () => jest.fn((url) => `sanitized:${url}`));
+jest.mock('@modusoperandi/licit-ui-commands', () => ({
+  CustomButton: jest.fn((props) => ({ type: 'CustomButton', props })),
+}));
 
-describe('LinkTooltip Component', () => {
-  const editorViewMock = {} as EditorView; // Mock the editorView
-  const href = '#bookmark-id';
-  const onCancel = jest.fn();
-  const onEdit = jest.fn();
-  const onRemove = jest.fn();
+describe('LinkTooltip (pure Jest tests)', () => {
+  let mockProps: any;
+  let instance: any;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    // Mock window.open to prevent actual opening of URLs in tests
-    global.open = jest.fn();
+    mockProps = {
+      href: 'https://example.com',
+      editorView: { dom: {} } as unknown as EditorView,
+      onCancel: jest.fn(),
+      onEdit: jest.fn(),
+      onRemove: jest.fn(),
+    };
+    instance = new LinkTooltip(mockProps);
   });
 
-  it('should render the component with the correct href and buttons', () => {
-    const { getByText, getByTitle } = render(
-      <LinkTooltip
-        editorView={editorViewMock}
-        href={href}
-        onCancel={onCancel}
-        onEdit={onEdit}
-        onRemove={onRemove}
-      />
-    );
 
-    // Check if the href is displayed in the button label
-    expect(getByText(href)).toBeInTheDocument();
+  it('should call window.open with sanitized URL for normal links', () => {
+    const openSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    instance._openLink('https://abc.com');
 
-    // Check if "Change" and "Remove" buttons are rendered
-    expect(getByText('Change')).toBeInTheDocument();
-    expect(getByText('Remove')).toBeInTheDocument();
+    expect(sanitizeURL).toHaveBeenCalledWith('https://abc.com');
+    expect(openSpy).toHaveBeenCalledWith('sanitized:https://abc.com');
+    openSpy.mockRestore();
   });
 
-  it('should call onCancel and smooth scroll when clicking a bookmark link', async () => {
-    let result = new LinkTooltip({
-        editorView: editorViewMock,
-        href:href,
-        onCancel:onCancel,
-        onEdit: onEdit,
-        onRemove: onRemove
-    });
-    // Mock the document.getElementById to return an element
-    const mockElement = document.createElement('div');
-    document.getElementById = jest.fn().mockReturnValue(mockElement);
+  it('should scroll to element for bookmark links', async () => {
+    const element = { id: 'target' } as unknown as HTMLElement;
+    const getElementByIdSpy = jest
+      .spyOn(document, 'getElementById')
+      .mockReturnValue(element);
 
-    // Simulate clicking the link button
-    result._openLink(href);
+    await instance._openLink('#target');
 
-    // Ensure that onCancel was called
-    expect(onCancel).toHaveBeenCalledWith(editorViewMock);
-
-    // Ensure that scrollIntoView was called with the correct parameters
-    await expect(scrollIntoView).toHaveBeenCalledWith(mockElement, {
-      scrollMode: 'if-needed',
-      behavior: 'smooth',
-    });
+    expect(mockProps.onCancel).toHaveBeenCalledWith(mockProps.editorView);
+    expect(scrollIntoView).toHaveBeenCalledWith(element, expect.any(Object));
+    getElementByIdSpy.mockRestore();
   });
 
-  it('should call sanitizeURL if not bookmark', async () => {
-    let newHref = 'https://sanitized-url.com';
-    let result = new LinkTooltip({
-     editorView: editorViewMock,
-     href:newHref,
-     onCancel:onCancel,
-     onEdit: onEdit,
-     onRemove: onRemove
- });
-
-
- // Simulate clicking the link button
- result._openLink(newHref);
-
-expect(global.open).toHaveBeenCalledWith('https://sanitized-url.com');
-
-});
-
+  it('should not call anything if href is empty', async () => {
+    const openSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    await instance._openLink('');
+    expect(openSpy).not.toHaveBeenCalled();
+    openSpy.mockRestore();
+  });
 });

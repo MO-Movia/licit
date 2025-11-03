@@ -55,10 +55,10 @@ const FontTypeMarkSpec: MarkSpec = {
         const mparent_overriden = (domNode.parentNode as HTMLElement | null)?.getAttribute('overridden');
 
         if (name !== '') {
-          name = name ? name.replace(/["']/g, '') : '';
+          name = name ? name.replaceAll(/["']/g, '') : '';
         }
         if (parentFontName !== '') {
-          parentFontName = parentFontName ? parentFontName.replace(/["']/g, '') : '';
+          parentFontName = parentFontName ? parentFontName.replaceAll(/["']/g, '') : '';
         }
 
         const overridden = (_mOverriden === 'true' && name !== '') || (parentFontName !== '' && mparent_overriden === 'true');  // Check if the font is overridden

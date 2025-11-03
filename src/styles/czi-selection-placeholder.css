@@ -2,14 +2,9 @@
 
 .czi-selection-placeholder {
   animation-direction: alternate;
-  animation-direction: alternate;
-  animation-duration: 0.5s;
   animation-duration: 0.5s;
   animation-iteration-count: infinite;
-  animation-iteration-count: infinite;
   animation-name: czi_selection_blink;
-  animation-name: czi_selection_blink;
-  animation-timing-function: ease-in-out;
   animation-timing-function: ease-in-out;
   background-color: var(--czi-selection-highlight-color-dark) !important;
 }

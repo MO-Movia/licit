@@ -1,5 +1,5 @@
 import { Schema, NodeSpec } from 'prosemirror-model';
-import { EditorState, Plugin } from 'prosemirror-state';
+import { Plugin } from 'prosemirror-state';
 import { getEffectiveSchema, LicitPlugin } from './convertFromJSON';
 
 describe('getEffectiveSchema', () => {

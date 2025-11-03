@@ -1,13 +1,12 @@
-import { EditorState, PluginKey } from 'prosemirror-state';
+import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { CellSelection, tableNodes } from 'prosemirror-tables';
-import { ResolvedPos, Schema } from 'prosemirror-model';
+import {  Schema } from 'prosemirror-model';
 
 import TableCellMenuPlugin from './tableCellMenuPlugin';
 import findActionableCell from '../findActionableCell';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import isElementFullyVisible from '../isElementFullyVisible';
-import { Node as ProseMirrorNode } from 'prosemirror-model';
 import { schema as baseSchema } from 'prosemirror-schema-basic';
 import { builders } from 'prosemirror-test-builder';
 

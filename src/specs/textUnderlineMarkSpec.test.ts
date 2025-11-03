@@ -1,74 +1,71 @@
 import TextUnderlineMarkSpec from './textUnderlineMarkSpec'; // Adjust the import path as needed
-import { Mark } from 'prosemirror-model';
+import {Mark} from 'prosemirror-model';
 
 describe('TextUnderlineMarkSpec', () => {
-
   describe('parseDOM', () => {
+    it('should correctly parse overridden="true" attribute', () => {
+      const parseRules = TextUnderlineMarkSpec.parseDOM ?? [];
+      const rule = parseRules.find((r) => r.tag === 'u');
+      expect(rule).toBeTruthy();
 
-    it('should parse text-decoration-line: underline style correctly', () => {
-      const mockElement = {
-        style: {
-          textDecorationLine: 'underline',
-        },
-      } as any;
+      const mockElement = document.createElement('u');
+      mockElement.setAttribute('overridden', 'true');
 
-      const result = TextUnderlineMarkSpec.parseDOM[1].getAttrs(mockElement.style.textDecorationLine);
-
-      // Since the style is 'underline', it should return null
-      expect(result).toBeNull();
+      // Cast to match ParseRule input type
+      const attrs = rule?.getAttrs?.(
+        mockElement as unknown as HTMLElement & string
+      );
+      expect(attrs).toEqual({overridden: true});
     });
 
-    it('should parse text-decoration: underline style correctly', () => {
-      const mockElement = {
-        style: {
-          textDecoration: 'underline',
-        },
-      } as any;
+    it('should correctly parse overridden="false" attribute', () => {
+      const parseRules = TextUnderlineMarkSpec.parseDOM ?? [];
+      const rule = parseRules.find((r) => r.tag === 'u');
+      expect(rule).toBeTruthy();
 
-      const result = TextUnderlineMarkSpec.parseDOM[2].getAttrs(mockElement.style.textDecoration);
+      const mockElement = document.createElement('u');
+      mockElement.setAttribute('overridden', 'false');
 
-      // Since the style is 'underline', it should return null
-      expect(result).toBeNull();
+      const attrs = rule?.getAttrs?.(
+        mockElement as unknown as HTMLElement & string
+      );
+      expect(attrs).toEqual({overridden: false});
     });
 
-    it('should not parse if text-decoration-line is not underline', () => {
-      const mockElement = {
-        style: {
-          textDecorationLine: 'none',
-        },
-      } as any;
+    it('should default to false if overridden attribute is missing', () => {
+      const parseRules = TextUnderlineMarkSpec.parseDOM ?? [];
+      const rule = parseRules.find((r) => r.tag === 'u');
+      expect(rule).toBeTruthy();
 
-      const result = TextUnderlineMarkSpec.parseDOM[1].getAttrs(mockElement.style.textDecorationLine);
-
-      // Since the style is not 'underline', it should return false
-      expect(result).toBe(false);
-    });
-
-    it('should not parse if text-decoration is not underline', () => {
-      const mockElement = {
-        style: {
-          textDecoration: 'none',
-        },
-      } as any;
-
-      const result = TextUnderlineMarkSpec.parseDOM[2].getAttrs(mockElement.style.textDecoration);
-
-      // Since the style is not 'underline', it should return false
-      expect(result).toBe(false);
+      const mockElement = document.createElement('u');
+      const attrs = rule?.getAttrs?.(
+        mockElement as unknown as HTMLElement & string
+      );
+      expect(attrs).toEqual({overridden: false});
     });
   });
 
   describe('toDOM', () => {
-    it('should generate a <u> element', () => {
+    it('should return a <u> element with overridden=true attribute', () => {
       const mockMark = {
-        attrs: {}, // No specific attributes in this case
-      } as Mark;
+        attrs: {overridden: true},
+      } as unknown as Mark;
 
-      const result = TextUnderlineMarkSpec.toDOM(mockMark,false);
+      expect(TextUnderlineMarkSpec.toDOM).toBeDefined();
 
-      // The expected result is a <u> element with no attributes or content
-      expect(result).toEqual(['u', 0]);
+      const result = TextUnderlineMarkSpec.toDOM!(mockMark, false);
+
+      expect(result).toEqual(['u', {overridden: true}, 0]);
+    });
+
+    it('should return a <u> element with overridden=false attribute when not set', () => {
+      const mockMark = {
+        attrs: {overridden: false},
+      } as unknown as Mark;
+
+      const result = TextUnderlineMarkSpec.toDOM!(mockMark, false);
+
+      expect(result).toEqual(['u', {overridden: false}, 0]);
     });
   });
-
 });

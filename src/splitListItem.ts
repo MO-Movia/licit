@@ -198,3 +198,5 @@ function splitEmptyListItem(tr: Transform, schema: Schema): Transform {
   );
   return tr;
 }
+
+export { splitEmptyListItem };

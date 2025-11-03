@@ -37,7 +37,7 @@ class LinkTooltipPlugin extends Plugin {
   }
 }
 
-class LinkTooltipView {
+export class LinkTooltipView {
   _anchorEl = null;
   _popup = null;
   _editor = null;

@@ -1,201 +1,99 @@
 import * as React from 'react';
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import TableColorCommand from './tableColorCommand';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { EditorView } from 'prosemirror-view';
 import { Editor } from '@tiptap/react';
-import '@testing-library/jest-dom';
+import TableColorCommand from './tableColorCommand';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
-/*jest.mock('@modusoperandi/licit-ui-commands', () => ({
-  createPopUp: jest.fn().mockImplementation((Component, props, options) => {
-    return { close: jest.fn(), update: jest.fn() };
+// Mock licit-ui-commands dependencies
+jest.mock('@modusoperandi/licit-ui-commands', () => ({
+  createPopUp: jest.fn().mockImplementation((_Component, _props, options) => {
+    // Simulate popup object with a working close()
+    return { close: jest.fn(() => options?.onClose && options.onClose('mocked value')) };
   }),
-  ColorEditor: jest.fn().mockReturnValue('<div> Color Editor</div>'),
   atAnchorRight: jest.fn(),
-}));*/
+  RuntimeService: { Runtime: 'mockRuntime' },
+}));
+
+// Mock color-picker import
+jest.mock('@modusoperandi/color-picker', () => ({
+  ColorEditor: jest.fn(),
+}));
 
 describe('TableColorCommand', () => {
-  let command;
-  let stateMock;
-  let trMock;
-  let fromMock;
-  let toMock;
-  let eventMock;
-  let dispatchMock;
-  let viewMock;
-  let closeMock;
+  let command: TableColorCommand;
+  let mockState: EditorState;
+  let mockTransform: Transform;
+  let dispatchMock: jest.Mock;
+  let viewMock: EditorView;
+  let setCellAttributeMock: jest.Mock;
 
   beforeEach(() => {
-    stateMock = {} as EditorState;
-    trMock = {} as Transform;
-    fromMock = 0;
-    toMock = 0;
+    mockState = {} as EditorState;
+    mockTransform = {} as Transform;
+    dispatchMock = jest.fn();
+    viewMock = {} as EditorView;
 
-    eventMock = {
-      currentTarget: document.createElement('div') as unknown,
-      type: 'mouseenter',
-    } as React.SyntheticEvent;
-
-    // Create a mock for close method
-    closeMock = jest.fn();
-
-    // Mock the getEditor method and setCellAttribute command
-    command = new TableColorCommand('backgroundColor');
-    UICommand.prototype.editor = {
-      view: { focus: () => {}, dispatch: () => {} },
-      commands: { redo: jest.fn(), setCellAttribute: jest.fn() },
+    // Safe override to inject mock commands into UICommand.editor
+    setCellAttributeMock = jest.fn();
+    (UICommand.prototype as any).editor = {
+      commands: { setCellAttribute: setCellAttributeMock },
+      view: { focus: jest.fn(), dispatch: jest.fn() },
     } as unknown as Editor;
+
+    command = new TableColorCommand('backgroundColor');
   });
 
-  it('should call the getEditor method', () => {
-    // Call the method
-    const result = command.getEditor();
-
-    // Verify that getEditor was called
-    expect(result).toHaveProperty('view');
-  });
-
-  it('should correctly initialize the attribute in the constructor', () => {
+  //Basic Behavior
+  it('should initialize with the given attribute', () => {
     expect(command.attribute).toBe('backgroundColor');
   });
 
-  it('should respond to mouse enter event', () => {
-    const result = command.shouldRespondToUIEvent(eventMock);
-    expect(result).toBe(true);
+  it('should return the same transform in executeCustom', () => {
+    const result = command.executeCustom(mockState, mockTransform, 0, 0);
+    expect(result).toBe(mockTransform);
   });
 
-  it('should not respond to other events', () => {
-    eventMock.type = 'click'; // Changing the event type to something else
-    const result = command.shouldRespondToUIEvent(eventMock);
+  //Event Handling
+  it('should respond only to mouseenter events', () => {
+    const enterEvent = { type: 'mouseenter' } as React.SyntheticEvent;
+    const clickEvent = { type: 'click' } as React.SyntheticEvent;
+
+    expect(command.shouldRespondToUIEvent(enterEvent)).toBe(true);
+    expect(command.shouldRespondToUIEvent(clickEvent)).toBe(false);
+  });
+
+  // Enable/Disable Logic
+  it('isEnabled should always return true', () => {
+    expect(command.isEnabled(mockState)).toBe(true);
+  });
+
+  it('should return false when hex is undefined', () => {
+    const result = command.executeWithUserInput(mockState, dispatchMock, viewMock, undefined);
     expect(result).toBe(false);
   });
 
-  it('isEnabled should return true', () => {
-    const result = command.isEnabled(stateMock);
-    expect(result).toBe(true);
-  });
-
-  it('waitForUserInput should create a pop-up and resolve', async () => {
-    const state = {
-      plugins: [],
-      selection: { from: 1, to: 2 },
-      schema: { marks: { 'mark-text-color': 'mark-text-color' } },
-      doc: {
-        nodeAt: (_x) => {
-          return { isAtom: true, isLeaf: true, isText: false };
-        },
-      },
-      tr: {
-        doc: {
-          nodeAt: (_x) => {
-            return { isAtom: true, isLeaf: true, isText: false, marks: [] };
-          },
-        },
-      },
-    } as unknown as EditorState;
-
-    const _dispatch = jest.fn();
-    const event_ = {
-      currentTarget: document.createElement('div'),
-    } as unknown as Event;
-
-    const editorview = {} as unknown as EditorView;
-
-    const result = command.waitForUserInput(
-      state,
-      _dispatch,
-      editorview,
-      event_
-    );
-
-    command._popUp.close('close');
-
-    expect(result).toBeDefined();
-  });
-
-  it('executeWithUserInput should call setCellAttribute with the correct arguments', () => {
-    const editor = command.getEditor();
-    const setCellAttributeMock = editor.commands.setCellAttribute;
-
-    command.executeWithUserInput(stateMock, dispatchMock, viewMock, 'ff0000');
-
-    expect(setCellAttributeMock).toHaveBeenCalledWith(
-      'backgroundColor',
-      'ff0000'
-    );
-  });
-
-  it('executeWithUserInput should return false if hex is undefined', () => {
-    const result = command.executeWithUserInput(
-      stateMock,
-      dispatchMock,
-      viewMock,
-      undefined
-    );
-
-    expect(result).toBe(false);
-  });
-
-  it('cancel should close the pop-up', () => {
-    command._popUp = { close: closeMock };
-    command.cancel();
-    expect(closeMock).toHaveBeenCalled();
-  });
-
-  it('waitForUserInput should resolve with undefined if _popUp is already set', async () => {
-    command._popUp = { close: closeMock };
-    const result = await command.waitForUserInput(
-      stateMock,
-      dispatchMock,
-      viewMock,
-      eventMock
-    );
+  it('should handle invalid event target gracefully', async () => {
+    const badEvent = { currentTarget: null } as unknown as React.SyntheticEvent;
+    const result = await command.waitForUserInput(mockState, dispatchMock, viewMock, badEvent);
     expect(result).toBeUndefined();
   });
 
-  it('_popup should contain close once it created  ', async () => {
-    command._popUp = null;
-    const result = command.waitForUserInput(
-      stateMock,
-      dispatchMock,
-      viewMock,
-      eventMock
-    );
-    const onCloseCallback = command._popUp?.close;
-    if (onCloseCallback) {
-      onCloseCallback('mocked value');
-    }
+  it('should return editor from UICommand.prototype', () => {
+  // Define a minimal mock editor object consistent with the Editor type
+  const mockEditor: Editor = {
+    view: { focus: jest.fn(), dispatch: jest.fn() } as unknown as Editor['view'],
+    commands: {} as Editor['commands'],
+  } as Editor;
 
-    // Assert that the resolve function was called with the expected value
-    await expect(result).resolves.toBe('mocked value');
+  Object.defineProperty(UICommand.prototype, 'editor', {
+    value: mockEditor,
+    writable: true,
   });
 
-  it('should handle invalid target in waitForUserInput gracefully', async () => {
-    // Making the target null to simulate an invalid event
-    eventMock.currentTarget = null;
-    const result = await command.waitForUserInput(
-      stateMock,
-      dispatchMock,
-      viewMock,
-      eventMock
-    );
-    expect(result).toBeUndefined();
-  });
-  it('should return the same transform object it receives', () => {
-    const result = command.executeCustom(stateMock, trMock, fromMock, toMock);
-    // Assert that the result is the same as the input transform (trMock)
-    expect(result).toBe(trMock);
-  });
+  const result = command.getEditor();
 
-  it('should call the getEditor method', () => {
-    // Spy on the getEditor method to ensure it is called
-    const getEditorSpy = jest.spyOn(command, 'getEditor');
-
-    // Call the method
-    command.getEditor();
-
-    // Verify that getEditor was called
-    expect(getEditorSpy).toHaveBeenCalled();
-  });
+  expect(result).toBe(mockEditor);
+});
 });

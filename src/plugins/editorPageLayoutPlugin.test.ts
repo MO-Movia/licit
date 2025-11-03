@@ -1,6 +1,6 @@
 import { EditorState } from 'prosemirror-state';
 import { Node } from 'prosemirror-model';
-import EditorPageLayoutPlugin from './EditorPageLayoutPlugin';
+import EditorPageLayoutPlugin from './editorPageLayoutPlugin';
 import { ATTRIBUTE_LAYOUT, LAYOUT } from '../constants';
 import { Schema } from 'prosemirror-model';
 
@@ -30,7 +30,7 @@ const customSchema = new Schema({
 
 describe('EditorPageLayoutPlugin', () => {
   let plugin;
-  let state;
+  let state: EditorState;
   let createDoc;
 
   beforeEach(() => {

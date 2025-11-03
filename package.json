@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit-tiptap",
-  "version": "1.0.5",
+  "version": "3.0.0",
   "subversion": "1",
   "description": "Rich text editor built with React and ProseMirror",
   "type": "module",
@@ -19,10 +19,10 @@
     "build:fonts": "mkdirp ./dist/fonts && cp -r fonts/* dist/fonts",
     "build:assets": "mkdirp ./dist/assets && cp -r assets/* dist/assets",
     "build:ts": "tsc -p tsconfig.json",
-    "build:dist": "npm run build:ts && npm run build:css && npm run build:fonts && npm run build:assets && npm run build:bom && copyfiles package.json dist && cp src/*.d.ts dist/ ",
+    "ci:build": "npm run build:ts && npm run build:css && npm run build:fonts && npm run build:assets && npm run build:bom && copyfiles package.json dist && cp src/*.d.ts dist/ ",
     "webpack": "webpack",
     "start": "cross-env NODE_ENV=development webpack serve --config tools/webpack/webpack.config.dev.js",
-    "build": "cross-env NODE_ENV=production webpack --config tools/webpack/webpack.config.prod.js",
+    "build:bin": "cross-env NODE_ENV=production webpack --config tools/webpack/webpack.config.prod.js",
     "serve": "cross-env NODE_ENV=production webpack --config tools/webpack/webpack.config.prod.js && cross-env serve dist/",
     "lint:ts": "eslint src --ext .ts --fix",
     "lint:css": "stylelint \"**/*.css\" --fix",
@@ -80,8 +80,8 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
-    "@modusoperandi/licit-doc-attrs-step": "file:modusoperandi-licit-doc-attrs-step-1.0.3.tgz",
-    "@modusoperandi/licit-ui-commands": "file:modusoperandi-licit-ui-commands-1.0.9.tgz",
+    "@modusoperandi/licit-doc-attrs-step": "file:modusoperandi-licit-doc-attrs-step-3.0.0.tgz",
+    "@modusoperandi/licit-ui-commands": "file:modusoperandi-licit-ui-commands-3.0.0.tgz",
     "@svgr/webpack": "^4.0.4",
     "@tiptap/core": "^2.9.1",
     "@tiptap/extension-collaboration": "^2.1.0",

@@ -1,5 +1,4 @@
 import SpacerMarkSpec, { DOM_ATTRIBUTE_SIZE, SPACER_SIZE_TAB } from './spacerMarkSpec'; // Adjust the import path
-import { Mark } from 'prosemirror-model';
 
 describe('SpacerMarkSpec', () => {
 

@@ -1,30 +1,59 @@
-import React from 'react';
-import { render } from '@testing-library/react';
+import * as React from 'react';
 import CustomMenuItem from './customMenuItem';
-import '@testing-library/jest-dom';
+
+//  Mock licit-ui-commands module safely
+jest.mock('@modusoperandi/licit-ui-commands', () => {
+  const React = require('react');
+  return {
+    CustomButton: (props: any) => (
+      <button
+        data-testid="mock-custom-button"
+        className={props.className}
+        data-theme={props.theme}
+      >
+        {props.label || 'MockButton'}
+      </button>
+    ),
+    ThemeContext: React.createContext('mock-theme'),
+  };
+});
 
 describe('CustomMenuItem', () => {
-  it('should apply correct class name based on theme prop', () => {
-    const { container } = render(
-      <CustomMenuItem theme="dark">Test Button</CustomMenuItem>
-    );
-    expect(container.firstChild).toHaveClass('czi-tooltip-surface');
+  it('renders with given theme and label', () => {
+    const component = new CustomMenuItem({
+      theme: 'dark',
+      label: 'MyLabel',
+      value: {},
+    } as any);
+
+    const result = component.render() as any;
+
+    expect(result.props.className).toContain('czi-custom-menu-item');
+    expect(result.props.theme).toBe('dark');
+    expect(result.props.label).toBe('MyLabel');
   });
 
-  it('should apply czi-custom-menu-item-button class if value.alignment exists', () => {
-    const { container } = render(
-      <CustomMenuItem theme="light" value={{ alignment: true }}>
-        Test Button
-      </CustomMenuItem>
-    );
-    expect(container.firstChild).toHaveClass('czi-tooltip-surface');
+  it('renders alignment button when value.alignment is present', () => {
+    const component = new CustomMenuItem({
+      theme: 'blue',
+      label: 'AlignBtn',
+      value: { alignment: 'center' },
+    } as any);
+
+    const result = component.render() as any;
+
+    expect(result.props.className).toContain('czi-custom-menu-item-button');
+    expect(result.props.theme).toBe('blue');
+    expect(result.props.label).toBe('AlignBtn');
   });
 
-  it('should render the Separator component correctly', () => {
-    const { container } = render(
-      <CustomMenuItem.Separator />
-    );
-    const separator = container.querySelector('.czi-custom-menu-item-separator');
-    expect(separator).toBeInTheDocument();
+  it('renders Separator correctly', () => {
+    const Separator = CustomMenuItem.Separator;
+    //  Always pass props (even if empty) to class-based React components
+    const separator = new Separator({}); 
+    const rendered = separator.render();
+
+    expect(rendered.type).toBe('div');
+    expect(rendered.props.className).toBe('czi-custom-menu-item-separator');
   });
 });

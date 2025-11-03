@@ -1,17 +1,48 @@
-import { render, screen } from '@testing-library/react';
-import Frag from './frag'; 
 import React from 'react';
-import '@testing-library/jest-dom';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import Frag from './frag';
 
-describe('Frag Component', () => {
-     UICommand.theme = "dark";
+//  Mock React.createElement to test rendering behavior
+describe('Frag', () => {
+  let createElementSpy: jest.SpyInstance;
 
-  it('should render with the correct class name', () => {
-    render(<Frag>Test content</Frag>);
-    
-    const fragDiv = screen.getAllByRole('generic'); 
-    expect(fragDiv[0]).toHaveTextContent('Test content');
+  beforeEach(() => {
+    createElementSpy = jest.spyOn(React, 'createElement');
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('should be defined', () => {
+    expect(Frag).toBeDefined();
+  });
+
+  it('should extend React.Component', () => {
+    const instance = new Frag({});
+    expect(instance).toBeInstanceOf(React.Component);
+  });
+
+  it('should render a div with class "czi-frag"', () => {
+    const frag = new Frag({ children: 'Hello World' });
+    const output = frag.render() as React.ReactElement;
+
+    // It should return a React element
+    expect(React.isValidElement(output)).toBe(true);
+
+    // Element type and props
+    expect(output.type).toBe('div');
+    expect(output.props.className).toBe('czi-frag');
+    expect(output.props.children).toBe('Hello World');
+  });
+
+  it('should call React.createElement internally when rendering', () => {
+    const frag = new Frag({ children: 'Check' });
+    frag.render();
+
+    expect(createElementSpy).toHaveBeenCalledWith(
+      'div',
+      { className: 'czi-frag' },
+      'Check'
+    );
+  });
 });

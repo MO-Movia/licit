@@ -1,139 +1,165 @@
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import CommandButton from './commandButton';
-import { ThemeContext } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { EditorState } from 'prosemirror-state';
-import { EditorView } from 'prosemirror-view';
-import '@testing-library/jest-dom';
+import { CustomButton, ThemeContext } from '@modusoperandi/licit-ui-commands';
+import cx from 'classnames';
 
-// Setup the editorState and editorView mocks
-const mockEditorState = {} as EditorState;
-const mockEditorView = {} as EditorView;
+// Mock dependencies
+jest.mock('@modusoperandi/licit-ui-commands', () => ({
+  CustomButton: jest.fn(() => React.createElement('button')),
+  ThemeContext: React.createContext('light'),
+}));
 
-describe('CommandButton Component', () => {
-  it('renders correctly with default props', () => {
-    const command = {
-        isEnabled: jest.fn().mockReturnValue(true),
-        isActive: jest.fn().mockReturnValue(false),
-        execute: jest.fn(),
-        shouldRespondToUIEvent: jest.fn().mockReturnValue(true),
-    } as unknown as UICommand;
+jest.mock('classnames', () => jest.fn((...args) => args.join(' ')));
 
-    const { getByText } = render(
-      <ThemeContext.Provider value="">
-        <CommandButton
-          command={command}
-          dispatch={jest.fn()}
-          editorState={mockEditorState}
-          editorView={mockEditorView}
-          label='Mock Button'
-          title='Mock Button'
-        />
-      </ThemeContext.Provider>
-    );
+describe('CommandButton', () => {
+  let container: HTMLDivElement;
+  let mockEditorState: any;
+  let mockEditorView: any;
+  let mockDispatch: jest.Mock;
+  let mockCommand: any;
 
-    expect(getByText('Mock Button')).toBeInTheDocument();
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+
+    mockEditorState = { doc: {} };
+    mockEditorView = { someProp: true };
+    mockDispatch = jest.fn();
+
+    mockCommand = {
+      isEnabled: jest.fn(() => true),
+      isActive: jest.fn(() => false),
+      execute: jest.fn(),
+      shouldRespondToUIEvent: jest.fn(() => true),
+    };
+
+    jest.clearAllMocks();
   });
 
-  it('disables the button if the command is not enabled', () => {
-    const command = {
-        isEnabled: jest.fn().mockReturnValue(false),
-        isActive: jest.fn().mockReturnValue(false),
-        execute: jest.fn(),
-        shouldRespondToUIEvent: jest.fn().mockReturnValue(true),
-        disabled: true
-    } as unknown as UICommand;
-
-    const { getByText } = render(
-      <ThemeContext.Provider value="light">
-        <CommandButton
-          command={command}
-          dispatch={jest.fn()}
-          editorState={mockEditorState}
-          editorView={mockEditorView}
-          disabled={true}
-          label='Mock Button'
-          title='Mock Button'
-        />
-      </ThemeContext.Provider>
-    );
-
-    expect(getByText('Mock Button')).toHaveClass("disabled");
+  afterEach(() => {
+    ReactDOM.unmountComponentAtNode(container);
+    document.body.removeChild(container);
   });
 
-it('_onUIEnter shpuld call _execute', () => {
-  const command = {
-    isEnabled: jest.fn().mockReturnValue(true),
-    isActive: jest.fn().mockReturnValue(false),
-    execute: jest.fn(),
-    shouldRespondToUIEvent: jest.fn().mockReturnValue(true),
-} as unknown as UICommand;
-
-const dispatch = jest.fn();
-
- let dummy =  new CommandButton({command,
-    dispatch,
-    editorState:mockEditorState,
-    editorView:mockEditorView,
-    label:'Mock Button',
-    title:'Mock Button'});
-
-    dummy._onUIEnter(command, {
-      nativeEvent: undefined,
-      currentTarget: undefined,
-      target: undefined,
-      bubbles: false,
-      cancelable: false,
-      defaultPrevented: false,
-      eventPhase: 0,
-      isTrusted: false,
-      preventDefault: function (): void {
-        throw new Error('Function not implemented.');
-      },
-      isDefaultPrevented: function (): boolean {
-        throw new Error('Function not implemented.');
-      },
-      stopPropagation: function (): void {
-        throw new Error('Function not implemented.');
-      },
-      isPropagationStopped: function (): boolean {
-        throw new Error('Function not implemented.');
-      },
-      persist: function (): void {
-        throw new Error('Function not implemented.');
-      },
-      timeStamp: 0,
-      type: ''
-    })
-
-    expect(command.execute).toHaveBeenCalledTimes(1);
-});
-
-
-  it('applies the correct className when "sub" prop is true', () => {
-    const command = {
-        isEnabled: jest.fn().mockReturnValue(true),
-        isActive: jest.fn().mockReturnValue(false),
-        execute: jest.fn(),
-        shouldRespondToUIEvent: jest.fn().mockReturnValue(true),
-    } as unknown as UICommand;
-
-    const { container } = render(
+  test('renders CustomButton with correct props and theme', () => {
+    const element = (
       <ThemeContext.Provider value="light">
         <CommandButton
           className="test-class"
-          sub={true}
-          command={command}
-          dispatch={jest.fn()}
+          command={mockCommand}
+          dispatch={mockDispatch}
           editorState={mockEditorState}
           editorView={mockEditorView}
-          label='Mock Button'
-          title='Mock Button'
+          icon="mock-icon"
+          label="mock-label"
+          title="Mock Title"
         />
       </ThemeContext.Provider>
     );
 
-    expect(container.firstChild).toHaveClass('czi-tooltip-surface');
+    ReactDOM.render(element, container);
+
+    // Verify CustomButton was called correctly
+    expect(CustomButton).toHaveBeenCalledWith(
+      expect.objectContaining({
+        active: false,
+        className: 'test-class',
+        disabled: false,
+        icon: 'mock-icon',
+        label: 'mock-label',
+        theme: 'light',
+        title: 'Mock Title',
+        value: mockCommand,
+      }),
+      {}
+    );
+
+    // Verify theme was applied
+    expect(UICommand.theme).toBe('light');
+  });
+
+  test('disables button when command is not enabled', () => {
+    mockCommand.isEnabled.mockReturnValue(false);
+
+    const element = (
+      <ThemeContext.Provider value="dark">
+        <CommandButton
+          className="test-disabled"
+          command={mockCommand}
+          dispatch={mockDispatch}
+          editorState={mockEditorState}
+          editorView={mockEditorView}
+        />
+      </ThemeContext.Provider>
+    );
+
+    ReactDOM.render(element, container);
+
+    expect(CustomButton).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disabled: true,
+        theme: 'dark',
+      }),
+      {}
+    );
+  });
+
+  test('applies submenu class when sub is true', () => {
+    const element = (
+      <ThemeContext.Provider value="light">
+        <CommandButton
+          className="base"
+          command={mockCommand}
+          dispatch={mockDispatch}
+          editorState={mockEditorState}
+          editorView={mockEditorView}
+          sub={true}
+        />
+      </ThemeContext.Provider>
+    );
+
+    ReactDOM.render(element, container);
+
+    expect(cx).toHaveBeenCalledWith('base', { 'czi-custom-submenu-button': true });
+  });
+
+  test('calls command.execute when _onUIEnter triggered and should respond', () => {
+    const wrapper = new CommandButton({
+      command: mockCommand,
+      dispatch: mockDispatch,
+      editorState: mockEditorState,
+      editorView: mockEditorView,
+    } as any);
+
+    const mockEvent = { preventDefault: jest.fn() } as any;
+
+    wrapper._onUIEnter(mockCommand, mockEvent);
+
+    expect(mockCommand.shouldRespondToUIEvent).toHaveBeenCalledWith(mockEvent);
+    expect(mockCommand.execute).toHaveBeenCalledWith(
+      mockEditorState,
+      mockDispatch,
+      mockEditorView,
+      mockEvent
+    );
+  });
+
+  test('does not execute if shouldRespondToUIEvent returns false', () => {
+    mockCommand.shouldRespondToUIEvent.mockReturnValue(false);
+
+    const wrapper = new CommandButton({
+      command: mockCommand,
+      dispatch: mockDispatch,
+      editorState: mockEditorState,
+      editorView: mockEditorView,
+    } as any);
+
+    const mockEvent = { preventDefault: jest.fn() } as any;
+
+    wrapper._onUIEnter(mockCommand, mockEvent);
+
+    expect(mockCommand.execute).not.toHaveBeenCalled();
   });
 });

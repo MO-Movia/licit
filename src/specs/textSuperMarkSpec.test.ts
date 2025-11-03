@@ -1,48 +1,78 @@
 import TextSuperMarkSpec from './textSuperMarkSpec'; // Adjust the import path as needed
-import { Mark } from 'prosemirror-model';
+import {Mark} from 'prosemirror-model';
 
 describe('TextSuperMarkSpec', () => {
-
   describe('parseDOM', () => {
+    it('should parse <sup> tag and return correct overridden value', () => {
+      const parseRules = TextSuperMarkSpec.parseDOM ?? [];
+      const rule = parseRules.find(
+        (
+          r
+        ): r is {
+          tag: string;
+          getAttrs: (dom: HTMLElement) => {overridden: boolean};
+        } => (r as {tag?: string}).tag === 'sup'
+      );
 
-    it('should parse vertical-align: super style correctly', () => {
-      const mockElement = {
-        style: {
-          verticalAlign: 'super',
-        },
-      } as any;
+      expect(rule).toBeDefined();
 
-      const result = TextSuperMarkSpec.parseDOM[1].getAttrs(mockElement.style.verticalAlign);
+      const mockElement = document.createElement('sup');
+      mockElement.setAttribute('overridden', 'true');
 
-      // Since the style is 'super', it should return null
-      expect(result).toBeNull();
+      const attrsTrue = rule!.getAttrs(mockElement);
+      expect(attrsTrue).toEqual({overridden: true});
+
+      mockElement.setAttribute('overridden', 'false');
+      const attrsFalse = rule!.getAttrs(mockElement);
+      expect(attrsFalse).toEqual({overridden: false});
     });
 
-    it('should not parse if vertical-align is not super', () => {
-      const mockElement = {
-        style: {
-          verticalAlign: 'normal',
-        },
-      } as any;
+    it('should handle vertical-align style rule for sup', () => {
+      const parseRules = TextSuperMarkSpec.parseDOM ?? [];
+      const rule = parseRules.find(
+        (
+          r
+        ): r is {
+          style: string;
+          getAttrs: (value: string) => {overridden: boolean} | null;
+        } => (r as {style?: string}).style === 'vertical-align'
+      );
 
-      const result = TextSuperMarkSpec.parseDOM[1].getAttrs(mockElement.style.verticalAlign);
+      expect(rule).toBeDefined();
 
-      // Since the style is not 'super', it should return false
-      expect(result).toBe(false);
+      const attrsSup = rule!.getAttrs('sup');
+      expect(attrsSup).toEqual({overridden: true});
+
+      const attrsOther = rule!.getAttrs('baseline');
+      expect(attrsOther).toBeNull();
     });
   });
 
   describe('toDOM', () => {
-    it('should generate a <sup> element', () => {
+    it('should return correct DOM structure when overridden is true', () => {
       const mockMark = {
-        attrs: {}, // No specific attributes in this case
-      } as Mark;
+        attrs: {overridden: true},
+      } as unknown as Mark;
 
-      const result = TextSuperMarkSpec.toDOM(mockMark,false);
+      if (!TextSuperMarkSpec.toDOM) {
+        throw new Error('SupMarkSpec.toDOM is not defined');
+      }
 
-      // The expected result is a <sup> element with no attributes or content
-      expect(result).toEqual(['sup', 0]);
+      const result = TextSuperMarkSpec.toDOM(mockMark, false);
+      expect(result).toEqual(['sup', {overridden: true}, 0]);
+    });
+
+    it('should return correct DOM structure when overridden is false', () => {
+      const mockMark = {
+        attrs: {overridden: false},
+      } as unknown as Mark;
+
+      if (!TextSuperMarkSpec.toDOM) {
+        throw new Error('SupMarkSpec.toDOM is not defined');
+      }
+
+      const result = TextSuperMarkSpec.toDOM(mockMark, false);
+      expect(result).toEqual(['sup', {overridden: false}, 0]);
     });
   });
-
 });

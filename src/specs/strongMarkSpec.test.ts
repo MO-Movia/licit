@@ -1,69 +1,74 @@
-import StrongMarkSpec from './strongMarkSpec'; // Adjust the import path as needed
-import { Mark } from 'prosemirror-model';
+import StrongMarkSpec from './strongMarkSpec';
+import {Mark, ParseRule} from 'prosemirror-model';
+interface StrongAttrs {
+  overridden: boolean;
+}
 
 describe('StrongMarkSpec', () => {
-
   describe('parseDOM', () => {
+    function getRule(tag: string): ParseRule {
+      const rule = StrongMarkSpec.parseDOM?.find((r) => r.tag === tag);
+      if (!rule) throw new Error(`No parseDOM rule found for tag "${tag}"`);
+      return rule;
+    }
 
-    it('should parse <b> tags with non-normal font weight correctly', () => {
-      const mockBElement:any = {
-        tag: 'b',
-        style: {
-          fontWeight: 'bold', // Non-normal font weight
-        },
-      };
+    it('should correctly parse <strong> tag', () => {
+      const rule = getRule('strong');
+      const strongEl = document.createElement('strong');
+      strongEl.setAttribute('overridden', 'true');
 
-      const result = StrongMarkSpec.parseDOM[1].getAttrs(mockBElement);
-
-      expect(result).toBeNull();
+      const getAttrs = rule.getAttrs as (dom: HTMLElement) => StrongAttrs;
+      const attrs = getAttrs(strongEl);
+      expect(attrs).toEqual({overridden: true});
     });
 
-    it('should ignore <b> tags with normal font weight', () => {
-      const mockBElement:any = {
-        tag: 'b',
-        style: {
-          fontWeight: 'normal', // Normal font weight
-        },
-      };
+    it('should correctly parse <b> tag', () => {
+      const rule = getRule('b');
+      const boldEl = document.createElement('b');
+      boldEl.setAttribute('overridden', 'false');
 
-      const result = StrongMarkSpec.parseDOM[1].getAttrs(mockBElement);
-
-      expect(result).toBeFalsy();
+      const getAttrs = rule.getAttrs as (dom: HTMLElement) => StrongAttrs;
+      const attrs = getAttrs(boldEl);
+      expect(attrs).toEqual({overridden: false});
     });
 
-    it('should parse style font-weight with bold or similar value', () => {
-        const mockElement : any = {
-            style: {
-              fontWeight: 'bold',
-            },
-          };
+    it('should correctly parse <span style="font-weight: bold">', () => {
+      const rule = getRule('span[style*=font-weight]');
+      const spanEl = document.createElement('span');
+      spanEl.setAttribute('overridden', 'true');
+      spanEl.setAttribute('style', 'font-weight: bold;');
 
-      const result = StrongMarkSpec.parseDOM[2].getAttrs(mockElement.style.fontWeight);
-
-      expect(result).toBeNull(); // Should return null when the style is a valid bold pattern
-    });
-
-    it('should ignore invalid font-weight style', () => {
-      const mockElement:any = {
-        style: {
-          fontWeight: 'italic', // Invalid value
-        },
-      };
-
-      const result = StrongMarkSpec.parseDOM[2].getAttrs(mockElement);
-
-      expect(result).toBeFalsy(); // Should return false for invalid font-weight style
+      const getAttrs = rule.getAttrs as (dom: HTMLElement) => StrongAttrs;
+      const attrs = getAttrs(spanEl);
+      expect(attrs).toEqual({overridden: true});
     });
   });
 
   describe('toDOM', () => {
-    it('should generate <strong> element', () => {
-      const mockMark = {} as Mark;
+    it('should return correct DOM structure when overridden is true', () => {
+      const mockMark = {
+        attrs: {overridden: true},
+      } as unknown as Mark;
 
-      const result = StrongMarkSpec.toDOM(mockMark,false);
+      if (!StrongMarkSpec.toDOM) {
+        throw new Error('SubMarkSpec.toDOM is not defined');
+      }
 
-      expect(result).toEqual(['strong', 0]);
+      const result = StrongMarkSpec.toDOM(mockMark, false);
+      expect(result).toEqual(['strong', {overridden: true}, 0]);
+    });
+
+    it('should return correct DOM structure when overridden is false', () => {
+      const mockMark = {
+        attrs: {overridden: false},
+      } as unknown as Mark;
+
+      if (!StrongMarkSpec.toDOM) {
+        throw new Error('SubMarkSpec.toDOM is not defined');
+      }
+
+      const result = StrongMarkSpec.toDOM(mockMark, false);
+      expect(result).toEqual(['strong', {overridden: false}, 0]);
     });
   });
-
 });
