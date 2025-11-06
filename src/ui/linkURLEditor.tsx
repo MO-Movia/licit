@@ -21,7 +21,7 @@ class LinkURLEditor extends React.PureComponent<LinkURLEditorProps> {
   // [FS] IRAD-1005 2020-07-07
   // Upgrade outdated packages.
   // To take care of the property type declaration.
-  static propsTypes = {
+  public static readonly propsTypes = {
     href: PropTypes.string,
     close: function (props: LinkURLEditorProps, propName: string): Error {
       const fn = props[propName];
@@ -56,8 +56,8 @@ class LinkURLEditor extends React.PureComponent<LinkURLEditorProps> {
     } else {
       disabled = error || !url;
     }
-    let klassName = "czi-image-url-editor " + theme;
-    let klassName_form = "czi-form " + theme;
+    const klassName = "czi-image-url-editor " + theme;
+    const klassName_form = "czi-form " + theme;
     return (
       <div className={klassName}>
         <form className={klassName_form} onSubmit={preventEventDefault}>

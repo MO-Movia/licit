@@ -1,5 +1,4 @@
 import {
-  InputRule,
   ellipsis,
   emDash,
   inputRules,
@@ -30,8 +29,8 @@ export function orderedListRule(nodeType: NodeType) {
 // A set of input rules for creating the basic block quotes, lists,
 // code blocks, and heading.
 export default function buildInputRules(schema: Schema): Plugin {
-  let rules = smartQuotes.concat(ellipsis, emDash),
-    type;
-  if ((type = schema.nodes.ordered_list)) rules.push(orderedListRule(type));
+  const rules = smartQuotes.concat(ellipsis, emDash);
+  const type = schema.nodes.ordered_list;
+  if (type) rules.push(orderedListRule(type));
   return inputRules({ rules });
 }

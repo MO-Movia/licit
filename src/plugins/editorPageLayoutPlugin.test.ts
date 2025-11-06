@@ -1,8 +1,8 @@
 import { EditorState } from 'prosemirror-state';
-import { Node } from 'prosemirror-model';
+import { Schema } from 'prosemirror-model';
 import EditorPageLayoutPlugin from './editorPageLayoutPlugin';
 import { ATTRIBUTE_LAYOUT, LAYOUT } from '../constants';
-import { Schema } from 'prosemirror-model';
+
 
 // Custom schema with doc attributes for width, padding, and layout
 const customSchema = new Schema({

@@ -105,7 +105,7 @@ export const configCollab = (
       ydoc = new Y.Doc();
       if (collabServiceURL) {
         try {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+           
           provider = new WebrtcProvider('tiptap-licit-' + docID, ydoc, {
             signaling: [collabServiceURL],
             password: null,
@@ -119,7 +119,7 @@ export const configCollab = (
       }
 
       if (useDefaultProvider) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+         
         provider = new WebrtcProvider('tiptap-licit-' + docID, ydoc);
       }
     }
@@ -207,7 +207,7 @@ const updateSpec = (
       keysUpdate.push(key);
     }
   });
-  const collection = schema.spec[attrName]['content'];
+  const collection = schema.spec[attrName].content;
   // update current array with the latest info
   for (let i = 0; i < collection.length; i += 2) {
     if (keysUpdate.find((element) => element === collection[i])) {
@@ -229,10 +229,10 @@ export const updateSpecAttrs = (
 ) => {
   const attrsTipTap = collection[i + 1]['attrs'];
   if (attrsTipTap) {
-    const content = existingSchema.spec[attrName]['content'];
+    const content = existingSchema.spec[attrName].content;
     for (let j = 0; j < content.length; j += 2) {
       if (content[j] === collection[i]) {
-        const attrsLicit = content[j + 1]['attrs'];
+        const attrsLicit = content[j + 1].attrs;
         const attrKeys = Object.keys(attrsTipTap);
         attrKeys.forEach((key) => {
           if (!attrsLicit[key]) {
@@ -466,7 +466,7 @@ export const Licit = ({
 
     const eView: EditorViewEx = editor.view;
     eView.runtime = runtime;
-    let wrapperClass = 'prosemirror-editor-wrapper' + ' ' + theme;
+    const wrapperClass = 'prosemirror-editor-wrapper' + ' ' + theme;
     const mainClassName = cx(wrapperClass, {
       embedded: embedded,
     });

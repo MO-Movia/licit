@@ -17,7 +17,6 @@ jest.mock('@tiptap/react', () => {
 
 describe('TableAddColumnBeforeCommand', () => {
   let command: TableAddColumnBeforeCommand;
-  let mockEditor: Editor;
   let mockState: EditorState;
 
   beforeEach(() => {
@@ -83,7 +82,6 @@ describe('TableAddColumnBeforeCommand', () => {
     ]);
 
     // Mock the editor instance to check if the addColumnBefore method gets called
-    mockEditor = new Editor();
     command = new TableAddColumnBeforeCommand();
     mockState = {
       doc: dummyDoc,

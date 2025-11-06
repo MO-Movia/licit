@@ -108,7 +108,7 @@ class RichTextEditor extends React.PureComponent<
     if (editorView !== this.state.editorView) {
       this.setState({ editorView });
       const { onReady } = this.props;
-      onReady && onReady(editorView);
+      onReady?.(editorView);
     }
   };
 }

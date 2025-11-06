@@ -10,21 +10,17 @@ describe('bindScrollHandler', () => {
   // Mocks for browser APIs
   let mockRequestAnimationFrame: jest.Mock;
   let mockCancelAnimationFrame: jest.Mock;
-  let mockAddEventListener: jest.Mock;
-  let mockRemoveEventListener: jest.Mock;
 
   beforeEach(() => {
     // Mock browser APIs
     mockRequestAnimationFrame = jest
-      .fn((cb) => cb())
-      .mockReturnValue(5) as jest.Mock; // Immediately execute the callback
-    mockCancelAnimationFrame = jest.fn() as jest.Mock;
+    .fn((cb: FrameRequestCallback) => {
+      cb(0); // Execute callback immediately with a dummy timestamp
+      return 5; // mock handle ID
+    });
+    mockCancelAnimationFrame = jest.fn();
     global.requestAnimationFrame = mockRequestAnimationFrame;
     global.cancelAnimationFrame = mockCancelAnimationFrame;
-
-    // Mock event listener methods
-    mockAddEventListener = jest.fn() as jest.Mock;
-    mockRemoveEventListener = jest.fn() as jest.Mock;
 
     // Create a target element and mock its parent elements
     target = document.createElement('div');

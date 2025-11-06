@@ -1,7 +1,5 @@
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 import tableDeleteRowCommand from './tableDeleteRowCommand';
 import { Schema } from 'prosemirror-model';
@@ -19,7 +17,6 @@ jest.mock('@tiptap/react', () => {
 
 describe('tableDeleteRowCommand', () => {
   let command: tableDeleteRowCommand;
-  let mockEditor: Editor;
   let mockState: EditorState;
 
   beforeEach(() => {
@@ -85,7 +82,6 @@ describe('tableDeleteRowCommand', () => {
     ]);
 
     // Mock the editor instance to check if the deleteRow method gets called
-    mockEditor = new Editor();
     command = new tableDeleteRowCommand();
     mockState = {
       doc: dummyDoc,

@@ -13,7 +13,7 @@ export default function bindScrollHandler(
 
   let onScroll = () => {
     // Debounce the scroll handler.
-    rid && cancelAnimationFrame(rid);
+    if (rid) cancelAnimationFrame(rid);
     rid = requestAnimationFrame(callback);
   };
 
@@ -37,7 +37,7 @@ export default function bindScrollHandler(
         el?.removeEventListener('scroll', onScroll, false);
       }
       onScroll = null;
-      rid && window.cancelAnimationFrame(rid);
+      if (rid) window.cancelAnimationFrame(rid);
       rid = 0;
     },
   };

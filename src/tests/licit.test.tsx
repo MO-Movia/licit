@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
+import { unmountComponentAtNode } from 'react-dom';
 
 // --------------------
 // Mocks (hoisted)
@@ -101,7 +101,7 @@ jest.mock('@tiptap/react', () => ({
   })),
 }));
 
-// TipTap extensions — inline factories with create/configure so licit won't crash
+// TipTap extensions � inline factories with create/configure so licit won't crash
 jest.mock('@tiptap/starter-kit', () => ({
   create: jest.fn(() => ({})),
   configure: jest.fn(() => ({})),
@@ -165,10 +165,19 @@ import * as LicitModule from '../licit';
 // DOM helpers
 // --------------------
 let container: HTMLDivElement | null = null;
+
+
+
+// --------------------
+// Tests
+// --------------------
+describe('Licit module overall behaviour', () => {
+
 beforeEach(() => {
   container = document.createElement('div');
   document.body.appendChild(container);
 });
+
 afterEach(() => {
   if (container) {
     unmountComponentAtNode(container);
@@ -178,10 +187,6 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-// --------------------
-// Tests
-// --------------------
-describe('Licit module overall behaviour', () => {
   it('configCollab sets up collaboration + IndexedDB persistence', () => {
     const ref: any = { collaboration: false, currentUser: null };
 

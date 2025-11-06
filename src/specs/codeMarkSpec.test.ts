@@ -1,18 +1,24 @@
-import { DOMOutputSpec } from 'prosemirror-model';
+import {DOMOutputSpec, Mark, Schema} from 'prosemirror-model';
 import CodeMarkSpec from './codeMarkSpec';
 
 describe('CodeMarkSpec', () => {
   describe('parseDOM', () => {
     it('should define correct parseDOM rule', () => {
-      expect(CodeMarkSpec.parseDOM).toEqual([{ tag: 'code' }]);
+      expect(CodeMarkSpec.parseDOM).toEqual([{tag: 'code'}]);
     });
   });
 
   describe('toDOM', () => {
     it('should return the correct DOMOutputSpec when given a mock Mark', () => {
-      // Mocking a Mark object as expected by the toDOM function
-      const mockMark = { type: { name: 'code' }, attrs: {} };
-      const result: DOMOutputSpec = CodeMarkSpec.toDOM(mockMark as any, false);
+      const schema = new Schema({
+        nodes: {doc: {content: 'text*'}, text: {}},
+        marks: {code: CodeMarkSpec},
+      });
+
+      const mark: Mark = schema.marks.code.create();
+
+      const result: DOMOutputSpec = CodeMarkSpec.toDOM(mark, false);
+
       expect(result).toEqual(['code', 0]);
     });
   });

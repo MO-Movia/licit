@@ -19,11 +19,11 @@ describe('TextSuperMarkSpec', () => {
       const mockElement = document.createElement('sup');
       mockElement.setAttribute('overridden', 'true');
 
-      const attrsTrue = rule!.getAttrs(mockElement);
+      const attrsTrue = rule.getAttrs(mockElement);
       expect(attrsTrue).toEqual({overridden: true});
 
       mockElement.setAttribute('overridden', 'false');
-      const attrsFalse = rule!.getAttrs(mockElement);
+      const attrsFalse = rule.getAttrs(mockElement);
       expect(attrsFalse).toEqual({overridden: false});
     });
 
@@ -40,10 +40,10 @@ describe('TextSuperMarkSpec', () => {
 
       expect(rule).toBeDefined();
 
-      const attrsSup = rule!.getAttrs('sup');
+      const attrsSup = rule.getAttrs('sup');
       expect(attrsSup).toEqual({overridden: true});
 
-      const attrsOther = rule!.getAttrs('baseline');
+      const attrsOther = rule.getAttrs('baseline');
       expect(attrsOther).toBeNull();
     });
   });

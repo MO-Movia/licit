@@ -51,12 +51,12 @@ describe('editorCommands full export touch', () => {
     expect(Commands.LIST_SPLIT).toBeDefined();
   });
 
-it('should call document.execCommand for object resizing and inline table editing', () => {
+it('should call document.execCommand for object resizing and inline table editing', async () => {
   document.execCommand = jest.fn();
   jest.resetModules();
 
   // Importing the module triggers its top-level execCommand calls
-  require('./editorCommands');
+  await import('./editorCommands');
 
   expect(document.execCommand).toHaveBeenCalledWith('enableObjectResizing', false, 'false');
   expect(document.execCommand).toHaveBeenCalledWith('enableInlineTableEditing', false, 'false');

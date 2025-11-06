@@ -1,4 +1,4 @@
-import {Schema, Node as PMNode} from 'prosemirror-model';
+import {Schema} from 'prosemirror-model';
 import {Transform, canSplit} from 'prosemirror-transform';
 import {TextSelection} from 'prosemirror-state';
 import splitListItem, {splitEmptyListItem} from './splitListItem';
@@ -76,14 +76,14 @@ describe('splitListItem', () => {
   });
 
   it('returns same Transform when selection missing', () => {
-    const doc = schema.topNodeType.createAndFill() as PMNode;
+    const doc = schema.topNodeType.createAndFill();
     const tr = new Transform(doc);
     const result = splitListItem(tr, schema);
     expect(result).toBe(tr);
   });
 
   it('returns same Transform when grandParent.type !== nodeType', () => {
-    const doc = schema.topNodeType.createAndFill() as PMNode;
+    const doc = schema.topNodeType.createAndFill();
     const tr = new Transform(doc);
     const selection = TextSelection.create(tr.doc, 1, 1);
     (tr as Transform & {selection: TextSelection}).selection = selection;

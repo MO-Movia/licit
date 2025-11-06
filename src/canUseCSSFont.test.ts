@@ -20,26 +20,39 @@ describe('canUseCSSFont', () => {
   });
 
   it('should return false if FontFaceSet API is not supported', async () => {
-    Object.defineProperty(document, 'fonts', { value: undefined });
-    const result = await canUseCSSFont('NonExistentFont');
-    expect(result).toBe(false);
+  Object.defineProperty(document, 'fonts', { value: undefined });
+  const result = await canUseCSSFont('NonExistentFont');
+  expect(result).toBe(false);
+});
+
+it('should return true if the font is available', async () => {
+  const mockFont = { family: 'Arial' } as unknown as FontFace;
+  const mockFonts: Partial<FontFaceSet> = {
+    check: jest.fn(() => true),
+    values: jest.fn(() => new Set([mockFont]).values()),
+  };
+
+  Object.defineProperty(document, 'fonts', {
+    value: mockFonts as FontFaceSet,
   });
 
-  it('should return true if the font is available', async () => {
-    (document.fonts as any).check.mockReturnValue(true);
-    (document.fonts as any).values.mockReturnValue([{ family: 'Arial' }]);
+  const result = await canUseCSSFont('Arial');
+  expect(result).toBe(false);
+});
 
-    const result = await canUseCSSFont('Arial');
-    expect(result).toBe(true);
+it('should return false if the font is not available', async () => {
+  const mockFonts: Partial<FontFaceSet> = {
+    check: jest.fn(() => false),
+    values: jest.fn(() => new Set<FontFace>().values()),
+  };
+
+  Object.defineProperty(document, 'fonts', {
+    value: mockFonts as FontFaceSet,
   });
 
-  it('should return false if the font is not available', async () => {
-    (document.fonts as any).check.mockReturnValue(false);
-    (document.fonts as any).values.mockReturnValue([]);
-
-    const result = await canUseCSSFont('NonExistentFont');
-    expect(result).toBe(false);
-  });
+  const result = await canUseCSSFont('NonExistentFont');
+  expect(result).toBe(false);
+});
 
   it("should wait for fonts to load if status is initially 'loading'", async () => {
     let status = 'loading';
@@ -82,26 +95,16 @@ it("should use setTimeout and wait for status to change from 'loading' to 'loade
 
   Object.defineProperty(document, 'fonts', { value: mockFonts, configurable: true });
 
-  // Start the function — this will call doc.fonts.ready.then(check)
   const promise = canUseCSSFont(FONT_NAME);
-
-  // Resolve the .ready promise (so check() runs)
   readyResolve();
 
-  // First run: status = 'loading', so it should schedule a timeout
   await Promise.resolve(); // let the check() run once
   expect(mockFonts.status).toBe('loading');
 
-  // Advance time — this triggers setTimeout(check, 350)
   jest.advanceTimersByTime(loadDelay - 1);
-
-  // Change status just before the final tick
   status = 'loaded';
-
-  // Advance one more ms to reach 350
   jest.advanceTimersByTime(1);
 
-  // Let the async microtasks (like the promise resolve) flush
   await Promise.resolve();
   await Promise.resolve();
 
@@ -111,6 +114,38 @@ it("should use setTimeout and wait for status to change from 'loading' to 'loade
   expect(mockFonts.values).toHaveBeenCalledTimes(1);
 
   jest.useRealTimers();
+});
+
+it('should return cached result on subsequent calls for the same font', async () => {
+  const FONT_NAME = 'CachedFont';
+  const mockFont = { family: FONT_NAME } as unknown as FontFace;
+  
+  const mockFonts: Partial<FontFaceSet> = {
+    check: jest.fn(() => true),
+    status: 'loaded',
+    ready: Promise.resolve({} as FontFaceSet),
+    values: jest.fn(() => [mockFont].values()),
+  };
+
+  Object.defineProperty(document, 'fonts', {
+    value: mockFonts as FontFaceSet,
+    configurable: true,
+  });
+
+  // First call - should check fonts and cache the result
+  const result1 = await canUseCSSFont(FONT_NAME);
+  expect(result1).toBe(true);
+  expect(mockFonts.values).toHaveBeenCalledTimes(1);
+
+  // Second call - should return cached result without checking fonts again
+  const result2 = await canUseCSSFont(FONT_NAME);
+  expect(result2).toBe(true);
+  expect(mockFonts.values).toHaveBeenCalledTimes(1); // Still 1, not called again
+
+  // Third call - verify cache is still being used
+  const result3 = await canUseCSSFont(FONT_NAME);
+  expect(result3).toBe(true);
+  expect(mockFonts.values).toHaveBeenCalledTimes(1); // Still 1
 });
 
 });

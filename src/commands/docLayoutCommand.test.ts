@@ -9,7 +9,6 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 describe('DocLayoutCommand', () => {
   let mockState;
-  let mockEditorView: EditorView;
   beforeEach(() => {
     // Mock state and selection
     const mySchema = new Schema({
@@ -80,7 +79,6 @@ describe('DocLayoutCommand', () => {
         setSelection: jest.fn().mockReturnThis(),
       },
     } as unknown as EditorState;
-    mockEditorView = {} as EditorView;
 
     UICommand.prototype.editor = {
       view: { focus: () => {}, dispatch: () => {} },
@@ -90,7 +88,7 @@ describe('DocLayoutCommand', () => {
   it('should be defined', () => {
     expect(doclayoutcommand).toBeDefined();
   });
-  it('should handle waitForUserInput ', () => {
+  it('should handle waitForUserInput', () => {
     const test = doclayoutcommand.waitForUserInput({
       doc: {},
     } as unknown as EditorState);
@@ -98,14 +96,14 @@ describe('DocLayoutCommand', () => {
     doclayoutcommand._popUp.close('my Val');
     expect(test).toBeDefined();
   });
-  it('should handle waitForUserInput ', () => {
+  it('should handle waitForUserInput with popup', () => {
     doclayoutcommand._popUp = {};
     const test = doclayoutcommand.waitForUserInput({
       doc: {},
     } as unknown as EditorState);
     expect(test).toBeDefined();
   });
-  it('should handle executeWithUserInput  ', () => {
+  it('should handle executeWithUserInput', () => {
     doclayoutcommand._popUp = {};
     const test = doclayoutcommand.executeWithUserInput(
       {

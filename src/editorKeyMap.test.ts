@@ -38,7 +38,7 @@ describe('shortcut utility functions', () => {
   test('tooltip() formats Mac shortcuts with symbols', () => {
     (browser.isMac as jest.Mock).mockReturnValue(true);
 
-    const result = tooltip(mockKeymap as any);
+    const result = tooltip(mockKeymap);
 
     expect(result).toBe('Bold (⌘-⇧-B)');
   });
@@ -46,7 +46,7 @@ describe('shortcut utility functions', () => {
   test('tooltip() returns windows shortcut text when not mac', () => {
     (browser.isMac as jest.Mock).mockReturnValue(false);
 
-    const result = tooltip(mockKeymap as any);
+    const result = tooltip(mockKeymap);
 
     expect(result).toBe('Bold (Ctrl-B)');
   });
@@ -56,13 +56,13 @@ describe('shortcut utility functions', () => {
   test('findShortcutByKeymap() returns mac shortcut on mac', () => {
     (browser.isMac as jest.Mock).mockReturnValue(true);
 
-    expect(findShortcutByKeymap(mockKeymap as any)).toBe('Cmd-Shift-B');
+    expect(findShortcutByKeymap(mockKeymap)).toBe('Cmd-Shift-B');
   });
 
   test('findShortcutByKeymap() returns windows shortcut on windows', () => {
     (browser.isMac as jest.Mock).mockReturnValue(false);
 
-    expect(findShortcutByKeymap(mockKeymap as any)).toBe('Ctrl-B');
+    expect(findShortcutByKeymap(mockKeymap)).toBe('Ctrl-B');
   });
 
   // ------------------------------------------------------

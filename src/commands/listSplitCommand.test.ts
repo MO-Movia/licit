@@ -1,4 +1,4 @@
-import { EditorState, Selection, Transaction } from 'prosemirror-state';
+import { EditorState, Transaction } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import ListSplitCommand from './listSplitCommand';
 import splitListItem from '../splitListItem';

@@ -1,5 +1,4 @@
 import { EditorState } from 'prosemirror-state';
-import { MarkToggleCommand } from '@modusoperandi/licit-ui-commands';
 import MarkToggleCommandEx from './markToggleCommandEx';
 import { Schema } from 'prosemirror-model';
 

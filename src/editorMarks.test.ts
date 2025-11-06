@@ -47,7 +47,7 @@ describe('updateEditorMarks', () => {
     const OrderedMapMock = new (OrderedMap as unknown as jest.Mock)();
 
     // Call the function
-    const updatedMap = updateEditorMarks(OrderedMapMock);
+    updateEditorMarks(OrderedMapMock);
 
     // Assert that addToEnd was called with the correct arguments
     expect(OrderedMapMock.addToEnd).toHaveBeenCalledWith(MARK_LINK, LinkMarkSpec);

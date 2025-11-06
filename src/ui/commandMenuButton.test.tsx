@@ -1,12 +1,13 @@
 import * as React from 'react';
 import CommandMenuButton from './commandMenuButton';
 import { EditorState } from 'prosemirror-state';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { CustomButton } from '@modusoperandi/licit-ui-commands';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
+import { EditorView } from 'prosemirror-view';
 
 //  Mock Dependencies
 jest.mock('@modusoperandi/licit-ui-commands', () => ({
-  CustomButton: (props: any) => React.createElement('button', props),
+  CustomButton: (props: React.JSX.Element) => React.createElement('button', props),
   createPopUp: jest.fn(() => ({ close: jest.fn(), update: jest.fn() })),
   atAnchorRight: jest.fn(),
   ThemeContext: React.createContext('light'),
@@ -40,7 +41,7 @@ const mockProps = {
   commandGroups: mockCommandGroups,
   dispatch: jest.fn(),
   editorState: {} as EditorState,
-  editorView: {} as any,
+  editorView: {} as EditorView,
   title: 'Bold Menu',
   label: 'Bold',
   className: 'test-btn',
@@ -57,12 +58,12 @@ describe('CommandMenuButton', () => {
   });
 
   test('initial state should not be expanded', () => {
-    const instance = new (CommandMenuButton as any)(mockProps);
+    const instance = new (CommandMenuButton as  unknown as typeof CommandMenuButton)(mockProps);
     expect(instance.state.expanded).toBe(false);
   });
 
   test('should toggle expanded state on click', () => {
-  const instance = new (CommandMenuButton as any)(mockProps);
+  const instance = new (CommandMenuButton as  unknown as typeof CommandMenuButton)(mockProps);
   const setStateSpy = jest.spyOn(instance, 'setState');
 
   // Simulate first click (expands)
@@ -78,8 +79,7 @@ describe('CommandMenuButton', () => {
 });
 
   test('should call createPopUp when _showMenu is triggered', () => {
-    const { createPopUp } = require('@modusoperandi/licit-ui-commands');
-    const instance = new (CommandMenuButton as any)(mockProps);
+    const instance = new (CommandMenuButton as unknown as typeof CommandMenuButton)(mockProps);
     instance._showMenu();
 
     expect(createPopUp).toHaveBeenCalled();
@@ -87,7 +87,7 @@ describe('CommandMenuButton', () => {
 
   test('should close popup on _hideMenu', () => {
     const closeMock = jest.fn();
-    const instance = new (CommandMenuButton as any)(mockProps);
+    const instance = new (CommandMenuButton as unknown as typeof CommandMenuButton)(mockProps);
     instance._menu = { close: closeMock };
     instance._hideMenu();
 
@@ -96,14 +96,14 @@ describe('CommandMenuButton', () => {
   });
 
   test('should set expanded to false on _onCommand', () => {
-    const instance = new (CommandMenuButton as any)(mockProps);
+    const instance = new (CommandMenuButton as unknown as typeof CommandMenuButton)(mockProps);
     instance.setState({ expanded: true });
     instance._onCommand();
     expect(instance.state.expanded).toBe(false);
   });
 
   test('should nullify menu on _onClose', () => {
-    const instance = new (CommandMenuButton as any)(mockProps);
+    const instance = new (CommandMenuButton as unknown as typeof CommandMenuButton)(mockProps);
     instance._menu = { dummy: true };
     instance._onClose();
     expect(instance._menu).toBeNull();
@@ -111,23 +111,23 @@ describe('CommandMenuButton', () => {
   });
 
   test('should set _menu to null on unmount', () => {
-    const instance = new (CommandMenuButton as any)(mockProps);
+    const instance = new (CommandMenuButton as unknown as typeof CommandMenuButton)(mockProps);
     const hideMenuSpy = jest.spyOn(instance, '_hideMenu');
     instance.componentWillUnmount();
     expect(hideMenuSpy).toHaveBeenCalled();
   });
 
 test('should pass correct theme to CustomButton', () => {
-  const instance = new (CommandMenuButton as any)(mockProps);
+  const instance = new (CommandMenuButton as unknown as typeof CommandMenuButton)(mockProps);
   const rendered = instance.render();
 
   // The rendered element is a React element of type 'button' (CustomButton mock)
   expect(rendered.type).toBe(CustomButton);
 
   // Props passed to CustomButton should include theme derived from UICommand.theme
-  expect(rendered.props.theme).toBe('light');
-  expect(rendered.props.className).toContain('czi-custom-menu-button');
-  expect(rendered.props.label).toBe('Bold');
+  expect(rendered.props['theme']).toBe('light');
+  expect(rendered.props['className']).toContain('czi-custom-menu-button');
+  expect(rendered.props['label']).toBe('Bold');
 });
 
 

@@ -37,7 +37,7 @@ type StateType = {
 
 class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
   declare props: PropsType;
-  static contextType = ThemeContext;
+  public static readonly contextType = ThemeContext;
   _menu = null;
   _id = uuid();
 
@@ -56,8 +56,6 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
       icon,
       disabled,
       title,
-      sub,
-      theme
     } = this.props;
     const enabled =
       !disabled &&
@@ -70,7 +68,8 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
             disabledVal =
               !editorView ||
               !command.isEnabled(editorState, editorView, grpLabel);
-          } catch (ex) {
+          } catch (_ex) {
+            console.error('Error checking if command is enabled:', _ex);
             disabledVal = false;
           }
           return !disabledVal;
@@ -103,7 +102,7 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
       <CustomButton
         className={buttonClassName}
         disabled={!enabled}
-        hasChild={(hasChild && !isMaximizeButton)}
+        hasChild={hasChild && !isMaximizeButton}
         icon={icon}
         id={this._id}
         label={label}
@@ -123,13 +122,17 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
     this.setState({
       expanded,
     });
-    expanded ? this._showMenu() : this._hideMenu();
+    if (expanded) {
+      this._showMenu();
+    } else {
+      this._hideMenu();
+    }
   };
 
   _hideMenu = (): void => {
     const menu = this._menu;
     this._menu = null;
-    menu && menu.close();
+    menu?.close();
     // alert('hello seybi');
   };
 
@@ -152,7 +155,7 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
         onClose: this._onClose,
         IsChildDialog: true,
         autoDismiss: true,
-        popUpId: menuProps.commandGroups[0]['Single']
+        popUpId: menuProps.commandGroups[0].Single
           ? 'mo-menuList-1'
           : 'mo-menuList',
       };

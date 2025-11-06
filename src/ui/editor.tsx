@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import { preLoadFonts } from '../specs/fontTypeMarkSpec';
 import '../styles/czi-editor.css';
-import type { EditorRuntime } from '../types';
+import type { EditorRuntime, ToolbarMenuConfig } from '../types';
 
 export type EditorProps = {
   autoFocus?: boolean;
@@ -33,7 +33,7 @@ export type EditorProps = {
   readOnly?: boolean;
   runtime?: EditorRuntime;
   transformPastedHTML?: (html: string) => string;
-  toolbarConfig?:any;
+  toolbarConfig?:ToolbarMenuConfig[];
 };
 // FS IRAD-988 2020-06-18
 preLoadFonts();

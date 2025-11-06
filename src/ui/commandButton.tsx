@@ -20,7 +20,8 @@ export type CommandButtonProps = {
   sub?: boolean;
 };
 class CommandButton extends React.PureComponent<CommandButtonProps> {
-  static contextType = ThemeContext;
+  public static readonly contextType = ThemeContext;
+  declare context: React.ContextType<typeof ThemeContext>;
   declare  props: CommandButtonProps;
 
   render(): React.ReactElement<CustomButton> {
@@ -35,7 +36,7 @@ class CommandButton extends React.PureComponent<CommandButtonProps> {
       sub,
     } = this.props;
     let disabled = this.props.disabled;
-    const theme = this.context;
+    const theme: string = this.context;
     if (!!disabled === false) {
       disabled = !editorView || !command.isEnabled(editorState, editorView);
     }

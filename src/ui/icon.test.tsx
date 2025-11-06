@@ -10,7 +10,6 @@ jest.mock('../canUseCSSFont', () => jest.fn(() => Promise.resolve(true)));
 
 //  FIX  wrap React import inside factory to avoid hoisting error
 jest.mock('@modusoperandi/licit-ui-commands', () => {
-  const React = require('react');
   return { ThemeContext: React.createContext('dark') };
 });
 
@@ -39,32 +38,32 @@ describe('Icon component (pure Jest tests)', () => {
 
     expect(result1).toBe(result2);
     expect(React.isValidElement(result1)).toBe(true);
-    expect(result1.props.type).toBe('undo');
-    expect(result1.props.theme).toBe('dark');
+    expect(result1.props['type']).toBe('undo');
+    expect(result1.props['theme']).toBe('dark');
   });
 
-  it('should call componentDidMount and set image1 for known type', async () => {
+  it('should call componentDidMount and set image1 for known type', () => {
     const icon = new Icon({ type: 'undo', theme: 'light' });
 
     expect(icon.state.image1).toBeNull();
-    await icon.componentDidMount();
+    icon.componentDidMount();
 
     expect(icon.state.image1).toBe(null);
   });
 
-  it('should set image1 directly if type starts with "assets/"', async () => {
+  it('should set image1 directly if type starts with "assets/"', () => {
     const icon = new Icon({ type: 'assets/icons/custom.svg' });
 
-    await icon.componentDidMount();
+    icon.componentDidMount();
 
     expect(icon.state.image1).toBe(null);
   });
 
-  it('should set image1 directly if type is a data URI', async () => {
+  it('should set image1 directly if type is a data URI', () => {
     const dataURI = 'data:image/svg+xml;base64,XYZ';
     const icon = new Icon({ type: dataURI });
 
-    await icon.componentDidMount();
+    icon.componentDidMount();
 
     expect(icon.state.image1).toBe(null);
   });
@@ -163,35 +162,40 @@ it.each([
   'border_color',
   'settings_overscan',
   'icon_edit',
-])('should handle type "%s" in componentDidMount switch', async (type) => {
+])('should handle type "%s" in componentDidMount switch', (type) => {
   const icon = new Icon({ type, title: 'Test Icon', theme: 'dark' });
   const setStateSpy = jest.spyOn(icon, 'setState');
-  await icon.componentDidMount();
+  icon.componentDidMount();
   expect(setStateSpy).toHaveBeenCalledWith({ image1: expect.anything() });
   setStateSpy.mockRestore();
 });
 
-it('should handle type starting with "assets/" in componentDidMount', async () => {
-  const icon = new Icon({ type: 'assets/icons/custom.svg', title: 'Asset Icon' });
-  const setStateSpy = jest.spyOn(icon, 'setState');
-  await icon.componentDidMount();
-  expect(setStateSpy).toHaveBeenCalledWith({ image1: 'assets/icons/custom.svg' });
-  setStateSpy.mockRestore();
-});
+  it('should handle type starting with "assets/" in componentDidMount', () => {
+    const icon = new Icon({
+      type: 'assets/icons/custom.svg',
+      title: 'Asset Icon',
+    });
+    const setStateSpy = jest.spyOn(icon, 'setState');
+    icon.componentDidMount();
+    expect(setStateSpy).toHaveBeenCalledWith({
+      image1: 'assets/icons/custom.svg',
+    });
+    setStateSpy.mockRestore();
+  });
 
-it('should handle type starting with "data:image/svg+xml" in componentDidMount', async () => {
+it('should handle type starting with "data:image/svg+xml" in componentDidMount', () => {
   const dataURI = 'data:image/svg+xml;base64,XYZ';
   const icon = new Icon({ type: dataURI, title: 'Data Icon' });
   const setStateSpy = jest.spyOn(icon, 'setState');
-  await icon.componentDidMount();
+  icon.componentDidMount();
   expect(setStateSpy).toHaveBeenCalledWith({ image1: dataURI });
   setStateSpy.mockRestore();
 });
 
-it('should handle unknown type in componentDidMount (default case)', async () => {
+it('should handle unknown type in componentDidMount (default case)',  () => {
   const icon = new Icon({ type: 'unknown_type', title: 'Unknown Icon' });
   const setStateSpy = jest.spyOn(icon, 'setState');
-  await icon.componentDidMount();
+  icon.componentDidMount();
   expect(setStateSpy).toHaveBeenCalledWith({ image1: expect.anything() });
   setStateSpy.mockRestore();
 });

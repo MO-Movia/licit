@@ -1,9 +1,12 @@
-import * as React from 'react';
+import { EditorState } from 'prosemirror-state';
 import ListTypeButton from './listTypeButton';
-
+import { EditorView } from 'prosemirror-view';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 // Mock dependencies safely (React is already imported)
 jest.mock('@modusoperandi/licit-ui-commands', () => {
-  const actualReact = require('react'); //  safe local reference
+const actualReact = require('react'); //  safe local reference
+
   return {
     CustomButton: 'CustomButton',
     createPopUp: jest.fn(() => ({
@@ -18,16 +21,16 @@ jest.mock('./uuid', () => jest.fn(() => 'mock-uuid'));
 jest.mock('./listTypeMenu', () => 'ListTypeMenu');
 
 describe('ListTypeButton (pure Jest test)', () => {
-  let mockProps: any;
+  let mockProps: ListTypeButton['props'];
 
   beforeEach(() => {
     mockProps = {
       className: 'test-class',
-      commandGroups: [{ list: {} }],
+      commandGroups: [{ list: {} }] as unknown as Array<UICommand>,
       disabled: false,
       dispatch: jest.fn(),
-      editorState: {} as any,
-      editorView: {} as any,
+      editorState: {} as EditorState,
+      editorView: {} as EditorView,
       icon: 'icon-test',
       label: 'List',
       title: 'List Type',
@@ -37,11 +40,11 @@ describe('ListTypeButton (pure Jest test)', () => {
 
   it('should render CustomButton with correct props', () => {
     const instance = new ListTypeButton(mockProps);
-    const result = instance.render() as any;
+    const result = instance.render() as unknown as ListTypeButton;
 
-    expect(result.type).toBe('CustomButton');
+    expect(result['type']).toBe('CustomButton');
     expect(result.props.className).toContain('czi-custom-menu-button');
-    expect(result.props.id).toBe('mock-uuid');
+    expect(result.props['id']).toBe('mock-uuid');
     expect(result.props.label).toBe('List');
     expect(result.props.icon).toBe('icon-test');
     expect(result.props.title).toBe('List Type');
@@ -59,7 +62,6 @@ describe('ListTypeButton (pure Jest test)', () => {
   });
 
   it('should call createPopUp on _showMenu', () => {
-    const { createPopUp } = require('@modusoperandi/licit-ui-commands');
     const instance = new ListTypeButton(mockProps);
     instance._showMenu();
 
@@ -79,7 +81,7 @@ describe('ListTypeButton (pure Jest test)', () => {
   it('should close menu on componentWillUnmount', () => {
     const closeMock = jest.fn();
     const instance = new ListTypeButton(mockProps);
-    (instance as any)._menu = { close: closeMock };
+    (instance as unknown as ListTypeButton)._menu = { close: closeMock };
     instance.componentWillUnmount();
     expect(closeMock).toHaveBeenCalled();
   });

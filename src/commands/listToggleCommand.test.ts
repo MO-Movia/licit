@@ -1,13 +1,12 @@
-import { EditorState, Transaction } from 'prosemirror-state';
+import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { ContentNodeWithPos } from 'prosemirror-utils';
-import { EditorView } from 'prosemirror-view';
+import { ContentNodeWithPos  } from 'prosemirror-utils';
 import { ListToggleCommand, hasImageNode } from './listToggleCommand';
 import {
   toggleList,
   isNodeSelectionForNodeType,
 } from '@modusoperandi/licit-ui-commands';
-import { findParentNodeOfType } from 'prosemirror-utils';
+
 import { Editor } from '@tiptap/react';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
@@ -21,12 +20,17 @@ jest.mock('@modusoperandi/licit-ui-commands', () => ({
   editor: {} as Editor,
 }));
 
-jest.mock('prosemirror-utils', () => ({
-  ...jest.requireActual('prosemirror-utils'),
-  findParentNodeOfType: jest
-    .fn()
-    .mockImplementation(() => jest.fn().mockReturnValue(true)),
-}));
+jest.mock('prosemirror-utils', () => {
+  const actual = jest.requireActual<typeof import('prosemirror-utils')>('prosemirror-utils');
+
+  return {
+    ...actual,
+    findParentNodeOfType: jest
+      .fn()
+      .mockImplementation(() => jest.fn().mockReturnValue(true)),
+  };
+});
+
 
 describe('ListToggleCommand', () => {
   let command: ListToggleCommand;
@@ -57,13 +61,13 @@ describe('ListToggleCommand', () => {
   describe('isActive', () => {
     it('should return true if the ordered list is active', () => {
       jest
-        .spyOn(command as any, '_findList')
+        .spyOn(command, '_findList')
         .mockReturnValue({} as ContentNodeWithPos);
       expect(command.isActive(mockState)).toBe(true);
     });
 
     it('should return false if the ordered list is not active', () => {
-      jest.spyOn(command as any, '_findList').mockReturnValue(undefined);
+      jest.spyOn(command, '_findList').mockReturnValue(undefined);
       expect(command.isActive(mockState)).toBe(false);
     });
 
@@ -73,7 +77,7 @@ describe('ListToggleCommand', () => {
     });
   });
 
-  describe('getEditor ', () => {
+  describe('getEditor', () => {
     UICommand.prototype.editor = {} as Editor;
     it('should return editor instance', () => {
       expect(command.getEditor()).toBeDefined();
@@ -138,7 +142,7 @@ describe('ListToggleCommand', () => {
 
       (toggleList as jest.Mock).mockReturnValue({ docChanged: false });
 
-      const result = command.execute(dummyState, mockDispatch);
+      command.execute(dummyState, mockDispatch);
 
       expect(dummyState.tr).toBe(mocktr);
     });

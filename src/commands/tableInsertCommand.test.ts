@@ -1,25 +1,22 @@
 import * as React from 'react';
-import { EditorState, TextSelection } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import {EditorState, TextSelection} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import TableInsertCommand from './tableInsertCommand';
-import { Schema } from 'prosemirror-model';
-import { Editor } from '@tiptap/react';
+import {Schema} from 'prosemirror-model';
+import {Editor} from '@tiptap/react';
 
 jest.mock('../ui/tableGridSizeEditor', () => {
   return jest.fn(() => '<div>Mocked Table Grid Size Editor</div>');
 });
 
-jest.mock('nullthrows', () => jest.fn((val) => val));
+jest.mock('nullthrows', () => jest.fn(<T>(val: T) => val));
 
 describe('TableInsertCommand', () => {
   let command;
   let editorState;
-  let transform;
-  let selection;
   let view;
-  let eventMock;
   let dispatchMock;
   let viewMock;
   let closeMock;
@@ -28,16 +25,16 @@ describe('TableInsertCommand', () => {
   const mySchema = new Schema({
     nodes: {
       doc: {
-        attrs: { lineSpacing: { default: 'test' } },
+        attrs: {lineSpacing: {default: 'test'}},
         content: 'block+',
       },
       paragraph: {
-        attrs: { lineSpacing: { default: 'test' } },
+        attrs: {lineSpacing: {default: 'test'}},
         content: 'text*',
         group: 'block',
       },
       heading: {
-        attrs: { lineSpacing: { default: 'test' } },
+        attrs: {lineSpacing: {default: 'test'}},
         content: 'text*',
         group: 'block',
         defining: true,
@@ -47,12 +44,12 @@ describe('TableInsertCommand', () => {
         group: 'block',
       },
       list_item: {
-        attrs: { lineSpacing: { default: 'test' } },
+        attrs: {lineSpacing: {default: 'test'}},
         content: 'paragraph',
         defining: true,
       },
       blockquote: {
-        attrs: { lineSpacing: { default: 'test' } },
+        attrs: {lineSpacing: {default: 'test'}},
         content: 'block+',
         group: 'block',
       },
@@ -62,24 +59,20 @@ describe('TableInsertCommand', () => {
     },
   });
   const dummyDoc = mySchema.node('doc', null, [
-    mySchema.node('heading', { marks: [] }, [mySchema.text('Heading 1')]),
-    mySchema.node('paragraph', { marks: [] }, [
+    mySchema.node('heading', {marks: []}, [mySchema.text('Heading 1')]),
+    mySchema.node('paragraph', {marks: []}, [
       mySchema.text('This is a paragraph'),
     ]),
-    mySchema.node('bullet_list', { marks: [] }, [
-      mySchema.node('list_item', { marks: [] }, [
-        mySchema.node('paragraph', { marks: [] }, [
-          mySchema.text('List item 1'),
-        ]),
+    mySchema.node('bullet_list', {marks: []}, [
+      mySchema.node('list_item', {marks: []}, [
+        mySchema.node('paragraph', {marks: []}, [mySchema.text('List item 1')]),
       ]),
-      mySchema.node('list_item', { marks: [] }, [
-        mySchema.node('paragraph', { marks: [] }, [
-          mySchema.text('List item 2'),
-        ]),
+      mySchema.node('list_item', {marks: []}, [
+        mySchema.node('paragraph', {marks: []}, [mySchema.text('List item 2')]),
       ]),
     ]),
-    mySchema.node('blockquote', { marks: [] }, [
-      mySchema.node('paragraph', { marks: [] }, [
+    mySchema.node('blockquote', {marks: []}, [
+      mySchema.node('paragraph', {marks: []}, [
         mySchema.text('This is a blockquote'),
       ]),
     ]),
@@ -94,11 +87,10 @@ describe('TableInsertCommand', () => {
         to: 0,
         $head: {
           depth: 1,
-          node: jest.fn(() => ({ type: { spec: { tableRole: '' } } })),
+          node: jest.fn(() => ({type: {spec: {tableRole: ''}}})),
         },
       },
     };
-    transform = new Transform(editorState);
     view = {};
     // Create a mock for close method
     closeMock = jest.fn();
@@ -115,7 +107,7 @@ describe('TableInsertCommand', () => {
     editorState.selection = TextSelection.create(editorState.doc, 0, 0);
     editorState.selection.$head.depth = 1;
     editorState.selection.$head.node = jest.fn().mockReturnValueOnce({
-      type: { spec: { tableRole: 'row' } },
+      type: {spec: {tableRole: 'row'}},
     });
     const result = command.isEnabled(editorState);
     expect(result).toBe(false);
@@ -131,17 +123,17 @@ describe('TableInsertCommand', () => {
   it('waitForUserInput should create a pop-up and resolve', async () => {
     const state = {
       plugins: [],
-      selection: { from: 1, to: 2 },
-      schema: { marks: { 'mark-text-color': 'mark-text-color' } },
+      selection: {from: 1, to: 2},
+      schema: {marks: {'mark-text-color': 'mark-text-color'}},
       doc: {
         nodeAt: (_x) => {
-          return { isAtom: true, isLeaf: true, isText: false };
+          return {isAtom: true, isLeaf: true, isText: false};
         },
       },
       tr: {
         doc: {
           nodeAt: (_x) => {
-            return { isAtom: true, isLeaf: true, isText: false, marks: [] };
+            return {isAtom: true, isLeaf: true, isText: false, marks: []};
           },
         },
       },
@@ -153,7 +145,7 @@ describe('TableInsertCommand', () => {
     document.getElementById = jest.fn().mockReturnValue(mockElement);
     // Mock the offsetParent to simulate a parent element with an id
     Object.defineProperty(mockElement, 'offsetParent', {
-      value: { id: 'parent-id' },
+      value: {id: 'parent-id'},
     });
 
     const _dispatch = jest.fn();
@@ -185,7 +177,7 @@ describe('TableInsertCommand', () => {
       currentTarget: document.createElement('div') as unknown,
       type: 'mouseenter',
     } as React.SyntheticEvent;
-    command._popUp = { close: closeMock };
+    command._popUp = {close: closeMock};
     const result = await command.waitForUserInput(
       editorState,
       dispatchMock,
@@ -212,12 +204,12 @@ describe('TableInsertCommand', () => {
   });
 
   it('should execute with user input', () => {
-    const inputs = { rows: 3, cols: 3 };
+    const inputs = {rows: 3, cols: 3};
     const insertTableMock = jest.fn().mockReturnValue(true);
 
     // Mock the getEditor function to return a mock editor
     UICommand.prototype.editor = {
-      view: { focus: () => {}, dispatch: () => {} },
+      view: {focus: () => {}, dispatch: () => {}},
       commands: {
         redo: jest.fn(),
         setCellAttribute: jest.fn(),
@@ -233,7 +225,7 @@ describe('TableInsertCommand', () => {
     );
 
     expect(result).toBe(true);
-    expect(insertTableMock).toHaveBeenCalledWith({ rows: 3, cols: 3 });
+    expect(insertTableMock).toHaveBeenCalledWith({rows: 3, cols: 3});
   });
 
   it('should return false if no user input is provided', () => {
@@ -252,9 +244,17 @@ describe('TableInsertCommand', () => {
     const result = command.shouldRespondToUIEvent(clickEvent);
     expect(result).toBe(false);
   });
+
   it('should handle cancel', () => {
-    // Test the cancel method
-    expect(() => command.cancel()).not.toThrow();
+    const result = command.cancel();
+    expect(result).toBeNull();
+  });
+
+  it('should handle executeCustomStyleForTable', () => {
+  const mockState = {} as EditorState;
+  const mockTransform = {} as Transform;  
+  const result = command.executeCustomStyleForTable(mockState, mockTransform);  
+  expect(result).toBe(mockTransform);
   });
 
   describe('executeCustom', () => {

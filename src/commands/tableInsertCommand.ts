@@ -13,7 +13,10 @@ class TableInsertCommand extends UICommand {
   cancel(): void {
     return null;
   }
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+  executeCustom(_state: EditorState, tr: Transform, _from: number, _to: number): Transform {
+    return tr;
+  }
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
     return tr;
   }
   _popUp = null;
@@ -76,7 +79,7 @@ class TableInsertCommand extends UICommand {
   };
 
   getEditor = (): Editor => {
-    return UICommand.prototype.editor as Editor;
+    return UICommand.prototype.editor;
   };
 
   executeWithUserInput = (

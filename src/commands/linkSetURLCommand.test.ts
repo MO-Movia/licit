@@ -2,23 +2,30 @@ import { EditorState, TextSelection } from 'prosemirror-state';
 import LinkSetURLCommand from './linkSetURLCommand';
 import { Transform } from 'prosemirror-transform';
 import { Schema } from 'prosemirror-model';
-import { findNodesWithSameMark } from '@modusoperandi/licit-ui-commands';
 import { EditorViewEx } from '@src/constants';
-import { hideSelectionPlaceholder } from '../plugins/selectionPlaceholderPlugin';
 
-jest.mock('@modusoperandi/licit-ui-commands', () => ({
-  ...jest.requireActual('@modusoperandi/licit-ui-commands'),
-  findNodesWithSameMark: jest
-    .fn()
-    .mockReturnValue({ mark: { attrs: { href: 'https://google.com' } } }),
-}));
+jest.mock('@modusoperandi/licit-ui-commands', () => {
+  const actual = jest.requireActual<typeof import('@modusoperandi/licit-ui-commands')>('@modusoperandi/licit-ui-commands');
+  return {
+    ...actual,
+    findNodesWithSameMark: jest.fn().mockReturnValue({
+      mark: { attrs: { href: 'https://google.com' } },
+    }),
+  };
+});
 
-jest.mock('../plugins/selectionPlaceholderPlugin', () => ({
-  ...jest.requireActual('../plugins/selectionPlaceholderPlugin'),
-  hideSelectionPlaceholder: jest.fn().mockReturnValue({
-    setSelection: jest.fn().mockReturnThis(),
-  }),
-}));
+jest.mock('../plugins/selectionPlaceholderPlugin', () => {
+  const actual = jest.requireActual<
+    typeof import('../plugins/selectionPlaceholderPlugin')
+  >('../plugins/selectionPlaceholderPlugin');
+
+  return {
+    ...actual,
+    hideSelectionPlaceholder: jest.fn().mockReturnValue({
+      setSelection: jest.fn().mockReturnThis(),
+    }),
+  };
+});
 
 describe('LinkSetURLCommand', () => {
   afterEach(() => {
@@ -102,7 +109,7 @@ describe('LinkSetURLCommand', () => {
   it('should be defined', () => {
     expect(lsc).toBeDefined();
   });
-  it('should handle isEnabled ', () => {
+  it('should handle isEnabled with TextSelection.create', () => {
     expect(
       lsc.isEnabled({
         schema: { marks: { link: {} } },
@@ -110,7 +117,7 @@ describe('LinkSetURLCommand', () => {
       } as unknown as EditorState)
     ).toBeDefined();
   });
-  it('should handle return false if markType is null ', () => {
+  it('should handle return false if markType is null', () => {
     const result = lsc.isEnabled({
       schema: { marks: {} },
       selection: TextSelection.create(state.doc, 0, 1),
@@ -118,7 +125,7 @@ describe('LinkSetURLCommand', () => {
 
     expect(result).toBeFalsy();
   });
-  it('should handle isEnabled ', () => {
+  it('should handle isEnabled', () => {
     expect(
       lsc.isEnabled({
         schema: { marks: { link: {} } },
@@ -126,7 +133,7 @@ describe('LinkSetURLCommand', () => {
       } as unknown as EditorState)
     ).toBeDefined();
   });
-  it('should handle waitForUserInput ', () => {
+  it('should handle waitForUserInput', () => {
     expect(
       lsc.waitForUserInput(
         {
@@ -148,7 +155,7 @@ describe('LinkSetURLCommand', () => {
     expect(result).toBeFalsy();
   });
 
-  it('should handle waitForUserInput ', () => {
+  it('should handle waitForUserInput with popup', () => {
     lsc._popUp = {};
     expect(
       lsc.waitForUserInput(
@@ -161,7 +168,7 @@ describe('LinkSetURLCommand', () => {
       )
     ).toBeDefined();
   });
-  it('should handle executeWithUserInput with href null ', () => {
+  it('should handle executeWithUserInput with href null', () => {
     expect(
       lsc.executeWithUserInput(
         {
@@ -173,7 +180,7 @@ describe('LinkSetURLCommand', () => {
       )
     ).toBeDefined();
   });
-  it('should handle executeWithUserInput with valid href ', () => {
+  it('should handle executeWithUserInput with valid href', () => {
     const result = lsc.executeWithUserInput(
       {
         doc: { nodeAt: () => {} },
@@ -201,7 +208,7 @@ describe('LinkSetURLCommand', () => {
     ).toBeDefined();
   });
 
-  it('_popup should contain close once it created  ', async () => {
+  it('_popup should contain close once it created', async () => {
     lsc._popUp = null;
     const response = lsc.waitForUserInput(
       {

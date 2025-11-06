@@ -4,7 +4,6 @@ import {
   TextSelection,
   Transaction,
 } from 'prosemirror-state';
-import {Schema, DOMParser} from 'prosemirror-model';
 import {EditorView} from 'prosemirror-view';
 import {schema as basicSchema} from 'prosemirror-schema-basic';
 import CursorPlaceholderPlugin, {
@@ -129,10 +128,10 @@ test('should handle selection changes correctly', () => {
     expect(doc.childCount).toBeGreaterThan(0);
     const paragraph = doc.firstChild;
     expect(paragraph).not.toBeNull();
-    expect(paragraph!.type.name).toBe('paragraph');
+    expect(paragraph.type.name).toBe('paragraph');
 
     // Calculate a safe range inside the paragraph
-    const endPos = Math.min(5, paragraph!.content.size);
+    const endPos = Math.min(5, paragraph.content.size);
 
     //  Create a non-empty text selection
     const tr = view.state.tr.setSelection(TextSelection.create(doc, 1, endPos));

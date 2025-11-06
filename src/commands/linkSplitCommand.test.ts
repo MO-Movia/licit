@@ -7,22 +7,16 @@ describe('ListSplitCommand', () => {
   it('should be defined', () => {
     expect(lsc).toBeDefined();
   });
-  it('should handle isEnabled ', () => {
-    expect(lsc.isEnabled({schema:{marks:{'link':{}}},selection:{from:0,to:1}} as unknown as EditorState)).toBeDefined();
-  });
-  it('should handle isEnabled ', () => {
+  it('should handle isEnabled', () => {
     expect(lsc.isEnabled({schema:{marks:{'link':{}}},selection:{from:0,to:1} as unknown as TextSelection} as unknown as EditorState)).toBeDefined();
   });
-  it('should handle waitForUserInput ', () => {
+  it('should handle waitForUserInput', () => {
     expect(lsc.waitForUserInput({doc:{nodeAt:()=>{}},schema:{marks:{'link':{}}},selection:{from:0,to:1}} as unknown as EditorState,()=>{})).toBeDefined();
   });
-  it('should handle waitForUserInput ', () => {
-    expect(lsc.waitForUserInput({doc:{nodeAt:()=>{}},schema:{marks:{'link':{}}},selection:{from:0,to:1}} as unknown as EditorState,()=>{})).toBeDefined();
-  });
-  it('should handle waitForUserInput when link is null ', () => {
+  it('should handle waitForUserInput when link is null', () => {
     expect(lsc.waitForUserInput({doc:{nodeAt:()=>{}},schema:{marks:{'link':null}},selection:{from:0,to:1}} as unknown as EditorState,()=>{})).toBeDefined();
   });
-  it('should handle executeWithUserInput ', () => {
+  it('should handle executeWithUserInput', () => {
     expect(lsc.executeWithUserInput ({doc:{nodeAt:()=>{}},schema:{marks:{'link':null}},selection:{from:0,to:1}} as unknown as EditorState,()=>{})).toBeDefined();
   });
   it('should handle cancel', () => {

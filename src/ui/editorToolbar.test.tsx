@@ -5,9 +5,13 @@ import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { EditorViewEx } from '../constants';
+import { ToolbarMenuConfig } from '@src/types';
 
 //  Full mock subclass since UICommand is abstract
 class MockUICommand extends UICommand {
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
+    return tr;
+  }
   async waitForUserInput() {
     return Promise.resolve(true);
   }
@@ -20,7 +24,7 @@ class MockUICommand extends UICommand {
     return;
   }
 
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+  executeCustom(_state: EditorState, tr: Transform, _from: number, _to: number): Transform {
     return tr;
   }
 
@@ -183,7 +187,7 @@ it('should toggle expanded state from false to true', () => {
     const instance = new TestableEditorToolbar({
       editorState: editorStateWithPlugin,
       editorView: mockEditorView,
-      toolbarConfig: toolbarConfigForTest as any,
+      toolbarConfig: toolbarConfigForTest as ToolbarMenuConfig[],
     });
 
     instance.state = { expanded: true, wrapped: true }; 

@@ -10,14 +10,23 @@ describe('buildInputRules()', () => {
   beforeEach(() => {
     schema = new Schema({
       nodes: {
-        doc: { content: 'block+' },
-        paragraph: { content: 'text*', toDOM: () => ['p', 0], parseDOM: [{ tag: 'p' }] },
+        doc: {content: 'block+'},
+        paragraph: {
+          content: 'text*',
+          toDOM: () => ['p', 0],
+          parseDOM: [{tag: 'p'}],
+        },
         ordered_list: {
           content: 'list_item+',
           group: 'block',
-          attrs: { order: { default: 1 } },
-          parseDOM: [{ tag: 'ol', getAttrs: (dom) => ({ order: dom.getAttribute('start') || 1 }) }],
-          toDOM: (node) => ['ol', { start: node.attrs.order }, 0],
+          attrs: {order: {default: 1}},
+          parseDOM: [
+            {
+              tag: 'ol',
+              getAttrs: (dom) => ({order: dom.getAttribute('start') || 1}),
+            },
+          ],
+          toDOM: (node) => ['ol', {start: node.attrs.order}, 0],
         },
         list_item: { content: 'paragraph*', toDOM: () => ['li', 0] },
         text: { inline: true },

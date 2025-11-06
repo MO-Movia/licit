@@ -6,20 +6,24 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 
 class TableAddRowAfterCommand extends UICommand {
-waitForUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, event?: any): Promise<any> {
+waitForUserInput(_state: EditorState, _dispatch?: (tr: Transform) => void, _view?: EditorView, _event?: React.SyntheticEvent): Promise<PromiseConstructor> {
     return Promise.resolve(null);
   }
-  executeWithUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, inputs?: any): boolean {
+  executeWithUserInput(_state: EditorState, _dispatch?: (tr: Transform) => void, _view?: EditorView, _inputs?: string): boolean {
     return false;
   }
   cancel(): void {
     return null;
   }
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+  executeCustom(_state: EditorState, tr: Transform, _from: number, _to: number): Transform {
+    return tr;
+  }
+
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
     return tr;
   }
   getEditor = (): Editor => {
-    return UICommand.prototype.editor as Editor;
+    return UICommand.prototype.editor;
   };
 
   isEnabled = (_state: EditorState): boolean => {

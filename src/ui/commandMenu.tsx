@@ -5,10 +5,8 @@ import * as React from 'react';
 
 import CustomMenu from './customMenu';
 import CustomMenuItem from './customMenuItem';
-import CommandButton from './commandButton';
 import { parseLabel, isExpandButton } from './editorToolbarConfig';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { ThemeContext } from '@modusoperandi/licit-ui-commands';
 import CommandMenuButton, { Arr } from './commandMenuButton';
 
 type PropsType = {
@@ -41,7 +39,8 @@ class CommandMenu extends React.PureComponent<PropsType> {
             // [FS] IRAD-1053 2020-10-22
             // Disable the Clear style menu when no styles applied to a paragraph
             disabled = !editorView || !command.isEnabled(editorState, editorView);
-          } catch (ex) {
+          } catch (_error) {
+            console.error('Error checking command state:', _error);
             disabled = false;
           }
           // if (command) {
@@ -68,23 +67,34 @@ class CommandMenu extends React.PureComponent<PropsType> {
         children.push(<CustomMenuItem.Separator key={`${String(ii)}-hr`} />);
       }
     });
-    return <CustomMenu theme={theme} isHorizontal={isExpandButton(title)} >{children}</CustomMenu>;
+    return (
+      <CustomMenu theme={theme} isHorizontal={isExpandButton(title)}>
+        {children}
+      </CustomMenu>
+    );
   }
 
   _renderCustomMenuItem = (
     label: string,
     command: UICommand,
     editorState: EditorState,
-    icon: any,
+    icon: string | React.ReactElement | null,
     theme: string
   ): React.ReactElement<CustomMenuItem> => {
     return (
       <CustomMenuItem
         active={command.isActive(editorState)}
-        disabled={!Boolean(command.isEnabled(editorState))}
+        disabled={!command.isEnabled(editorState)}
         icon={icon}
         key={label}
-        label={icon ? null : (command.renderLabel(editorState) || label)}
+        // label={icon ? null : (command.renderLabel(editorState) || label)}
+        label={
+          icon
+            ? null
+            : (command.renderLabel(editorState) as
+                | string
+                | React.ReactElement) || label
+        }
         onClick={this._onUIEnter}
         onMouseEnter={this._onUIEnter}
         value={command}
@@ -149,7 +159,7 @@ class CommandMenu extends React.PureComponent<PropsType> {
 
   _onUIEnter = (command: UICommand, event: React.SyntheticEvent): void => {
     if (command.shouldRespondToUIEvent(event)) {
-      this._activeCommand && this._activeCommand.cancel();
+      this._activeCommand?.cancel();
       this._activeCommand = command;
       this._execute(command, event);
     }

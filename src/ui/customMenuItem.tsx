@@ -3,14 +3,13 @@ import {
   CustomButton,
   PointerSurfaceProps,
   TextAlignCommand,
-  ThemeContext
+  ThemeContext,
 } from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
 type CustomButtonProps = PointerSurfaceProps & {
   icon?: string | React.ReactElement | null;
   label?: string | React.ReactElement | null;
   theme?: string;
-
 };
 
 class CustomMenuItemSeparator extends React.PureComponent {
@@ -20,8 +19,8 @@ class CustomMenuItemSeparator extends React.PureComponent {
 }
 
 class CustomMenuItem extends React.PureComponent {
-  static Separator = CustomMenuItemSeparator;
-  static contextType = ThemeContext;
+  public static readonly Separator = CustomMenuItemSeparator;
+  public static readonly contextType = ThemeContext;
   declare props: CustomButtonProps;
 
   render(): React.ReactElement<CustomButton> {
@@ -30,10 +29,19 @@ class CustomMenuItem extends React.PureComponent {
     // const theme = this.context;
     // const className = 'czi-custom-menu-item';
     let className = 'czi-custom-menu-item ' + this.props.theme;
-    if (this.props.value?.alignment) {
-      className = 'czi-custom-menu-item-button ' + this.props.theme;
+    if (this.props.value instanceof TextAlignCommand) {
+      const command = this.props.value;
+      if (command?._alignment) {
+        className = 'czi-custom-menu-item-button ' + this.props.theme;
+      }
     }
-    return <CustomButton {...this.props} className={className} theme={this.props.theme} />;
+    return (
+      <CustomButton
+        {...this.props}
+        className={className}
+        theme={this.props.theme}
+      />
+    );
   }
 }
 

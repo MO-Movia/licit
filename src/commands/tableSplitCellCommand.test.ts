@@ -17,7 +17,6 @@ jest.mock('@tiptap/react', () => {
 
 describe('tableSplitCellCommand', () => {
   let command: tableSplitCellCommand;
-  let mockEditor: Editor;
   let mockState: EditorState;
 
   beforeEach(() => {
@@ -83,7 +82,6 @@ describe('tableSplitCellCommand', () => {
     ]);
 
     // Mock the editor instance to check if the splitCell method gets called
-    mockEditor = new Editor();
     command = new tableSplitCellCommand();
     mockState = {
       doc: dummyDoc,

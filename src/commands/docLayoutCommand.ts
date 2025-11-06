@@ -6,7 +6,7 @@ import { EditorView } from 'prosemirror-view';
 
 import { SetDocAttrStep, UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import DocLayoutEditor from '../ui/docLayoutEditor';
-import { createPopUp, ThemeContext } from '@modusoperandi/licit-ui-commands';
+import { createPopUp } from '@modusoperandi/licit-ui-commands';
 
 import type { DocLayoutEditorValue } from '../ui/docLayoutEditor';
 import { Editor } from '@tiptap/react';
@@ -31,7 +31,7 @@ class DocLayoutCommand extends UICommand {
   _popUp = null;
 
   getEditor = (): Editor => {
-    return UICommand.prototype.editor as Editor;
+    return UICommand.prototype.editor;
   };
 
   isEnabled = (_state: EditorState): boolean => {
@@ -86,7 +86,7 @@ class DocLayoutCommand extends UICommand {
         (tr as Transform) = setDocLayout(tr, schema, width, layout);
       }
       this.getEditor().view.dispatch(tr);
-      view && view.focus();
+      if (view) view.focus();
     }
 
     return false;
@@ -95,7 +95,10 @@ class DocLayoutCommand extends UICommand {
   cancel(): void {
     return null;
   }
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+  executeCustom(_state: EditorState, tr: Transform, _from: number, _to: number): Transform {
+    return tr;
+  }
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
     return tr;
   }
 }

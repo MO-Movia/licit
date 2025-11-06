@@ -33,10 +33,14 @@ class HistoryRedoCommand extends UICommand {
   executeWithUserInput = (): boolean => false;
 
   cancel = (): void => {
-    console.log('Cancel called on HistoryRedoCommand.');
+    console.warn('Cancel called on HistoryRedoCommand.');
   };
 
-  executeCustom = (state: EditorState, tr: Transform): Transform => tr;
+  executeCustom = (_state: EditorState, tr: Transform): Transform => tr;
+
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
+    return tr;
+  }
 }
 
 export default HistoryRedoCommand;

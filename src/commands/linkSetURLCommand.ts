@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { EditorState, TextSelection } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState, TextSelection} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 
 import {
   MARK_LINK,
@@ -14,10 +14,9 @@ import {
   showSelectionPlaceholder,
 } from '../plugins/selectionPlaceholderPlugin';
 import LinkURLEditor from '../ui/linkURLEditor';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 class LinkSetURLCommand extends UICommand {
-
   _popUp = null;
 
   isEnabled = (state: EditorState): boolean => {
@@ -30,7 +29,7 @@ class LinkSetURLCommand extends UICommand {
     if (!markType) {
       return false;
     }
-    const { from, to } = state.selection;
+    const {from, to} = state.selection;
     return from < to;
   };
 
@@ -49,18 +48,18 @@ class LinkSetURLCommand extends UICommand {
       dispatch(showSelectionPlaceholder(state));
     }
 
-    const { doc, schema, selection } = state;
+    const {doc, schema, selection} = state;
     const markType = schema.marks[MARK_LINK];
     if (!markType) {
       return Promise.resolve(undefined);
     }
-    const { from, to } = selection;
+    const {from, to} = selection;
     const result = findNodesWithSameMark(doc, from, to, markType);
     const href = result ? result.mark.attrs.href : null;
     return new Promise((resolve) => {
       this._popUp = createPopUp(
         LinkURLEditor,
-        { href },
+        {href},
         {
           modal: true,
           onClose: (val) => {
@@ -81,13 +80,13 @@ class LinkSetURLCommand extends UICommand {
     href?: string
   ): boolean => {
     if (dispatch) {
-      const { selection, schema } = state;
-      let { tr } = state;
+      const {selection, schema} = state;
+      let {tr} = state;
       (tr as Transform) = view ? hideSelectionPlaceholder(view.state) : tr;
       tr = tr?.setSelection(selection);
       if (href !== undefined) {
         const markType = schema.marks[MARK_LINK];
-        const attrs = href ? { href } : null;
+        const attrs = href ? {href} : null;
         (tr as Transform) = applyMark(
           tr.setSelection(state.selection),
           schema,
@@ -97,14 +96,24 @@ class LinkSetURLCommand extends UICommand {
       }
       dispatch(tr);
     }
-    view && view.focus();
+    if (view) {
+      view.focus();
+    }
     return true;
   };
 
-   cancel(): void {
+  cancel(): void {
     return null;
   }
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+  executeCustom(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
+    return tr;
+  }
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
     return tr;
   }
 }

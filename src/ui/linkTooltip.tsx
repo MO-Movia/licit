@@ -61,7 +61,7 @@ class LinkTooltip extends React.PureComponent {
       if (el) {
         const { onCancel, editorView } = this.props;
         onCancel(editorView);
-        (async () => {
+        void (async () => {
           // https://www.npmjs.com/package/smooth-scroll-into-view-if-needed
           await scrollIntoView(el, {
             scrollMode: 'if-needed',

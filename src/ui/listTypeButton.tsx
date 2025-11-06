@@ -3,19 +3,23 @@
 // Need to add Icons instead of label
 
 import cx from 'classnames';
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
-import { CustomButton, createPopUp,ThemeContext } from '@modusoperandi/licit-ui-commands';
+import {
+  CustomButton,
+  createPopUp,
+  ThemeContext,
+} from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid';
 import ListTypeMenu from './listTypeMenu';
 import '../styles/czi-custom-menu-button.css';
-import { Arr } from './commandMenuButton';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 type ListTypeButtonType = {
   className?: string;
-  commandGroups: Array<any>;
+  commandGroups: Array<UICommand>;
   disabled?: boolean;
   dispatch: (tr: Transform) => void;
   editorState: EditorState;
@@ -23,11 +27,11 @@ type ListTypeButtonType = {
   icon?: string | React.ReactElement | null;
   label?: string | React.ReactElement | null;
   title?: string;
-  theme?:string
+  theme?: string;
 };
 class ListTypeButton extends React.PureComponent<ListTypeButtonType> {
-  static contextType = ThemeContext;
- declare  props: ListTypeButtonType;
+  public static readonly contextType = ThemeContext;
+  declare props: ListTypeButtonType;
 
   _menu = null;
   _id = uuid();
@@ -37,23 +41,18 @@ class ListTypeButton extends React.PureComponent<ListTypeButtonType> {
   };
 
   render(): React.ReactElement<CustomButton> {
-    const { className, label, commandGroups, icon, disabled, title,theme } =
+    const {className, label, commandGroups, icon, disabled, title, theme} =
       this.props;
     const enabled =
       !disabled &&
       commandGroups.some((group, _ii) => {
         return Object.keys(group).some((_label) => {
-          let disabledVal = true;
-          try {
-            disabledVal = false;
-          } catch (ex) {
-            disabledVal = false;
-          }
+          const disabledVal = false;
           return !disabledVal;
         });
       });
 
-    const { expanded } = this.state;
+    const {expanded} = this.state;
     const buttonClassName = cx(className, {
       'czi-custom-menu-button': true,
       expanded,
@@ -82,13 +81,17 @@ class ListTypeButton extends React.PureComponent<ListTypeButtonType> {
     this.setState({
       expanded,
     });
-    expanded ? this._showMenu() : this._hideMenu();
+    if (expanded) {
+      this._showMenu();
+    } else {
+      this._hideMenu();
+    }
   };
 
   _hideMenu = (): void => {
     const menu = this._menu;
     this._menu = null;
-    menu && menu.close();
+    menu?.close();
   };
 
   _showMenu = (): void => {
@@ -108,13 +111,13 @@ class ListTypeButton extends React.PureComponent<ListTypeButtonType> {
   };
 
   _onCommand = (): void => {
-    this.setState({ expanded: false });
+    this.setState({expanded: false});
     this._hideMenu();
   };
 
   _onClose = (): void => {
     if (this._menu) {
-      this.setState({ expanded: false });
+      this.setState({expanded: false});
       this._menu = null;
     }
   };

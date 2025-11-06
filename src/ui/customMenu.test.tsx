@@ -3,7 +3,7 @@ import CustomMenu from './customMenu';
 
 describe('CustomMenu', () => {
   it('renders with default vertical layout', () => {
-    const element = React.createElement(CustomMenu, {
+    React.createElement(CustomMenu, {
       theme: 'light-theme',
       children: React.createElement('div', null, 'Menu Item'),
     });

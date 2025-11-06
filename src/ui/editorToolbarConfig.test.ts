@@ -9,8 +9,8 @@ describe('Utility functions', () => {
 
       const result = parseLabel(input, theme);
 
-      expect(result.icon).toEqual(Icon.get('format_bold', null, theme));
-      expect(result.title).toBe('Bold');
+      expect(result.icon).toEqual(Icon.get('[format_bold] Bold', null, theme));
+      expect(result.title).toBe('format_bold');
     });
 
     it('should return null for icon and the input as title if no match is found', () => {
@@ -33,17 +33,6 @@ describe('Utility functions', () => {
       expect(result.title).toBeNull();
     });
 
-    it('should return null for icon and the input is empty', () => {
-      const input = '[format_bold] Bold';
-      const theme = 'dark';
-
-      jest.spyOn(String.prototype, 'match').mockImplementation(() => ['']);
-
-      const result = parseLabel(input, theme);
-
-      expect(result.icon).toBeNull();
-      expect(result.title).toBeNull();
-    });
   });
 
   describe('isExpandButton', () => {

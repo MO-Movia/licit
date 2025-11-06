@@ -1,5 +1,4 @@
-import cx from 'classnames';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import canUseCSSFont from '../canUseCSSFont';
 import { ThemeContext } from '@modusoperandi/licit-ui-commands'
@@ -9,12 +8,11 @@ import '../styles/czi-icon.css';
 
 import '../styles/icon-font.css';
 
-const VALID_CHARS = /[a-z_]+/;
 const cached = {};
 
 const CSS_FONT = 'Material Icons';
 
-(async function () {
+void (async function () {
   // Inject CSS Fonts reuqired for toolbar icons.
   await canUseCSSFont(CSS_FONT);
 })();
@@ -89,18 +87,18 @@ function IconEx({name, onCompleted, onError, ...rest}) {
 }*/
 
 class Icon extends React.PureComponent {
-  static contextType = ThemeContext;
+  public static readonly contextType = ThemeContext;
 
   state = {
     image1: null,
   };
 
   // Get the static Icon.
-  static get(type: string, title?: string, theme?: string): React.CElement<any, any> {
+  static get(type: string, title?: string, theme?: string): React.CElement<React.ComponentProps<typeof Icon>, Icon> {
     const key = `${type || ''}-${title || ''}`;
     const icon = cached[key] || <Icon theme={theme} title={title} type={type} />;
     cached[key] = icon;
-    return icon;
+    return icon as React.CElement<React.ComponentProps<typeof Icon>, Icon>;
   }
 
 
@@ -113,8 +111,6 @@ class Icon extends React.PureComponent {
   render(): React.ReactElement {
     const { type, title } = this.props;
     const { image1 } = this.state;
-    const className = '';
-    const children = '';
 
     // const [image1, setImage] = useState(null);
 
@@ -132,12 +128,12 @@ class Icon extends React.PureComponent {
       className = cx('czi-icon', { [type]: true });
       children = type;
     }*/
-    let image = null;
+    let _image = null;
 
     if (type.startsWith('assets/')) {
-      image = type;
+      _image = type;
     } else {
-      let fileName = 'Icon_Source';
+      let _fileName = 'Icon_Source';
       switch (type) {
         case 'format_align_right':
         case 'format_bold':
@@ -166,7 +162,7 @@ class Icon extends React.PureComponent {
         case 'border_color':
         case 'settings_overscan':
         case 'icon_edit':
-          fileName = type;
+          _fileName = type;
           break;
         default:
           break;
@@ -174,7 +170,7 @@ class Icon extends React.PureComponent {
 
       // const theme = this.context;
       const t = this.props.theme ? this.props.theme : 'dark';
-      console.log('fromicon ' + t);
+      console.warn('fromicon ' + t);
 
 
       // image = this.loadImage('dark',fileName+'.svg')
@@ -203,12 +199,9 @@ class Icon extends React.PureComponent {
     //return <span className={className}>{children}</span>;
   }
 
-  async componentDidMount() {
-    const { type, title } = this.props;
+  componentDidMount() {
+    const { type } = this.props;
     // const { image1 } = this.state;
-    const className = '';
-    const children = '';
-
     // const [image1, setImage] = useState(null);
 
 
@@ -270,7 +263,7 @@ class Icon extends React.PureComponent {
 
       // const theme = this.context;
       const t = this.props.theme ? this.props.theme : 'dark';
-      console.log('fromicon ' + t);
+      console.warn('fromicon ' + t);
       try {
         // Dynamically load the image
         //  const imageModule = await import(`@assets/images/${t}/${fileName}.svg`);
@@ -278,7 +271,7 @@ class Icon extends React.PureComponent {
         const image1 = `assets/images/${t}/${fileName}.svg`;
         this.setState({ image1 });
       } catch (error) {
-        // console.error(`Error loading image: ${error}`);
+        console.error(`Error loading image: ${error}`);
       }
     }
 

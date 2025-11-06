@@ -1,17 +1,12 @@
 {
- 
   "compilerOptions": {
     "allowJs": true,
     "jsx": "react",
     "target": "ES2022",
     "module": "esnext",
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,    
-    "lib": [
-      "es2022",
-      "dom",
-      "dom.Iterable"
-    ],
+    "allowSyntheticDefaultImports": true,
+    "lib": ["ES2021", "dom", "dom.Iterable"],
     "outDir": "dist",
     "baseUrl": ".",
     "resolveJsonModule": true,
@@ -38,10 +33,7 @@
     "src/**/*.tsx"
   ],
   "exclude": [
-    "node_modules",
-    "**/test/*.ts",
-    "**/*.test.ts",
-    "**/*.test.tsx"
+    "node_modules"
   ]
   
 }

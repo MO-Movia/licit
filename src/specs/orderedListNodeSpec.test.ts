@@ -160,7 +160,7 @@ describe('OrderedListNodeSpec', () => {
       attrs: {indent: 2, start: 3},
     } as unknown as Node;
 
-    const result = OrderedListNodeSpec.toDOM!(node) as DOMSpecTuple;
+    const result = OrderedListNodeSpec.toDOM(node) as DOMSpecTuple;
     const attrs = result[1];
 
     expect(attrs.style).toContain('--czi-counter-name: czi-counter-2;');

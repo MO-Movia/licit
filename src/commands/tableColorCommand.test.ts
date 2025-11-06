@@ -7,14 +7,23 @@ import TableColorCommand from './tableColorCommand';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 // Mock licit-ui-commands dependencies
-jest.mock('@modusoperandi/licit-ui-commands', () => ({
-  createPopUp: jest.fn().mockImplementation((_Component, _props, options) => {
-    // Simulate popup object with a working close()
-    return { close: jest.fn(() => options?.onClose && options.onClose('mocked value')) };
-  }),
-  atAnchorRight: jest.fn(),
-  RuntimeService: { Runtime: 'mockRuntime' },
-}));
+jest.mock('@modusoperandi/licit-ui-commands', () => {
+  const actual = jest.requireActual<typeof import('@modusoperandi/licit-ui-commands')>(
+    '@modusoperandi/licit-ui-commands'
+  );
+
+  return {
+    ...actual,
+    createPopUp: jest.fn().mockImplementation(
+      (_Component: unknown, _props: unknown, options?: { onClose?: (val: string) => void }) => ({
+        close: jest.fn(() => options?.onClose?.('mocked value')),
+      })
+    ),
+    atAnchorRight: jest.fn(),
+    RuntimeService: { Runtime: 'mockRuntime' },
+  };
+});
+
 
 // Mock color-picker import
 jest.mock('@modusoperandi/color-picker', () => ({
@@ -37,7 +46,7 @@ describe('TableColorCommand', () => {
 
     // Safe override to inject mock commands into UICommand.editor
     setCellAttributeMock = jest.fn();
-    (UICommand.prototype as any).editor = {
+    (UICommand.prototype).editor = {
       commands: { setCellAttribute: setCellAttributeMock },
       view: { focus: jest.fn(), dispatch: jest.fn() },
     } as unknown as Editor;
@@ -70,7 +79,7 @@ describe('TableColorCommand', () => {
   });
 
   it('should return false when hex is undefined', () => {
-    const result = command.executeWithUserInput(mockState, dispatchMock, viewMock, undefined);
+    const result = command.executeWithUserInput(mockState, dispatchMock, viewMock);
     expect(result).toBe(false);
   });
 

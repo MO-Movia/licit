@@ -17,17 +17,17 @@ jest.mock('../htmlElementToRect', () => jest.fn(() => ({
   height: 100,
 })));
 
-// Polyfill for requestAnimationFrame
-beforeAll(() => {
+describe('TableGridSizeEditor', () => {
+  let container: HTMLDivElement;
+
+  // Polyfill for requestAnimationFrame
+  beforeAll(() => {
   global.requestAnimationFrame = (cb: FrameRequestCallback) => {
     cb(0);
     return 1;
   };
   global.cancelAnimationFrame = jest.fn();
 });
-
-describe('TableGridSizeEditor', () => {
-  let container: HTMLDivElement;
 
   beforeEach(() => {
     container = document.createElement('div');
@@ -93,7 +93,7 @@ describe('TableGridSizeEditor', () => {
     document.dispatchEvent(moveEvent);
 
     const footer = container.querySelector('.czi-table-grid-size-editor-footer');
-    expect(footer?.textContent).toMatch(/\d+ X \d+/);
+    expect(footer?.textContent).toMatch(/\d{1,10} X \d{1,10}/);
   });
 
 it('removes mousemove listener on unmount', () => {
@@ -104,10 +104,10 @@ it('removes mousemove listener on unmount', () => {
   const instance = (ReactDOM.render(
     <TableGridSizeEditor close={closeMock} />,
     container
-  ) as any);
+  ) as unknown as TableGridSizeEditor);
 
   // Simulate mouse enter properly so that _entered = true
-  const editorDiv = container.querySelector('.czi-table-grid-size-editor-body') as HTMLElement;
+  const editorDiv = container.querySelector('.czi-table-grid-size-editor-body');
   const enterEvent = {
     currentTarget: editorDiv,
     clientX: 10,
@@ -124,7 +124,7 @@ it('removes mousemove listener on unmount', () => {
 
 it('should handle _onMouseMove and update grid size correctly', () => {
   const closeMock = jest.fn();
-  const instance = new TableGridSizeEditor({ close: closeMock }) as any;
+  const instance = new TableGridSizeEditor({ close: closeMock }) as unknown as TableGridSizeEditor;
 
   // mock ref and internal state to simulate a valid mounted element
   instance._ref = document.createElement('div');

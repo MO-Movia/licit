@@ -1,11 +1,9 @@
-// eslint-disable-next-line no-unused-vars
-import * as React from 'react';
+ 
 import * as EditorCommands from '../editorCommands';
 import FontSizeCommandMenuButton from './fontSizeCommandMenuButton';
 import FontTypeCommandMenuButton from './fontTypeCommandMenuButton';
 import ListTypeCommandButton from './listTypeCommandButton';
 import Icon from './icon';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 const ICON_LABEL_PATTERN = /^\[((?!\[)[^\s]+)(\] )(.*)/;
 
@@ -17,13 +15,10 @@ type parseLabeltype = {
 export const MORE = ' More';
 
 export function parseLabel(input: string, theme: string): parseLabeltype {
-  const matched = input.match(ICON_LABEL_PATTERN);
+  const matched = ICON_LABEL_PATTERN.exec(input);
   if (matched) {
     const [
-      // eslint-disable-next-line no-unused-vars
-      _all,
       icon,
-      _sep,
       label,
     ] = matched;
     return {

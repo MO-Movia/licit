@@ -4,5 +4,5 @@ import {v1 as uuidv1} from 'uuid';
 import '../styles/czi-custom-button.css';
 
 export default function uuid(): string {
-  return uuidv1();
+  return uuidv1() as string;
 }

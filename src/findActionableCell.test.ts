@@ -3,11 +3,7 @@
  */
 
 import {Schema, Node as PMNode} from 'prosemirror-model';
-import {
-  EditorState,
-  TextSelection,
-  NodeSelection,
-} from 'prosemirror-state';
+import {EditorState, TextSelection, NodeSelection} from 'prosemirror-state';
 import findActionableCell from './findActionableCell';
 import {findParentNodeOfType} from 'prosemirror-utils';
 
@@ -121,5 +117,9 @@ describe('findActionableCell', () => {
 
     // Assert that findParentNodeOfType was called with tdType
     expect(findParentNodeOfType).toHaveBeenCalledWith(schema.nodes.tableCell);
+  });
+
+  test('table contains expected number of cells', () => {
+    expect(cellStarts.length).toBeGreaterThan(0);
   });
 });

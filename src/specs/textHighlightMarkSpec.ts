@@ -28,7 +28,7 @@ const TextHighlightMarkSpec: MarkSpec = {
 
   toDOM(node: Mark | Node) {
     const { highlightColor, overridden } = node.attrs;
-    const attrs = { style: '' };
+    const attrs = { style: '', };
 
     if (highlightColor) {
       attrs.style = `background-color: ${highlightColor};`;

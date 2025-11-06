@@ -78,7 +78,7 @@ class ContentPlaceholderView {
 
     const el = this._el;
     if (el) {
-      el.parentNode && el.parentNode.removeChild(el);
+      el.parentNode?.removeChild(el);
       ReactDOM.unmountComponentAtNode(el);
     }
     document.removeEventListener('focusin', this._checkFocus, true);
@@ -135,9 +135,7 @@ class ContentPlaceholderView {
 
   _getBodyElement(): HTMLElement | null {
     const view = this._view;
-    return (
-      view && view.docView && view.docView.dom && view.docView.dom.firstChild
-    );
+    return view?.docView?.dom?.firstChild;
   }
 
   _show(): void {

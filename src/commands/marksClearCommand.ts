@@ -37,16 +37,20 @@ class MarksClearCommand extends UICommand {
     return false;
   };
 
-  waitForUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, event?: any): Promise<any> {
+  waitForUserInput(_state: EditorState, _dispatch?: (tr: Transform) => void, _view?: EditorView, _event?: React.SyntheticEvent): Promise<PromiseConstructor> {
     return Promise.resolve(null);
   }
-  executeWithUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, inputs?: any): boolean {
+  executeWithUserInput(_state: EditorState, _dispatch?: (tr: Transform) => void, _view?: EditorView, _inputs?: string): boolean {
     return false;
   }
   cancel(): void {
     return null;
   }
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+  executeCustom(_state: EditorState, tr: Transform, _from: number, _to: number): Transform {
+    return tr;
+  }
+
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
     return tr;
   }
 

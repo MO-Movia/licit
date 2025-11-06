@@ -31,7 +31,7 @@ function toCSS(val?: number | string): string {
 }
 
 class EditorFrameset extends React.PureComponent {
-  static contextType = ThemeContext;
+ public static readonly contextType = ThemeContext;
   declare props: EditorFramesetProps;
 
   render(): React.ReactElement {

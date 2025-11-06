@@ -16,8 +16,8 @@ const LinkMarkSpec: MarkSpec = {
       tag: 'a[href]',
       getAttrs: (dom: HTMLElement): Attrs => {
         const href = dom.getAttribute('href');
-        const target = href && href.indexOf('#') === 0 ? '' : 'blank';
-          const selectionId = dom.getAttribute('selectionId') || '';
+        const target = href?.startsWith('#') ? '' : 'blank';
+        const selectionId = dom.getAttribute('selectionId') || '';
         return {
           href: dom.getAttribute('href'),
           title: dom.getAttribute('title'),

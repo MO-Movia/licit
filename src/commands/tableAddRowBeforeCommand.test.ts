@@ -1,7 +1,5 @@
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 import TableAddRowBeforeCommand from './tableAddRowBeforeCommand';
 import { Schema } from 'prosemirror-model';
@@ -19,7 +17,6 @@ jest.mock('@tiptap/react', () => {
 
 describe('TableAddRowBeforeCommand', () => {
   let command: TableAddRowBeforeCommand;
-  let mockEditor: Editor;
   let mockState: EditorState;
 
   beforeEach(() => {
@@ -85,7 +82,6 @@ describe('TableAddRowBeforeCommand', () => {
     ]);
 
     // Mock the editor instance to check if the addRowBefore method gets called
-    mockEditor = new Editor();
     command = new TableAddRowBeforeCommand();
     mockState = {
       doc: dummyDoc,

@@ -22,8 +22,8 @@ export default class DefaultEditorPlugins {
       new EditorPageLayoutPlugin(),
       new LinkTooltipPlugin(),
       new SelectionPlaceholderPlugin(),
-      setPluginKey(buildInputRules(schema), 'InputRules'),
-      setPluginKey(keymap(createEditorKeyMap()), 'EditorKeyMap'),
+      setPluginKey(buildInputRules(schema), 'InputRules') as Plugin,
+      setPluginKey(keymap(createEditorKeyMap()), 'EditorKeyMap') as Plugin,
       new TableCellMenuPlugin(),
     ];
   }

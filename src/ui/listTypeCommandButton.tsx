@@ -9,6 +9,7 @@ import ListTypeButton from './listTypeButton';
 import { EditorViewEx } from '../constants';
 import { ThemeContext } from '@modusoperandi/licit-ui-commands';
 import Icon from './icon';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 const LIST_TYPE_NAMES = [
   {
     name: 'decimal',
@@ -47,10 +48,12 @@ LIST_TYPE_NAMES.forEach((obj) => {
   LIST_TYPE_COMMANDS[obj.name].label = obj.label;
 });
 
-const COMMAND_GROUPS = [LIST_TYPE_COMMANDS];
+const COMMAND_GROUPS = [LIST_TYPE_COMMANDS] as unknown as Array<UICommand>;
 
 class ListTypeCommandButton extends React.PureComponent {
-  static contextType = ThemeContext;
+  public static readonly contextType = ThemeContext;
+  declare context: React.ContextType<typeof ThemeContext>;
+  
  declare props: {
     dispatch: (tr: Transform) => void;
     editorState: EditorState;

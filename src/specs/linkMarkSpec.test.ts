@@ -38,7 +38,7 @@ describe('LinkMarkSpec', () => {
         | undefined;
 
       expect(getAttrs).toBeDefined();
-      const attrs = getAttrs!(mockElement);
+      const attrs = getAttrs(mockElement);
 
       expect(attrs).toEqual({
         href: 'https://example.com',
@@ -61,7 +61,7 @@ describe('LinkMarkSpec', () => {
         | undefined;
       expect(getAttrs).toBeDefined();
 
-      const attrs = getAttrs!(mockElement);
+      const attrs = getAttrs(mockElement);
 
       expect(attrs).toEqual({
         href: '#internal',
