@@ -15,7 +15,20 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 
 class TableColorCommand extends UICommand {
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+  executeCustomStyleForTable(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
+    return tr;
+  }
+  executeCustom(
+    state: EditorState,
+    tr: Transform,
+    from: number,
+    to: number
+  ): Transform {
     return tr;
   }
   _popUp = null;
@@ -52,18 +65,22 @@ class TableColorCommand extends UICommand {
 
     const anchor = event ? event.currentTarget : null;
     return new Promise((resolve) => {
-      this._popUp = createPopUp(ColorEditor, { hex: null, runtime: RuntimeService.Runtime, Textcolor: null }, {
-        anchor,
-        popUpId: 'mo-menuList-child',
-        position: atAnchorRight,
-        autoDismiss: true,
-        onClose: (val) => {
-          if (this._popUp) {
-            this._popUp = null;
-            resolve(val);
-          }
-        },
-      });
+      this._popUp = createPopUp(
+        ColorEditor,
+        {hex: null, runtime: RuntimeService.Runtime, Textcolor: null},
+        {
+          anchor,
+          popUpId: 'mo-menuList-child',
+          position: atAnchorRight,
+          autoDismiss: true,
+          onClose: (val) => {
+            if (this._popUp) {
+              this._popUp = null;
+              resolve(val);
+            }
+          },
+        }
+      );
     });
   };
 

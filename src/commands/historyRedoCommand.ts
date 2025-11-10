@@ -6,6 +6,14 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 
 class HistoryRedoCommand extends UICommand {
+  executeCustomStyleForTable(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
+    return tr;
+  }
   getEditor = (): Editor | null => {
     return UICommand.prototype.editor || null;
   };

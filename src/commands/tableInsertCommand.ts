@@ -10,10 +10,23 @@ import type { TableGridSizeEditorState } from '../ui/tableGridSizeEditor';
 import { Editor } from '@tiptap/react';
 
 class TableInsertCommand extends UICommand {
+  executeCustomStyleForTable(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
+    return tr;
+  }
   cancel(): void {
     return null;
   }
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+  executeCustom(
+    state: EditorState,
+    tr: Transform,
+    from: number,
+    to: number
+  ): Transform {
     return tr;
   }
   _popUp = null;
@@ -25,7 +38,7 @@ class TableInsertCommand extends UICommand {
   isEnabled = (state: EditorState): boolean => {
     const tr = state;
     let bOK = false;
-    const { selection } = tr;
+    const {selection} = tr;
     if (selection instanceof TextSelection) {
       bOK = selection.from === selection.to;
       // [FS] IRAD-1065 2020-09-18
@@ -67,7 +80,9 @@ class TableInsertCommand extends UICommand {
           if (this._popUp) {
             this._popUp = null;
             resolve(val);
-            const element = document.getElementById((anchor as HTMLElement).offsetParent.id);
+            const element = document.getElementById(
+              (anchor as HTMLElement).offsetParent.id
+            );
             element.remove();
           }
         },
@@ -86,8 +101,8 @@ class TableInsertCommand extends UICommand {
     inputs?: TableGridSizeEditorState
   ): boolean => {
     if (inputs) {
-      const { rows, cols } = inputs;
-      return this.getEditor().commands.insertTable({ rows, cols });
+      const {rows, cols} = inputs;
+      return this.getEditor().commands.insertTable({rows, cols});
     }
     return false;
   };

@@ -1,8 +1,8 @@
 import cx from 'classnames';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 import canUseCSSFont from '../canUseCSSFont';
-import { ThemeContext } from '@modusoperandi/licit-ui-commands'
+import {ThemeContext} from '@modusoperandi/licit-ui-commands';
 // import { ReactComponent as UndoIcon } from '../../images/dark/undo.svg';
 
 import '../styles/czi-icon.css';
@@ -96,28 +96,32 @@ class Icon extends React.PureComponent {
   };
 
   // Get the static Icon.
-  static get(type: string, title?: string, theme?: string): React.CElement<any, any> {
+  static get(
+    type: string,
+    title?: string,
+    theme?: string
+  ): React.CElement<any, any> {
     const key = `${type || ''}-${title || ''}`;
-    const icon = cached[key] || <Icon theme={theme} title={title} type={type} />;
+    const icon = cached[key] || (
+      <Icon theme={theme} title={title} type={type} />
+    );
     cached[key] = icon;
     return icon;
   }
 
-
   declare props: {
     type: string;
     title?: string;
-    theme?: string
+    theme?: string;
   };
 
   render(): React.ReactElement {
-    const { type, title } = this.props;
-    const { image1 } = this.state;
+    const {type, title} = this.props;
+    const {image1} = this.state;
     const className = '';
     const children = '';
 
     // const [image1, setImage] = useState(null);
-
 
     /*if (type == 'superscript') {
       className = cx('czi-icon', { [type]: true });
@@ -134,7 +138,7 @@ class Icon extends React.PureComponent {
     }*/
     let image = null;
 
-    if (type.startsWith('assets/')) {
+    if (type.indexOf('assets/') >= 0) {
       image = type;
     } else {
       let fileName = 'Icon_Source';
@@ -176,10 +180,8 @@ class Icon extends React.PureComponent {
       const t = this.props.theme ? this.props.theme : 'dark';
       console.log('fromicon ' + t);
 
-
       // image = this.loadImage('dark',fileName+'.svg')
       // image = this.loadImage(t,fileName+'.svg');
-
 
       // const fetchImage = async () => {
       //   image = await this.loadImage(t,fileName+'.svg');
@@ -196,21 +198,19 @@ class Icon extends React.PureComponent {
       <img
         alt={title}
         src={image1}
-        style={{ width: '100%', height: '100%' }}
+        style={{width: '100%', height: '100%'}}
       ></img>
-
     );
     //return <span className={className}>{children}</span>;
   }
 
   async componentDidMount() {
-    const { type, title } = this.props;
+    const {type, title} = this.props;
     // const { image1 } = this.state;
     const className = '';
     const children = '';
 
     // const [image1, setImage] = useState(null);
-
 
     /*if (type == 'superscript') {
       className = cx('czi-icon', { [type]: true });
@@ -227,9 +227,9 @@ class Icon extends React.PureComponent {
     }*/
     // let image = null;
 
-    if (type.startsWith('assets/') || type.startsWith('data:image/svg+xml')) {
+    if (type.indexOf('assets/') >= 0 || type.startsWith('data:image/svg+xml')) {
       // image1 = type;
-      this.setState({ image1: type });
+      this.setState({image1: type});
     } else {
       let fileName = 'Icon_Source';
       switch (type) {
@@ -261,7 +261,6 @@ class Icon extends React.PureComponent {
         case 'settings_overscan':
         case 'icon_edit':
         case 'more_horiz':
-
           fileName = type;
           break;
         default:
@@ -276,7 +275,7 @@ class Icon extends React.PureComponent {
         //  const imageModule = await import(`@assets/images/${t}/${fileName}.svg`);
         //  const image1 = imageModule.default;
         const image1 = `assets/images/${t}/${fileName}.svg`;
-        this.setState({ image1 });
+        this.setState({image1});
       } catch (error) {
         // console.error(`Error loading image: ${error}`);
       }

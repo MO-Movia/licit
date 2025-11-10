@@ -6,9 +6,16 @@ import splitListItem from '../splitListItem';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 class ListSplitCommand extends UICommand {
-
   constructor() {
     super();
+  }
+  executeCustomStyleForTable(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
+    return tr;
   }
 
   isEnabled = (_state: EditorState): boolean => {
@@ -20,7 +27,7 @@ class ListSplitCommand extends UICommand {
     dispatch?: (tr: Transform) => void,
     _view?: EditorView
   ): boolean => {
-    const { selection, schema } = state;
+    const {selection, schema} = state;
     const tr = splitListItem(
       state.tr?.setSelection(selection),
       schema
@@ -33,19 +40,33 @@ class ListSplitCommand extends UICommand {
     }
   };
 
-  waitForUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, event?: any): Promise<any> {
+  waitForUserInput(
+    state: EditorState,
+    dispatch?: (tr: Transform) => void,
+    view?: EditorView,
+    event?: any
+  ): Promise<any> {
     return Promise.resolve(null);
   }
-  executeWithUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, inputs?: any): boolean {
+  executeWithUserInput(
+    state: EditorState,
+    dispatch?: (tr: Transform) => void,
+    view?: EditorView,
+    inputs?: any
+  ): boolean {
     return false;
   }
   cancel(): void {
     return null;
   }
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+  executeCustom(
+    state: EditorState,
+    tr: Transform,
+    from: number,
+    to: number
+  ): Transform {
     return tr;
   }
-
 }
 
 export default ListSplitCommand;

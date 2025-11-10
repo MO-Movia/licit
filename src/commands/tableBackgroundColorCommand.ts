@@ -3,7 +3,20 @@ import { Transform } from 'prosemirror-transform';
 import TableColorCommand from './tableColorCommand';
 
 class TableBackgroundColorCommand extends TableColorCommand {
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+  executeCustomStyleForTable(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
+    return tr;
+  }
+  executeCustom(
+    state: EditorState,
+    tr: Transform,
+    from: number,
+    to: number
+  ): Transform {
     return tr;
   }
   constructor() {

@@ -1,11 +1,19 @@
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { Editor } from '@tiptap/react';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import {Editor} from '@tiptap/react';
 
 class HistoryUndoCommand extends UICommand {
+  executeCustomStyleForTable(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
+    return tr;
+  }
 
   getEditor = (): Editor => {
     return UICommand.prototype.editor as Editor;
@@ -15,8 +23,7 @@ class HistoryUndoCommand extends UICommand {
     const history = (_state as any).history$;
     if (history.done.eventCount === 0) {
       return false;
-    }
-    else {
+    } else {
       return true;
     }
   };
@@ -29,16 +36,31 @@ class HistoryUndoCommand extends UICommand {
     return this.getEditor().commands.undo();
   };
 
-  waitForUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, event?: any): Promise<any> {
+  waitForUserInput(
+    state: EditorState,
+    dispatch?: (tr: Transform) => void,
+    view?: EditorView,
+    event?: any
+  ): Promise<any> {
     return Promise.resolve(null);
   }
-  executeWithUserInput(state: EditorState, dispatch?: (tr: Transform) => void, view?: EditorView, inputs?: any): boolean {
+  executeWithUserInput(
+    state: EditorState,
+    dispatch?: (tr: Transform) => void,
+    view?: EditorView,
+    inputs?: any
+  ): boolean {
     return false;
   }
   cancel(): void {
     return null;
   }
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+  executeCustom(
+    state: EditorState,
+    tr: Transform,
+    from: number,
+    to: number
+  ): Transform {
     return tr;
   }
 }

@@ -15,7 +15,14 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 
 export class ListToggleCommand extends UICommand {
-
+  executeCustomStyleForTable(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
+    return tr;
+  }
 
   _ordered: boolean;
   _orderedListType: string;
@@ -44,18 +51,18 @@ export class ListToggleCommand extends UICommand {
 
   waitForUserInput = (
     _state: EditorState,
-    _dispatch?:(tr: Transform) => void,
-    _view?:EditorView,
-    _event?:React.SyntheticEvent
+    _dispatch?: (tr: Transform) => void,
+    _view?: EditorView,
+    _event?: React.SyntheticEvent
   ): Promise<undefined> => {
     return Promise.resolve(undefined);
   };
 
   executeWithUserInput = (
     _state: EditorState,
-    _dispatch?:(tr: Transform) => void,
-    _view?:EditorView,
-    _inputs?:string
+    _dispatch?: (tr: Transform) => void,
+    _view?: EditorView,
+    _inputs?: string
   ): boolean => {
     return false;
   };
@@ -68,7 +75,12 @@ export class ListToggleCommand extends UICommand {
     return UICommand.prototype.editor as Editor;
   };
 
-  executeCustom(state: EditorState, tr: Transform, from: number, to: number): Transform {
+  executeCustom(
+    state: EditorState,
+    tr: Transform,
+    from: number,
+    to: number
+  ): Transform {
     return tr;
   }
 
@@ -77,9 +89,9 @@ export class ListToggleCommand extends UICommand {
     dispatch?: (tr: Transform) => void,
     _view?: EditorView
   ): Transaction | boolean => {
-    const { selection, schema } = state;
+    const {selection, schema} = state;
     const nodeType = schema.nodes[this._ordered ? ORDERED_LIST : BULLET_LIST];
-    let { tr } = state;
+    let {tr} = state;
     tr = tr.setSelection(selection);
     if (!nodeType) {
       return tr;
@@ -94,7 +106,7 @@ export class ListToggleCommand extends UICommand {
   };
 
   _findList(state: EditorState, type: string): ContentNodeWithPos | void {
-    const { nodes } = state.schema;
+    const {nodes} = state.schema;
     const list = nodes[type];
     const findList = list ? findParentNodeOfType(list) : noop;
     return findList(state.selection);
