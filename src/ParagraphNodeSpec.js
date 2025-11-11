@@ -119,10 +119,10 @@ function getAttrs(dom: HTMLElement): Object {
   const overriddenLineSpacingValue = dom.getAttribute('overriddenLineSpacingValue') || '';
   const overriddenIndent = dom.getAttribute('overriddenIndent') || '';
   const overriddenIndentValue = dom.getAttribute('overriddenIndentValue') || '';
-  const selectionId = dom.getAttribute('selectionId') || null;
-  const objectId = dom.getAttribute('objectId') || null;
-  const hangingIndent = dom.getAttribute('hangingIndent') || null;
-  const indentPosition = dom.getAttribute('indentPosition') || null;
+  const selectionId = dom.getAttribute('selectionId');
+  const objectId = dom.getAttribute('objectId');
+  const hangingIndent = dom.getAttribute('hangingIndent');
+  const indentPosition = dom.getAttribute('indentPosition');
   const isDeco = {
     isTag: dom.getAttribute('isTag') === 'true',
     isComment: dom.getAttribute('isComment') === 'true',
