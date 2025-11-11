@@ -1,14 +1,12 @@
 .czi-custom-menu {
-  background: #fff;
+  background: var(--czi-bg);
+
+  /* initial value #fff; */
   box-shadow: var(--czi-overlay-shadow);
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
   max-height: 98vh;
   overflow: auto;
-}
-
-.czi-custom-menu {
-  background: var(--czi-bg);
 }
 
 .czi-horizontal-menu {

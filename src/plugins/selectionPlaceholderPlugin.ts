@@ -23,7 +23,7 @@ const SPEC = {
       const action = tr.getMeta(this);
 
       if (!action) {
-        return set;
+        return set as DecorationSet;
       }
 
       if (action.add) {
@@ -43,13 +43,13 @@ const SPEC = {
         set = set.remove(found);
       }
 
-      return set;
+      return set as DecorationSet;
     },
   },
   props: {
-    decorations: (state) => {
+    decorations: (state:EditorState): DecorationSet | null => {
       const plugin = singletonInstance;
-      return plugin ? plugin.getState(state) : null;
+      return plugin ? plugin.getState(state) as DecorationSet : null ;
     },
   },
 };
@@ -58,9 +58,9 @@ class SelectionPlaceholderPlugin extends Plugin {
   constructor() {
     super(SPEC);
     if (singletonInstance) {
-      return singletonInstance;
+      return singletonInstance as SelectionPlaceholderPlugin;
     }
-    singletonInstance = this;
+    singletonInstance = this as SelectionPlaceholderPlugin;
   }
 }
 
@@ -79,7 +79,7 @@ function findSelectionPlaceholder(state: EditorState): Decoration | null {
   const decos = singletonInstance.getState(state);
   const found = decos.find(null, null, specFinder);
   const pos = found.length ? found[0] : null;
-  return pos || null;
+  return pos as Decoration || null;
 }
 
 export function showSelectionPlaceholder(

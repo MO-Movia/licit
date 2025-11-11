@@ -51,5 +51,5 @@ export default function findActiveFontSize(state: EditorState): string {
     return defaultSize;
   }
   const level = String(result.node.attrs.level);
-  return MAP_HEADING_LEVEL_TO_FONT_PT_SIZE[level] || defaultSize;
+  return MAP_HEADING_LEVEL_TO_FONT_PT_SIZE[level] as string || defaultSize;
 }

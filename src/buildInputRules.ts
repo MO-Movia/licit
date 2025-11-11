@@ -30,7 +30,9 @@ export function orderedListRule(nodeType: NodeType) {
 // code blocks, and heading.
 export default function buildInputRules(schema: Schema): Plugin {
   const rules = smartQuotes.concat(ellipsis, emDash);
-  const type = schema.nodes.ordered_list;
-  if (type) rules.push(orderedListRule(type));
-  return inputRules({ rules });
+  const  type = schema.nodes.ordered_list;
+  if (type) {
+    rules.push(orderedListRule(type));
+  }
+  return inputRules({rules});
 }

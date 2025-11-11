@@ -3,8 +3,7 @@ import ParagraphNodeSpec, {
   getParagraphNodeAttrs,
   toParagraphDOM,
 } from './paragraphNodeSpec';
-import {DOMOutputSpec} from 'prosemirror-model';
-
+import {DOMOutputSpec, Node as PNode } from 'prosemirror-model';
 describe('ParagraphNodeSpec', () => {
   it('should have correct default attributes', () => {
     expect(ParagraphNodeSpec.attrs).toEqual({
@@ -71,7 +70,7 @@ describe('ParagraphNodeSpec', () => {
       },
     };
 
-    const domSpec: DOMOutputSpec = toParagraphDOM(node as any);
+    const domSpec: DOMOutputSpec = toParagraphDOM(node as unknown as PNode);
     expect(domSpec).toEqual([
       'p',
       {

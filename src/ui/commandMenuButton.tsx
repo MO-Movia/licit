@@ -29,7 +29,6 @@ type PropsType = {
   label?: string | React.ReactElement | null;
   title?: string;
   sub?: boolean;
-  theme?: string;
 };
 type StateType = {
   expanded: boolean;
@@ -68,8 +67,8 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
             disabledVal =
               !editorView ||
               !command.isEnabled(editorState, editorView, grpLabel);
-          } catch (_ex) {
-            console.error('Error checking if command is enabled:', _ex);
+          } catch (_error) {
+            console.error('Error checking if command is enabled:', _error);
             disabledVal = false;
           }
           return !disabledVal;

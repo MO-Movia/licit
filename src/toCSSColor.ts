@@ -23,7 +23,7 @@ export function toCSSColor(source: string): string {
     return '';
   }
   if (source in ColorMaping) {
-    return ColorMaping[source];
+    return ColorMaping[source] as string | null;
   }
 
   if (source && RGBA_PATTERN.test(source)) {
@@ -34,14 +34,14 @@ export function toCSSColor(source: string): string {
     }
     const rgba = color.toString();
     ColorMaping[source] = rgba.toString();
-    return rgba;
+    return rgba as string;
   }
 
   let hex = '';
   try {
     hex = Color(source).hex().toLowerCase();
     ColorMaping[source] = hex;
-  } catch (_error) {
+  } catch {
     console.warn('unable to convert to hex', source);
     ColorMaping[source] = '';
   }

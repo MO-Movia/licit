@@ -5,7 +5,7 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 // Mock dependencies safely (React is already imported)
 jest.mock('@modusoperandi/licit-ui-commands', () => {
-const actualReact = require('react'); //  safe local reference
+  const React = jest.requireActual('react');
 
   return {
     CustomButton: 'CustomButton',
@@ -13,7 +13,7 @@ const actualReact = require('react'); //  safe local reference
       close: jest.fn(),
       update: jest.fn(),
     })),
-    ThemeContext: actualReact.createContext('dark'),
+    ThemeContext: React.createContext('dark'),
   };
 });
 
@@ -85,4 +85,44 @@ describe('ListTypeButton (pure Jest test)', () => {
     instance.componentWillUnmount();
     expect(closeMock).toHaveBeenCalled();
   });
+
+  it('should handle _onCommand by collapsing and hiding menu', () => {
+    const instance = new ListTypeButton(mockProps);
+    instance.setState({ expanded: true });
+    
+    const hideMenuSpy = jest.spyOn(instance, '_hideMenu');
+    
+    instance._onCommand();
+    
+    expect(instance.state.expanded).toBe(false);
+    expect(hideMenuSpy).toHaveBeenCalled();
+    
+    hideMenuSpy.mockRestore();
+  });
+
+  it('should handle _onClose when menu exists', () => {
+    const instance = new ListTypeButton(mockProps);
+    instance.setState({ expanded: true });
+    (instance as unknown as ListTypeButton)._menu = { 
+      close: jest.fn(),
+      update: jest.fn() 
+    };
+    
+    instance._onClose();
+    
+    expect(instance.state.expanded).toBe(false);
+    expect((instance as unknown as ListTypeButton)._menu).toBeNull();
+  });
+
+  it('should handle _onClose when menu does not exist', () => {
+    const instance = new ListTypeButton(mockProps);
+    instance.setState({ expanded: true });
+    (instance as unknown as ListTypeButton)._menu = null;
+    
+    // Should not throw error
+    instance._onClose();
+    
+    expect(instance.state.expanded).toBe(false); // State unchanged
+  });
+  
 });

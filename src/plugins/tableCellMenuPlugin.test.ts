@@ -10,7 +10,7 @@ import isElementFullyVisible from '../isElementFullyVisible';
 // Mock dependencies
 jest.mock('../findActionableCell', () => jest.fn());
 jest.mock('@modusoperandi/licit-ui-commands', () => ({
-    ...jest.requireActual('@modusoperandi/licit-ui-commands'),
+    ...(jest.requireActual<typeof import('@modusoperandi/licit-ui-commands')>('@modusoperandi/licit-ui-commands')),
     createPopUp: jest.fn(),
 }));
 jest.mock('../isElementFullyVisible', () => jest.fn());

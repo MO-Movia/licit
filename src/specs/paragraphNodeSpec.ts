@@ -194,7 +194,9 @@ function toDOM(node: Node): DOMOutputSpec {
   const attrs = { ...node.attrs };
   const style = getStyle(node.attrs);
 
-  style && (attrs.style = style);
+  if (style) {
+  attrs.style = style;
+}
 
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);

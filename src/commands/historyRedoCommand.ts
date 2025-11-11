@@ -10,8 +10,8 @@ class HistoryRedoCommand extends UICommand {
     return UICommand.prototype.editor || null;
   };
 
-  isEnabled = (_state: EditorState): boolean => {
-    const history = (_state as any).history$;
+  isEnabled = (_state): boolean => {
+    const history = (_state).history$;
     return history?.undone?.eventCount > 0 || false;
   };
 

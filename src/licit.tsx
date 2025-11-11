@@ -12,16 +12,21 @@ import * as Y from 'yjs';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import RichTextEditor from './ui/richTextEditor';
 import DefaultEditorPlugins from './defaultEditorPlugins';
-import { Plugin, TextSelection } from 'prosemirror-state';
-import { getEffectiveSchema } from './convertFromJSON';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { Schema, NodeSpec } from 'prosemirror-model';
+import {Plugin} from 'prosemirror-state';
+import {getEffectiveSchema} from './convertFromJSON';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import {Schema, NodeSpec} from 'prosemirror-model';
 import Subscript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
 import TextAlign from '@tiptap/extension-text-align';
-import { HEADING, noop, PARAGRAPH, ThemeProvider } from '@modusoperandi/licit-ui-commands';
-import { updateEditorMarks } from './editorMarks';
-import { updateEditorNodes } from './editorNodes';
+import {
+  HEADING,
+  noop,
+  PARAGRAPH,
+  ThemeProvider,
+} from '@modusoperandi/licit-ui-commands';
+import {updateEditorMarks} from './editorMarks';
+import {updateEditorNodes} from './editorNodes';
 import OrderedMap from 'orderedmap';
 import { Indent } from './extensions/indent';
 import { WebrtcProvider } from 'y-webrtc';
@@ -115,7 +120,9 @@ export const configCollab = (
             peerOpts: {},
           });
           useDefaultProvider = false;
-        } catch { }
+        } catch (error) {
+          console.error('Failed to create WebrtcProvider:', error);
+        }
       }
 
       if (useDefaultProvider) {
@@ -123,19 +130,22 @@ export const configCollab = (
         provider = new WebrtcProvider('tiptap-licit-' + docID, ydoc);
       }
     }
-    const getRandomElement = (list) => {
+    const getRandomElement = (list: string[]) => {
       return list[Math.floor(Math.random() * list.length)];
     };
-    const getRandomColor = () => {
-      return getRandomElement([
-        '#958DF1',
-        '#F98181',
-        '#FBBC88',
-        '#FAF594',
-        '#70CFF8',
-        '#94FADB',
-        '#B9F18D',
-      ]);
+
+    const COLORS: string[] = [
+      '#958DF1',
+      '#F98181',
+      '#FBBC88',
+      '#FAF594',
+      '#70CFF8',
+      '#94FADB',
+      '#B9F18D',
+    ];
+
+    const getRandomColor = (): string => {
+      return getRandomElement(COLORS);
     };
     ref.currentUser = {
       name: instanceID,
@@ -246,39 +256,44 @@ export const updateSpecAttrs = (
 
 const initDevTool = (debug: boolean, editorView: EditorView): void => {
   // [FS] IRAD-1575 2021-09-27
-  if (debug) {
-    if (!devTools) {
-      devTools = new Promise(async (resolve, reject) => {
-        try {
-          // Method is exported as both the default and named, Using named
-          // for clarity and future proofing.
-          const applyPMDevTools = await import('prosemirror-dev-tools');
-          // got the pm dev tools instance.
-          applyDevTools = applyPMDevTools.default;
-          // Attach debug tools to current editor instance.
-          applyDevTools(editorView);
-          resolve(() => {
-            // [FS] IRAD-1571 2021-10-08
-            // Prosemirror Dev Tools handles as if one only instance is used in a page and
-            // hence handling removal here gracefully.
-            const place = document.querySelector(
-              '.'.concat('__prosemirror-dev-tools__')
-            );
-            if (place) {
-              ReactDOM.unmountComponentAtNode(place);
-              place.innerHTML = '';
-            }
-          });
-        } catch (error) {
-          reject();
-        }
-      });
-    }
+if (debug) {
+  // Use nullish coalescing assignment operator
+  devTools ??= new Promise((resolve, reject) => {
+    void (async () => {
+      try {
+        // Method is exported as both the default and named, Using named
+        // for clarity and future proofing.
+        const applyPMDevTools = await import('prosemirror-dev-tools');
+        // got the pm dev tools instance.
+        applyDevTools = applyPMDevTools.default;
+        // Attach debug tools to current editor instance.
+        applyDevTools(editorView);
+        resolve(() => {
+          // [FS] IRAD-1571 2021-10-08
+          // Prosemirror Dev Tools handles as if one only instance is used in a page and
+          // hence handling removal here gracefully.
+          const place = document.querySelector(
+            '.'.concat('__prosemirror-dev-tools__')
+          );
+          if (place) {
+            ReactDOM.unmountComponentAtNode(place);
+            place.innerHTML = '';
+          }
+        });
+      } catch (_error) {
+        console.error('Failed to load prosemirror-dev-tools:', _error);
+        // Fix: Reject with Error object
+        reject(_error instanceof Error ? _error : new Error(String(_error)));
+      }
+    })();
+  });
 
     // Attach debug tools to current editor instance.
-    if (devTools && applyDevTools) {
-      applyDevTools(editorView);
-    }
+    void devTools?.then(() => {
+      if (applyDevTools) {
+        applyDevTools(editorView);
+      }
+    });
   }
 };
 
@@ -286,11 +301,15 @@ const destroyDevTool = (): void => {
   // [FS] IRAD-1569 2021-09-15
   // Unmount dev tools when component is destroyed,
   // so that toggle effect is not occuring when the document is retrieved each time.
-  if (devTools) {
+  if (devTools instanceof Promise) {
     // Call the applyDevTools method again to trigger DOM removal
     // prosemirror-dev-tools has outstanding pull-requests that affect
     // dom removal. this may need to be addressed once those have been merged.
-    devTools.then((removeDevTools) => removeDevTools());
+    devTools
+      .then((removeDevTools) => removeDevTools())
+      .catch((error) => {
+        console.error('Failed to remove dev tools:', error);
+      });
   }
 };
 
@@ -438,16 +457,6 @@ export const Licit = ({
     content: data,
   });
 
-  const goToEnd = (): void => {
-
-    const view = editor.view;
-    const tr = view.state.tr;
-    view.dispatch(
-      tr.setSelection(TextSelection.atEnd(view.state.doc)).scrollIntoView()
-    );
-    view.focus();
-
-  };
   if (editor) {
     editor.on('create', (props: EditorEvents['create']) => {
       // The editor is ready.

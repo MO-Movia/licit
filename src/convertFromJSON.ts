@@ -1,10 +1,11 @@
 import { Schema } from 'prosemirror-model';
 import { Plugin } from 'prosemirror-state';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 export interface LicitPlugin extends Plugin {
   getEffectiveSchema: (schema: Schema) => Schema;
   initKeyCommands: () => Plugin;
-  initButtonCommands: (theme: unknown) => any;
+  initButtonCommands: (theme: unknown) => UICommand;
 }
 
 export function getEffectiveSchema(

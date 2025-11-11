@@ -1,23 +1,24 @@
 import {
   EditorState,
-  PluginKey,
+  Plugin,
   TextSelection,
   Transaction,
 } from 'prosemirror-state';
-import {EditorView} from 'prosemirror-view';
+import {DecorationSet, EditorView} from 'prosemirror-view';
 import {schema as basicSchema} from 'prosemirror-schema-basic';
 import CursorPlaceholderPlugin, {
   showCursorPlaceholder,
   hideCursorPlaceholder,
   findCursorPlaceholderPos,
-  // resetSingletonInstance,
+  SPEC,
 } from './cursorPlaceholderPlugin';
-import {SPEC} from './cursorPlaceholderPlugin'; // Ensure SPEC is exported
+
+type CursorPlaceholderState = DecorationSet;
 
 describe('CursorPlaceholderPlugin', () => {
   let state;
   let view: EditorView;
-  let plugin: PluginKey<any>;
+  let plugin:Plugin<CursorPlaceholderState>;
 
   const createEditorState = () => {
     const doc = basicSchema.node('doc', null, [
@@ -43,7 +44,7 @@ describe('CursorPlaceholderPlugin', () => {
     });
 
     // Use PluginKey from SPEC
-    plugin = SPEC.key;
+    plugin = SPEC.key as unknown as Plugin<DecorationSet>;;
   });
 
   afterEach(() => {

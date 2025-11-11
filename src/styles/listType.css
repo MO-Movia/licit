@@ -1,15 +1,10 @@
 .ol-container {
-  background: #fffefe;
-  border: 1px solid #bdb5b5;
+  background: var(--czi-bg); /* #fffefe; */
+  border: var(--czi-ol-container-border); /* 1px solid #bdb5b5; */
   display: grid;
   gap: 5px;
   grid-template-columns: auto auto auto;
   padding: 5px;
-}
-
-.ol-container {
-  background: var(--czi-bg);
-  border: var(--czi-ol-container-border);
 }
 
 .buttonsize {

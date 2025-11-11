@@ -135,7 +135,7 @@ class ContentPlaceholderView {
 
   _getBodyElement(): HTMLElement | null {
     const view = this._view;
-    return view?.docView?.dom?.firstChild;
+    return view?.docView?.dom?.firstChild as HTMLElement | null;
   }
 
   _show(): void {

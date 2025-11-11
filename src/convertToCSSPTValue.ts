@@ -1,4 +1,4 @@
-const SIZE_PATTERN = /([\d\.]+)(px|pt)/i;
+const SIZE_PATTERN = /(\d+)(px|pt)/i;
 
 export const PX_TO_PT_RATIO = 0.75292857;
 export const PT_TO_PX_RATIO = 1 / PX_TO_PT_RATIO;

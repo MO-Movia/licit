@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import DocLayoutEditor, { DocLayoutEditorValue } from './docLayoutEditor';
+import DocLayoutEditor from './docLayoutEditor';
 import { LAYOUT } from '../constants';
 
 
@@ -105,7 +105,7 @@ describe('DocLayoutEditor (pure Jest)', () => {
     );
 
     const result = DocLayoutEditor.propsTypes.close(
-      { initialValue: { width: 500 }, close: (_val?: DocLayoutEditorValue) => {} },
+      { initialValue: { width: 500 }, close: () => {} },
       'close'
     );
 

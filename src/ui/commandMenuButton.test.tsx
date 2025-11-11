@@ -1,8 +1,7 @@
 import * as React from 'react';
 import CommandMenuButton from './commandMenuButton';
 import { EditorState } from 'prosemirror-state';
-import { CustomButton } from '@modusoperandi/licit-ui-commands';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
+import { CustomButton, createPopUp } from '@modusoperandi/licit-ui-commands';
 import { EditorView } from 'prosemirror-view';
 
 //  Mock Dependencies

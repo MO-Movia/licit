@@ -138,7 +138,7 @@ const OrderedListNodeSpec: NodeSpec = {
 function buildStyleClassEx(
   cssCounterName: string,
   following: boolean,
-  htmlListStyleType: unknown,
+  htmlListStyleType: string,
   start: number
 ): string {
   return (

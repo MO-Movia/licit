@@ -14,11 +14,13 @@ import LinkTooltipPlugin from './linkTooltipPlugin';
 import {findNodesWithSameMark,MARK_LINK, createPopUp} from '@modusoperandi/licit-ui-commands';
 
 jest.mock('@modusoperandi/licit-ui-commands', () => {
-  const actual = jest.requireActual('@modusoperandi/licit-ui-commands');
+  const actual = jest.requireActual<typeof import('@modusoperandi/licit-ui-commands')>(
+    '@modusoperandi/licit-ui-commands'
+  );
   return {
     ...actual,
     findNodesWithSameMark: jest.fn(),
-    createPopUp: jest.fn(), // We won’t assert times, just that it doesn't crash
+    createPopUp: jest.fn(),
     atAnchorTopCenter: jest.fn(),
   };
 });

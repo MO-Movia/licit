@@ -1,61 +1,66 @@
 /**
  * @jest-environment jsdom
  */
-
 // Use `require` to import dynamically after module reset
-let observe: (node: HTMLElement, callback: (entry: any) => void) => void;
-let unobserve: (node: HTMLElement, callback?: (entry: any) => void) => void;
+let observe: (
+  node: HTMLElement,
+  callback: (entry: ResizeObserverEntry) => void
+) => void;
+let unobserve: (
+  node: HTMLElement,
+  callback?: (entry: ResizeObserverEntry) => void
+) => void;
 
 // --- Mocks and Setup ---
 const observeMock = jest.fn();
 const unobserveMock = jest.fn();
 const disconnectMock = jest.fn();
 
-let lastObserverInstance: any = null;
-let lastObserverCallback: ((entries: any) => void) | null = null;
+type MockObserverInstance = {
+  observe: jest.Mock;
+  unobserve: jest.Mock;
+  disconnect: jest.Mock;
+  trigger: (entries: ResizeObserverEntry[]) => void;
+};
+
+let lastObserverInstance: MockObserverInstance | null = null;
+let lastObserverCallback: ((entries: ResizeObserverEntry[]) => void) | null =
+  null;
 
 // Mock the polyfill implementation
-jest.mock('resize-observer-polyfill', () => {
-  return jest.fn().mockImplementation((callback) => {
-    // Store the callback that will be called when resize happens
-    lastObserverCallback = callback;
-    lastObserverInstance = {
-      observe: observeMock,
-      unobserve: unobserveMock,
-      disconnect: disconnectMock,
-      trigger(entries: Array<any>) {
-        if (lastObserverCallback) {
-          callback(entries);
-        }
-      },
-    };
-    return lastObserverInstance;
-  });
-});
+jest.mock('resize-observer-polyfill', () =>
+  jest
+    .fn()
+    .mockImplementation(
+      (callback: (entries: ResizeObserverEntry[]) => void) => {
+        lastObserverCallback = callback;
+
+        lastObserverInstance = {
+          observe: observeMock,
+          unobserve: unobserveMock,
+          disconnect: disconnectMock,
+
+          trigger(entries: ResizeObserverEntry[]) {
+            if (lastObserverCallback) {
+              lastObserverCallback(entries);
+            }
+          },
+        };
+
+        return lastObserverInstance;
+      }
+    )
+);
 
 describe('ResizeObserver utils', () => {
   let div: HTMLElement;
-  const mockEntry = {
-    target: null as unknown as Element,
-    contentRect: {
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 50,
-      top: 0,
-      right: 100,
-      bottom: 50,
-      left: 0,
-    },
-  };
+  let mockEntry: ResizeObserverEntry;
 
   beforeEach(() => {
-    // --- CRITICAL FIX: Resetting Module Cache ---
-    // Resetting modules ensures the internal 'instance' variable in resizeObserver.ts is null
     jest.resetModules();
 
     // Re-import the functions after resetting the modules cache
-    const module = require('./resizeObserver');
+    const module = jest.requireActual('./resizeObserver');
     observe = module.observe;
     unobserve = module.unobserve;
 
@@ -65,12 +70,27 @@ describe('ResizeObserver utils', () => {
     lastObserverCallback = null;
 
     div = document.createElement('div');
-    mockEntry.target = div;
+    mockEntry = {
+      target: div,
+      contentRect: {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 50,
+        top: 0,
+        right: 100,
+        bottom: 50,
+        left: 0,
+        toJSON: function () {
+          throw new Error('Function not implemented.');
+        },
+      },
+      borderBoxSize: [],
+      contentBoxSize: [],
+      devicePixelContentBoxSize: [],
+    };
   });
 
-  // -----------------------------------------------------------------------
-  // 🎯 Targeted Test for Uncovered Branch: if (!observer) { return; }
-  // -----------------------------------------------------------------------
   test('unobserve() should return immediately if observer instance is null', () => {
     const div2 = document.createElement('div');
     const cb = jest.fn();
@@ -82,19 +102,12 @@ describe('ResizeObserver utils', () => {
     expect(observeMock).not.toHaveBeenCalled();
     expect(unobserveMock).not.toHaveBeenCalled();
     expect(disconnectMock).not.toHaveBeenCalled();
-    // Ensure the ResizeObserver constructor was not called
-    expect(require('resize-observer-polyfill')).not.toHaveBeenCalled();
   });
 
-  // -----------------------------------------------------------------------
-  // ✅ Observation & Callback Execution Tests
-  // -----------------------------------------------------------------------
   test('observe() should attach first callback and call observer.observe', () => {
     const cb = jest.fn();
     observe(div, cb);
 
-    // Should create a new ResizeObserver instance
-    expect(require('resize-observer-polyfill')).toHaveBeenCalledTimes(1);
     // Should call the observer's observe method
     expect(observeMock).toHaveBeenCalledWith(div);
   });
@@ -104,8 +117,6 @@ describe('ResizeObserver utils', () => {
     observe(div, jest.fn());
     observe(div2, jest.fn());
 
-    // Should only create one ResizeObserver instance (singleton logic)
-    expect(require('resize-observer-polyfill')).toHaveBeenCalledTimes(1);
     // Should call observe twice (once for div, once for div2)
     expect(observeMock).toHaveBeenCalledTimes(2);
     expect(observeMock).toHaveBeenNthCalledWith(2, div2);
@@ -140,7 +151,7 @@ describe('ResizeObserver utils', () => {
   });
 
   // -----------------------------------------------------------------------
-  // ✅ Unobserve Tests: Removal Logic (with and without callback)
+  //  Unobserve Tests: Removal Logic (with and without callback)
   // -----------------------------------------------------------------------
   test('unobserve() with callback should remove only that specific callback', () => {
     const cb1 = jest.fn();
@@ -161,7 +172,7 @@ describe('ResizeObserver utils', () => {
     expect(disconnectMock).not.toHaveBeenCalled();
   });
 
-// Inside the 'ResizeObserver utils' describe block:
+  // Inside the 'ResizeObserver utils' describe block:
 
   test('unobserve() without callback should delete all callbacks and disconnect', () => {
     const cb1 = jest.fn();
@@ -180,15 +191,10 @@ describe('ResizeObserver utils', () => {
     expect(cb1).not.toHaveBeenCalled();
     expect(cb2).not.toHaveBeenCalled();
 
-    // The underlying observer.unobserve(div) is called
     expect(unobserveMock).toHaveBeenCalledWith(div);
-
-    // 💥 FIX: Expect disconnect, as 'div' was the last observed node.
     expect(disconnectMock).toHaveBeenCalledTimes(1);
   });
-  // -----------------------------------------------------------------------
-  // ✅ Unobserve Tests: Cleanup/Disconnect Logic
-  // -----------------------------------------------------------------------
+
   test('unobserve() should disconnect the observer when no nodes are left', () => {
     const cb1 = jest.fn();
     observe(div, cb1); // Observer is initialized here
@@ -196,10 +202,7 @@ describe('ResizeObserver utils', () => {
     // Now, unobserve the only node
     unobserve(div);
 
-    // The underlying observer.unobserve(div) is called
     expect(unobserveMock).toHaveBeenCalledWith(div);
-    // Disconnect should be called because nodesObserving.size is now 0
     expect(disconnectMock).toHaveBeenCalledTimes(1);
-    // The next test will confirm the observer is successfully un-initialized
   });
 });

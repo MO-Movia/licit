@@ -5,38 +5,62 @@ describe('EMMarkSpec', () => {
   it('parseDOM should parse <i>, <em>, and span with italic style', () => {
     const parseRules = EMMarkSpec.parseDOM || [];
 
-    // <i> tag
+    // Type guard for HTMLElement-based getAttrs
+    function isHTMLElementGetter(
+      fn: unknown
+    ): fn is (node: HTMLElement) => false | Attrs {
+      // Accept it if it's a function and NOT the string version
+      return typeof fn === 'function';
+    }
+
+    function getAttrsOrThrow(
+      rule: {getAttrs?: unknown},
+      el: HTMLElement
+    ): Attrs {
+      if (!rule.getAttrs || !isHTMLElementGetter(rule.getAttrs)) {
+        throw new Error('getAttrs is missing or not an HTMLElement getter');
+      }
+
+      const result = rule.getAttrs(el);
+      if (!result) {
+        throw new Error('getAttrs returned false or null');
+      }
+
+      return result;
+    }
+
+    // ----- <i> -----
     const domI = document.createElement('i');
     domI.setAttribute('overridden', 'true');
-    const ruleI = parseRules.find((rule) => rule.tag === 'i');
-    expect(ruleI).toBeTruthy();
-    if (ruleI?.getAttrs) {
-      const attrs = ruleI.getAttrs(domI as HTMLElement & string);
-      if (attrs) expect(attrs.overridden).toBe(true);
-    }
 
-    // <em> tag
+    const ruleI = parseRules.find((r) => r.tag === 'i');
+    if (!ruleI) throw new Error('Missing <i> parse rule');
+
+    const attrsI = getAttrsOrThrow(ruleI, domI);
+    expect(attrsI.overridden).toBe(true);
+
+    // ----- <em> -----
     const domEm = document.createElement('em');
     domEm.setAttribute('overridden', 'false');
-    const ruleEm = parseRules.find((rule) => rule.tag === 'em');
-    expect(ruleEm).toBeTruthy();
-    if (ruleEm?.getAttrs) {
-      const attrs = ruleEm.getAttrs(domEm as HTMLElement & string);
-      if (attrs) expect(attrs.overridden).toBe(false);
-    }
 
-    // <span style="font-style: italic">
+    const ruleEm = parseRules.find((r) => r.tag === 'em');
+    if (!ruleEm) throw new Error('Missing <em> parse rule');
+
+    const attrsEm = getAttrsOrThrow(ruleEm, domEm);
+    expect(attrsEm.overridden).toBe(false);
+
+    // ----- <span style> -----
     const domSpan = document.createElement('span');
     domSpan.setAttribute('overridden', 'true');
     domSpan.setAttribute('style', 'font-style: italic');
+
     const ruleSpan = parseRules.find(
-      (rule) => rule.tag === 'span[style*=font-style]'
+      (r) => r.tag === 'span[style*=font-style]'
     );
-    expect(ruleSpan).toBeTruthy();
-    if (ruleSpan?.getAttrs) {
-      const attrs = ruleSpan.getAttrs(domSpan as HTMLElement & string);
-      if (attrs) expect(attrs.overridden).toBe(true);
-    }
+    if (!ruleSpan) throw new Error('Missing italic <span> rule');
+
+    const attrsSpan = getAttrsOrThrow(ruleSpan, domSpan);
+    expect(attrsSpan.overridden).toBe(true);
   });
 
   it('toDOM should return <em> tag with overridden attribute', () => {
