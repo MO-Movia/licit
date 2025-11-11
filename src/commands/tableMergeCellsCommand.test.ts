@@ -16,25 +16,31 @@ jest.mock('@tiptap/react', () => {
   };
 });
 
-jest.mock('prosemirror-tables', () => ({
-  ...jest.requireActual('prosemirror-tables'),
-  CellSelection: jest.fn(),
-}));
+jest.mock('prosemirror-tables', () => {
+  const actual = jest.requireActual<typeof import('prosemirror-tables')>('prosemirror-tables');
+  return {
+    ...actual,
+    CellSelection: jest.fn() as unknown as typeof actual.CellSelection,
+  };
+});
 
-jest.mock('prosemirror-model', () => ({
-  ...jest.requireActual('prosemirror-model'),
+
+
+
+jest.mock('prosemirror-model', (): typeof import('prosemirror-model') => ({
+  ...jest.requireActual<typeof import('prosemirror-model')>('prosemirror-model'),
   ResolvedPos: jest.fn().mockImplementation((pos: number) => ({
     pos,
-    node: jest.fn(() => ({ type: { name: 'cell' } })), // Mocked `node` method with a `type` property
+    node: jest.fn(() => ({ type: { name: 'cell' } })),
     parent: jest.fn(),
     before: jest.fn(),
     after: jest.fn(),
-  })),
+  })) as unknown as typeof import('prosemirror-model').ResolvedPos,
 }));
+
 
 describe('TableMergeCellsCommand', () => {
   let command: TableMergeCellsCommand;
-  let mockEditor: Editor;
   let mockState: EditorState;
 
   beforeEach(() => {
@@ -100,7 +106,6 @@ describe('TableMergeCellsCommand', () => {
     ]);
 
     // Mock the editor instance to check if the mergeCells method gets called
-    mockEditor = new Editor();
     command = new TableMergeCellsCommand();
     mockState = {
       doc: dummyDoc,
@@ -180,7 +185,6 @@ describe('TableMergeCellsCommand', () => {
     // Mock the selection as an instance of CellSelection
     const selection = new CellSelection($anchorCell, $headCell);
 
-    const cellSelection = {} as CellSelection;
     mockState = {
       doc: doc,
       schema: schema,

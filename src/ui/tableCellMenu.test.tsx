@@ -4,6 +4,8 @@ import TableCellMenu from './tableCellMenu';
 import CommandMenuButton from './commandMenuButton';
 import Icon from './icon';
 import { TABLE_COMMANDS_GROUP } from './editorToolbarConfig';
+import { EditorState, PluginView } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
 
 // Mock dependencies
 jest.mock('./commandMenuButton', () => jest.fn(() => React.createElement('button')));
@@ -13,19 +15,19 @@ jest.mock('./icon', () => ({
 
 describe('TableCellMenu', () => {
   let container: HTMLDivElement;
-  let mockEditorState: any;
-  let mockEditorView: any;
-  let mockPluginView: any;
+  let mockEditorState: EditorState;
+  let mockEditorView: EditorView;
+  let mockPluginView: PluginView;
   let mockActionNode: Node;
 
   beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
 
-    mockEditorState = { doc: {} };
-    mockEditorView = { dispatch: jest.fn() };
+    mockEditorState = { doc: {} } as EditorState;
+    mockEditorView = { dispatch: jest.fn() } as unknown as EditorView;
     mockActionNode = document.createElement('div');
-    mockPluginView = {};
+    mockPluginView = {} as PluginView;
 
     jest.clearAllMocks();
   });
@@ -63,7 +65,7 @@ describe('TableCellMenu', () => {
 
   test('uses pluginView._menu return value if defined', () => {
     const mockCmdGroups = [{ label: 'CustomCmd' }];
-    mockPluginView._menu = jest.fn(() => mockCmdGroups);
+    mockPluginView['_menu'] = jest.fn(() => mockCmdGroups);
 
     const element = React.createElement(TableCellMenu, {
       editorState: mockEditorState,
@@ -74,7 +76,7 @@ describe('TableCellMenu', () => {
 
     ReactDOM.render(element, container);
 
-    expect(mockPluginView._menu).toHaveBeenCalledWith(
+    expect(mockPluginView['_menu']).toHaveBeenCalledWith(
       mockEditorState,
       mockActionNode,
       TABLE_COMMANDS_GROUP

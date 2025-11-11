@@ -4,9 +4,14 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { EditorState } from 'prosemirror-state';
 import { STRONG, TABLE_INSERT_TABLE } from '../editorCommands';
 import { Arr } from './commandMenuButton';
+import { Transform } from 'prosemirror-transform';
+import { EditorView } from 'prosemirror-view';
 
 //  Create a concrete mock subclass to implement all abstract members
 class MockCommand extends UICommand {
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
+    return tr;
+  }
   waitForUserInput = jest.fn().mockResolvedValue(null);
   executeWithUserInput = jest.fn().mockReturnValue(true);
   cancel = jest.fn();
@@ -22,7 +27,7 @@ class MockCommand extends UICommand {
 describe('CommandMenu', () => {
   let mockDispatch: jest.Mock;
   let mockEditorState: EditorState;
-  let mockEditorView: any;
+  let mockEditorView: EditorView;
   let mockOnCommand: jest.Mock;
   let commandGroups: Array<Arr>;
 
@@ -47,7 +52,7 @@ describe('CommandMenu', () => {
       schema: { marks: { 'mark-font-type': undefined } },
     } as unknown as EditorState;
 
-    mockEditorView = {} as any;
+    mockEditorView = {} as unknown as EditorView;
 
     UICommand.theme = 'dark';
 

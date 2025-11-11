@@ -99,24 +99,34 @@ describe('findActiveMark', () => {
   expect(doc.nodeAt).toHaveBeenCalled(); // optional: ensures the loop actually called nodeAt
 });
 
-it('skips nodes that do not have marks (node.marks is falsy)', () => {
-  // nodeSize > 2 so function doesn't return early
-  // nodeAt returns an object without marks (or marks = undefined)
-  const nodeWithoutMarks = {
-    nodeSize: 1,
-    // intentionally no 'marks' property
-  } as unknown as Node;
+ it('skips nodes that do not have marks (node.marks is falsy)', () => {
+    // ?? Define minimal mock interfaces instead of `any`
+    interface MockNode {
+      nodeSize: number;
+      marks?: unknown[];
+    }
 
-  const doc = {
-    nodeSize: 4,
-    nodeAt: jest.fn((pos: number) => {
-      // return the "no-marks" node for pos 0 and null elsewhere
-      return pos === 0 ? (nodeWithoutMarks as any) : null;
-    }),
-  } as unknown as Node;
+    const nodeWithoutMarks: MockNode = {
+      nodeSize: 1,
+      // intentionally no 'marks'
+    };
 
-  const result = findActiveMark(doc, 0, 1, { name: 'bold' } as MarkType);
-  expect(result).toBeNull();
-  expect(doc.nodeAt).toHaveBeenCalledWith(0);
-});
+    const doc = {
+      nodeSize: 4,
+      nodeAt: jest.fn((pos: number): MockNode | null =>
+        pos === 0 ? nodeWithoutMarks : null
+      ),
+    };
+
+    // ? Cast to Node only once (to satisfy function signature)
+    const result = findActiveMark(
+      doc as unknown as Node,
+      0,
+      1,
+      { name: 'bold' } as unknown as MarkType
+    );
+
+    expect(result).toBeNull();
+    expect(doc.nodeAt).toHaveBeenCalledWith(0);
+  });
 });

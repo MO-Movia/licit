@@ -11,7 +11,7 @@ describe('StrikeMarkSpec', () => {
       const rule = parseRules[0];
       expect(rule).toBeTruthy();
 
-      const result = rule.getAttrs!(
+      const result = rule.getAttrs(
         mockElement as unknown as HTMLElement & string
       );
       expect(result).toEqual({overridden: true});
@@ -25,7 +25,7 @@ describe('StrikeMarkSpec', () => {
       const rule = parseRules[0];
       expect(rule).toBeTruthy();
 
-      const result = rule.getAttrs!(
+      const result = rule.getAttrs(
         mockElement as unknown as HTMLElement & string
       );
       expect(result).toEqual({overridden: false});
@@ -38,7 +38,7 @@ describe('StrikeMarkSpec', () => {
       const rule = parseRules[0];
       expect(rule).toBeTruthy();
 
-      const result = rule.getAttrs!(
+      const result = rule.getAttrs(
         mockElement as unknown as HTMLElement & string
       );
       expect(result).toEqual({overridden: false});
@@ -63,7 +63,7 @@ describe('StrikeMarkSpec', () => {
       const mockMark = createMockMark();
 
       // Non-null assertion because toDOM is defined
-      const result = StrikeMarkSpec.toDOM!(mockMark, false);
+      const result = StrikeMarkSpec.toDOM(mockMark, false);
 
       // Match what your editor actually outputs
       expect(result).toEqual(['strike', {overridden: true}, 0]);

@@ -2,9 +2,10 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import ListTypeCommandButton from './listTypeCommandButton';
 import { ThemeContext } from '@modusoperandi/licit-ui-commands';
-import { ListToggleCommand, hasImageNode } from '../commands/listToggleCommand';
+import { hasImageNode } from '../commands/listToggleCommand';
 import ListTypeButton from './listTypeButton';
-import Icon from './icon';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
 
 //  Mock dependencies
 jest.mock('../commands/listToggleCommand', () => ({
@@ -21,15 +22,15 @@ jest.mock('./icon', () => ({
 describe('ListTypeCommandButton', () => {
   let container: HTMLDivElement;
   let mockDispatch: jest.Mock;
-  let mockEditorState: any;
-  let mockEditorView: any;
+  let mockEditorState: EditorState;
+  let mockEditorView: EditorView;
 
   beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
     mockDispatch = jest.fn();
-    mockEditorState = {};
-    mockEditorView = { disabled: false };
+    mockEditorState = {} as EditorState;
+    mockEditorView = { disabled: false } as unknown as EditorView;
     (hasImageNode as jest.Mock).mockReturnValue(false);
     jest.clearAllMocks();
   });
@@ -56,7 +57,7 @@ describe('ListTypeCommandButton', () => {
 
     //  ListTypeButton should have been called with expected props
     expect(ListTypeButton).toHaveBeenCalledTimes(1);
-    const props = (ListTypeButton as any).mock.calls[0][0];
+    const props = (ListTypeButton as unknown as jest.Mock).mock.calls[0][0];
 
     expect(props.className).toBe('width-50 czi-icon format_list_numbered');
     expect(props.dispatch).toBe(mockDispatch);
@@ -68,7 +69,7 @@ describe('ListTypeCommandButton', () => {
 
   test('disables button when editorView.disabled is true', () => {
     const theme = 'dark';
-    mockEditorView.disabled = true;
+    mockEditorView['disabled'] = true;
 
     ReactDOM.render(
       <ThemeContext.Provider value={theme}>
@@ -81,7 +82,7 @@ describe('ListTypeCommandButton', () => {
       container
     );
 
-    const props = (ListTypeButton as any).mock.calls[0][0];
+    const props = (ListTypeButton as unknown as jest.Mock).mock.calls[0][0];
     expect(props.disabled).toBe(true);
   });
 
@@ -100,14 +101,14 @@ describe('ListTypeCommandButton', () => {
       container
     );
 
-    const props = (ListTypeButton as any).mock.calls[0][0];
+    const props = (ListTypeButton as unknown as jest.Mock).mock.calls[0][0];
     expect(props.disabled).toBe(true);
   });
 
   test('enabled when editorView.disabled is false and hasImageNode is false', () => {
     const theme = 'light';
     (hasImageNode as jest.Mock).mockReturnValue(false);
-    mockEditorView.disabled = false;
+    mockEditorView['disabled'] = false;
 
     ReactDOM.render(
       <ThemeContext.Provider value={theme}>
@@ -120,7 +121,7 @@ describe('ListTypeCommandButton', () => {
       container
     );
 
-    const props = (ListTypeButton as any).mock.calls[0][0];
+    const props = (ListTypeButton as unknown as jest.Mock).mock.calls[0][0];
     expect(props.disabled).toBe(false);
   });
 
@@ -138,7 +139,7 @@ describe('ListTypeCommandButton', () => {
       container
     );
 
-    const props = (ListTypeButton as any).mock.calls[0][0];
+    const props = (ListTypeButton as unknown as jest.Mock).mock.calls[0][0];
     expect(props.disabled).toBe(false); // no editorView, defaults to false
   });
 

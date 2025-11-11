@@ -10,7 +10,7 @@ describe('TextColorMarkSpec', () => {
     it('should parse color style correctly', () => {
       const parseRules = TextColorMarkSpec.parseDOM || [];
       const rule = parseRules[0];
-      if (!rule || !rule.getAttrs) throw new Error('getAttrs not defined');
+      if (!rule?.getAttrs) throw new Error('getAttrs not defined');
 
       const mockElement = {
         style: {color: 'rgb(255, 0, 0)'},

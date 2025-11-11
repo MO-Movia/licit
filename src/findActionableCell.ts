@@ -40,8 +40,8 @@ function findActionableCellFromSelection(
 
 export default function findActionableCell(state: EditorState): Result | null {
   const { doc, selection, schema } = state;
-  const tdType = schema.nodes['tableCell'];
-  const thType = schema.nodes['tableHeader'];
+  const tdType = schema.nodes.tableCell;
+  const thType = schema.nodes.tableHeader;
   if (!tdType && !thType) {
     return null;
   }

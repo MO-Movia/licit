@@ -11,7 +11,7 @@ import {EditorState, TextSelection} from 'prosemirror-state';
 import {EditorView} from 'prosemirror-view';
 import {Schema, DOMParser} from 'prosemirror-model';
 import LinkTooltipPlugin from './linkTooltipPlugin';
-import {findNodesWithSameMark} from '@modusoperandi/licit-ui-commands';
+import {findNodesWithSameMark,MARK_LINK, createPopUp} from '@modusoperandi/licit-ui-commands';
 
 jest.mock('@modusoperandi/licit-ui-commands', () => {
   const actual = jest.requireActual('@modusoperandi/licit-ui-commands');
@@ -22,7 +22,7 @@ jest.mock('@modusoperandi/licit-ui-commands', () => {
     atAnchorTopCenter: jest.fn(),
   };
 });
-import {MARK_LINK, createPopUp} from '@modusoperandi/licit-ui-commands';
+
 
 jest.mock('../lookUpElement', () => {
   return {
@@ -31,16 +31,6 @@ jest.mock('../lookUpElement', () => {
   };
 });
 import lookUpElement from '../lookUpElement';
-
-// Types for LinkTooltip props, if needed
-interface LinkTooltipProps {
-  editorView: EditorView;
-  href: string;
-  onEdit?: (view: EditorView) => void;
-  onRemove?: (view: EditorView) => void;
-  onCancel?: (view: EditorView) => void;
-  onClose?: () => void;
-}
 
 const mockCreatePopUp = createPopUp as jest.MockedFunction<typeof createPopUp>;
 
@@ -67,7 +57,7 @@ function createTestSchema() {
 
 describe('LinkTooltipPlugin - No Warning / In-Bounds Selection', () => {
   let editorView: EditorView | null = null;
-  let pluginView: any = null; // We'll call plugin methods directly
+  let pluginView = null; // We'll call plugin methods directly
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -97,7 +87,7 @@ describe('LinkTooltipPlugin - No Warning / In-Bounds Selection', () => {
       (pl) => pl instanceof LinkTooltipPlugin
     );
     if (plugin) {
-      pluginView = (plugin as any).spec.view(editorView);
+      pluginView = (plugin).spec.view(editorView);
     }
   });
 
@@ -117,8 +107,8 @@ describe('LinkTooltipPlugin - No Warning / In-Bounds Selection', () => {
   it('calls update(), _onCancel, _onClose without warnings', () => {
     if (!editorView) return;
     pluginView.update(editorView, null);
-    pluginView._onCancel && pluginView._onCancel(editorView);
-    pluginView._onClose && pluginView._onClose();
+    pluginView._onCancel?.(editorView);
+    pluginView._onClose?.();
     expect(true).toBe(true);
   });
 
@@ -128,27 +118,26 @@ describe('LinkTooltipPlugin - No Warning / In-Bounds Selection', () => {
     insertLinkAtPos(editorView, 5, 'https://example.com');
 
     // Now do _onEditEnd with selection=5..9
-    pluginView._onEditEnd &&
-      pluginView._onEditEnd(
-        editorView,
-        TextSelection.create(editorView.state.doc, 5, 9),
-        'https://newhref.com'
-      );
+    pluginView._onEditEnd?.(
+      editorView,
+      TextSelection.create(editorView.state.doc, 5, 9),
+      'https://newhref.com'
+    );
     expect(true).toBe(true); // No console.warn or crash
   });
 
   it('calls _onRemove => no warnings, no crashes', () => {
-    pluginView._onRemove && pluginView._onRemove(editorView);
+    pluginView._onRemove?.(editorView);
     expect(true).toBe(true);
   });
 
   it('calls _onEdit => simulating user typed new href in LinkURLEditor', () => {
     // We'll mock createPopUp so onClose sets a new href
-    mockCreatePopUp.mockImplementationOnce((comp, props, opts) => {
+    mockCreatePopUp.mockImplementationOnce((_comp, _props, opts) => {
       opts?.onClose?.('https://edited.com');
       return {update: jest.fn(), close: jest.fn()};
     });
-    pluginView._onEdit && pluginView._onEdit(editorView);
+    pluginView._onEdit?.(editorView);
     expect(true).toBe(true);
   });
 
@@ -181,7 +170,7 @@ describe('LinkTooltipPlugin - No Warning / In-Bounds Selection', () => {
     const mockDestroy = jest.spyOn(pluginView, 'destroy');
 
     // Get link mark type from schema
-    const markType = editorView!.state.schema.marks[MARK_LINK];
+    const markType = editorView.state.schema.marks[MARK_LINK];
     const validMark = markType.create({href: 'https://example.com'});
 
     // Mock findNodesWithSameMark to return valid from/to positions
@@ -214,7 +203,7 @@ describe('LinkTooltipPlugin - No Warning / In-Bounds Selection', () => {
     );
 
     // 🔹 Run update — should trigger `if (!domFound)`
-    pluginView.update(mockView, editorView!.state);
+    pluginView.update(mockView, editorView.state);
 
     expect(mockDestroy).toHaveBeenCalled();
   });
@@ -227,7 +216,7 @@ describe('LinkTooltipPlugin - No Warning / In-Bounds Selection', () => {
     // Extend pluginView with mock lookUpElement safely
     const testPluginView = Object.assign(pluginView, {
       lookUpElement: jest.fn().mockReturnValue(true),
-    }) as typeof pluginView & {lookUpElement: () => boolean};
+    });
 
     testPluginView.update(editorView, null);
 
@@ -247,7 +236,7 @@ describe('LinkTooltipPlugin - No Warning / In-Bounds Selection', () => {
   // Temporarily make lookUpElement return null
   (lookUpElement as jest.Mock).mockReturnValueOnce(null);
 
-  const markType = editorView!.state.schema.marks[MARK_LINK];
+  const markType = editorView.state.schema.marks[MARK_LINK];
   (
     findNodesWithSameMark as jest.MockedFunction<typeof findNodesWithSameMark>
   ).mockReturnValue({
@@ -266,7 +255,7 @@ describe('LinkTooltipPlugin - No Warning / In-Bounds Selection', () => {
   );
 
   // Run update → should hit `if (!anchorEl)`
-  pluginView.update(mockView, editorView!.state);
+  pluginView.update(mockView, editorView.state);
 
   expect(mockDestroy).toHaveBeenCalled();
 });
@@ -291,7 +280,7 @@ it('returns early when anchorEl is the same as this._anchorEl (covers equality b
   });
 
   // Mock findNodesWithSameMark to simulate a valid found mark
-  const markType = editorView!.state.schema.marks[MARK_LINK];
+  const markType = editorView.state.schema.marks[MARK_LINK];
   (
     findNodesWithSameMark as jest.MockedFunction<typeof findNodesWithSameMark>
   ).mockReturnValue({
@@ -307,7 +296,7 @@ it('returns early when anchorEl is the same as this._anchorEl (covers equality b
       ...editorView,
       domAtPos: mockDomAtPos,
       readOnly: false,
-      state: editorView!.state,
+      state: editorView.state,
     }
   );
 
@@ -315,7 +304,7 @@ it('returns early when anchorEl is the same as this._anchorEl (covers equality b
   (lookUpElement as jest.Mock).mockClear();
 
   // Call update() — should hit (anchorEl === this._anchorEl)
-  pluginView.update(mockView, editorView!.state);
+  pluginView.update(mockView, editorView.state);
 
   // Verify branch behavior
   expect(lookUpElement).toHaveBeenCalledTimes(1); // called exactly once in this run

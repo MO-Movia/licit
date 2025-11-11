@@ -99,7 +99,7 @@ describe('toDOM', () => {
         },
       };
 
-      const result = TextHighlightMarkSpec.toDOM!(node as unknown as Mark, false);
+      const result = TextHighlightMarkSpec.toDOM(node as unknown as Mark, false);
       expect(result).toEqual([
         'span',
         {
@@ -117,7 +117,7 @@ describe('toDOM', () => {
         },
       };
 
-      const result = TextHighlightMarkSpec.toDOM!(node as unknown as Mark, false);
+      const result = TextHighlightMarkSpec.toDOM(node as unknown as Mark, false);
       expect(result).toEqual([
         'span',
         {

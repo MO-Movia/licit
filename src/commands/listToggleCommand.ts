@@ -1,7 +1,7 @@
-import { EditorState, Transaction } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { ContentNodeWithPos, findParentNodeOfType } from 'prosemirror-utils';
-import { EditorView } from 'prosemirror-view';
+import {EditorState, Transaction} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {ContentNodeWithPos, findParentNodeOfType} from 'prosemirror-utils';
+import {EditorView} from 'prosemirror-view';
 
 import {
   ORDERED_LIST,
@@ -11,19 +11,10 @@ import {
   isNodeSelectionForNodeType,
   noop,
 } from '@modusoperandi/licit-ui-commands';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { Editor } from '@tiptap/react';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import {Editor} from '@tiptap/react';
 
 export class ListToggleCommand extends UICommand {
-  executeCustomStyleForTable(
-    _state: EditorState,
-    tr: Transform,
-    _from: number,
-    _to: number
-  ): Transform {
-    return tr;
-  }
-
   _ordered: boolean;
   _orderedListType: string;
 
@@ -72,14 +63,14 @@ export class ListToggleCommand extends UICommand {
   }
 
   getEditor = (): Editor => {
-    return UICommand.prototype.editor as Editor;
+    return UICommand.prototype.editor;
   };
 
   executeCustom(
-    state: EditorState,
+    _state: EditorState,
     tr: Transform,
-    from: number,
-    to: number
+    _from: number,
+    _to: number
   ): Transform {
     return tr;
   }
@@ -98,7 +89,7 @@ export class ListToggleCommand extends UICommand {
     }
     (tr as Transform) = toggleList(tr, schema, nodeType, this._orderedListType);
     if (tr.docChanged) {
-      dispatch && dispatch(tr);
+      if (dispatch) dispatch(tr);
       return true;
     } else {
       return false;
@@ -111,12 +102,15 @@ export class ListToggleCommand extends UICommand {
     const findList = list ? findParentNodeOfType(list) : noop;
     return findList(state.selection);
   }
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
+    return tr;
+  }
 }
 
 // [FS] IRAD-1317 2021-05-06
 // To disable the list menu in toolbar when select an image
 export function hasImageNode(state: EditorState): boolean {
-  const { selection, schema } = state;
+  const {selection, schema} = state;
   const imageNodeType = schema.nodes[IMAGE];
   return imageNodeType && isNodeSelectionForNodeType(selection, imageNodeType);
 }

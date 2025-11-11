@@ -17,7 +17,6 @@ jest.mock('@tiptap/react', () => {
 
 describe('tableMoveToNextCellCommand', () => {
   let command: tableMoveToNextCellCommand;
-  let mockEditor: Editor;
   let mockState: EditorState;
 
   beforeEach(() => {
@@ -83,7 +82,6 @@ describe('tableMoveToNextCellCommand', () => {
     ]);
 
     // Mock the editor instance to check if the goToNextCell method gets called
-    mockEditor = new Editor();
     command = new tableMoveToNextCellCommand();
     mockState = {
       doc: dummyDoc,

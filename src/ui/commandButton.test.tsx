@@ -4,6 +4,8 @@ import CommandButton from './commandButton';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { CustomButton, ThemeContext } from '@modusoperandi/licit-ui-commands';
 import cx from 'classnames';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
 
 // Mock dependencies
 jest.mock('@modusoperandi/licit-ui-commands', () => ({
@@ -15,17 +17,17 @@ jest.mock('classnames', () => jest.fn((...args) => args.join(' ')));
 
 describe('CommandButton', () => {
   let container: HTMLDivElement;
-  let mockEditorState: any;
-  let mockEditorView: any;
+  let mockEditorState: EditorState;
+  let mockEditorView: EditorView;
   let mockDispatch: jest.Mock;
-  let mockCommand: any;
+  let mockCommand: UICommand;
 
   beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
 
-    mockEditorState = { doc: {} };
-    mockEditorView = { someProp: true };
+    mockEditorState = { doc: {} } as EditorState;
+    mockEditorView = { someProp: true } as unknown as EditorView;
     mockDispatch = jest.fn();
 
     mockCommand = {
@@ -33,7 +35,7 @@ describe('CommandButton', () => {
       isActive: jest.fn(() => false),
       execute: jest.fn(),
       shouldRespondToUIEvent: jest.fn(() => true),
-    };
+    } as unknown as UICommand;
 
     jest.clearAllMocks();
   });
@@ -81,7 +83,7 @@ describe('CommandButton', () => {
   });
 
   test('disables button when command is not enabled', () => {
-    mockCommand.isEnabled.mockReturnValue(false);
+    (mockCommand.isEnabled as jest.Mock).mockReturnValue(false);
 
     const element = (
       <ThemeContext.Provider value="dark">
@@ -131,9 +133,9 @@ describe('CommandButton', () => {
       dispatch: mockDispatch,
       editorState: mockEditorState,
       editorView: mockEditorView,
-    } as any);
+    } as CommandButton['props']);
 
-    const mockEvent = { preventDefault: jest.fn() } as any;
+    const mockEvent = { preventDefault: jest.fn() } as unknown as React.SyntheticEvent<HTMLButtonElement, Event>;
 
     wrapper._onUIEnter(mockCommand, mockEvent);
 
@@ -147,16 +149,16 @@ describe('CommandButton', () => {
   });
 
   test('does not execute if shouldRespondToUIEvent returns false', () => {
-    mockCommand.shouldRespondToUIEvent.mockReturnValue(false);
+    (mockCommand.shouldRespondToUIEvent as jest.Mock).mockReturnValue(false);
 
     const wrapper = new CommandButton({
       command: mockCommand,
       dispatch: mockDispatch,
       editorState: mockEditorState,
       editorView: mockEditorView,
-    } as any);
+    } as CommandButton['props']);
 
-    const mockEvent = { preventDefault: jest.fn() } as any;
+    const mockEvent = { preventDefault: jest.fn() } as unknown as React.SyntheticEvent<HTMLButtonElement, Event>;
 
     wrapper._onUIEnter(mockCommand, mockEvent);
 

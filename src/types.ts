@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 export type NodeSpec = {
   attrs?: Record<string, unknown>;

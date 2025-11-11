@@ -33,14 +33,6 @@ class LinkSetURLCommand extends UICommand {
     return from < to;
   };
 
-  executeCustomStyleForTable(
-    _state: EditorState,
-    tr: Transform,
-    _from: number,
-    _to: number
-  ): Transform {
-    return tr;
-  }
   waitForUserInput = (
     state: EditorState,
     dispatch?: (tr: Transform) => void,
@@ -104,7 +96,9 @@ class LinkSetURLCommand extends UICommand {
       }
       dispatch(tr);
     }
-    view && view.focus();
+    if (view) {
+      view.focus();
+    }
     return true;
   };
 
@@ -112,11 +106,14 @@ class LinkSetURLCommand extends UICommand {
     return null;
   }
   executeCustom(
-    state: EditorState,
+    _state: EditorState,
     tr: Transform,
-    from: number,
-    to: number
+    _from: number,
+    _to: number
   ): Transform {
+    return tr;
+  }
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
     return tr;
   }
 }

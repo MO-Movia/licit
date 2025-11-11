@@ -17,7 +17,6 @@ jest.mock('@tiptap/react', () => {
 
 describe('tableDeleteTableCommand', () => {
   let command: tableDeleteTableCommand;
-  let mockEditor: Editor;
   let mockState: EditorState;
 
   beforeEach(() => {
@@ -83,7 +82,6 @@ describe('tableDeleteTableCommand', () => {
     ]);
 
     // Mock the editor instance to check if the deleteTable method gets called
-    mockEditor = new Editor();
     command = new tableDeleteTableCommand();
     mockState = {
       doc: dummyDoc,

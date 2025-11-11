@@ -1,52 +1,117 @@
+import { Editor } from '@tiptap/core';
+import StarterKit from '@tiptap/starter-kit';
+import Table from '@tiptap/extension-table';
+import TableRow from '@tiptap/extension-table-row';
+import TableHeader from '@tiptap/extension-table-header';
 import { TableCellEx } from './tableCellEx';
 
 describe('TableCellEx Extension', () => {
-    let extension: any;
+    let editor: Editor;
 
     beforeEach(() => {
-        extension = TableCellEx;
+        editor = new Editor({
+            extensions: [StarterKit, Table, TableRow, TableHeader, TableCellEx],
+            content: '<table><tr><td>Cell</td></tr></table>',
+        });
     });
 
-    test('should extend TableCell and add custom attributes', () => {
-        const attributes = extension.config.addAttributes();
-
-        expect(attributes).toHaveProperty('backgroundColor');
-        expect(attributes).toHaveProperty('borderColor');
-
-        // Default values
-        expect(attributes.backgroundColor.default).toBeNull();
-        expect(attributes.borderColor.default).toBeNull();
+    afterEach(() => {
+        editor.destroy();
     });
 
-    test('should render backgroundColor correctly', () => {
-        const { renderHTML } = extension.config.addAttributes().backgroundColor;
+    test('should have backgroundColor attribute', () => {
+        const schema = editor.schema;
+        const tableCellNode = schema.nodes.tableCell;
 
-        expect(renderHTML({ backgroundColor: 'red' })).toEqual({ style: 'background-color: red' });
-        expect(renderHTML({})).toEqual({});
+        expect(tableCellNode.spec.attrs).toHaveProperty('backgroundColor');
+        expect(tableCellNode.spec.attrs?.backgroundColor.default).toBeNull();
     });
 
-    test('should parse backgroundColor correctly', () => {
-        const { parseHTML } = extension.config.addAttributes().backgroundColor;
+    test('should have borderColor attribute', () => {
+        const schema = editor.schema;
+        const tableCellNode = schema.nodes.tableCell;
 
-        const element = document.createElement('td');
-        element.style.backgroundColor = 'blue';
-
-        expect(parseHTML(element)).toBe('blue');
+        expect(tableCellNode.spec.attrs).toHaveProperty('borderColor');
+        expect(tableCellNode.spec.attrs?.borderColor.default).toBeNull();
     });
 
-    test('should render borderColor correctly', () => {
-        const { renderHTML } = extension.config.addAttributes().borderColor;
+    test('should render backgroundColor style correctly when provided', () => {
+        editor.commands.setContent('<table><tr><td style="background-color: red">Cell</td></tr></table>');
+        const html = editor.getHTML();
 
-        expect(renderHTML({ borderColor: 'green' })).toEqual({ style: 'border-color: green' });
-        expect(renderHTML({})).toEqual({});
+        expect(html).toContain('background-color: red');
     });
 
-    test('should parse borderColor correctly', () => {
-        const { parseHTML } = extension.config.addAttributes().borderColor;
+    test('should render borderColor style correctly when provided', () => {
+        editor.commands.setContent('<table><tr><td style="border-color: green">Cell</td></tr></table>');
+        const html = editor.getHTML();
 
-        const element = document.createElement('td');
-        element.style.borderColor = 'black';
+        expect(html).toContain('border-color: green');
+    });
 
-        expect(parseHTML(element)).toBe('black');
+    test('should parse backgroundColor from HTML element', () => {
+        const htmlWithBgColor = '<table><tr><td style="background-color: blue">Cell</td></tr></table>';
+        editor.commands.setContent(htmlWithBgColor);
+        
+        const { state } = editor;
+        let foundBackgroundColor = false;
+
+        state.doc.descendants((node) => {
+            if (node.type.name === 'tableCell' && node.attrs.backgroundColor === 'blue') {
+                foundBackgroundColor = true;
+            }
+        });
+
+        expect(foundBackgroundColor).toBe(true);
+    });
+
+    test('should parse borderColor from HTML element', () => {
+        const htmlWithBorderColor = '<table><tr><td style="border-color: black">Cell</td></tr></table>';
+        editor.commands.setContent(htmlWithBorderColor);
+        
+        const { state } = editor;
+        let foundBorderColor = false;
+
+        state.doc.descendants((node) => {
+            if (node.type.name === 'tableCell' && node.attrs.borderColor === 'black') {
+                foundBorderColor = true;
+            }
+        });
+
+        expect(foundBorderColor).toBe(true);
+    });
+
+    test('should handle backgroundColor with quotes', () => {
+        const htmlWithQuotes = '<table><tr><td style="background-color: \'red\'">Cell</td></tr></table>';
+        editor.commands.setContent(htmlWithQuotes);
+        
+        const { state } = editor;
+        let backgroundColor = '';
+
+        state.doc.descendants((node) => {
+            if (node.type.name === 'tableCell') {
+                backgroundColor = node.attrs.backgroundColor;
+            }
+        });
+
+        expect(backgroundColor).not.toContain('"');
+        expect(backgroundColor).not.toContain("'");
+    });
+
+    test('should handle borderColor with quotes', () => {
+        const htmlWithQuotes = '<table><tr><td style="border-color: \'green\'">Cell</td></tr></table>';
+        editor.commands.setContent(htmlWithQuotes);
+        
+        const { state } = editor;
+        let borderColor = '';
+
+        state.doc.descendants((node) => {
+            if (node.type.name === 'tableCell') {
+                borderColor = node.attrs.borderColor;
+            }
+        });
+
+        expect(borderColor).not.toContain('"');
+        expect(borderColor).not.toContain("'");
     });
 });

@@ -6,7 +6,7 @@ export const PX_TO_PT_RATIO = 0.75292857;
 export const PT_TO_PX_RATIO = 1 / PX_TO_PT_RATIO;
 
 export default function convertToCSSPTValue(styleValue: string): number {
-  const matches = styleValue.match(SIZE_PATTERN);
+  const matches = SIZE_PATTERN.exec(styleValue);
   if (!matches) {
     return 0;
   }

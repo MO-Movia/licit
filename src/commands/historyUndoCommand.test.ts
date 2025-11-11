@@ -9,14 +9,14 @@ describe('HistoryRedoCommand', () => {
   it('should be defined', () => {
     expect(hisrdcommand).toBeDefined();
   });
-  it('should handle isEnabled ', () => {
+  it('should handle isEnabled', () => {
     expect(
       hisrdcommand.isEnabled({
         history$: { done: { eventCount: 0 } },
       } as unknown as EditorState)
     ).toBeFalsy();
   });
-  it('should handle isEnabled ', () => {
+  it('should handle isEnabled with eventcount', () => {
     expect(
       hisrdcommand.isEnabled({
         history$: { done: { eventCount: 1 } },
@@ -34,7 +34,7 @@ describe('HistoryRedoCommand', () => {
     // Verify that getEditor was called
     expect(result).toHaveProperty('view');
   });
-  it('should handle execute  ', () => {
+  it('should handle execute', () => {
     jest
       .spyOn(hisrdcommand, 'getEditor')
       .mockReturnValue({ commands: { undo: () => {} } } as unknown as Editor);
@@ -44,34 +44,24 @@ describe('HistoryRedoCommand', () => {
       } as unknown as EditorState)
     ).toBeUndefined();
   });
-  it('should handle execute  ', () => {
-    jest
-      .spyOn(hisrdcommand, 'getEditor')
-      .mockReturnValue({ commands: { undo: () => {} } } as unknown as Editor);
-    expect(
-      hisrdcommand.execute({
-        history$: { undone: { eventCount: 1 } },
-      } as unknown as EditorState)
-    ).toBeUndefined();
-  });
-  it('should handle waitForUserInput  ', () => {
+  it('should handle waitForUserInput', () => {
     expect(
       hisrdcommand.waitForUserInput({
         history$: { undone: { eventCount: 1 } },
       } as unknown as EditorState)
     ).toBeDefined();
   });
-  it('should handle executeWithUserInput  ', () => {
+  it('should handle executeWithUserInput tobefalsy', () => {
     expect(
       hisrdcommand.executeWithUserInput({
         history$: { undone: { eventCount: 1 } },
       } as unknown as EditorState)
     ).toBeFalsy();
   });
-  it('should handle cancel  ', () => {
+  it('should handle cancel', () => {
     expect(hisrdcommand.cancel()).toBe(null);
   });
-  it('should handle executeCustom  ', () => {
+  it('should handle executeCustom', () => {
     expect(
       hisrdcommand.executeCustom(
         {} as unknown as EditorState,

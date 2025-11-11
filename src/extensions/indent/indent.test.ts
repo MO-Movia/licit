@@ -143,161 +143,23 @@ describe('Indent Extension - Keyboard Shortcuts', () => {
         editor.destroy();
     });
 
-    test.each([
-        ['Mod-[', 'outdent', false],
-    ])('should call %s shortcut to execute %s command', (key, command, outdentOnlyAtHead) => {
-
-        // Ensure function exists
-        expect(shortcuts[key]).toBeDefined();
-
-        // Execute shortcut
-        const result = shortcuts[key]({ editor });
-
-        if (command === 'indent') {
-            if (key === 'Tab') {
-                expect(result).toBe(true);
-            }
-            if (key === 'Mod-]') {
-                expect(result).toBe(true);
-            }
-        } else {
-            if (key === 'Shift-Tab') {
-                expect(result).toBe(false);
-            }
-            if (key === 'Mod-[') {
-                expect(result).toBe(false);
-            }
-            if (key === 'Backspace') {
-                expect(result).toBe(false);
-            }
-        }
-
-
-    });
-    test.each([
-        ['Mod-]', 'indent', true]
-    ])('should call %s shortcut to execute %s command', (key, command, outdentOnlyAtHead) => {
-
-        // Ensure function exists
-        expect(shortcuts[key]).toBeDefined();
+  test.each([
+    ['Mod-[', 'outdent', false],
+    ['Mod-]', 'indent', true],
+    ['Tab', 'indent', true],
+    ['Shift-Tab', 'outdent', false],
+    ['Backspace', 'outdent', false],
+  ])('should call %s shortcut to execute %s command', (key, _command, expected) => {
+    // Ensure the shortcut function exists
+    expect(shortcuts[key]).toBeDefined();
 
         // Execute shortcut
         const result = shortcuts[key]({ editor });
 
-        if (command === 'indent') {
-            if (key === 'Tab') {
-                expect(result).toBe(true);
-            }
-            if (key === 'Mod-]') {
-                expect(result).toBe(true);
-            }
-        } else {
-            if (key === 'Shift-Tab') {
-                expect(result).toBe(false);
-            }
-            if (key === 'Mod-[') {
-                expect(result).toBe(false);
-            }
-            if (key === 'Backspace') {
-                expect(result).toBe(false);
-            }
-        }
+    // Single non-conditional assertion
+    expect(result).toBe(expected);
+  });
 
-
-    });
-    test.each([
-        ['Tab', 'indent', false]
-    ])('should call %s shortcut to execute %s command', (key, command, outdentOnlyAtHead) => {
-
-        // Ensure function exists
-        expect(shortcuts[key]).toBeDefined();
-
-        // Execute shortcut
-        const result = shortcuts[key]({ editor });
-
-        if (command === 'indent') {
-            if (key === 'Tab') {
-                expect(result).toBe(true);
-            }
-            if (key === 'Mod-]') {
-                expect(result).toBe(true);
-            }
-        } else {
-            if (key === 'Shift-Tab') {
-                expect(result).toBe(false);
-            }
-            if (key === 'Mod-[') {
-                expect(result).toBe(false);
-            }
-            if (key === 'Backspace') {
-                expect(result).toBe(false);
-            }
-        }
-
-
-    });
-    test.each([
-        ['Shift-Tab', 'outdent', false]
-    ])('should call %s shortcut to execute %s command', (key, command, outdentOnlyAtHead) => {
-
-        // Ensure function exists
-        expect(shortcuts[key]).toBeDefined();
-
-        // Execute shortcut
-        const result = shortcuts[key]({ editor });
-
-        if (command === 'indent') {
-            if (key === 'Tab') {
-                expect(result).toBe(true);
-            }
-            if (key === 'Mod-]') {
-                expect(result).toBe(true);
-            }
-        } else {
-            if (key === 'Shift-Tab') {
-                expect(result).toBe(false);
-            }
-            if (key === 'Mod-[') {
-                expect(result).toBe(false);
-            }
-            if (key === 'Backspace') {
-                expect(result).toBe(false);
-            }
-        }
-
-
-    });
-    test.each([
-        ['Backspace', 'outdent', true]
-    ])('should call %s shortcut to execute %s command', (key, command, outdentOnlyAtHead) => {
-
-        // Ensure function exists
-        expect(shortcuts[key]).toBeDefined();
-
-        // Execute shortcut
-        const result = shortcuts[key]({ editor });
-
-        if (command === 'indent') {
-            if (key === 'Tab') {
-                expect(result).toBe(true);
-            }
-            if (key === 'Mod-]') {
-                expect(result).toBe(true);
-            }
-        } else {
-            if (key === 'Shift-Tab') {
-                expect(result).toBe(false);
-            }
-            if (key === 'Mod-[') {
-                expect(result).toBe(false);
-            }
-            if (key === 'Backspace') {
-                expect(result).toBe(false);
-            }
-        }
-
-
-    });
 });
 
 

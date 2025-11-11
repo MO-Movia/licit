@@ -82,13 +82,17 @@ class ListTypeButton extends React.PureComponent<ListTypeButtonType> {
     this.setState({
       expanded,
     });
-    expanded ? this._showMenu() : this._hideMenu();
+    if (expanded) {
+      this._showMenu();
+    } else {
+      this._hideMenu();
+    }
   };
 
   _hideMenu = (): void => {
     const menu = this._menu;
     this._menu = null;
-    menu && menu.close();
+    menu?.close();
   };
 
   _showMenu = (): void => {
@@ -108,13 +112,13 @@ class ListTypeButton extends React.PureComponent<ListTypeButtonType> {
   };
 
   _onCommand = (): void => {
-    this.setState({ expanded: false });
+    this.setState({expanded: false});
     this._hideMenu();
   };
 
   _onClose = (): void => {
     if (this._menu) {
-      this.setState({ expanded: false });
+      this.setState({expanded: false});
       this._menu = null;
     }
   };

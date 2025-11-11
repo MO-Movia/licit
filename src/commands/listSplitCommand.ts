@@ -1,21 +1,13 @@
-import { EditorState, Transaction } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState, Transaction} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 
 import splitListItem from '../splitListItem';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 class ListSplitCommand extends UICommand {
   constructor() {
     super();
-  }
-  executeCustomStyleForTable(
-    _state: EditorState,
-    tr: Transform,
-    _from: number,
-    _to: number
-  ): Transform {
-    return tr;
   }
 
   isEnabled = (_state: EditorState): boolean => {
@@ -33,7 +25,9 @@ class ListSplitCommand extends UICommand {
       schema
     ) as Transaction;
     if (tr.docChanged) {
-      dispatch && dispatch(tr);
+      if (dispatch) {
+        dispatch(tr);
+      }
       return true;
     } else {
       return false;
@@ -41,18 +35,18 @@ class ListSplitCommand extends UICommand {
   };
 
   waitForUserInput(
-    state: EditorState,
-    dispatch?: (tr: Transform) => void,
-    view?: EditorView,
-    event?: any
-  ): Promise<any> {
+    _state: EditorState,
+    _dispatch?: (tr: Transform) => void,
+    _view?: EditorView,
+    _event?: React.SyntheticEvent
+  ): Promise<PromiseConstructor> {
     return Promise.resolve(null);
   }
   executeWithUserInput(
-    state: EditorState,
-    dispatch?: (tr: Transform) => void,
-    view?: EditorView,
-    inputs?: any
+    _state: EditorState,
+    _dispatch?: (tr: Transform) => void,
+    _view?: EditorView,
+    _inputs?: string
   ): boolean {
     return false;
   }
@@ -60,11 +54,14 @@ class ListSplitCommand extends UICommand {
     return null;
   }
   executeCustom(
-    state: EditorState,
+    _state: EditorState,
     tr: Transform,
-    from: number,
-    to: number
+    _from: number,
+    _to: number
   ): Transform {
+    return tr;
+  }
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
     return tr;
   }
 }

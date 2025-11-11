@@ -1,6 +1,5 @@
-import { EditorState, TextSelection, AllSelection } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
 import { clearMarks, clearHeading } from '@modusoperandi/licit-ui-commands';
 import MarksClearCommand from './marksClearCommand';
 import { Schema } from 'prosemirror-model';
@@ -117,12 +116,7 @@ describe('MarksClearCommand', () => {
         selection: TextSelection.create(state.doc, 0, 1), // AllSelection
       });
       expect(command.isEnabled(state)).toBe(true);
-    });
-
-    it('should return false for other types of selection', () => {
-      // If another selection type is used, you can test here
-      // Example for a non-matching selection type if necessary
-    });
+    });    
   });
 
   describe('execute', () => {
@@ -133,7 +127,7 @@ describe('MarksClearCommand', () => {
       clearMarksMock.mockReturnValue(tr); // Mock the transformation result
       clearHeadingMock.mockReturnValue(tr);
 
-      const result = command.execute(state, dispatch);
+      command.execute(state, dispatch);
 
       expect(clearMarksMock).toHaveBeenCalledWith(
         state.tr.setSelection(state.selection),
@@ -149,7 +143,7 @@ describe('MarksClearCommand', () => {
       clearMarksMock.mockReturnValue(tr); // Mock the transformation result
       clearHeadingMock.mockReturnValue(tr);
 
-      const result = command.execute(state, dispatch);
+      command.execute(state, dispatch);
       expect(clearMarksMock).toHaveBeenCalledWith(
         state.tr.setSelection(state.selection),
         state.schema

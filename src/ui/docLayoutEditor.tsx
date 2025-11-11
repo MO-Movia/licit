@@ -29,12 +29,12 @@ type DocLayoutEditorState = {
 
 class DocLayoutEditor extends React.PureComponent<DocLayoutEditorProps> {
 
-  static contextType = ThemeContext;
+  public static readonly contextType = ThemeContext;
   _unmounted = false;
   // [FS] IRAD-1005 2020-07-07
   // Upgrade outdated packages.
   // To take care of the property type declaration.
-  static propsTypes = {
+  public static readonly propsTypes = {
     close: function (props: DocLayoutEditorProps, propName: string): Error {
       const fn = props[propName];
       if (
@@ -55,7 +55,6 @@ class DocLayoutEditor extends React.PureComponent<DocLayoutEditorProps> {
 
   constructor(props: DocLayoutEditorProps) {
     super(props);
-    const theme = this.context;
     const { width, layout } = this.props.initialValue || {};
     this.state = {
       width,
@@ -66,11 +65,9 @@ class DocLayoutEditor extends React.PureComponent<DocLayoutEditorProps> {
 
   render(): React.ReactElement<CustomRadioButton> {
     const { width, selectedValue } = this.state;
-    console.log("UICommand : ", UICommand.theme);
+    console.warn('UICommand : ', UICommand.theme);
     const parentClassName = "czi-body-layout-editor " + UICommand.theme;
     const formClassName = "czi-form " + UICommand.theme;
-    const contextType = ThemeContext;
-    const theme = this.context;
     const customOption = width ? (
       <CustomRadioButton
         checked={selectedValue === String(width)}

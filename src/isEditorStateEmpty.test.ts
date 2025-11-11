@@ -12,7 +12,7 @@ const createMockEditorState = (docContent: string, nodeSize: number): EditorStat
       textContent: docContent,
       // Default mock for nodesBetween, can be overridden for specific tests
       // Not used for the nodeSize < 2 branch.
-      nodesBetween: jest.fn((from, to, callback) => {
+      nodesBetween: jest.fn((_from, _to, callback) => {
         // If content is present, simulate a single text node for simple cases
         if (docContent && docContent !== ' ' && docContent !== ZERO_WIDTH_SPACE_CHAR) {
           callback({ type: { isText: true } }, 0);
@@ -58,7 +58,7 @@ describe('isEditorStateEmpty', () => {
       doc: {
         nodeSize: 5,
         textContent: ZERO_WIDTH_SPACE_CHAR,
-        nodesBetween: jest.fn((from, to, callback) => {
+        nodesBetween: jest.fn((_from, _to, callback) => {
           // Simulate text node
           callback({ type: { isText: true } }, 0);
         }),
@@ -79,7 +79,7 @@ describe('isEditorStateEmpty', () => {
       doc: {
         nodeSize: 5,
         textContent: '', // Ensure text content doesn't falsely pass the check
-        nodesBetween: jest.fn((from, to, callback) => {
+        nodesBetween: jest.fn((_from, _to, callback) => {
           // Simulate an atomic node (isAtom: true)
           callback({ type: { isAtom: true, isText: false } }, 0);
         }),

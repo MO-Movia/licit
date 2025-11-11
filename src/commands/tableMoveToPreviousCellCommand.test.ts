@@ -1,7 +1,5 @@
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 import tableMoveToPreviousCellCommand from './tableMoveToPreviousCellCommand';
 import { Schema } from 'prosemirror-model';
@@ -19,7 +17,6 @@ jest.mock('@tiptap/react', () => {
 
 describe('tableMoveToPreviousCellCommand', () => {
   let command: tableMoveToPreviousCellCommand;
-  let mockEditor: Editor;
   let mockState: EditorState;
 
   beforeEach(() => {
@@ -85,7 +82,6 @@ describe('tableMoveToPreviousCellCommand', () => {
     ]);
 
     // Mock the editor instance to check if the goToPreviousCell method gets called
-    mockEditor = new Editor();
     command = new tableMoveToPreviousCellCommand();
     mockState = {
       doc: dummyDoc,

@@ -53,7 +53,7 @@ describe('TextUnderlineMarkSpec', () => {
 
       expect(TextUnderlineMarkSpec.toDOM).toBeDefined();
 
-      const result = TextUnderlineMarkSpec.toDOM!(mockMark, false);
+      const result = TextUnderlineMarkSpec.toDOM(mockMark, false);
 
       expect(result).toEqual(['u', {overridden: true}, 0]);
     });
@@ -63,7 +63,7 @@ describe('TextUnderlineMarkSpec', () => {
         attrs: {overridden: false},
       } as unknown as Mark;
 
-      const result = TextUnderlineMarkSpec.toDOM!(mockMark, false);
+      const result = TextUnderlineMarkSpec.toDOM(mockMark, false);
 
       expect(result).toEqual(['u', {overridden: false}, 0]);
     });

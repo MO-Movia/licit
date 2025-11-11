@@ -15,20 +15,10 @@ import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { Editor } from '@tiptap/react';
 
 class TableColorCommand extends UICommand {
-  executeCustomStyleForTable(
-    _state: EditorState,
-    tr: Transform,
-    _from: number,
-    _to: number
-  ): Transform {
+  executeCustom(_state: EditorState, tr: Transform, _from: number, _to: number): Transform {
     return tr;
   }
-  executeCustom(
-    state: EditorState,
-    tr: Transform,
-    from: number,
-    to: number
-  ): Transform {
+  executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
     return tr;
   }
   _popUp = null;
@@ -65,27 +55,23 @@ class TableColorCommand extends UICommand {
 
     const anchor = event ? event.currentTarget : null;
     return new Promise((resolve) => {
-      this._popUp = createPopUp(
-        ColorEditor,
-        {hex: null, runtime: RuntimeService.Runtime, Textcolor: null},
-        {
-          anchor,
-          popUpId: 'mo-menuList-child',
-          position: atAnchorRight,
-          autoDismiss: true,
-          onClose: (val) => {
-            if (this._popUp) {
-              this._popUp = null;
-              resolve(val);
-            }
-          },
-        }
-      );
+      this._popUp = createPopUp(ColorEditor, { hex: null, runtime: RuntimeService.Runtime, Textcolor: null }, {
+        anchor,
+        popUpId: 'mo-menuList-child',
+        position: atAnchorRight,
+        autoDismiss: true,
+        onClose: (val) => {
+          if (this._popUp) {
+            this._popUp = null;
+            resolve(val);
+          }
+        },
+      });
     });
   };
 
   getEditor = (): Editor => {
-    return UICommand.prototype.editor as Editor;
+    return UICommand.prototype.editor;
   };
 
   executeWithUserInput = (
@@ -101,7 +87,7 @@ class TableColorCommand extends UICommand {
   };
 
   cancel(): void {
-    this._popUp && this._popUp.close(undefined);
+    this._popUp?.close(undefined);
   }
 }
 

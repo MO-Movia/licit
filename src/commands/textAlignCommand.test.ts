@@ -38,7 +38,7 @@ describe('TextAlignCommand', () => {
     const mockDispatch = jest.fn();
     const mockView = {} as EditorView;
 
-    const textAlignMock = jest.spyOn(command, 'getEditor').mockReturnValue({
+    jest.spyOn(command, 'getEditor').mockReturnValue({
       commands: {
         setTextAlign: () => {
           return true;
@@ -75,8 +75,8 @@ describe('TextAlignCommand', () => {
   });
 
   it('should handle cancel', () => {
-    // Test the cancel method
-    expect(() => command.cancel()).not.toThrow();
+    const result = command.cancel();
+    expect(result).toBeNull();
   });
 
   it('should call the getEditor method', () => {
@@ -103,6 +103,13 @@ describe('TextAlignCommand', () => {
     const result = command.executeWithUserInput(mockState);
     expect(result).toBe(false); // The mocked version returns false
   });
+
+  it('should handle executeCustomStyleForTable', () => {
+  const mockState = {} as EditorState;
+  const mockTransform = {} as Transform;  
+  const result = command.executeCustomStyleForTable(mockState, mockTransform);  
+  expect(result).toBe(mockTransform);
+});
 
   describe('executeCustom', () => {
     it('should return the given Transform', () => {

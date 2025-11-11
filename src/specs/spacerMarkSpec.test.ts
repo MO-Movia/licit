@@ -24,7 +24,7 @@ describe('SpacerMarkSpec', () => {
     it('should use the default size when the data-spacer-size attribute is missing', () => {
       // Mock the span element without the 'data-spacer-size' attribute
       const mockSpanElement: any = {
-        getAttribute: jest.fn((attr: string) => {
+        getAttribute: jest.fn((_attr: string) => {
           return null; // Simulate the attribute being missing
         }),
       };

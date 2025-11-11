@@ -1,13 +1,12 @@
 import {
-  InputRule,
   ellipsis,
   emDash,
   inputRules,
   smartQuotes,
   wrappingInputRule,
 } from 'prosemirror-inputrules';
-import {NodeType, Schema} from 'prosemirror-model';
-import {Plugin} from 'prosemirror-state';
+import { NodeType, Schema } from 'prosemirror-model';
+import { Plugin } from 'prosemirror-state';
 
 // This file is forked from
 // // https://github.com/ProseMirror/prosemirror-example-setup/blob/master/src/inputrules.js
@@ -21,7 +20,7 @@ export function orderedListRule(nodeType: NodeType) {
   return wrappingInputRule(
     /^(\d+)\.\s$/,
     nodeType,
-    (match) => ({order: +match[1]}),
+    (match) => ({ order: +match[1] }),
     (match, node) => node.childCount + node.attrs.order == +match[1]
   );
 }
@@ -31,7 +30,7 @@ export function orderedListRule(nodeType: NodeType) {
 // code blocks, and heading.
 export default function buildInputRules(schema: Schema): Plugin {
   const rules = smartQuotes.concat(ellipsis, emDash);
-  let type = schema.nodes.ordered_list;
+  const  type = schema.nodes.ordered_list;
   if (type) {
     rules.push(orderedListRule(type));
   }

@@ -17,7 +17,6 @@ jest.mock('@tiptap/react', () => {
 
 describe('tableToggleHeaderCellCommand', () => {
   let command: tableToggleHeaderCellCommand;
-  let mockEditor: Editor;
   let mockState: EditorState;
 
   beforeEach(() => {
@@ -83,7 +82,6 @@ describe('tableToggleHeaderCellCommand', () => {
     ]);
 
     // Mock the editor instance to check if the toggleHeaderCell method gets called
-    mockEditor = new Editor();
     command = new tableToggleHeaderCellCommand();
     mockState = {
       doc: dummyDoc,

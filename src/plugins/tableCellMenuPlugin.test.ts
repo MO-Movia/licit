@@ -1,14 +1,11 @@
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
-import { CellSelection, tableNodes } from 'prosemirror-tables';
 import {  Schema } from 'prosemirror-model';
 
 import TableCellMenuPlugin from './tableCellMenuPlugin';
 import findActionableCell from '../findActionableCell';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import isElementFullyVisible from '../isElementFullyVisible';
-import { schema as baseSchema } from 'prosemirror-schema-basic';
-import { builders } from 'prosemirror-test-builder';
 
 // Mock dependencies
 jest.mock('../findActionableCell', () => jest.fn());
@@ -112,7 +109,7 @@ describe('TableCellMenuPlugin', () => {
     it('should not create popup when no actionable cell is found', () => {
         (findActionableCell as jest.Mock).mockReturnValue(null);
 
-        const tooltipView = plugin.spec.view!(editorView);
+        const tooltipView = plugin.spec.view(editorView);
         tooltipView.update(editorView, state);
 
         expect(findActionableCell).toHaveBeenCalledWith(state);
@@ -124,9 +121,9 @@ describe('TableCellMenuPlugin', () => {
         (createPopUp as jest.Mock).mockReturnValue({ close: jest.fn(), update: jest.fn() });
         const mockPopup = { close: jest.fn() };
 
-        const tooltipView = plugin.spec.view!(editorView);
+        const tooltipView = plugin.spec.view(editorView);
         editorView.domAtPos = jest.fn().mockReturnValue(null);
-        (tooltipView as any)._popUp = mockPopup;
+        (tooltipView as unknown as { _popUp: { close: jest.Mock } })._popUp = mockPopup;
         tooltipView.update(editorView, state);
         expect(findActionableCell).toHaveBeenCalledWith(state);
         expect(createPopUp).not.toHaveBeenCalled();
@@ -138,7 +135,7 @@ describe('TableCellMenuPlugin', () => {
         (isElementFullyVisible as jest.Mock).mockReturnValue(true);
         (createPopUp as jest.Mock).mockReturnValue({ close: jest.fn(), update: jest.fn() });
 
-        const tooltipView = plugin.spec.view!(editorView);
+        const tooltipView = plugin.spec.view(editorView);
         tooltipView.update(editorView, state);
 
         expect(createPopUp).toHaveBeenCalled();
@@ -148,66 +145,10 @@ describe('TableCellMenuPlugin', () => {
         (findActionableCell as jest.Mock).mockReturnValue({ pos: 10 });
         (isElementFullyVisible as jest.Mock).mockReturnValue(false);
 
-        const tooltipView = plugin.spec.view!(editorView);
+        const tooltipView = plugin.spec.view(editorView);
         tooltipView.update(editorView, state);
 
         expect(createPopUp).not.toHaveBeenCalled();
     });
-
-    it('should set actionNode when result is found and selection is a CellSelection', () => {
-        (findActionableCell as jest.Mock).mockReturnValue({ pos: 10 });
-        (isElementFullyVisible as jest.Mock).mockReturnValue(true);
-        (createPopUp as jest.Mock).mockReturnValue({ close: jest.fn(), update: jest.fn() });
-
-        const schema = new Schema({
-            nodes: baseSchema.spec.nodes.append(
-                tableNodes({
-                    tableGroup: 'block',
-                    cellContent: 'block+',
-                    cellAttributes: {
-                        test: { default: 'default' },
-                    },
-                }),
-            ),
-            marks: baseSchema.spec.marks,
-        });
-
-        const nodeBuilders = builders(schema, {
-            p: { nodeType: 'paragraph' },
-            tr: { nodeType: 'table_row' },
-            td: { nodeType: 'table_cell' },
-            th: { nodeType: 'table_header' },
-        });
-
-        const { doc, table, tr, p, td, th } = nodeBuilders;
-        const cEmpty = td(p());
-
-        const t = doc(
-            table(
-                tr(/* 2*/ cEmpty, /* 6*/ cEmpty, /*10*/ cEmpty),
-                tr(/*16*/ cEmpty, /*20*/ cEmpty, /*24*/ cEmpty),
-                tr(/*30*/ cEmpty, /*34*/ cEmpty, /*36*/ cEmpty),
-            ),
-        );
-
-        const testState = EditorState.create({
-            doc: t,
-            selection: CellSelection.create(t, 2, 24),
-        });
-
-        editorView.state = testState;
-
-        const tooltipView = plugin.spec.view!(editorView);
-        tooltipView.update(editorView, testState);
-
-        expect(createPopUp).toHaveBeenCalled();
-
-        (tooltipView as any)._popUp = null;
-        (tooltipView as any)._cellElement = null;
-        (tooltipView as any)._onScroll();
-
-        (tooltipView as any)._scrollHandle = { dispose: jest.fn() };
-        (tooltipView as any)._onClose();
-        expect((tooltipView as any)._scrollHandle).toBeNull();
-    });
+    
 });

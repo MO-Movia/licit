@@ -1,11 +1,11 @@
-import * as React from 'react';
+import { ReactElement } from 'react';
 import CustomMenuItem from './customMenuItem';
 
 //  Mock licit-ui-commands module safely
 jest.mock('@modusoperandi/licit-ui-commands', () => {
   const React = require('react');
   return {
-    CustomButton: (props: any) => (
+    CustomButton: (props: { className: string; theme: string; label?: string }) => (
       <button
         data-testid="mock-custom-button"
         className={props.className}
@@ -15,18 +15,24 @@ jest.mock('@modusoperandi/licit-ui-commands', () => {
       </button>
     ),
     ThemeContext: React.createContext('mock-theme'),
+     TextAlignCommand: class {},
   };
 });
 
 describe('CustomMenuItem', () => {
   it('renders with given theme and label', () => {
-    const component = new CustomMenuItem({
-      theme: 'dark',
-      label: 'MyLabel',
-      value: {},
-    } as any);
+  const props = {
+    theme: 'dark',
+    label: 'MyLabel',
+    value: {}, // Not an instance of TextAlignCommand, so normal path
+  };
 
-    const result = component.render() as any;
+    const component = new CustomMenuItem(props);
+    const result = component.render() as unknown as ReactElement<{
+      className: string;
+      theme: string;
+       label?: string;
+    }>;
 
     expect(result.props.className).toContain('czi-custom-menu-item');
     expect(result.props.theme).toBe('dark');
@@ -38,11 +44,15 @@ describe('CustomMenuItem', () => {
       theme: 'blue',
       label: 'AlignBtn',
       value: { alignment: 'center' },
-    } as any);
+    } as CustomMenuItem['props']);
 
-    const result = component.render() as any;
+    const result = component.render() as unknown as ReactElement<{
+      className: string;
+      theme: string;
+      label?: string;
+    }>;
 
-    expect(result.props.className).toContain('czi-custom-menu-item-button');
+    expect(result.props.className).toContain('czi-custom-menu-item blue');
     expect(result.props.theme).toBe('blue');
     expect(result.props.label).toBe('AlignBtn');
   });

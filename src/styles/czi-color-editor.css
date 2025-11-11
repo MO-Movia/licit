@@ -9,9 +9,6 @@
 }
 
 .czi-color-editor .czi-custom-button {
-  border-color: #fff;
-  border-style: solid;
-  border-width: 1px;
   border: solid 1px #fff;
   box-sizing: border-box;
   height: 18px;

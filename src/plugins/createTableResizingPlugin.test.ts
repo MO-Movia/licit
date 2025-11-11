@@ -1,6 +1,6 @@
 import { EditorView } from 'prosemirror-view';
-import createTableResizingPlugin from './createTableResizingPlugin';
-import { lookUpTableWrapper, calculateMaxClientX, dispatchMouseEvent } from './createTableResizingPlugin';
+import createTableResizingPlugin, { lookUpTableWrapper, calculateMaxClientX, dispatchMouseEvent } from './createTableResizingPlugin';
+
 
 describe('createTableResizingPlugin', () => {
   let plugin: any;

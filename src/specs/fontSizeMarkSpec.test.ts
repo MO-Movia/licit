@@ -110,7 +110,7 @@ describe('FontSizeMarkSpec', () => {
   });
 
   describe('toDOM', () => {
-    const toDOM = FontSizeMarkSpec.toDOM!;
+    const toDOM = FontSizeMarkSpec.toDOM;
 
     it('should return correct DOM structure when pt is provided', () => {
       const mockMark = {

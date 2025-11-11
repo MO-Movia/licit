@@ -92,7 +92,7 @@ export class LinkTooltipView {
     if (popup && anchorEl === this._anchorEl) {
       popup.update(viewPops);
     } else {
-      popup && popup.close();
+      popup?.close();
       this._anchorEl = anchorEl;
       this._popup = createPopUp(LinkTooltip, viewPops, {
         anchor: anchorEl,
@@ -104,8 +104,8 @@ export class LinkTooltipView {
   }
 
   destroy() {
-    this._popup && this._popup.close();
-    this._editor && this._editor.close();
+    this._popup?.close();
+    this._editor?.close();
   }
 
   _onCancel = (view: EditorView): void => {

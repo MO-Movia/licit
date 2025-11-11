@@ -64,16 +64,11 @@
   overflow: hidden;
   padding: 2px 40px 2px 0;
   position: relative;
+  background: var(--czi-bg);
+  border-color: var(--czi-toolbar-body-border);
 }
 
 /* Theme based styles */
-.czi-editor-toolbar-body-content {
-  background: var(--czi-bg);
-  border-color: var(--czi-toolbar-body-border);
-
-  /* color: #c7c7c7; */
-}
-
 .czi-editor-toolbar .czi-custom-button {
   box-sizing: border-box;
   height: 25px;

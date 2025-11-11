@@ -25,10 +25,10 @@ export function tooltip(keymap?: Keymap): string | null {
 
 export function findShortcutByKeymap(keymap: Keymap): string | null {
   if (browser.isMac()) {
-    return keymap.mac;
+    return keymap.mac as string | null;;
   }
 
-  return keymap.windows;
+  return keymap.windows as string | null;;
 }
 export const KEY_SPLIT_LIST_ITEM = makeKeyMapWithCommon(
   'Split list item',

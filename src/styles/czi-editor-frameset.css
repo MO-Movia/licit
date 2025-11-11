@@ -34,6 +34,7 @@
   box-shadow: 0 1px 1px rgb(0 0 0 / 21%);
   position: relative;
   z-index: 2;
+  background-color: var(--czi-bg);
 }
 
 .czi-editor-frameset.with-fixed-layout .czi-editor-frame-body {
@@ -50,10 +51,6 @@
 
 .czi-editor-frame-footer {
   display: flex;
-}
-
-.czi-editor-frame-head {
-  background-color: var(--czi-bg);
 }
 
 @media only print {

@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import ListTypeMenu from './listTypeMenu';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import uuid from './uuid';
 
 //  Mock uuid to return predictable IDs
 jest.mock('./uuid', () => jest.fn(() => 'mock-uuid'));
@@ -17,16 +18,16 @@ const mockCommand = (label = 'CommandLabel') => ({
 describe('ListTypeMenu', () => {
   let container: HTMLDivElement;
   let mockDispatch: jest.Mock;
-  let mockEditorState: any;
-  let mockEditorView: any;
+  let mockEditorState: EditorState;
+  let mockEditorView: EditorView;
   let mockOnCommand: jest.Mock;
 
   beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
     mockDispatch = jest.fn();
-    mockEditorState = {};
-    mockEditorView = {};
+    mockEditorState = {} as unknown as EditorState;;
+    mockEditorView = {} as unknown as EditorView;;
     mockOnCommand = jest.fn();
     jest.clearAllMocks();
   });
@@ -40,7 +41,7 @@ describe('ListTypeMenu', () => {
     const commandGroups = [
       { bold: mockCommand('Bold'), italic: mockCommand('Italic') },
       { underline: mockCommand('Underline') },
-    ];
+    ] as unknown as Array<UICommand>;
 
     const element = (
       <ListTypeMenu
@@ -63,7 +64,7 @@ describe('ListTypeMenu', () => {
   });
 
   test('applies correct class names with theme', () => {
-    const commandGroups = [{ bullet: mockCommand('Bullet') }];
+    const commandGroups = [{ bullet: mockCommand('Bullet') }] as unknown as Array<UICommand>;
     ReactDOM.render(
       <ListTypeMenu
         commandGroups={commandGroups}
@@ -94,16 +95,16 @@ describe('ListTypeMenu', () => {
       editorState: mockEditorState,
       editorView: mockEditorView,
       onCommand: mockOnCommand,
-    } as any);
+    } as unknown as ListTypeMenu);
 
     const event = {} as React.SyntheticEvent;
 
     // First click
-    instance._onUIEnter(firstCommand as any, event);
+    instance._onUIEnter(firstCommand as unknown as UICommand, event);
     expect(firstCommand.execute).toHaveBeenCalledTimes(1);
 
     // Second click triggers cancel of previous command
-    instance._onUIEnter(secondCommand as any, event);
+    instance._onUIEnter(secondCommand as unknown as UICommand, event);
     expect(firstCommand.cancel).toHaveBeenCalledTimes(1);
     expect(secondCommand.execute).toHaveBeenCalledTimes(1);
   });
@@ -116,10 +117,10 @@ describe('ListTypeMenu', () => {
       editorState: mockEditorState,
       editorView: mockEditorView,
       onCommand: mockOnCommand,
-    } as any);
+    } as unknown as UICommand);
 
     const event = {} as React.SyntheticEvent;
-    instance._execute(command as any, event);
+    instance._execute(command as unknown as UICommand, event);
 
     expect(command.execute).toHaveBeenCalledWith(
       mockEditorState,
@@ -140,10 +141,10 @@ describe('ListTypeMenu', () => {
       editorState: mockEditorState,
       editorView: mockEditorView,
       onCommand: mockOnCommand,
-    } as any);
+    } as unknown as UICommand);
 
     const event = {} as React.SyntheticEvent;
-    instance._execute(command as any, event);
+    instance._execute(command as unknown as UICommand, event);
 
     expect(command.execute).toHaveBeenCalled();
     expect(mockOnCommand).not.toHaveBeenCalled();

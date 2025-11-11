@@ -60,14 +60,14 @@ class TableCellTooltipView {
 
     if (!cellEl) {
       // Closes the popup.
-      popUp && popUp.close();
+      popUp?.close();
       // this._cellElement = null;
     } else if (popUp && cellEl === this._cellElement) {
       // Updates the popup.
       popUp.update(viewPops);
     } else {
       // Creates a new popup.
-      popUp && popUp.close();
+      popUp?.close();
       this._cellElement = cellEl;
       // [FS] IRAD-1009 2020-07-16
       // Does not allow Table Menu Popuup button in disable mode
@@ -84,7 +84,7 @@ class TableCellTooltipView {
   }
 
   destroy = (): void => {
-    this._popUp && this._popUp.close();
+    this._popUp?.close();
     this._popUp = null;
   };
 
@@ -98,7 +98,7 @@ class TableCellTooltipView {
 
   _onClose = (): void => {
     this._popUp = null;
-    this._scrollHandle && this._scrollHandle.dispose();
+    this._scrollHandle?.dispose();
     this._scrollHandle = null;
   };
 

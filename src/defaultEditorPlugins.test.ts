@@ -19,7 +19,7 @@ jest.mock('./plugins/tableCellMenuPlugin', () => jest.fn(() => new Plugin({})));
 jest.mock('./buildInputRules', () => jest.fn(() => new Plugin({})));
 jest.mock('./createEditorKeyMap', () => jest.fn(() => ({})));
 jest.mock('@modusoperandi/licit-doc-attrs-step', () => ({
-    setPluginKey: jest.fn((plugin, key) => plugin),
+  setPluginKey: jest.fn((plugin: Plugin, _key: string): Plugin => plugin),
 }));
 
 describe('DefaultEditorPlugins', () => {

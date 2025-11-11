@@ -33,14 +33,14 @@ class GridCell extends React.PureComponent<
   TableGridSizeEditorState
 > {
   render(): React.ReactElement<HTMLDivElement> {
-    const { x, y, selected } = this.props;
+    const {x, y, selected}: TableGridSizeEditorProps = this.props;
     const style = {
       left: x + 'px',
       top: y + 'px',
       width: CELL_SIZE + 'px',
       height: CELL_SIZE + 'px',
     };
-    const className = cx('czi-table-grid-size-editor-cell', {
+    const className: string = cx('czi-table-grid-size-editor-cell', {
       selected,
     });
     return <div className={className} style={style} />;
@@ -72,7 +72,10 @@ class TableGridSizeEditor extends React.PureComponent<
     if (this._entered) {
       document.removeEventListener('mousemove', this._onMouseMove, true);
     }
-    this._rafID && cancelAnimationFrame(this._rafID);
+
+    if (this._rafID) {
+      cancelAnimationFrame(this._rafID);
+    }
   }
 
   render(): React.ReactElement {
@@ -169,7 +172,9 @@ class TableGridSizeEditor extends React.PureComponent<
     if (mx !== this._mx || my !== this._my) {
       this._mx = mx;
       this._my = my;
-      this._rafID && cancelAnimationFrame(this._rafID);
+      if (this._rafID) {
+        cancelAnimationFrame(this._rafID);
+      }
       this._rafID = requestAnimationFrame(this._updateGridSize);
     }
   };

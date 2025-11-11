@@ -11,10 +11,12 @@ import CustomLicitRuntime from './runtime';
 import {CustomstylePlugin} from '@modusoperandi/licit-custom-styles';
 import {ExportPDFPlugin} from '@modusoperandi/licit-export-pdf';
 import {MultimediaPlugin} from '@modusoperandi/licit-multimedia';
+import {VignettePlugins} from '@modusoperandi/licit-vignette';
 import '@modusoperandi/licit-ui-commands/styles.css';
 import '@modusoperandi/licit-custom-styles/styles.css';
 import '@modusoperandi/licit-export-pdf/styles.css';
 import '@modusoperandi/licit-multimedia/styles.css';
+// import '@modusoperandi/licit-vignette/styles.css';
 import '../../src/styles/styles.css';
 function main(): void {
   const el = document.createElement('div');
@@ -361,6 +363,7 @@ function main(): void {
     new CustomstylePlugin(runtime),
     new ExportPDFPlugin(true),
     new MultimediaPlugin(),
+    ...VignettePlugins,
   ];
   ReactDOM.render(
     <React.StrictMode>

@@ -5,9 +5,6 @@
   font-family: var(--czi-font-family);
   font-size: var(--czi-font-size);
   padding: 4px 10px;
-}
-
-.czi-image-url-editor {
   background: var(--czi-bg);
   color: var(--czi-text-color);
 }

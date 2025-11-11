@@ -1,16 +1,19 @@
-import * as React from 'react';
+import { EditorView } from 'prosemirror-view';
+import Frag from './frag';
 import RichTextEditor from './richTextEditor';
 import { Transform } from 'prosemirror-transform';
-import { Transaction } from 'prosemirror-state';
+import { EditorState } from 'prosemirror-state';
+import { Editor } from '@tiptap/core';
+import { ToolbarMenuConfig } from '@src/types';
 
 // ? Define the props interface same as used by RichTextEditor
 interface MockEditorFramesetProps {
-  body: any;
+  body: React.ReactElement;
   className?: string;
   embedded?: boolean;
   header?: string;
   height?: number;
-  toolbar?: any;
+  toolbar?: React.ReactElement;
   width?: number;
 }
 
@@ -32,7 +35,7 @@ jest.mock('./editorToolbar', () => ({
 // ? Mock Frag and EditorContent
 jest.mock('./frag', () => ({
   __esModule: true,
-  default: (props: any) => ({ type: 'Frag', props }),
+  default: (props: Frag) => ({ type: 'Frag', props }),
 }));
 jest.mock('@tiptap/react', () => ({
   EditorContent: jest.fn((props) => ({ type: 'EditorContent', props })),
@@ -41,35 +44,34 @@ jest.mock('@tiptap/react', () => ({
 jest.mock('./uuid', () => jest.fn(() => 'mock-uuid'));
 
 describe('RichTextEditor (pure Jest tests)', () => {
-  let mockProps: any;
+  let mockProps: RichTextEditor['props'];
 
   beforeEach(() => {
     mockProps = {
       editor: {
-        view: { dispatch: jest.fn() },
-      },
-      editorState: {},
-      editorView: {},
+        view: { dispatch: jest.fn() } as unknown as EditorView,
+      } as unknown as Editor,
+      editorState: {} as EditorState,
+      editorView: {} as EditorView,
       readOnly: false,
       disabled: false,
       embedded: false,
-      header: 'Test Header',
       height: 500,
       width: 800,
-      toolbarConfig: {},
+      toolbarConfig: {} as ToolbarMenuConfig[],
     };
   });
 
  it('should dispatch transaction when _dispatchTransaction is called', () => {
     const instance = new RichTextEditor(mockProps, {});
-    const mockTransform = new Transform(null as any);
+    const mockTransform = new Transform(null as Transform['doc']);
     instance._dispatchTransaction(mockTransform);
     expect(mockProps.editor.view.dispatch).toHaveBeenCalled();
   });
 
   it('should set editorView and call onReady in _onReady', () => {
     const instance = new RichTextEditor(mockProps, {});
-    const mockEditorView = { view: true } as any;
+    const mockEditorView = { view: true } as unknown as EditorView;
     const onReady = jest.fn();
     instance.props.onReady = onReady;
 
