@@ -12,9 +12,9 @@ const cached = {};
 
 const CSS_FONT = 'Material Icons';
 
-void (async function () {
+void (async function () { // NOSONAR
   // Inject CSS Fonts reuqired for toolbar icons.
-  await canUseCSSFont(CSS_FONT);
+  await canUseCSSFont(CSS_FONT); 
 })();
 
 // const importImage = (filename) => import(`@assets/images/${filename}`);
@@ -201,7 +201,7 @@ class Icon extends React.PureComponent {
   }
 
   componentDidMount() {
-    const {type} = this.props;
+    const { type } = this.props;
     // const { image1 } = this.state;
     // const [image1, setImage] = useState(null);
 

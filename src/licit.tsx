@@ -131,7 +131,8 @@ export const configCollab = (
       }
     }
     const getRandomElement = (list: string[]) => {
-      return list[Math.floor(Math.random() * list.length)];
+      const randomIndex = crypto.getRandomValues(new Uint32Array(1))[0] % list.length;
+      return list[randomIndex];
     };
 
     const COLORS: string[] = [

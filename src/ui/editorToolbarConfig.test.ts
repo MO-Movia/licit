@@ -9,8 +9,8 @@ describe('Utility functions', () => {
 
       const result = parseLabel(input, theme);
 
-      expect(result.icon).toEqual(Icon.get('[format_bold] Bold', null, theme));
-      expect(result.title).toBe('format_bold');
+      expect(result.icon).toEqual(Icon.get('format_bold', null, theme));
+      expect(result.title).toBe('Bold');
     });
 
     it('should return null for icon and the input as title if no match is found', () => {

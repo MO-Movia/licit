@@ -107,10 +107,6 @@ it('should toggle expanded state from false to true', () => {
   expect(toolbarInstance.setState).toHaveBeenCalledWith({ expanded: true });
 });
 
-
-
-
-
   it('handles dispatchTransaction correctly', () => {
     const dispatchMock = jest.fn();
     const toolbarInstance = new EditorToolbar({
@@ -126,7 +122,7 @@ it('should toggle expanded state from false to true', () => {
   });
 
  it('should cover expanded && !wrapped condition in render()', () => {
-  // ✅ Subclass to safely provide context (no "any" used)
+  //  Subclass to safely provide context (no "any" used)
   class TestableEditorToolbar extends EditorToolbar {
     context = 'dark'; // mock the ThemeContext value
   }
@@ -198,5 +194,41 @@ it('should toggle expanded state from false to true', () => {
     expect(toolbarConfigForTest[0].key).toBe('pluginA');
     expect(matchingPlugin.initButtonCommands).toHaveBeenCalledWith('dark');
   });
+
+  it('should use default command groups when toolbarConfig is undefined', () => {
+  class TestableEditorToolbar extends EditorToolbar {
+    context = 'dark';
+  }
+
+  const instance = new TestableEditorToolbar({
+    editorState: mockEditorState,
+    editorView: mockEditorView,
+    toolbarConfig: undefined,
+  });
+
+  instance.state = { expanded: false, wrapped: false };
+  const result = instance.render();
+
+  expect(React.isValidElement(result)).toBe(true);
+  expect(result).toBeDefined();
+});
+
+it('should use default command groups when toolbarConfig is empty array', () => {
+  class TestableEditorToolbar extends EditorToolbar {
+    context = 'dark';
+  }
+
+  const instance = new TestableEditorToolbar({
+    editorState: mockEditorState,
+    editorView: mockEditorView,
+    toolbarConfig: [],
+  });
+
+  instance.state = { expanded: false, wrapped: false };
+  const result = instance.render();
+
+  expect(React.isValidElement(result)).toBe(true);
+  expect(result).toBeDefined();
+});
 
 });

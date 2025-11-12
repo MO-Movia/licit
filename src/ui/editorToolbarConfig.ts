@@ -17,12 +17,7 @@ export const MORE = ' More';
 export function parseLabel(input: string, theme: string): parseLabeltype {
   const matched = ICON_LABEL_PATTERN.exec(input);
   if (matched) {
-    const [
-       // eslint-disable-next-line no-unused-vars
-      _all,
-      icon,
-      label,
-    ] = matched;
+    const [, icon, , label] = matched;
     return {
       icon: icon ? Icon.get(icon, null, theme) : null,
       title: label || null,
