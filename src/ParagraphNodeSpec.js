@@ -75,12 +75,12 @@ const ParagraphNodeSpec: NodeSpec = {
       default: null,
     },
     isDeco: {
-    default: {
-      isTag: false,
-      isComment: false,
-      isSlice: false,
+      default: {
+        isTag: false,
+        isComment: false,
+        isSlice: false,
+      },
     },
-},
   },
   content: 'inline*',
   group: 'block',
@@ -119,11 +119,11 @@ function getAttrs(dom: HTMLElement): Object {
   const overriddenLineSpacingValue = dom.getAttribute('overriddenLineSpacingValue') || '';
   const overriddenIndent = dom.getAttribute('overriddenIndent') || '';
   const overriddenIndentValue = dom.getAttribute('overriddenIndentValue') || '';
-  const selectionId = dom.getAttribute('selectionId') || '';
-  const objectId = dom.getAttribute('objectId') || '';
-  const hangingIndent = dom.getAttribute('hangingIndent') || '';
-  const indentPosition = dom.getAttribute('indentPosition') || '';
-    const isDeco = {
+  const selectionId = dom.getAttribute('selectionId');
+  const objectId = dom.getAttribute('objectId');
+  const hangingIndent = dom.getAttribute('hangingIndent');
+  const indentPosition = dom.getAttribute('indentPosition');
+  const isDeco = {
     isTag: dom.getAttribute('isTag') === 'true',
     isComment: dom.getAttribute('isComment') === 'true',
     isSlice: dom.getAttribute('isSlice') === 'true',
@@ -229,11 +229,11 @@ function toDOM(node: Node): Array<any> {
     attrs.selectionId = selectionId;
   }
 
-if (isDeco) {
-  if (isDeco.isTag !== undefined) attrs.isTag = String(isDeco.isTag);
-  if (isDeco.isComment !== undefined) attrs.isComment = String(isDeco.isComment);
-  if (isDeco.isSlice !== undefined) attrs.isSlice = String(isDeco.isSlice);
-}
+  if (isDeco) {
+    if (isDeco.isTag !== undefined) attrs.isTag = String(isDeco.isTag);
+    if (isDeco.isComment !== undefined) attrs.isComment = String(isDeco.isComment);
+    if (isDeco.isSlice !== undefined) attrs.isSlice = String(isDeco.isSlice);
+  }
 
   return ['p', attrs, 0];
 }
