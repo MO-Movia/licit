@@ -18,6 +18,8 @@ export function parseLabel(input: string, theme: string): parseLabeltype {
   const matched = ICON_LABEL_PATTERN.exec(input);
   if (matched) {
     const [
+       // eslint-disable-next-line no-unused-vars
+      _all,
       icon,
       label,
     ] = matched;
