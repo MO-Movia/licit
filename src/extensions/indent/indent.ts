@@ -1,7 +1,8 @@
  
-// Sources:
-// https://github.com/ueberdosis/tiptap/issues/1036#issuecomment-981094752
-// https://github.com/django-tiptap/django_tiptap/blob/main/django_tiptap/templates/forms/tiptap_textarea.html#L453-L602
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
 
 import {
   CommandProps,

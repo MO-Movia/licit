@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {ATTRIBUTE_LIST_STYLE_TYPE} from './listItemNodeSpec';
 import OrderedListNodeSpec, {
   ATTRIBUTE_COUNTER_RESET,

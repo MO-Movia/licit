@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import * as Commands from './editorCommands';
 
 describe('editorCommands full export touch', () => {

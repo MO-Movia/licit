@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {Schema} from 'prosemirror-model';
 import {Transform, canSplit} from 'prosemirror-transform';
 import {TextSelection} from 'prosemirror-state';

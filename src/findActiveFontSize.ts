@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { findParentNodeOfType } from 'prosemirror-utils';
 

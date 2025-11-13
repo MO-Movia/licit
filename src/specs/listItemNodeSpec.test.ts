@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import ListItemNodeSpec from './listItemNodeSpec';
 import {Node as ProseMirrorNode} from 'prosemirror-model';
 

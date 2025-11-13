@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {Mark, ParseRule} from 'prosemirror-model';
 import FontTypeMarkSpec, {FONT_TYPE_NAMES} from './fontTypeMarkSpec';
 

@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { Node, MarkType, Mark } from 'prosemirror-model';
 import findActiveMark from './findActiveMark';
 

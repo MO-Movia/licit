@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import TextSelectionMarkSpec from './textSelectionMarkSpec'; // Adjust the import path as needed
 import {DOMOutputSpec, Mark} from 'prosemirror-model';
 

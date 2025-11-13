@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import ResizeObserver from 'resize-observer-polyfill';
 import nullthrows from 'nullthrows';
 

@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { NodeSpec } from 'prosemirror-model';
 import ListItemNodeSpec from './specs/listItemNodeSpec';
 import {

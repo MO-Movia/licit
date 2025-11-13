@@ -1,4 +1,9 @@
-// @flow
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ *
+ * @flow
+ */
 
 import Color from 'color';
 

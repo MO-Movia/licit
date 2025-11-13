@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import OrderedMap from 'orderedmap'; // Ensure it's imported
 import {
   MARK_LINK,

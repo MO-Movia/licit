@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import HardBreakNodeSpec from './hardBreakNodeSpec';
 import { Node as ProseMirrorNode, NodeSpec } from 'prosemirror-model';
 

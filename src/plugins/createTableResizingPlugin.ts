@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { Plugin } from 'prosemirror-state';
 import { columnResizing } from 'prosemirror-tables';
 import { EditorView } from 'prosemirror-view';

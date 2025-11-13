@@ -1,6 +1,8 @@
-// [FS] IRAD-1039 2020-09-23
-// Command button to handle different type of list types
-// Need to add Icons instead of label
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import * as React from 'react';
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';

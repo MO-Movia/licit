@@ -1,10 +1,6 @@
 /**
- * LinkTooltipPlugin.test.ts
- *
- * FINAL version:
- * - Large single paragraph so we can pick pos=5..9 safely.
- * - Insert "Link" at pos=5, then do selection from=5..9.
- * - We do not rely on doc.content.size (which can cause out-of-bound issues).
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
 import {EditorState, TextSelection} from 'prosemirror-state';

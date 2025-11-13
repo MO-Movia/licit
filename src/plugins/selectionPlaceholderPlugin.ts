@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { EditorState, Plugin, PluginKey, Transaction } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { Decoration, DecorationSet } from 'prosemirror-view';

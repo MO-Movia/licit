@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {ATTRIBUTE_INDENT, MIN_INDENT_LEVEL} from './paragraphNodeSpec';
 import BulletListNodeSpec from './bulletListNodeSpec';
 import {ATTRIBUTE_LIST_STYLE_TYPE} from './listItemNodeSpec';

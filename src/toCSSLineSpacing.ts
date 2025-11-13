@@ -1,5 +1,9 @@
 
-// Line spacing names and their values.
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 export const LINE_SPACING_100 = '125%';
 export const LINE_SPACING_115 = '138%';
 export const LINE_SPACING_150 = '165%';

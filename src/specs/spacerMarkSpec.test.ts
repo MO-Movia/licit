@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import SpacerMarkSpec, { DOM_ATTRIBUTE_SIZE, SPACER_SIZE_TAB } from './spacerMarkSpec'; // Adjust the import path
 import {Attrs, Mark} from 'prosemirror-model';
 

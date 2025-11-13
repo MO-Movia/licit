@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Table from '@tiptap/extension-table';

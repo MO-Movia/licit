@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import convertToCSSPTValue, { PX_TO_PT_RATIO } from './convertToCSSPTValue';
 
 describe('convertToCSSPTValue', () => {

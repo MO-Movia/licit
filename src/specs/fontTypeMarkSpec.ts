@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { Mark, MarkSpec, Node } from 'prosemirror-model';
 
 // [FS] IRAD-1061 2020-09-19

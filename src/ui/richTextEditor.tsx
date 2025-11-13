@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';

@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import EMMarkSpec from './emMarkSpec'; // Adjust import path
 import {Attrs, Mark, MarkType} from 'prosemirror-model';
 

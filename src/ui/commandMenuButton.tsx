@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import cx from 'classnames';
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
@@ -20,7 +25,7 @@ export interface Arr {
 }
 type PropsType = {
   className?: string;
-  commandGroups: Array<any>;
+  commandGroups: Array<unknown>;
   disabled?: boolean;
   dispatch: (tr: Transform) => void;
   editorState: EditorState;
@@ -154,7 +159,7 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
         onClose: this._onClose,
         IsChildDialog: true,
         autoDismiss: true,
-        popUpId: menuProps.commandGroups[0].Single
+        popUpId: menuProps.commandGroups[0]['Single']
           ? 'mo-menuList-1'
           : 'mo-menuList',
       };

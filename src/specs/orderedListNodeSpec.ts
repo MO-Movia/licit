@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { Node, DOMOutputSpec } from 'prosemirror-model';
 
 import { ATTRIBUTE_LIST_STYLE_TYPE } from './listItemNodeSpec';

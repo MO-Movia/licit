@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import cx from 'classnames';
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';

@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import cx from 'classnames';
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
@@ -6,9 +11,9 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 
 import CommandButton from './commandButton';
-import CommandMenuButton, { Arr } from './commandMenuButton';
+import CommandMenuButton from './commandMenuButton';
 import { CustomButton, ThemeContext } from '@modusoperandi/licit-ui-commands';
-import { COMMAND_GROUPS, parseLabel } from './editorToolbarConfig';
+import { COMMAND_GROUPS, CommandGroup, parseLabel } from './editorToolbarConfig';
 import Icon from './icon';
 import ResizeObserver from '../resizeObserver';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
@@ -18,6 +23,10 @@ import '../styles/czi-editor-toolbar.css';
 import { LicitPlugin } from '../convertFromJSON';
 import { EditorViewEx } from '../constants';
 import { ToolbarMenuConfig } from '../types';
+
+interface LicitPluginWithKey extends LicitPlugin {
+  key: string;
+}
 
 class EditorToolbar extends React.PureComponent {
   public static readonly contextType = ThemeContext;
@@ -117,19 +126,19 @@ private _getCommandGroups(
   return this._getCustomCommandGroups(toolbarConfig, theme);
 }
 
-private _getDefaultCommandGroups(theme: string): React.ReactElement[] {
-  return COMMAND_GROUPS.concat(
-    ((this.props.editorState && this.props.editorState.plugins) || [])
-      .map(
-        (p) =>
-          'initButtonCommands' in p &&
-          (p as LicitPlugin).initButtonCommands(theme)
+  private _getDefaultCommandGroups(theme: string): React.ReactElement[] {
+    const pluginCommands = ((this.props.editorState && this.props.editorState.plugins) || [])
+      .map((p) =>
+        'initButtonCommands' in p
+          ? (p as LicitPlugin).initButtonCommands(theme)
+          : null
       )
-      .filter(Boolean)
-  )
-    .map(this._renderButtonsGroup)
-    .filter(Boolean);
-}
+      .filter((group): group is UICommand => group !== null);
+
+    return COMMAND_GROUPS.concat(pluginCommands)
+      .map(this._renderButtonsGroup)
+      .filter((element): element is React.ReactElement => element !== null);
+  }
 
 private _getCustomCommandGroups(
   toolbarConfig: ToolbarMenuConfig[],
@@ -155,7 +164,7 @@ private _extractPluginObjects(toolbarConfig: ToolbarMenuConfig[], theme: string)
     .filter((item) => item.isPlugin === true)
     .map((toolbarObj) => {
       const matchingPlugin = this.props.editorState.plugins.find(
-        (plugin) => (plugin as any).key === toolbarObj.key
+          (plugin) => (plugin as LicitPluginWithKey).key === toolbarObj.key
       );
 
       if (matchingPlugin) {
@@ -181,7 +190,7 @@ private _mergePluginObjects(toolbarConfig: ToolbarMenuConfig[], pluginObjects: T
     }
   }
 }
-  // getUndoMenu(menuItems) {
+
   //   let retArr = [];
   //   return menuItems.reduce((acc, item) => {
 
@@ -283,14 +292,9 @@ private _mergePluginObjects(toolbarConfig: ToolbarMenuConfig[], pluginObjects: T
     return groups;
   };
 
-  /*sortGroupItems = (items) => items.sort((a, b) => a.order - b.order);
-  orderedMenuData = (menuData) => Object.entries(menuData).reduce((acc, [groupName, items]) => {
-    acc[groupName] = this.sortGroupItems(items);
-    return acc;
-  }, {});*/
 
   _renderButtonsGroup = (
-    group: Record<string, UICommand | React.PureComponent>,
+    group: CommandGroup,
     _index: number
   ): React.ReactElement => {
     const theme = this.context;
@@ -423,7 +427,7 @@ private _mergePluginObjects(toolbarConfig: ToolbarMenuConfig[], pluginObjects: T
   // }
   _renderMenuButton = (
     label: string,
-    commandGroups: Array<Arr>
+    commandGroups: CommandGroup[]
   ): React.ReactElement<CommandMenuButton> => {
     const {editorState, editorView, disabled, dispatchTransaction} = this.props;
     const theme = this.context;

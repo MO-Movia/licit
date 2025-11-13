@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import React, { ReactElement } from 'react';
 import ReactDOM from 'react-dom';
 import { Extension, Editor } from '@tiptap/core';
@@ -357,8 +362,8 @@ const getCollabExtensions = (
   collaboration: boolean,
   currentUser: Record<string, unknown>
 ): Extension[] => {
-  return collaboration
-    ? [
+  if (collaboration) {
+    return [
       Collaboration.configure({
         document: ydoc,
       }),
@@ -367,7 +372,8 @@ const getCollabExtensions = (
         user: currentUser,
       }),
     ]
-    : [];
+  }
+  return [];
 };
 
 export const Licit = ({

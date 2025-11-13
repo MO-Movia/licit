@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import TableCellMenu from './tableCellMenu';

@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { fromHTMlElement } from '@modusoperandi/licit-ui-commands';
 
 export default function isElementFullyVisible(el: HTMLElement): boolean {

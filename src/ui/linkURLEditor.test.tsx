@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import LinkURLEditor from './linkURLEditor';
 import sanitizeURL from '../sanitizeURL';
 import {SyntheticEvent} from 'react';
