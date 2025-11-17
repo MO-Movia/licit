@@ -1,4 +1,7 @@
-// https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
 
 export const BACKSPACE = 8;
 export const DELETE = 46;

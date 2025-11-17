@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {EditorState, TextSelection} from 'prosemirror-state';
 import {schema} from 'prosemirror-schema-basic';
 import {MARK_FONT_SIZE, HEADING} from '@modusoperandi/licit-ui-commands';

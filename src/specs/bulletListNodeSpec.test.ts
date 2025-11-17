@@ -1,7 +1,19 @@
-import { ATTRIBUTE_INDENT, MIN_INDENT_LEVEL } from './paragraphNodeSpec';
-import BulletListNodeSpec from './bulletListNodeSpec';
-import { ATTRIBUTE_LIST_STYLE_TYPE } from './listItemNodeSpec';
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
 
+import {ATTRIBUTE_INDENT, MIN_INDENT_LEVEL} from './paragraphNodeSpec';
+import BulletListNodeSpec from './bulletListNodeSpec';
+import {ATTRIBUTE_LIST_STYLE_TYPE} from './listItemNodeSpec';
+import {Node as ProseMirrorNode} from 'prosemirror-model';
+
+interface MockNode extends Partial<ProseMirrorNode> {
+  attrs: {
+    indent: number;
+    listStyleType: string | null;
+  };
+}
 
 describe('BulletListNodeSpec', () => {
   describe('parseDOM', () => {
@@ -27,17 +39,27 @@ describe('BulletListNodeSpec', () => {
 
   describe('toDOM', () => {
     it('should return correct DOM structure with attributes', () => {
-      const node = { attrs: { indent: 1, listStyleType: 'square' } };
-      expect(BulletListNodeSpec.toDOM(node as any)).toEqual([
+      const node: MockNode = {
+        attrs: {indent: 1, listStyleType: 'square'},
+      };
+
+      expect(BulletListNodeSpec.toDOM(node as ProseMirrorNode)).toEqual([
         'ul',
-        { type: 'square', [ATTRIBUTE_INDENT]: 1, [ATTRIBUTE_LIST_STYLE_TYPE]: 'square' },
+        {
+          type: 'square',
+          [ATTRIBUTE_INDENT]: 1,
+          [ATTRIBUTE_LIST_STYLE_TYPE]: 'square',
+        },
         0,
       ]);
     });
 
     it('should return correct DOM structure with default values', () => {
-      const node = { attrs: { indent: 0, listStyleType: null } };
-      expect(BulletListNodeSpec.toDOM(node as any)).toEqual([
+      const node: MockNode = {
+        attrs: {indent: 0, listStyleType: null},
+      };
+
+      expect(BulletListNodeSpec.toDOM(node as ProseMirrorNode)).toEqual([
         'ul',
         { type: 'disc', [ATTRIBUTE_INDENT]: 0 },
         0,

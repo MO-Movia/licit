@@ -1,14 +1,21 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {Schema} from 'prosemirror-model';
 import {Transform, canSplit} from 'prosemirror-transform';
 import {TextSelection} from 'prosemirror-state';
 import splitListItem, {splitEmptyListItem} from './splitListItem';
 import {findParentNodeOfType} from 'prosemirror-utils';
+import * as ProsemirrorTransform from 'prosemirror-transform';
 
-jest.mock('prosemirror-transform', () => {
-  const actual = jest.requireActual('prosemirror-transform');
+jest.mock('prosemirror-transform', (): typeof ProsemirrorTransform => {
+    const actual = jest.requireActual<typeof ProsemirrorTransform>('prosemirror-transform');
+
   return {
     ...actual,
-    canSplit: jest.fn(() => true),
+    canSplit: jest.fn(() => true) as typeof ProsemirrorTransform.canSplit,
   };
 });
 

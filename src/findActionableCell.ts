@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { Node } from 'prosemirror-model';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { CellSelection, TableMap } from 'prosemirror-tables';

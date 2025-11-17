@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import * as React from 'react';
 import nullthrows from 'nullthrows';
 import { EditorState } from 'prosemirror-state';

@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import TextColorMarkSpec from './textColorMarkSpec'; // Adjust the import path as needed
 import toCSSColor from '../toCSSColor'; // Adjust the import path as needed
 import {Attrs, Mark, MarkType} from 'prosemirror-model';

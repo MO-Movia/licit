@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import isElementFullyVisible from './isElementFullyVisible';
 import { fromHTMlElement } from '@modusoperandi/licit-ui-commands';
 

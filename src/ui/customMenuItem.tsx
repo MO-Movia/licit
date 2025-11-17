@@ -1,4 +1,8 @@
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import '../styles/czi-custom-menu-item.css';
 import {
   CustomButton,
@@ -20,8 +24,8 @@ class CustomMenuItemSeparator extends React.PureComponent {
 }
 
 class CustomMenuItem extends React.PureComponent {
-  static Separator = CustomMenuItemSeparator;
-  static contextType = ThemeContext;
+  public static readonly Separator = CustomMenuItemSeparator;
+  public static readonly contextType = ThemeContext;
   declare props: CustomButtonProps;
 
   render(): React.ReactElement<CustomButton> {
@@ -31,7 +35,7 @@ class CustomMenuItem extends React.PureComponent {
     // const className = 'czi-custom-menu-item';
     let className = 'czi-custom-menu-item ' + this.props.theme;
     if (this.props.value instanceof TextAlignCommand) {
-      const command = this.props.value as TextAlignCommand;
+      const command = this.props.value;
       if (command?._alignment) {
         className = 'czi-custom-menu-item-button ' + this.props.theme;
       }

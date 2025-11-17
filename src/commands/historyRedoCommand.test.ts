@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { EditorState } from 'prosemirror-state';
 import HistoryRedoCommand from './historyRedoCommand';
 import { Editor } from '@tiptap/react';

@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { EditorState } from 'prosemirror-state';
 
 const ZERO_WIDTH_SPACE_CHAR = '\u200b';

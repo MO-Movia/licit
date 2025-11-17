@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import TextSuperMarkSpec from './textSuperMarkSpec'; // Adjust the import path as needed
 import {Mark} from 'prosemirror-model';
 

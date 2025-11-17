@@ -1,11 +1,19 @@
-// eslint-disable-next-line no-unused-vars
-import * as React from 'react';
+ 
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import * as EditorCommands from '../editorCommands';
 import FontSizeCommandMenuButton from './fontSizeCommandMenuButton';
 import FontTypeCommandMenuButton from './fontTypeCommandMenuButton';
 import ListTypeCommandButton from './listTypeCommandButton';
 import Icon from './icon';
+import { ComponentType } from 'react';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { EditorView } from 'prosemirror-view';
+import { EditorState } from 'prosemirror-state';
+import { Transform } from 'prosemirror-transform';
 
 const ICON_LABEL_PATTERN = /^\[((?!\[)[^\s]+)(\] )(.*)/;
 
@@ -14,18 +22,25 @@ type parseLabeltype = {
   title;
 };
 
+interface CommandMenuButtonProps {
+  dispatch?: (tr: Transform) => void;
+  editorState: EditorState;
+  editorView?: EditorView;
+}
+type CommandEntry =
+  | UICommand
+  | ComponentType<CommandMenuButtonProps>
+  | CommandGroup[];  // For arrays like TEXT_LINE_SPACINGS
+export interface CommandGroup {
+  [key: string]: CommandEntry;
+}
+
 export const MORE = ' More';
 
 export function parseLabel(input: string, theme: string): parseLabeltype {
-  const matched = input.match(ICON_LABEL_PATTERN);
+  const matched = ICON_LABEL_PATTERN.exec(input);
   if (matched) {
-    const [
-      // eslint-disable-next-line no-unused-vars
-      _all,
-      icon,
-      _sep,
-      label,
-    ] = matched;
+    const [, icon, , label] = matched;
     return {
       icon: icon ? Icon.get(icon, null, theme) : null,
       title: label || null,
@@ -135,18 +150,11 @@ export const FONT_ACTIONS_MINIMIZED = [
     '[format_clear] Clear formats': CLEAR_FORMAT,
   },
 ];
-// export const TEXT_ALIGN = [
-//   {
-//     '[format_align_left] Left Align': TEXT_ALIGN_LEFT,
-//     '[format_align_center] Center Align': TEXT_ALIGN_CENTER,
-//     '[format_align_right] Right Align': TEXT_ALIGN_RIGHT,
-//     '[format_align_justify] Justify': TEXT_ALIGN_JUSTIFY,
-//   },
-// ];
+
 // [FS] IRAD-1012 2020-07-14
 // Fix: Toolbar is poorly organized.
 
-export const COMMAND_GROUPS: any = [
+export const COMMAND_GROUPS: CommandGroup[] | UICommand[] = [
 
   {
     '[undo] Undo': HISTORY_UNDO,
@@ -183,10 +191,6 @@ export const COMMAND_GROUPS: any = [
     '[link] Apply link': LINK_SET_URL,
     '[grid_on] Table...': TABLE_COMMANDS_GROUP,
     '[hr] Horizontal line': HR,
-    // '[functions] Math': MATH_EDIT,
-
-    // [FS][07-MAY-2020][IRAD-956]
-    // '[format_quote] Block quote': BLOCKQUOTE_TOGGLE,
   },
   {
     '[settings_overscan] Page layout': DOC_LAYOUT,

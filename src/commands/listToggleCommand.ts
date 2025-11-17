@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {EditorState, Transaction} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {ContentNodeWithPos, findParentNodeOfType} from 'prosemirror-utils';

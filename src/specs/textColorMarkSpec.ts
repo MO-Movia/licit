@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { Mark, MarkSpec, Node } from 'prosemirror-model';
 
 import toCSSColor from '../toCSSColor';

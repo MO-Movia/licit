@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import * as React from 'react';
 import { LAYOUT } from '../constants';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
@@ -65,7 +70,6 @@ class DocLayoutEditor extends React.PureComponent<DocLayoutEditorProps> {
 
   render(): React.ReactElement<CustomRadioButton> {
     const { width, selectedValue } = this.state;
-    console.warn('UICommand : ', UICommand.theme);
     const parentClassName = "czi-body-layout-editor " + UICommand.theme;
     const formClassName = "czi-form " + UICommand.theme;
     const customOption = width ? (

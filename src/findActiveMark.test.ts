@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { Node, MarkType, Mark } from 'prosemirror-model';
 import findActiveMark from './findActiveMark';
 
@@ -6,7 +11,7 @@ const createMockNode = (marks: Mark[] = [], size: number = 1) => ({
   nodeSize: size,
   marks,
   nodeAt: jest.fn(function (pos: number) {
-    return pos < size ? this : null; // Returns null when position is out of range
+    return pos < size ? this as unknown as Node : null; // Returns null when position is out of range
   }),
 }) as unknown as Node;
 

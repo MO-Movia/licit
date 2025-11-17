@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import '../styles/czi-custom-radio-button.css';
 import {
   PointerSurface,

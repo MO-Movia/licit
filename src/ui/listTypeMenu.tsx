@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import * as React from 'react';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import { EditorState } from 'prosemirror-state';
@@ -5,7 +10,6 @@ import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import uuid from './uuid';
 import '../styles/listType.css';
-import { Arr } from './commandMenuButton';
 
 // [FS] IRAD-1039 2020-09-24
 // UI to show the list buttons
@@ -14,7 +18,7 @@ class ListTypeMenu extends React.PureComponent {
   _activeCommand: UICommand = null;
   declare props: {
     className?: string;
-    commandGroups: Array<any>,
+    commandGroups: Array<UICommand>,
     disabled?: boolean;
     dispatch: (tr: Transform) => void;
     editorState: EditorState;

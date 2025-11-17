@@ -1,5 +1,10 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import HardBreakNodeSpec from './hardBreakNodeSpec';
-import { NodeSpec } from 'prosemirror-model';
+import { Node as ProseMirrorNode, NodeSpec } from 'prosemirror-model';
 
 describe('HardBreakNodeSpec', () => {
   it('should have correct properties', () => {
@@ -16,11 +21,10 @@ describe('HardBreakNodeSpec', () => {
     const nodeSpec: NodeSpec = HardBreakNodeSpec;
 
     // Create a mock node (no specific properties needed for this it)
-    const mockNode = {} as Node;
+    const mockNode = {} as unknown as ProseMirrorNode;
 
     // Check the output of the toDOM method
-    const domOutput = nodeSpec.toDOM(mockNode as any);
-    expect(domOutput).toEqual(['br']);
+    expect(nodeSpec.toDOM(mockNode)).toEqual(['br']);
   });
 
   it('parseDOM should parse <br> correctly', () => {

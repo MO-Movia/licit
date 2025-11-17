@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import Color from 'color';
 
 const ColorMaping = {
@@ -10,13 +15,13 @@ export default function toHexColor(source: string): string {
     return '';
   }
   if (source in ColorMaping) {
-    return ColorMaping[source];
+    return ColorMaping[source] as string | null;
   }
   let hex = '';
   try {
     hex = Color(source).hex().toLowerCase();
     ColorMaping[source] = hex;
-  } catch (ex) {
+  } catch {
     console.warn('unable to convert to hex', source);
     ColorMaping[source] = '';
   }

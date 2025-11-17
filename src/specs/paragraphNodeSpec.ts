@@ -1,4 +1,9 @@
 
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import toCSSLineSpacing from '../toCSSLineSpacing';
 import convertToCSSPTValue from '../convertToCSSPTValue';
 import { Node, NodeSpec, DOMOutputSpec } from 'prosemirror-model';
@@ -194,7 +199,9 @@ function toDOM(node: Node): DOMOutputSpec {
   const attrs = { ...node.attrs };
   const style = getStyle(node.attrs);
 
-  style && (attrs.style = style);
+  if (style) {
+  attrs.style = style;
+}
 
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);

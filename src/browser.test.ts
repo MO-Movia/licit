@@ -1,4 +1,8 @@
-// browser.test.ts
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import browser from './browser';
 
 describe('browser', () => {

@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import LinkTooltip from './linkTooltip';
 import { EditorView } from 'prosemirror-view';
 import scrollIntoView from 'smooth-scroll-into-view-if-needed';

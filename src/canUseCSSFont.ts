@@ -1,9 +1,14 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 const cached = {};
 
 export default function canUseCSSFont(fontName: string): Promise<boolean> {
   const doc = document;
 
-  if (cached.hasOwnProperty(fontName)) {
+  if (Object.prototype.hasOwnProperty.call(cached, fontName)) {
     return Promise.resolve(cached[fontName]);
   }
 
@@ -35,6 +40,9 @@ export default function canUseCSSFont(fontName: string): Promise<boolean> {
       cached[fontName] = result;
       resolve(result);
     };
-    doc.fonts.ready.then(check);
+    doc.fonts.ready.then(check).catch((error) => {
+    console.error('Font loading check failed:', error);
+    resolve(false); 
+  });
   });
 }

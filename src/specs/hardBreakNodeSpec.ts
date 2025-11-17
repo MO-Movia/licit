@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { NodeSpec, DOMOutputSpec } from 'prosemirror-model';
 
 const BR_DOM: DOMOutputSpec = ['br'];

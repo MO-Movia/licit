@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import LinkURLEditor from './linkURLEditor';
 import sanitizeURL from '../sanitizeURL';
 import {SyntheticEvent} from 'react';
@@ -81,7 +86,10 @@ describe('LinkURLEditor (pure Jest tests)', () => {
     const instance = new LinkURLEditor(mockProps);
     const preventDefault = jest.fn();
     const applySpy = jest.spyOn(instance, '_apply');
-    const event = {key: 'Enter', preventDefault} as unknown as React.KeyboardEvent;
+    const event = {
+      key: 'Enter',
+      preventDefault,
+    } as unknown as React.KeyboardEvent;
     instance._onKeyDown(event);
     expect(preventDefault).toHaveBeenCalled();
     expect(applySpy).toHaveBeenCalled();
@@ -90,7 +98,10 @@ describe('LinkURLEditor (pure Jest tests)', () => {
   it('should not trigger _apply for non-Enter key', () => {
     const instance = new LinkURLEditor(mockProps);
     const applySpy = jest.spyOn(instance, '_apply');
-    const event = {key: 'A', preventDefault: jest.fn()} as unknown as React.KeyboardEvent;
+    const event = {
+      key: 'A',
+      preventDefault: jest.fn(),
+    } as unknown as React.KeyboardEvent;
     instance._onKeyDown(event);
     expect(applySpy).not.toHaveBeenCalled();
   });

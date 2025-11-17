@@ -1,15 +1,20 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import * as React from 'react';
-import { Schema } from 'prosemirror-model';
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {Schema} from 'prosemirror-model';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 
-import { SetDocAttrStep, UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import {SetDocAttrStep, UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import DocLayoutEditor from '../ui/docLayoutEditor';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
+import {createPopUp} from '@modusoperandi/licit-ui-commands';
 
-import type { DocLayoutEditorValue } from '../ui/docLayoutEditor';
-import { Editor } from '@tiptap/react';
+import type {DocLayoutEditorValue} from '../ui/docLayoutEditor';
+import {Editor} from '@tiptap/react';
 
 function setDocLayout(
   tr: Transform,
@@ -17,7 +22,7 @@ function setDocLayout(
   width?: number,
   layout?: string
 ): Transform {
-  const { doc } = tr;
+  const {doc} = tr;
   if (!doc) {
     return tr;
   }
@@ -47,12 +52,12 @@ class DocLayoutCommand extends UICommand {
     _dispatch?: (tr: Transform) => void,
     _view?: EditorView,
     _event?: React.SyntheticEvent
-  ): Promise<PromiseConstructor> => {
+  ): Promise<any> => {
     if (this._popUp) {
       return Promise.resolve(undefined);
     }
 
-    const { doc } = state;
+    const {doc} = state;
 
     return new Promise((resolve) => {
       const props = {
@@ -77,12 +82,12 @@ class DocLayoutCommand extends UICommand {
     inputs?: DocLayoutEditorValue
   ): boolean => {
     if (dispatch) {
-      const { selection, schema } = state;
-      let { tr } = state;
+      const {selection, schema} = state;
+      let {tr} = state;
       tr = tr.setSelection(selection);
 
       if (inputs) {
-        const { width, layout } = inputs;
+        const {width, layout} = inputs;
         (tr as Transform) = setDocLayout(tr, schema, width, layout);
       }
       this.getEditor().view.dispatch(tr);
@@ -95,7 +100,12 @@ class DocLayoutCommand extends UICommand {
   cancel(): void {
     return null;
   }
-  executeCustom(_state: EditorState, tr: Transform, _from: number, _to: number): Transform {
+  executeCustom(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
     return tr;
   }
   executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {

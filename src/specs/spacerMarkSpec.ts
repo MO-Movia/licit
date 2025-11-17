@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { Mark, MarkSpec, Attrs } from 'prosemirror-model';
 
 export const DOM_ATTRIBUTE_SIZE = 'data-spacer-size';

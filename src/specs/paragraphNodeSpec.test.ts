@@ -1,10 +1,14 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import ParagraphNodeSpec, {
   convertMarginLeftToIndentValue,
   getParagraphNodeAttrs,
   toParagraphDOM,
 } from './paragraphNodeSpec';
-import {DOMOutputSpec} from 'prosemirror-model';
-
+import {DOMOutputSpec, Node as PNode } from 'prosemirror-model';
 describe('ParagraphNodeSpec', () => {
   it('should have correct default attributes', () => {
     expect(ParagraphNodeSpec.attrs).toEqual({
@@ -60,6 +64,55 @@ describe('ParagraphNodeSpec', () => {
     expect(convertMarginLeftToIndentValue('0pt')).toBe(0);
   });
 
+  it('should use textAlign from style when align attribute is not present', () => {
+  const dom = document.createElement('p');
+  dom.style.textAlign = 'right';
+
+  const attrs = getParagraphNodeAttrs(dom);
+  expect(attrs.align).toBe('right');
+});
+
+it('should prioritize align attribute over textAlign style', () => {
+  const dom = document.createElement('p');
+  dom.setAttribute('align', 'center');
+  dom.style.textAlign = 'right';
+
+  const attrs = getParagraphNodeAttrs(dom);
+  expect(attrs.align).toBe('center');
+});
+
+it('should default to "left" when no align attribute or textAlign style is present', () => {
+  const dom = document.createElement('p');
+
+  const attrs = getParagraphNodeAttrs(dom);
+  expect(attrs.align).toBe('left');
+});
+
+it('should return null for invalid align values', () => {
+  const dom = document.createElement('p');
+  dom.setAttribute('align', 'invalid-value');
+
+  const attrs = getParagraphNodeAttrs(dom);
+  expect(attrs.align).toBeNull();
+});
+
+it('should parse indent from marginLeft when indent attribute is not present', () => {
+  const dom = document.createElement('p');
+  dom.style.marginLeft = '108pt'; // Should convert to indent 3
+
+  const attrs = getParagraphNodeAttrs(dom);
+  expect(attrs.indent).toBe(3);
+});
+
+it('should prioritize indent attribute over marginLeft style', () => {
+  const dom = document.createElement('p');
+  dom.setAttribute('data-indent', '5');
+  dom.style.marginLeft = '72pt';
+
+  const attrs = getParagraphNodeAttrs(dom);
+  expect(attrs.indent).toBe(5);
+});
+
   it('should generate correct DOM output', () => {
     const node = {
       attrs: {
@@ -71,7 +124,7 @@ describe('ParagraphNodeSpec', () => {
       },
     };
 
-    const domSpec: DOMOutputSpec = toParagraphDOM(node as any);
+    const domSpec: DOMOutputSpec = toParagraphDOM(node as unknown as PNode);
     expect(domSpec).toEqual([
       'p',
       {

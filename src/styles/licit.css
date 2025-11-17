@@ -33,7 +33,7 @@ body {
   }
 
   code {
-    background-color: rgba(#616161, 0.1);
+    background-color: rgb(97 97 97 / 10%);
     color: #616161;
   }
 
@@ -59,12 +59,12 @@ body {
 
   blockquote {
     padding-left: 1rem;
-    border-left: 2px solid rgba(#0d0d0d, 0.1);
+    border-left: 2px solid rgb(13 13 13 / 10%);
   }
 
   hr {
     border: none;
-    border-top: 2px solid rgba(#0d0d0d, 0.1);
+    border-top: 2px solid rgb(13 13 13 / 10%);
     margin: 2rem 0;
   }
 }

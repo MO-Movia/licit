@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import cx from 'classnames';
 import * as React from 'react';
 import ReactDOM from 'react-dom';

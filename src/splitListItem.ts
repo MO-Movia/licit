@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import uuid from './ui/uuid';
 import { Fragment, Schema } from 'prosemirror-model';
 import { TextSelection, Transaction, NodeSelection } from 'prosemirror-state';

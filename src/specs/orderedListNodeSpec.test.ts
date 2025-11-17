@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {ATTRIBUTE_LIST_STYLE_TYPE} from './listItemNodeSpec';
 import OrderedListNodeSpec, {
   ATTRIBUTE_COUNTER_RESET,
@@ -19,7 +24,7 @@ type DOMSpecTuple = [
 describe('OrderedListNodeSpec', () => {
   describe('parseDOM', () => {
     it('should correctly parse attributes from an <ol> element', () => {
-      const mockOlElement: any = {
+      const mockOlElement = {
         getAttribute: jest.fn((attr) => {
           const attrs = {
             [ATTRIBUTE_LIST_STYLE_TYPE]: 'decimal',
@@ -30,7 +35,7 @@ describe('OrderedListNodeSpec', () => {
             [ATTRIBUTE_FOLLOWING]: 'true',
             type: 'x.x.x',
           };
-          return attrs[attr];
+          return attrs[attr] as string | null;
         }),
         hasAttribute: jest.fn((attr) => {
           const attrs = [
@@ -44,7 +49,7 @@ describe('OrderedListNodeSpec', () => {
           ];
           return attrs.includes(attr); // Returns true if the attribute is one of the known attributes
         }),
-      };
+      } as unknown as HTMLElement;
 
       const result = OrderedListNodeSpec.parseDOM[0].getAttrs(mockOlElement);
 
@@ -60,20 +65,20 @@ describe('OrderedListNodeSpec', () => {
     });
 
     it('should handle missing optional attributes correctly', () => {
-      const mockOlElement: any = {
+      const mockOlElement = {
         getAttribute: jest.fn((attr) => {
           const attrs = {
             [ATTRIBUTE_LIST_STYLE_TYPE]: 'lower-roman',
             start: '1',
             // Simulate missing optional attributes
           };
-          return attrs[attr];
+          return attrs[attr] as string | null;
         }),
         hasAttribute: jest.fn((attr) => {
           const attrs = ['start', ATTRIBUTE_LIST_STYLE_TYPE];
           return attrs.includes(attr); // Only returns true for the provided attributes
         }),
-      };
+      } as unknown as HTMLElement;;
 
       const result = OrderedListNodeSpec.parseDOM[0].getAttrs(mockOlElement);
 
@@ -91,7 +96,7 @@ describe('OrderedListNodeSpec', () => {
 
   describe('toDOM', () => {
     it('should generate correct DOM output with all attributes', () => {
-      const mockNode: any = {
+      const mockNode = {
         attrs: {
           counterReset: 'none',
           following: 'true',
@@ -102,7 +107,7 @@ describe('OrderedListNodeSpec', () => {
           type: 'x.x.x',
           styleName: RESERVED_STYLE_NONE,
         },
-      };
+      } as unknown as Node;
 
       const result = OrderedListNodeSpec.toDOM(mockNode);
 
@@ -123,7 +128,7 @@ describe('OrderedListNodeSpec', () => {
     });
 
     it('should generate correct DOM output when listStyleType is not provided', () => {
-      const mockNode: any = {
+      const mockNode = {
         attrs: {
           counterReset: 'none',
           following: 'true',
@@ -134,7 +139,7 @@ describe('OrderedListNodeSpec', () => {
           type: 'x.x.x',
           styleName: RESERVED_STYLE_NONE,
         },
-      };
+      } as unknown as Node;
 
       const result = OrderedListNodeSpec.toDOM(mockNode);
 

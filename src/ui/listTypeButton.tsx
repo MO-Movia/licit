@@ -1,6 +1,7 @@
-// [FS] IRAD-1039 2020-09-23
-// Command button to handle different type of list types
-// Need to add Icons instead of label
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
 
 import cx from 'classnames';
 import { EditorState } from 'prosemirror-state';
@@ -11,11 +12,11 @@ import { CustomButton, createPopUp,ThemeContext } from '@modusoperandi/licit-ui-
 import uuid from './uuid';
 import ListTypeMenu from './listTypeMenu';
 import '../styles/czi-custom-menu-button.css';
-import { Arr } from './commandMenuButton';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
 type ListTypeButtonType = {
   className?: string;
-  commandGroups: Array<any>;
+  commandGroups: Array<UICommand>;
   disabled?: boolean;
   dispatch: (tr: Transform) => void;
   editorState: EditorState;
@@ -26,7 +27,7 @@ type ListTypeButtonType = {
   theme?:string
 };
 class ListTypeButton extends React.PureComponent<ListTypeButtonType> {
-  static contextType = ThemeContext;
+  public static readonly contextType = ThemeContext;
  declare  props: ListTypeButtonType;
 
   _menu = null;
@@ -43,12 +44,7 @@ class ListTypeButton extends React.PureComponent<ListTypeButtonType> {
       !disabled &&
       commandGroups.some((group, _ii) => {
         return Object.keys(group).some((_label) => {
-          let disabledVal = true;
-          try {
-            disabledVal = false;
-          } catch (ex) {
-            disabledVal = false;
-          }
+          const disabledVal = false;
           return !disabledVal;
         });
       });

@@ -1,8 +1,8 @@
-// [FS-SEA][24-02-2020]
-// overrided the method form 'convertToCSSPTValue.js' file to avoid the compiling issue .
-// [FS][28-02-2020]
-// IRAD-893 - Copy Paste From External Source Not Working
-// removed {} from import, because convertToCSSPTValue is a default export function.
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import convertToCSSPTValue from './convertToCSSPTValue';
 
 export function toClosestFontPtSize(styleValue: string): number {

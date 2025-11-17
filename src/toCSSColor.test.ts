@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import toCSSColor, {isTransparent} from './toCSSColor';
 
 // Mocking the Color library to test if our code interacts correctly

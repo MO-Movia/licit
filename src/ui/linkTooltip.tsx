@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import scrollIntoView from 'smooth-scroll-into-view-if-needed';
@@ -61,7 +66,7 @@ class LinkTooltip extends React.PureComponent {
       if (el) {
         const { onCancel, editorView } = this.props;
         onCancel(editorView);
-        (async () => {
+        void (async () => {
           // https://www.npmjs.com/package/smooth-scroll-into-view-if-needed
           await scrollIntoView(el, {
             scrollMode: 'if-needed',

@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import toCSSLineSpacing, {
     LINE_SPACING_100,
     LINE_SPACING_115,

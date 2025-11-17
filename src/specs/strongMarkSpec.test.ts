@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import StrongMarkSpec from './strongMarkSpec';
 import {Mark, ParseRule} from 'prosemirror-model';
 interface StrongAttrs {

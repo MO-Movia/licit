@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import cx from 'classnames';
 import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
@@ -20,7 +25,7 @@ export interface Arr {
 }
 type PropsType = {
   className?: string;
-  commandGroups: Array<any>;
+  commandGroups: Array<unknown>;
   disabled?: boolean;
   dispatch: (tr: Transform) => void;
   editorState: EditorState;
@@ -29,7 +34,6 @@ type PropsType = {
   label?: string | React.ReactElement | null;
   title?: string;
   sub?: boolean;
-  theme?: string;
 };
 type StateType = {
   expanded: boolean;
@@ -37,7 +41,7 @@ type StateType = {
 
 class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
   declare props: PropsType;
-  static contextType = ThemeContext;
+  public static readonly contextType = ThemeContext;
   _menu = null;
   _id = uuid();
 
@@ -56,8 +60,6 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
       icon,
       disabled,
       title,
-      sub,
-      theme
     } = this.props;
     const enabled =
       !disabled &&
@@ -70,7 +72,8 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
             disabledVal =
               !editorView ||
               !command.isEnabled(editorState, editorView, grpLabel);
-          } catch (ex) {
+          } catch (_error) {
+            console.error('Error checking if command is enabled:', _error);
             disabledVal = false;
           }
           return !disabledVal;
@@ -103,7 +106,7 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
       <CustomButton
         className={buttonClassName}
         disabled={!enabled}
-        hasChild={(hasChild && !isMaximizeButton)}
+        hasChild={hasChild && !isMaximizeButton}
         icon={icon}
         id={this._id}
         label={label}
@@ -123,13 +126,17 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
     this.setState({
       expanded,
     });
-    expanded ? this._showMenu() : this._hideMenu();
+    if (expanded) {
+      this._showMenu();
+    } else {
+      this._hideMenu();
+    }
   };
 
   _hideMenu = (): void => {
     const menu = this._menu;
     this._menu = null;
-    menu && menu.close();
+    menu?.close();
     // alert('hello seybi');
   };
 

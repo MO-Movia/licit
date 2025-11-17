@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import TextHighlightMarkSpec from './textHighlightMarkSpec'; // Adjust the import path as needed
 import { toCSSColor, isTransparent } from '../toCSSColor'; // Adjust the import path as needed
 import { Mark, ParseRule } from 'prosemirror-model';

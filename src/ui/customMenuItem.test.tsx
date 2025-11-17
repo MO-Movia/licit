@@ -1,9 +1,14 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { ReactElement } from 'react';
 import CustomMenuItem from './customMenuItem';
 
 //  Mock licit-ui-commands module safely
 jest.mock('@modusoperandi/licit-ui-commands', () => {
-  const React = require('react');
+  const React = jest.requireActual<typeof import('react')>('react');
   return {
     CustomButton: (props: { className: string; theme: string; label?: string }) => (
       <button
@@ -15,7 +20,7 @@ jest.mock('@modusoperandi/licit-ui-commands', () => {
       </button>
     ),
     ThemeContext: React.createContext('mock-theme'),
-     TextAlignCommand: class {},
+    TextAlignCommand: class {},
   };
 });
 

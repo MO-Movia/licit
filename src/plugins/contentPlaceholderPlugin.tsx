@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { Plugin, PluginKey } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
@@ -135,7 +140,7 @@ class ContentPlaceholderView {
 
   _getBodyElement(): HTMLElement | null {
     const view = this._view;
-    return view?.docView?.dom?.firstChild;
+    return view?.docView?.dom?.firstChild as HTMLElement | null;
   }
 
   _show(): void {

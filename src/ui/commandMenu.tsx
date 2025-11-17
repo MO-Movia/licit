@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {EditorState} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
@@ -5,11 +10,9 @@ import * as React from 'react';
 
 import CustomMenu from './customMenu';
 import CustomMenuItem from './customMenuItem';
-import CommandButton from './commandButton';
-import {parseLabel, isExpandButton} from './editorToolbarConfig';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
-import {ThemeContext} from '@modusoperandi/licit-ui-commands';
-import CommandMenuButton, {Arr} from './commandMenuButton';
+import { parseLabel, isExpandButton } from './editorToolbarConfig';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import CommandMenuButton, { Arr } from './commandMenuButton';
 
 type PropsType = {
   commandGroups: Array<Arr>;
@@ -27,7 +30,7 @@ class CommandMenu extends React.PureComponent<PropsType> {
   declare props: PropsType;
 
   render(): React.ReactElement {
-    const {commandGroups, editorState, editorView, title, theme} = this.props;
+    const { commandGroups, editorState, title, theme } = this.props;
     const children = [];
     const jj = commandGroups.length - 1;
     // const theme = this.context;
@@ -35,32 +38,10 @@ class CommandMenu extends React.PureComponent<PropsType> {
       Object.keys(group).forEach((label) => {
         const command = group[label];
         if (command instanceof UICommand) {
-          let disabled = true;
-          const {icon} = parseLabel(label, theme.toString());
-          try {
-            // [FS] IRAD-1053 2020-10-22
-            // Disable the Clear style menu when no styles applied to a paragraph
-            disabled =
-              !editorView || !command.isEnabled(editorState, editorView);
-          } catch (ex) {
-            disabled = false;
-          }
-          // if (command) {
-          //   children.push(
-          //     this._renderCommandButton(
-          //       label,
-          //       command,
-          //       disabled,
-          //       dispatch,
-          //       editorState,
-          //       editorView
-          //     )
-          //   );
-          // } else {
+          const { icon } = parseLabel(label, theme.toString());
           children.push(
             this._renderCustomMenuItem(label, command, editorState, icon, theme)
           );
-          // }
         } else if (Array.isArray(command)) {
           children.push(this._renderMenuButton(label, command, theme));
         }
@@ -80,16 +61,23 @@ class CommandMenu extends React.PureComponent<PropsType> {
     label: string,
     command: UICommand,
     editorState: EditorState,
-    icon: any,
+    icon: string | React.ReactElement | null,
     theme: string
   ): React.ReactElement<CustomMenuItem> => {
     return (
       <CustomMenuItem
         active={command.isActive(editorState)}
-        disabled={!Boolean(command.isEnabled(editorState))}
+        disabled={!command.isEnabled(editorState)}
         icon={icon}
         key={label}
-        label={icon ? null : command.renderLabel(editorState) || label}
+        // label={icon ? null : (command.renderLabel(editorState) || label)}
+        label={
+          icon
+            ? null
+            : (command.renderLabel(editorState) as
+                | string
+                | React.ReactElement) || label
+        }
         onClick={this._onUIEnter}
         onMouseEnter={this._onUIEnter}
         value={command}
@@ -154,7 +142,7 @@ class CommandMenu extends React.PureComponent<PropsType> {
 
   _onUIEnter = (command: UICommand, event: React.SyntheticEvent): void => {
     if (command.shouldRespondToUIEvent(event)) {
-      this._activeCommand && this._activeCommand.cancel();
+      this._activeCommand?.cancel();
       this._activeCommand = command;
       this._execute(command, event);
     }

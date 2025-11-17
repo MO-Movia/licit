@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import cx from 'classnames';
 import * as React from 'react';
 import { ThemeContext } from '@modusoperandi/licit-ui-commands';
@@ -31,7 +36,7 @@ function toCSS(val?: number | string): string {
 }
 
 class EditorFrameset extends React.PureComponent {
-  static contextType = ThemeContext;
+ public static readonly contextType = ThemeContext;
   declare props: EditorFramesetProps;
 
   render(): React.ReactElement {

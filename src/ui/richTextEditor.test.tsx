@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import { EditorView } from 'prosemirror-view';
 import Frag from './frag';
 import RichTextEditor from './richTextEditor';

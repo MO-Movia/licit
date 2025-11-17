@@ -1,32 +1,49 @@
-import React, { ReactElement } from 'react';
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
+import React, {
+  ReactElement,
+  useRef,
+  useCallback,
+  useImperativeHandle,
+  forwardRef,
+  ForwardedRef,
+} from 'react';
 import ReactDOM from 'react-dom';
-import { Extension, Editor } from '@tiptap/core';
-import { EditorEvents, getSchema, JSONContent, useEditor } from '@tiptap/react';
+import {Extension, Editor} from '@tiptap/core';
+import {EditorEvents, getSchema, JSONContent, useEditor} from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import './styles/licit.css';
 import Underline from '@tiptap/extension-underline';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import * as Y from 'yjs';
-import { IndexeddbPersistence } from 'y-indexeddb';
+import {IndexeddbPersistence} from 'y-indexeddb';
 import RichTextEditor from './ui/richTextEditor';
 import DefaultEditorPlugins from './defaultEditorPlugins';
-import { Plugin, TextSelection } from 'prosemirror-state';
-import { getEffectiveSchema } from './convertFromJSON';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { Schema, NodeSpec } from 'prosemirror-model';
+import {Plugin, TextSelection} from 'prosemirror-state';
+import {getEffectiveSchema} from './convertFromJSON';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import {Schema, NodeSpec, Node} from 'prosemirror-model';
 import Subscript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
 import TextAlign from '@tiptap/extension-text-align';
-import { HEADING, noop, PARAGRAPH, ThemeProvider } from '@modusoperandi/licit-ui-commands';
-import { updateEditorMarks } from './editorMarks';
-import { updateEditorNodes } from './editorNodes';
+import {
+  HEADING,
+  noop,
+  PARAGRAPH,
+  ThemeProvider,
+} from '@modusoperandi/licit-ui-commands';
+import {updateEditorMarks} from './editorMarks';
+import {updateEditorNodes} from './editorNodes';
 import OrderedMap from 'orderedmap';
-import { Indent } from './extensions/indent';
-import { WebrtcProvider } from 'y-webrtc';
-import { EditorRuntime, ToolbarMenuConfig } from './types';
-import { EditorViewEx } from './constants';
+import {Indent} from './extensions/indent';
+import {WebrtcProvider} from 'y-webrtc';
+import {EditorRuntime, ToolbarMenuConfig} from './types';
+import {EditorViewEx} from './constants';
 import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableCellEx from './extensions/tableCellEx';
@@ -35,8 +52,9 @@ import ParagraphNodeSpec from './specs/paragraphNodeSpec';
 import * as awarenessProtocol from 'y-protocols/awareness';
 import * as math from 'lib0/math';
 import * as random from 'lib0/random';
-import { EditorView } from 'prosemirror-view';
+import {EditorView} from 'prosemirror-view';
 import cx from 'classnames';
+import DocLayoutCommand from './commands/docLayoutCommand';
 
 /**
  * LICIT properties:
@@ -62,7 +80,7 @@ export interface ChangeCB {
 }
 
 export interface ReadyCB {
-  (ref: Editor): void;
+  (ref: LicitHandle): void;
 }
 
 export interface LicitProps {
@@ -83,20 +101,31 @@ export interface LicitProps {
   toolbarConfig?: ToolbarMenuConfig[];
 }
 
-const effectiveSchema: Schema = null;
-let editorSchema: Schema = null;
-let licitPlugins: Extension = null;
-let provider = null;
-let ydoc: Y.Doc = null;
-let devTools: Promise<() => void>;
-let applyDevTools;
+export interface LicitHandle {
+  editor: Editor | null;
+  editorView: EditorView | null;
+  goToEnd: () => void;
+  pageLayout: () => void;
+  setContent: (content: JSONContent) => void;
+  getContent: () => JSONContent;
+  insertJSON: (json: JSONContent) => void;
+  isNodeHasAttribute: (node: Node, attrName: string) => boolean | undefined;
+}
+
+let effectiveSchema: Schema | null = null;
+let editorSchema: Schema | null = null;
+let licitPlugins: Extension | null = null;
+let provider: WebrtcProvider | null = null;
+let ydoc: Y.Doc | null = null;
+let devTools: Promise<() => void> | null = null;
+let applyDevTools: ((view: any) => void) | null = null;
 
 export const configCollab = (
   docID: string,
   instanceID: string,
-  ref: { collaboration: boolean; currentUser: Record<string, unknown> },
+  ref: {collaboration: boolean; currentUser: Record<string, unknown>},
   collabServiceURL: string
-) => {
+): void => {
   if (docID && 0 < docID.length) {
     ref.collaboration = true;
 
@@ -105,7 +134,6 @@ export const configCollab = (
       ydoc = new Y.Doc();
       if (collabServiceURL) {
         try {
-           
           provider = new WebrtcProvider('tiptap-licit-' + docID, ydoc, {
             signaling: [collabServiceURL],
             password: null,
@@ -115,27 +143,33 @@ export const configCollab = (
             peerOpts: {},
           });
           useDefaultProvider = false;
-        } catch { }
+        } catch (error) {
+          console.error('Failed to create WebrtcProvider:', error);
+        }
       }
 
       if (useDefaultProvider) {
-         
         provider = new WebrtcProvider('tiptap-licit-' + docID, ydoc);
       }
     }
-    const getRandomElement = (list) => {
-      return list[Math.floor(Math.random() * list.length)];
+    const getRandomElement = (list: string[]): string => {
+      const randomIndex =
+        crypto.getRandomValues(new Uint32Array(1))[0] % list.length;
+      return list[randomIndex];
     };
-    const getRandomColor = () => {
-      return getRandomElement([
-        '#958DF1',
-        '#F98181',
-        '#FBBC88',
-        '#FAF594',
-        '#70CFF8',
-        '#94FADB',
-        '#B9F18D',
-      ]);
+
+    const COLORS: string[] = [
+      '#958DF1',
+      '#F98181',
+      '#FBBC88',
+      '#FAF594',
+      '#70CFF8',
+      '#94FADB',
+      '#B9F18D',
+    ];
+
+    const getRandomColor = (): string => {
+      return getRandomElement(COLORS);
     };
     ref.currentUser = {
       name: instanceID,
@@ -153,24 +187,31 @@ export const configCollab = (
 
 const prepareEffectiveSchema = (
   defaultExtensions: Extension[],
-  plugins: Plugin[]
-) => {
+  plugins: Plugin[] | null
+): void => {
   if (!effectiveSchema) {
     const schema = getSchema(defaultExtensions);
 
     const updateNodeAttrs = (nodeName: string, licitNode: NodeSpec): void => {
-      const tiptapNode = (schema.spec.nodes as OrderedMap).get(nodeName);
-      const keys = Object.keys(licitNode.attrs);
-      keys.forEach((key) => {
-        if (!tiptapNode.attrs[key]) {
-          tiptapNode.attrs[key] = licitNode.attrs[key];
-        }
-      });
+      const tiptapNode = (schema.spec.nodes as OrderedMap<NodeSpec>).get(
+        nodeName
+      );
+      if (tiptapNode) {
+        const keys = Object.keys(licitNode.attrs || {});
+        keys.forEach((key) => {
+          if (!tiptapNode.attrs?.[key]) {
+            if (!tiptapNode.attrs) {
+              tiptapNode.attrs = {};
+            }
+            tiptapNode.attrs[key] = licitNode.attrs![key];
+          }
+        });
+      }
     };
     updateNodeAttrs(PARAGRAPH, ParagraphNodeSpec);
 
-    const nodes = updateEditorNodes(schema.spec.nodes as OrderedMap);
-    const marks = updateEditorMarks(schema.spec.marks as OrderedMap);
+    const nodes = updateEditorNodes(schema.spec.nodes as OrderedMap<NodeSpec>);
+    const marks = updateEditorMarks(schema.spec.marks as OrderedMap<unknown>);
 
     const defaultEditorSchema = new Schema({
       nodes: nodes,
@@ -183,7 +224,7 @@ const prepareEffectiveSchema = (
     editorSchema = getEffectiveSchema(
       defaultEditorSchema,
       defaultEditorPlugins,
-      plugins
+      plugins || []
     );
 
     licitPlugins = Extension.create({
@@ -196,69 +237,90 @@ const prepareEffectiveSchema = (
 
 const updateSpec = (
   schema: Schema,
-  attrName: string,
+  attrName: 'marks' | 'nodes',
   existingSchema: Schema
-) => {
+): void => {
+  if (!editorSchema) return;
+
   const keys = Object.keys(schema[attrName]);
-  const keysUpdate = [];
+  const keysUpdate: string[] = [];
+
+  // Check which keys need to be added
   keys.forEach((key) => {
     if (!editorSchema[attrName][key]) {
-      editorSchema[attrName][key] = schema[attrName][key];
       keysUpdate.push(key);
     }
   });
-  const collection = schema.spec[attrName].content;
+
+  // Convert OrderedMap to array [name, spec, name, spec, ...]
+  const specMap = schema.spec[attrName] as OrderedMap<unknown>;
+  const collection: unknown[] = [];
+  specMap.forEach((name, spec) => {
+    collection.push(name, spec);
+  });
+
   // update current array with the latest info
   for (let i = 0; i < collection.length; i += 2) {
     if (keysUpdate.find((element) => element === collection[i])) {
-      existingSchema.spec[attrName] = existingSchema.spec[attrName].update(
-        collection[i],
-        collection[i + 1]
-      );
+      existingSchema.spec[attrName] = (
+        existingSchema.spec[attrName] as OrderedMap<unknown>
+      ).update(collection[i] as string, collection[i + 1]);
     } else {
       updateSpecAttrs(i, collection, existingSchema, attrName);
     }
   }
-};
 
+  // Recreate the schema to include new marks/nodes
+  if (keysUpdate.length > 0) {
+    editorSchema = new Schema({
+      nodes: existingSchema.spec.nodes,
+      marks: existingSchema.spec.marks,
+    });
+  }
+};
 export const updateSpecAttrs = (
   i: number,
   collection: Array<unknown>,
   existingSchema: Schema,
-  attrName: string
-) => {
-  const attrsTipTap = collection[i + 1]['attrs'];
+  attrName: 'marks' | 'nodes'
+): void => {
+  const attrsTipTap = (collection[i + 1] as {attrs?: Record<string, unknown>})
+    ?.attrs;
   if (attrsTipTap) {
-    const content = existingSchema.spec[attrName].content;
-    for (let j = 0; j < content.length; j += 2) {
-      if (content[j] === collection[i]) {
-        const attrsLicit = content[j + 1].attrs;
-        const attrKeys = Object.keys(attrsTipTap);
-        attrKeys.forEach((key) => {
-          if (!attrsLicit[key]) {
-            attrsLicit[key] = attrsTipTap[key];
-          }
-        });
+    const specMap = existingSchema.spec[attrName] as OrderedMap<unknown>;
+
+    // Find the matching spec in the existing schema
+    specMap.forEach((name, spec) => {
+      if (name === collection[i]) {
+        const attrsLicit = (spec as {attrs?: Record<string, unknown>})?.attrs;
+        if (attrsLicit) {
+          const attrKeys = Object.keys(attrsTipTap);
+          attrKeys.forEach((key) => {
+            if (!attrsLicit[key]) {
+              attrsLicit[key] = attrsTipTap[key];
+            }
+          });
+        }
       }
-    }
+    });
   }
 };
-
 const initDevTool = (debug: boolean, editorView: EditorView): void => {
-  // [FS] IRAD-1575 2021-09-27
   if (debug) {
-    if (!devTools) {
-      devTools = new Promise(async (resolve, reject) => {
+    // Use nullish coalescing assignment operator
+    devTools ??= new Promise((resolve, reject) => {
+      void (async () => {
         try {
           // Method is exported as both the default and named, Using named
           // for clarity and future proofing.
           const applyPMDevTools = await import('prosemirror-dev-tools');
           // got the pm dev tools instance.
-          applyDevTools = applyPMDevTools.default;
+          applyDevTools = applyPMDevTools.default as any;
           // Attach debug tools to current editor instance.
-          applyDevTools(editorView);
+          if (applyDevTools) {
+            applyDevTools(editorView);
+          }
           resolve(() => {
-            // [FS] IRAD-1571 2021-10-08
             // Prosemirror Dev Tools handles as if one only instance is used in a page and
             // hence handling removal here gracefully.
             const place = document.querySelector(
@@ -269,16 +331,20 @@ const initDevTool = (debug: boolean, editorView: EditorView): void => {
               place.innerHTML = '';
             }
           });
-        } catch (error) {
-          reject();
+        } catch (_error) {
+          console.error('Failed to load prosemirror-dev-tools:', _error);
+          // Fix: Reject with Error object
+          reject(_error instanceof Error ? _error : new Error(String(_error)));
         }
-      });
-    }
+      })();
+    });
 
     // Attach debug tools to current editor instance.
-    if (devTools && applyDevTools) {
-      applyDevTools(editorView);
-    }
+    void devTools?.then(() => {
+      if (applyDevTools) {
+        applyDevTools(editorView);
+      }
+    });
   }
 };
 
@@ -286,28 +352,32 @@ const destroyDevTool = (): void => {
   // [FS] IRAD-1569 2021-09-15
   // Unmount dev tools when component is destroyed,
   // so that toggle effect is not occuring when the document is retrieved each time.
-  if (devTools) {
+  if (devTools instanceof Promise) {
     // Call the applyDevTools method again to trigger DOM removal
     // prosemirror-dev-tools has outstanding pull-requests that affect
     // dom removal. this may need to be addressed once those have been merged.
-    devTools.then((removeDevTools) => removeDevTools());
+    devTools
+      .then((removeDevTools) => removeDevTools())
+      .catch((error) => {
+        console.error('Failed to remove dev tools:', error);
+      });
   }
 };
 
 const onBeforeCreate = (params: {
   props: EditorEvents['beforeCreate'];
-  schema: Schema;
+  schema: Schema | null;
 }): void => {
   if (!params.schema) {
     const editor = params.props.editor;
     UICommand.prototype.editor = editor;
 
-    updateSpec(editor.schema, 'marks', editorSchema);
-    updateSpec(editor.schema, 'nodes', editorSchema);
+    updateSpec(editor.schema, 'marks', editorSchema!);
+    updateSpec(editor.schema, 'nodes', editorSchema!);
 
     editor.schema = new Schema({
-      nodes: editorSchema.spec.nodes,
-      marks: editorSchema.spec.marks,
+      nodes: editorSchema!.spec.nodes,
+      marks: editorSchema!.spec.marks,
     });
     params.schema = editor.schema;
   }
@@ -317,16 +387,17 @@ const onCreate = (
   editor: Editor,
   editorView: EditorView,
   debug: boolean,
-  onReady?: ReadyCB
-) => {
+  onReady?: ReadyCB,
+  handle?: LicitHandle
+): void => {
   // The editor is ready.
-  if (onReady) {
-    onReady(editor);
+  if (onReady && handle) {
+    onReady(handle);
     initDevTool(debug, editorView);
   }
 };
 
-const onUpdate = (editor: Editor, onChange?: ChangeCB) => {
+const onUpdate = (editor: Editor, onChange?: ChangeCB): void => {
   // The content has changed.
   if (onChange) {
     onChange(editor.getJSON(), editor.isEmpty, editor.view);
@@ -335,10 +406,10 @@ const onUpdate = (editor: Editor, onChange?: ChangeCB) => {
 
 const getCollabExtensions = (
   collaboration: boolean,
-  currentUser: Record<string, unknown>
+  currentUser: Record<string, unknown> | null
 ): Extension[] => {
-  return collaboration
-    ? [
+  if (collaboration && ydoc && provider && currentUser) {
+    return [
       Collaboration.configure({
         document: ydoc,
       }),
@@ -346,57 +417,61 @@ const getCollabExtensions = (
         provider: provider,
         user: currentUser,
       }),
-    ]
-    : [];
+    ];
+  }
+  return [];
 };
 
-export const Licit = ({
-  docID,
-  plugins,
-  width,
-  height,
-  runtime,
-  data,
-  readOnly,
-  embedded,
-  collabServiceURL,
-  debug,
-  disabled,
-  onChange,
-  onReady,
-  theme,
-  toolbarConfig
-}: LicitProps): ReactElement => {
-  const instanceID = uuidv4();
+const LicitComponent = (
+  {
+    docID,
+    plugins,
+    width,
+    height,
+    runtime,
+    data,
+    readOnly,
+    embedded,
+    collabServiceURL,
+    debug,
+    disabled,
+    onChange,
+    onReady,
+    theme,
+    toolbarConfig,
+  }: LicitProps,
+  ref: ForwardedRef<LicitHandle>
+): ReactElement => {
+  const instanceIDRef = useRef<string>(uuidv4());
+  const instanceID = instanceIDRef.current;
 
   // [FS] IRAD-981 2020-06-10
   // Component's configurations.
   // [FS] IRAD-1552 2021-08-26
   // Collaboration server / client should allow string values for document identifiers.
-  docID = docID || ''; // Empty means collaborative.
+  const finalDocID = docID || ''; // Empty means collaborative.
   // [FS] IRAD-1553 2021-08-26
   // Configurable Collaboration Service URL.
-  collabServiceURL = collabServiceURL || '';
-  debug = debug || false;
+  const finalCollabServiceURL = collabServiceURL || '';
+  const finalDebug = debug || false;
   // Default width and height to undefined
-  width = width || undefined;
-  height = height || undefined;
-  onChange = onChange || noop;
-  onReady = onReady || noop;
-  readOnly = readOnly || false;
-  data = data || null;
-  disabled = disabled || false;
-  embedded = embedded || false; // [FS] IRAD-996 2020-06-30
-  // [FS] 2020-07-03
+  const finalWidth = width || undefined;
+  const finalHeight = height || undefined;
+  const finalOnChange = onChange || noop;
+  const finalOnReady = onReady || noop;
+  const finalReadOnly = readOnly || false;
+  const finalData = data || null;
+  const finalDisabled = disabled || false;
+  const finalEmbedded = embedded || false;
   // Handle Image Upload from Angular App
-  runtime = runtime || null;
-  plugins = plugins || null;
+  const finalRuntime = runtime || null;
+  const finalPlugins = plugins || null;
 
-  // Theme property for toolbar. By default uses light theme.
-  theme = theme || 'dark';
-  toolbarConfig = toolbarConfig || null;
+  // Theme property for toolbar. By default uses dark theme.
+  const finalTheme = theme || 'dark';
+  const finalToolbarConfig = toolbarConfig || null;
 
-  let currentUser = null;
+  let currentUser: Record<string, unknown> | null = null;
   let collaboration = false;
   const defaultExtensions = [
     StarterKit.configure({
@@ -417,72 +492,174 @@ export const Licit = ({
     TableCellEx,
   ];
 
-  const collabCfg = { collaboration, currentUser };
+  const collabCfg = {collaboration, currentUser};
 
-  configCollab(docID, instanceID, collabCfg, collabServiceURL);
+  configCollab(finalDocID, instanceID, collabCfg, finalCollabServiceURL);
   collaboration = collabCfg.collaboration;
   currentUser = collabCfg.currentUser;
 
-  prepareEffectiveSchema(defaultExtensions as Extension[], plugins);
+  prepareEffectiveSchema(defaultExtensions as Extension[], finalPlugins);
 
   const editor = useEditor({
     extensions: [
       ...defaultExtensions,
       ...getCollabExtensions(collaboration, currentUser),
-      licitPlugins,
+      ...(licitPlugins ? [licitPlugins] : []),
     ],
     onBeforeCreate(props: EditorEvents['beforeCreate']): void {
       // Before the view is created.
-      onBeforeCreate({ props, schema: effectiveSchema });
+      onBeforeCreate({props, schema: effectiveSchema});
     },
-    content: data,
+    content: finalData,
+    editable: !finalReadOnly,
   });
 
-  const goToEnd = (): void => {
+  // Public methods
+  const goToEnd = useCallback((): void => {
+    if (editor) {
+      const view = editor.view;
+      const tr = view.state.tr;
+      view.dispatch(
+        tr.setSelection(TextSelection.atEnd(view.state.doc)).scrollIntoView()
+      );
+      view.focus();
+    }
+  }, [editor]);
 
-    const view = editor.view;
-    const tr = view.state.tr;
-    view.dispatch(
-      tr.setSelection(TextSelection.atEnd(view.state.doc)).scrollIntoView()
-    );
-    view.focus();
+  const pageLayout = useCallback((): void => {
+    if (editor) {
+      const DOC_LAYOUT = new DocLayoutCommand();
+      DOC_LAYOUT.waitForUserInput(
+        editor.view.state,
+        editor.view.dispatch,
+        editor.view
+      ).then((inputs) => {
+        DOC_LAYOUT.executeWithUserInput(
+          editor.view.state,
+          editor.view.dispatch,
+          editor.view,
+          inputs
+        );
+      });
+    }
+  }, [editor]);
 
-  };
+  const setContent = useCallback(
+    (content: JSONContent): void => {
+      if (editor) {
+        editor.commands.setContent(content);
+      }
+    },
+    [editor]
+  );
+
+  const getContent = useCallback((): JSONContent => {
+    if (editor) {
+      return editor.getJSON();
+    }
+    return {};
+  }, [editor]);
+
+  const insertJSON = useCallback(
+    (json: JSONContent): void => {
+      if (editor) {
+        editor.commands.insertContent(json);
+      }
+    },
+    [editor]
+  );
+
+  const isNodeHasAttribute = useCallback(
+    (node: Node, attrName: string): boolean | undefined => {
+      return node.attrs?.[attrName];
+    },
+    []
+  );
+
+  // Expose methods via ref
+  useImperativeHandle(
+    ref,
+    (): LicitHandle => ({
+      editor: editor,
+      editorView: editor?.view || null,
+      goToEnd,
+      pageLayout,
+      setContent,
+      getContent,
+      insertJSON,
+      isNodeHasAttribute,
+    }),
+    [
+      editor,
+      goToEnd,
+      pageLayout,
+      setContent,
+      getContent,
+      insertJSON,
+      isNodeHasAttribute,
+    ]
+  );
+
   if (editor) {
     editor.on('create', (props: EditorEvents['create']) => {
       // The editor is ready.
-      onCreate(props.editor, props.editor.view, debug, onReady);
+      const handle: LicitHandle = {
+        editor: editor,
+        editorView: editor.view,
+        goToEnd,
+        pageLayout,
+        setContent,
+        getContent,
+        insertJSON,
+        isNodeHasAttribute,
+      };
+      onCreate(
+        props.editor,
+        props.editor.view,
+        finalDebug,
+        finalOnReady,
+        handle
+      );
     });
 
     editor.on('update', (props: EditorEvents['update']) => {
       // The content has changed.
-      onUpdate(props.editor, onChange);
+      onUpdate(props.editor, finalOnChange);
     });
 
     editor.on('destroy', (_props: EditorEvents['destroy']) => {
       // The editor is being destroyed.
       destroyDevTool();
+      // Cleanup collaboration
+      if (provider) {
+        provider.destroy();
+        provider = null;
+      }
+      if (ydoc) {
+        ydoc.destroy();
+        ydoc = null;
+      }
     });
 
-    const eView: EditorViewEx = editor.view;
-    eView.runtime = runtime;
-    const wrapperClass = 'prosemirror-editor-wrapper' + ' ' + theme;
+    const eView: EditorViewEx = editor.view as EditorViewEx;
+    eView.runtime = finalRuntime;
+    const wrapperClass = 'prosemirror-editor-wrapper' + ' ' + finalTheme;
     const mainClassName = cx(wrapperClass, {
-      embedded: embedded,
+      embedded: finalEmbedded,
     });
     return (
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={finalTheme}>
         <div className={mainClassName}>
           <RichTextEditor
-            disabled={disabled}
+            disabled={finalDisabled}
             editor={editor}
             editorState={editor.state}
             editorView={eView}
-            embedded={embedded}
-            height={height}
-            readOnly={readOnly}
-            toolbarConfig={toolbarConfig}
-            width={width}
+            embedded={finalEmbedded}
+            height={finalHeight}
+            readOnly={finalReadOnly}
+            toolbarConfig={finalToolbarConfig}
+            width={finalWidth}
           />
         </div>
       </ThemeProvider>
@@ -492,4 +669,6 @@ export const Licit = ({
   }
 };
 
+export const Licit = forwardRef<LicitHandle, LicitProps>(LicitComponent);
 
+Licit.displayName = 'Licit';

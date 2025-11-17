@@ -1,10 +1,14 @@
 /**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ *
  * @jest-environment jsdom
  */
 
-import React from 'react';
-import { unmountComponentAtNode } from 'react-dom';
-
+import React, { ReactNode } from 'react';
+import {unmountComponentAtNode} from 'react-dom';
+import * as YWebrtc from 'y-webrtc';
+import * as YIndexedDB from 'y-indexeddb';
 // --------------------
 // Mocks (hoisted)
 // --------------------
@@ -44,41 +48,48 @@ jest.mock('lib0/math', () => ({
 
 // Minimal OrderedMap implementation used by the module
 jest.mock('orderedmap', () => {
-  return {
-    OrderedMap: class {
-      content: any[];
-      map: Record<string, any>;
-      constructor(initial?: any[]) {
-        this.content = initial ? [...initial] : [];
-        this.map = {};
-        for (let i = 0; i < this.content.length; i += 2) {
-          this.map[this.content[i]] = this.content[i + 1];
-        }
+  class OrderedMap<T = unknown> {
+    content: [string, T][];
+    map: Record<string, T>;
+
+    constructor(initial?: [string, T][]) {
+      this.content = initial ? [...initial] : [];
+      this.map = {};
+
+      for (const [key, value] of this.content) {
+        this.map[key] = value;
       }
-      addToEnd(name: string, spec: any) {
-        if (!this.map[name]) {
-          this.content.push(name, spec);
-          this.map[name] = spec;
-        }
-        return this;
+    }
+
+    addToEnd(name: string, spec: T): this {
+      if (!this.map[name]) {
+        this.content.push([name, spec]);
+        this.map[name] = spec;
       }
-      update(name: string, val: any) {
-        this.map[name] = val;
-        for (let i = 0; i < this.content.length; i += 2) {
-          if (this.content[i] === name) {
-            this.content[i + 1] = val;
-            return this;
-          }
-        }
-        this.content.push(name, val);
-        return this;
+      return this;
+    }
+
+    update(name: string, val: T): this {
+      this.map[name] = val;
+
+      const existing = this.content.findIndex((c) => c[0] === name);
+      if (existing !== -1) {
+        this.content[existing][1] = val;
+      } else {
+        this.content.push([name, val]);
       }
-      get(name: string) {
-        return this.map[name] || { attrs: {} };
-      }
-    },
-  };
+
+      return this;
+    }
+
+    get(name: string): T | { attrs: Record<string, unknown> } {
+      return this.map[name] ?? { attrs: {} };
+    }   
+  }
+
+  return { OrderedMap };
 });
+
 
 // TipTap core
 jest.mock('@tiptap/core', () => ({
@@ -146,20 +157,30 @@ jest.mock('../extensions/tableCellEx', () => ({}));
 jest.mock('../defaultEditorPlugins', () =>
   jest.fn().mockImplementation(() => ({ get: () => ['pluginA', 'pluginB'] }))
 );
-jest.mock('../convertFromJSON', () => ({ getEffectiveSchema: jest.fn((s: any) => s) }));
-jest.mock('../ui/richTextEditor', () => jest.fn(() => React.createElement('div', { 'data-testid': 'rich-text-editor' })));
+jest.mock('../convertFromJSON', () => ({
+  getEffectiveSchema: jest.fn((s: Schema) => s),
+}));
+jest.mock('../ui/richTextEditor', () =>
+  jest.fn(() => React.createElement('div', {'data-testid': 'rich-text-editor'}))
+);
 jest.mock('@modusoperandi/licit-ui-commands', () => ({
   HEADING: 'heading',
   PARAGRAPH: 'paragraph',
   noop: () => {},
-  ThemeProvider: ({ children }: any) => React.createElement('div', {}, children),
+  ThemeProvider: ({children}: {children: ReactNode}) => React.createElement('div', {}, children),
 }));
-jest.mock('classnames', () => (...args: any[]) => args.filter(Boolean).join(' '));
+jest.mock(
+  'classnames',
+  () =>
+    (...args: string[]) =>
+      args.filter(Boolean).join(' ')
+);
 
 // --------------------
 // Import module under test AFTER mocks
 // --------------------
 import * as LicitModule from '../licit';
+import { Schema } from 'prosemirror-model';
 
 // --------------------
 // DOM helpers
@@ -188,11 +209,10 @@ afterEach(() => {
 });
 
   it('configCollab sets up collaboration + IndexedDB persistence', () => {
-    const ref: any = { collaboration: false, currentUser: null };
+    const ref: { collaboration: boolean; currentUser: Record<string, unknown> | null } = {collaboration: false, currentUser: null};
 
-    const { __mock: idbMock } = require('y-indexeddb');
-    const { __mock: webrtcMock } = require('y-webrtc');
-
+    const webrtcMock = (YWebrtc as typeof webrtcMock).__mock;
+    const idbMock = (YIndexedDB as typeof idbMock).__mock;
     LicitModule.configCollab('doc-123', 'inst-1', ref, 'https://fake');
 
     expect(ref.collaboration).toBe(true);
@@ -200,22 +220,42 @@ afterEach(() => {
     expect(ref.currentUser.name).toBe('inst-1');
     expect(typeof ref.currentUser.color).toBe('string');
 
-    expect(idbMock.MockIndexeddbPersistence).toHaveBeenCalledWith('doc-123', expect.anything());
-    expect(idbMock.mockIndexeddbOn).toHaveBeenCalledWith('synced', expect.any(Function));
+    expect(idbMock.MockIndexeddbPersistence).toHaveBeenCalledWith(
+      'doc-123',
+      expect.anything()
+    );
+    expect(idbMock.mockIndexeddbOn).toHaveBeenCalledWith(
+      'synced',
+      expect.any(Function)
+    );
     expect(webrtcMock.MockWebrtcProvider).toHaveBeenCalled();
   });
 
   it('updateSpecAttrs merges new attributes', () => {
     // existingSchema.spec.nodes.content must be an array [name, spec, ...]
-    const existingSchema: any = {
+    const existingSchema: Schema = {
       spec: {
         nodes: {
+          // Mock the content property as it's used in updateSpecAttrs
+          // @ts-expect-error - Mocking simplified schema structure for testing
           content: ['para', { attrs: { a: 1 } }],
         },
       },
     };
-    const collection = ['para', { attrs: { b: 2 } }];
-    LicitModule.updateSpecAttrs(0, collection as any, existingSchema, 'nodes');
-    expect(existingSchema.spec.nodes.content[1].attrs).toEqual({ a: 1, b: 2 });
+    const collection = ['para', {attrs: {b: 2}}];
+    LicitModule.updateSpecAttrs(
+      0,
+      collection as (
+        | string
+        | {
+            attrs: {
+              b: number;
+            };
+          }
+      )[],
+      existingSchema,
+      'nodes'
+    );
+    expect(existingSchema.spec.nodes['content'][1].attrs).toEqual({a: 1, b: 2});
   });
 });
