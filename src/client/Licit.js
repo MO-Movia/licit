@@ -204,34 +204,41 @@ class Licit extends React.Component<any, any> {
     return editorState;
   }
 
-  getEffectivePlugins(
-    schema: Schema,
-    defaultPlugins: Array<Plugin>,
-    plugins: Array<Plugin>
-  ): { plugins: Array<Plugin>, schema: Schema, pasteJSONPlugin: Plugin } {
-    const effectivePlugins = defaultPlugins;
-    let pasteJSONPlugin = null;
+getEffectivePlugins(
+  schema: Schema,
+  defaultPlugins: Array<Plugin>,
+  plugins: Array<Plugin>
+): { plugins: Array<Plugin>; schema: Schema; pasteJSONPlugin: Plugin | null } {
+  const effectivePlugins = [...defaultPlugins];
+  let pasteJSONPlugin: Plugin | null = null;
 
-    if (plugins) {
-      for (const p of plugins) {
-        if (!effectivePlugins.includes(p)) {
-          effectivePlugins.push(p);
-          if (p.getEffectiveSchema) {
-            schema = p.getEffectiveSchema(schema);
-          }
+  if (plugins) {
+    for (const p of plugins) {
+      if (!effectivePlugins.includes(p)) {
+        effectivePlugins.push(p);
 
-          if (p.initKeyCommands) {
-            effectivePlugins.push(p.initKeyCommands());
-          }
+        if (p.getEffectiveSchema) {
+          schema = p.getEffectiveSchema(schema);
+        }
 
-          if (p.insert) {
-            pasteJSONPlugin = p;
+        if (p.initKeyCommands) {
+          const keyCommandPlugins = p.initKeyCommands();
+          if (Array.isArray(keyCommandPlugins)) {
+            effectivePlugins.push(...keyCommandPlugins);
+          } else if (keyCommandPlugins) {
+            effectivePlugins.push(keyCommandPlugins);
           }
+        }
+
+        if (p.insert) {
+          pasteJSONPlugin = p;
         }
       }
     }
-    return { plugins: effectivePlugins, schema, pasteJSONPlugin };
   }
+
+  return { plugins: effectivePlugins, schema, pasteJSONPlugin };
+}
 
   // [FS] IRAD-1578 2021-09-27
   onReady(state: EditorState) {
