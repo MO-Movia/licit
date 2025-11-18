@@ -4,12 +4,12 @@
   animation-direction: alternate;
   animation-duration: 0.5s;
   animation-iteration-count: infinite;
-  animation-name: czi_selection_blink;
+  animation-name: czi-selection-blink;
   animation-timing-function: ease-in-out;
   background-color: var(--czi-selection-highlight-color-dark) !important;
 }
 
-@keyframes czi_selection_blink {
+@keyframes czi-selection-blink {
   from {
     opacity: 1;
   }

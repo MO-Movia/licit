@@ -17,9 +17,10 @@ const cached = {};
 
 const CSS_FONT = 'Material Icons';
 
-void (async function () { // NOSONAR
+void (async function () {
+  // NOSONAR
   // Inject CSS Fonts reuqired for toolbar icons.
-  await canUseCSSFont(CSS_FONT); 
+  await canUseCSSFont(CSS_FONT);
 })();
 
 // const importImage = (filename) => import(`@assets/images/${filename}`);
@@ -176,24 +177,8 @@ class Icon extends React.PureComponent {
         default:
           break;
       }
-
-      // const theme = this.context;
-      const t = this.props.theme ? this.props.theme : 'dark';
-
-      // image = this.loadImage('dark',fileName+'.svg')
-      // image = this.loadImage(t,fileName+'.svg');
-
-      // const fetchImage = async () => {
-      //   image = await this.loadImage(t,fileName+'.svg');
-
-      // };
-      // fetchImage();
-      // const dynamicPath = './';
-      // image = require('../../images/' + t + '/' + fileName + '.svg');
-      // import image from `../../images/${t}/${fileName}.svg`;
     }
 
-    //const { srcImg } = await import(`${path}`);`${path}`;//[`../../images/${'format_align_justify'}.svg`]//'../../images/format_align_justify.svg'
     return (
       <img
         alt={title}
@@ -205,25 +190,7 @@ class Icon extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { type } = this.props;
-    // const { image1 } = this.state;
-    // const [image1, setImage] = useState(null);
-
-    /*if (type == 'superscript') {
-      className = cx('czi-icon', { [type]: true });
-      children = <SuperscriptIcon />;
-    } else if (type == 'subscript') {
-      className = cx('czi-icon', { [type]: true });
-      children = <SubscriptIcon />;
-    } else if (!type || !VALID_CHARS.test(type)) {
-      className = cx('czi-icon-unknown');
-      children = title || type;
-    } else {
-      className = cx('czi-icon', { [type]: true });
-      children = type;
-    }*/
-    // let image = null;
-
+    const {type} = this.props;
     if (type.startsWith('assets/') || type.startsWith('data:image/svg+xml')) {
       // image1 = type;
       this.setState({image1: type});

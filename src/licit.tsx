@@ -188,50 +188,84 @@ export const configCollab = (
 const prepareEffectiveSchema = (
   defaultExtensions: Extension[],
   plugins: Plugin[] | null
-): void => {
-  if (!effectiveSchema) {
-    const schema = getSchema(defaultExtensions);
+): {
+  editorSchema: Schema;
+  licitPlugins: Extension;
+} | null => {
+  // Return early if already initialized
+  if (effectiveSchema) {
+    return null;
+  }
 
+  try {
+    // Get base schema
+    const baseSchema = getSchema(defaultExtensions);
+
+    // Helper to safely update node attributes
     const updateNodeAttrs = (nodeName: string, licitNode: NodeSpec): void => {
-      const tiptapNode = (schema.spec.nodes as OrderedMap<NodeSpec>).get(
-        nodeName
-      );
-      if (tiptapNode) {
-        const keys = Object.keys(licitNode.attrs || {});
-        keys.forEach((key) => {
-          if (!tiptapNode.attrs?.[key]) {
-            if (!tiptapNode.attrs) {
-              tiptapNode.attrs = {};
-            }
-            tiptapNode.attrs[key] = licitNode.attrs![key];
-          }
-        });
+      const nodesMap = baseSchema.spec.nodes;
+      const tiptapNode = nodesMap.get(nodeName);
+
+      if (!tiptapNode || !licitNode.attrs) {
+        return;
       }
+
+      // Create new attrs object instead of mutating
+      const mergedAttrs = {
+        ...(tiptapNode.attrs || {}),
+        ...Object.fromEntries(
+          Object.entries(licitNode.attrs).filter(
+            ([key]) => !tiptapNode.attrs?.[key]
+          )
+        ),
+      };
+
+      // Safe mutation if we own this object
+      Object.assign(tiptapNode, {attrs: mergedAttrs});
     };
+
+    // Update paragraph node
     updateNodeAttrs(PARAGRAPH, ParagraphNodeSpec);
 
-    const nodes = updateEditorNodes(schema.spec.nodes as OrderedMap<NodeSpec>);
-    const marks = updateEditorMarks(schema.spec.marks as OrderedMap<unknown>);
+    // Process nodes and marks
+    const nodesMap = baseSchema.spec.nodes;
+    const marksMap = baseSchema.spec.marks;
 
-    const defaultEditorSchema = new Schema({
-      nodes: nodes,
-      marks: marks,
-    });
+    const nodes = updateEditorNodes(nodesMap);
+    const marks = updateEditorMarks(marksMap);
+
+    // Create default schema and plugins
+    const defaultEditorSchema = new Schema({nodes, marks});
     const defaultEditorPlugins = new DefaultEditorPlugins(
       defaultEditorSchema
     ).get();
 
-    editorSchema = getEffectiveSchema(
+    // Generate effective schema
+    const finalSchema = getEffectiveSchema(
       defaultEditorSchema,
       defaultEditorPlugins,
       plugins || []
     );
 
-    licitPlugins = Extension.create({
+    // Create extension with plugins
+    const pluginsExtension = Extension.create({
       addProseMirrorPlugins() {
         return [...defaultEditorPlugins];
       },
     });
+
+    // Update module-level variables (consider refactoring this pattern)
+    effectiveSchema = finalSchema;
+    editorSchema = finalSchema;
+    licitPlugins = pluginsExtension;
+
+    return {
+      editorSchema: finalSchema,
+      licitPlugins: pluginsExtension,
+    };
+  } catch (error) {
+    console.error('Failed to prepare effective schema:', error);
+    throw new Error('Schema initialization failed');
   }
 };
 
@@ -290,7 +324,7 @@ export const updateSpecAttrs = (
     const specMap = existingSchema.spec[attrName] as OrderedMap<unknown>;
 
     // Find the matching spec in the existing schema
-    specMap.forEach((name, spec) => {
+    specMap?.forEach((name, spec) => {
       if (name === collection[i]) {
         const attrsLicit = (spec as {attrs?: Record<string, unknown>})?.attrs;
         if (attrsLicit) {
@@ -315,7 +349,7 @@ const initDevTool = (debug: boolean, editorView: EditorView): void => {
           // for clarity and future proofing.
           const applyPMDevTools = await import('prosemirror-dev-tools');
           // got the pm dev tools instance.
-          applyDevTools = applyPMDevTools.default as any;
+          applyDevTools = applyPMDevTools.default;
           // Attach debug tools to current editor instance.
           if (applyDevTools) {
             applyDevTools(editorView);
@@ -372,19 +406,19 @@ const onBeforeCreate = (params: {
     const editor = params.props.editor;
     UICommand.prototype.editor = editor;
 
-    updateSpec(editor.schema, 'marks', editorSchema!);
-    updateSpec(editor.schema, 'nodes', editorSchema!);
+    updateSpec(editor.schema, 'marks', editorSchema);
+    updateSpec(editor.schema, 'nodes', editorSchema);
 
     editor.schema = new Schema({
-      nodes: editorSchema!.spec.nodes,
-      marks: editorSchema!.spec.marks,
+      nodes: editorSchema.spec.nodes,
+      marks: editorSchema.spec.marks,
     });
     params.schema = editor.schema;
   }
 };
 
 const onCreate = (
-  editor: Editor,
+  _editor: Editor,
   editorView: EditorView,
   debug: boolean,
   onReady?: ReadyCB,
