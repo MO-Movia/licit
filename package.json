@@ -77,9 +77,13 @@
   },
   "dependencies": {
     "@modusoperandi/color-picker": "^1.0.7",
+    "@modusoperandi/licit-changecase": "file:modusoperandi-licit-changecase-3.0.0.tgz",
+    "@modusoperandi/licit-citation": "file:modusoperandi-licit-citation-3.0.0.tgz",
     "@modusoperandi/licit-custom-styles": "file:modusoperandi-licit-custom-styles-3.0.0.tgz",
     "@modusoperandi/licit-doc-attrs-step": "file:modusoperandi-licit-doc-attrs-step-3.0.0.tgz",
     "@modusoperandi/licit-export-pdf": "file:modusoperandi-licit-export-pdf-3.0.0.tgz",
+    "@modusoperandi/licit-glossary": "file:modusoperandi-licit-glossary-3.0.0.tgz",
+    "@modusoperandi/licit-info-icon": "file:modusoperandi-licit-info-icon-3.0.0.tgz",
     "@modusoperandi/licit-multimedia": "file:modusoperandi-licit-multimedia-3.0.0.tgz",
     "@modusoperandi/licit-ui-commands": "file:modusoperandi-licit-ui-commands-3.0.0.tgz",
     "@modusoperandi/licit-vignette": "file:modusoperandi-licit-vignette-3.0.0.tgz",

@@ -42,7 +42,8 @@ export const KEY_SPLIT_LIST_ITEM = makeKeyMapWithCommon(
 
 export const ALL_KEYS = [KEY_SPLIT_LIST_ITEM];
 
-export function findKeymapByDescription(description: string): Keymap | null {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function findKeymapByDescription(description: string): any {
   const matches = ALL_KEYS.filter((keymap) => {
     return keymap.description.toUpperCase() === description.toUpperCase();
   });

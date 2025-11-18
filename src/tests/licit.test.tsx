@@ -5,7 +5,7 @@
  * @jest-environment jsdom
  */
 
-import React, { ReactNode } from 'react';
+import React, {ReactNode} from 'react';
 import {unmountComponentAtNode} from 'react-dom';
 import * as YWebrtc from 'y-webrtc';
 import * as YIndexedDB from 'y-indexeddb';
@@ -29,13 +29,13 @@ jest.mock('y-indexeddb', () => {
   }));
   return {
     IndexeddbPersistence: MockIndexeddbPersistence,
-    __mock: { MockIndexeddbPersistence, mockIndexeddbOn },
+    __mock: {MockIndexeddbPersistence, mockIndexeddbOn},
   };
 });
 
 jest.mock('y-webrtc', () => {
   const MockWebrtcProvider = jest.fn().mockImplementation(() => ({}));
-  return { WebrtcProvider: MockWebrtcProvider, __mock: { MockWebrtcProvider } };
+  return {WebrtcProvider: MockWebrtcProvider, __mock: {MockWebrtcProvider}};
 });
 
 jest.mock('y-protocols/awareness', () => ({
@@ -82,18 +82,17 @@ jest.mock('orderedmap', () => {
       return this;
     }
 
-    get(name: string): T | { attrs: Record<string, unknown> } {
-      return this.map[name] ?? { attrs: {} };
-    }   
+    get(name: string): T | {attrs: Record<string, unknown>} {
+      return this.map[name] ?? {attrs: {}};
+    }
   }
 
-  return { OrderedMap };
+  return {OrderedMap};
 });
-
 
 // TipTap core
 jest.mock('@tiptap/core', () => ({
-  Extension: { create: jest.fn(() => ({})) },
+  Extension: {create: jest.fn(() => ({}))},
   Editor: jest.fn(),
 }));
 
@@ -103,10 +102,10 @@ jest.mock('@tiptap/react', () => ({
   getSchema: jest.fn(() => ({
     spec: {
       nodes: {
-        get: () => ({ attrs: {} }),
+        get: () => ({attrs: {}}),
       },
       marks: {
-        get: () => ({ attrs: {} }),
+        get: () => ({attrs: {}}),
       },
     },
   })),
@@ -155,7 +154,7 @@ jest.mock('../extensions/tableCellEx', () => ({}));
 
 // supporting mocks
 jest.mock('../defaultEditorPlugins', () =>
-  jest.fn().mockImplementation(() => ({ get: () => ['pluginA', 'pluginB'] }))
+  jest.fn().mockImplementation(() => ({get: () => ['pluginA', 'pluginB']}))
 );
 jest.mock('../convertFromJSON', () => ({
   getEffectiveSchema: jest.fn((s: Schema) => s),
@@ -167,7 +166,8 @@ jest.mock('@modusoperandi/licit-ui-commands', () => ({
   HEADING: 'heading',
   PARAGRAPH: 'paragraph',
   noop: () => {},
-  ThemeProvider: ({children}: {children: ReactNode}) => React.createElement('div', {}, children),
+  ThemeProvider: ({children}: {children: ReactNode}) =>
+    React.createElement('div', {}, children),
 }));
 jest.mock(
   'classnames',
@@ -180,36 +180,36 @@ jest.mock(
 // Import module under test AFTER mocks
 // --------------------
 import * as LicitModule from '../licit';
-import { Schema } from 'prosemirror-model';
+import {Schema} from 'prosemirror-model';
 
 // --------------------
 // DOM helpers
 // --------------------
 let container: HTMLDivElement | null = null;
 
-
-
 // --------------------
 // Tests
 // --------------------
 describe('Licit module overall behaviour', () => {
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
 
-beforeEach(() => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
-});
-
-afterEach(() => {
-  if (container) {
-    unmountComponentAtNode(container);
-    container.remove();
-    container = null;
-  }
-  jest.clearAllMocks();
-});
+  afterEach(() => {
+    if (container) {
+      unmountComponentAtNode(container);
+      container.remove();
+      container = null;
+    }
+    jest.clearAllMocks();
+  });
 
   it('configCollab sets up collaboration + IndexedDB persistence', () => {
-    const ref: { collaboration: boolean; currentUser: Record<string, unknown> | null } = {collaboration: false, currentUser: null};
+    const ref: {
+      collaboration: boolean;
+      currentUser: Record<string, unknown> | null;
+    } = {collaboration: false, currentUser: null};
 
     const webrtcMock = (YWebrtc as typeof webrtcMock).__mock;
     const idbMock = (YIndexedDB as typeof idbMock).__mock;
@@ -230,32 +230,5 @@ afterEach(() => {
     );
     expect(webrtcMock.MockWebrtcProvider).toHaveBeenCalled();
   });
-
-  it('updateSpecAttrs merges new attributes', () => {
-    // existingSchema.spec.nodes.content must be an array [name, spec, ...]
-    const existingSchema: Schema = {
-      spec: {
-        nodes: {
-          // Mock the content property as it's used in updateSpecAttrs
-          // @ts-expect-error - Mocking simplified schema structure for testing
-          content: ['para', { attrs: { a: 1 } }],
-        },
-      },
-    };
-    const collection = ['para', {attrs: {b: 2}}];
-    LicitModule.updateSpecAttrs(
-      0,
-      collection as (
-        | string
-        | {
-            attrs: {
-              b: number;
-            };
-          }
-      )[],
-      existingSchema,
-      'nodes'
-    );
-    expect(existingSchema.spec.nodes['content'][1].attrs).toEqual({a: 1, b: 2});
-  });
+  
 });

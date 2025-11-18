@@ -38,6 +38,26 @@ const plugins = [
         to: 'assets/images',
         noErrorOnMissing: true, // Don't fail if path doesn't exist
       },
+      {
+        from: 'node_modules/@modusoperandi/licit-changecase/assets/images',
+        to: 'assets/images',
+        noErrorOnMissing: true, // Don't fail if path doesn't exist
+      },
+      {
+        from: 'node_modules/@modusoperandi/licit-citation/assets/images',
+        to: 'assets/images',
+        noErrorOnMissing: true, // Don't fail if path doesn't exist
+      },
+      {
+        from: 'node_modules/@modusoperandi/licit-glossary/assets/images',
+        to: 'assets/images',
+        noErrorOnMissing: true, // Don't fail if path doesn't exist
+      },
+      {
+        from: 'node_modules/@modusoperandi/licit-info-icon/assets/images',
+        to: 'assets/images',
+        noErrorOnMissing: true, // Don't fail if path doesn't exist
+      },
     ],
   }),
 ].filter(Boolean);

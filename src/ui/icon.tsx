@@ -17,79 +17,10 @@ const cached = {};
 
 const CSS_FONT = 'Material Icons';
 
-void (async function () { // NOSONAR
+void (async function () {  // NOSONAR
   // Inject CSS Fonts reuqired for toolbar icons.
-  await canUseCSSFont(CSS_FONT); 
+  await canUseCSSFont(CSS_FONT);
 })();
-
-// const importImage = (filename) => import(`@assets/images/${filename}`);
-/*class SuperscriptIcon extends React.PureComponent {
-  render(): React.ReactElement {
-    return (
-      <span className="superscript-wrap">
-        <span className="superscript-base">x</span>
-        <span className="superscript-top">y</span>
-      </span>
-    );
-  }
-}*/
-
-/*function useDynamicSVGImport(name, options = {}) {
-  const ImportedIconRef = useRef();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
-
-  const { onCompleted, onError } = options;
-  useEffect(() => {
-    setLoading(true);
-    const importIcon = async () => {
-      try {
-        ImportedIconRef.current = (
-          await import(`./${name}.svg`)
-        ).ReactComponent;
-        if (onCompleted) {
-          onCompleted(name, ImportedIconRef.current);
-        }
-      } catch (err) {
-        if (onError) {
-          onError(err);
-        }
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    importIcon();
-  }, [name, onCompleted, onError]);
-
-  return { error, loading, SvgIcon: ImportedIconRef.current };
-}
-
-function IconEx({name, onCompleted, onError, ...rest}) {
-  const {error, loading, SvgIcon} = useDynamicSVGImport(name, {onCompleted, onError});
-  if(error) {
-    return error.message;
-  }
-
-  if(loading) {
-    return "Loading...";
-  }
-
-  if(SvgIcon) {
-    return <SvgIcon {...rest}/>
-  }
-}
-*/
-/*class SubscriptIcon extends React.PureComponent {
-  render(): React.ReactElement {
-    return (
-      <span className="subscript-wrap">
-        <span className="subscript-base">x</span>
-        <span className="subscript-bottom">y</span>
-      </span>
-    );
-  }
-}*/
 
 class Icon extends React.PureComponent {
   public static readonly contextType = ThemeContext;
@@ -120,23 +51,7 @@ class Icon extends React.PureComponent {
 
   render(): React.ReactElement {
     const {type, title} = this.props;
-    const {image1} = this.state;
-
-    // const [image1, setImage] = useState(null);
-
-    /*if (type == 'superscript') {
-      className = cx('czi-icon', { [type]: true });
-      children = <SuperscriptIcon />;
-    } else if (type == 'subscript') {
-      className = cx('czi-icon', { [type]: true });
-      children = <SubscriptIcon />;
-    } else if (!type || !VALID_CHARS.test(type)) {
-      className = cx('czi-icon-unknown');
-      children = title || type;
-    } else {
-      className = cx('czi-icon', { [type]: true });
-      children = type;
-    }*/
+    const {image1} = this.state;   
     let _image = null;
 
     if (type.startsWith('assets/')) {
@@ -176,25 +91,8 @@ class Icon extends React.PureComponent {
         default:
           break;
       }
-
-      // const theme = this.context;
-      const t = this.props.theme ? this.props.theme : 'dark';
-      console.warn('fromicon ' + t);
-
-      // image = this.loadImage('dark',fileName+'.svg')
-      // image = this.loadImage(t,fileName+'.svg');
-
-      // const fetchImage = async () => {
-      //   image = await this.loadImage(t,fileName+'.svg');
-
-      // };
-      // fetchImage();
-      // const dynamicPath = './';
-      // image = require('../../images/' + t + '/' + fileName + '.svg');
-      // import image from `../../images/${t}/${fileName}.svg`;
     }
 
-    //const { srcImg } = await import(`${path}`);`${path}`;//[`../../images/${'format_align_justify'}.svg`]//'../../images/format_align_justify.svg'
     return (
       <img
         alt={title}
@@ -206,25 +104,7 @@ class Icon extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { type } = this.props;
-    // const { image1 } = this.state;
-    // const [image1, setImage] = useState(null);
-
-    /*if (type == 'superscript') {
-      className = cx('czi-icon', { [type]: true });
-      children = <SuperscriptIcon />;
-    } else if (type == 'subscript') {
-      className = cx('czi-icon', { [type]: true });
-      children = <SubscriptIcon />;
-    } else if (!type || !VALID_CHARS.test(type)) {
-      className = cx('czi-icon-unknown');
-      children = title || type;
-    } else {
-      className = cx('czi-icon', { [type]: true });
-      children = type;
-    }*/
-    // let image = null;
-
+    const {type} = this.props;
     if (type.startsWith('assets/') || type.startsWith('data:image/svg+xml')) {
       // image1 = type;
       this.setState({image1: type});
@@ -267,7 +147,6 @@ class Icon extends React.PureComponent {
 
       // const theme = this.context;
       const t = this.props.theme ? this.props.theme : 'dark';
-      console.warn('fromicon ' + t);
       try {
         // Dynamically load the image
         //  const imageModule = await import(`@assets/images/${t}/${fileName}.svg`);
