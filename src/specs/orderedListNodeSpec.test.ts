@@ -35,7 +35,7 @@ describe('OrderedListNodeSpec', () => {
             [ATTRIBUTE_FOLLOWING]: 'true',
             type: 'x.x.x',
           };
-          return attrs[attr] as string | null;
+          return attrs[attr] as string;
         }),
         hasAttribute: jest.fn((attr) => {
           const attrs = [
@@ -72,13 +72,13 @@ describe('OrderedListNodeSpec', () => {
             start: '1',
             // Simulate missing optional attributes
           };
-          return attrs[attr] as string | null;
+          return attrs[attr] as string;
         }),
         hasAttribute: jest.fn((attr) => {
           const attrs = ['start', ATTRIBUTE_LIST_STYLE_TYPE];
           return attrs.includes(attr); // Only returns true for the provided attributes
         }),
-      } as unknown as HTMLElement;;
+      } as unknown as HTMLElement;
 
       const result = OrderedListNodeSpec.parseDOM[0].getAttrs(mockOlElement);
 

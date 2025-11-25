@@ -17,7 +17,7 @@ class CustomRadioButton extends React.PureComponent {
   declare props: PointerSurfaceProps & {
     checked?: boolean;
     inline?: boolean;
-    label?: string | React.ReactElement | null;
+    label?: string | React.ReactElement;
     name?: string;
     onSelect?: (val, e: React.SyntheticEvent) => void;
   };

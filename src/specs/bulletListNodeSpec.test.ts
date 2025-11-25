@@ -11,7 +11,7 @@ import {Node as ProseMirrorNode} from 'prosemirror-model';
 interface MockNode extends Partial<ProseMirrorNode> {
   attrs: {
     indent: number;
-    listStyleType: string | null;
+    listStyleType: string;
   };
 }
 
@@ -61,7 +61,7 @@ describe('BulletListNodeSpec', () => {
 
       expect(BulletListNodeSpec.toDOM(node as ProseMirrorNode)).toEqual([
         'ul',
-        { type: 'disc', [ATTRIBUTE_INDENT]: 0 },
+        {type: 'disc', [ATTRIBUTE_INDENT]: 0},
         0,
       ]);
     });

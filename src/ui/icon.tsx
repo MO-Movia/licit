@@ -7,7 +7,6 @@ import React from 'react';
 
 import canUseCSSFont from '../canUseCSSFont';
 import {ThemeContext} from '@modusoperandi/licit-ui-commands';
-// import { ReactComponent as UndoIcon } from '../../images/dark/undo.svg';
 
 import '../styles/czi-icon.css';
 
@@ -51,7 +50,7 @@ class Icon extends React.PureComponent {
 
   render(): React.ReactElement {
     const {type, title} = this.props;
-    const {image1} = this.state;   
+    const {image1} = this.state;
     let _image = null;
 
     if (type.startsWith('assets/')) {
@@ -100,13 +99,11 @@ class Icon extends React.PureComponent {
         style={{width: '100%', height: '100%'}}
       ></img>
     );
-    //return <span className={className}>{children}</span>;
   }
 
   componentDidMount() {
     const {type} = this.props;
     if (type.startsWith('assets/') || type.startsWith('data:image/svg+xml')) {
-      // image1 = type;
       this.setState({image1: type});
     } else {
       let fileName = 'Icon_Source';
@@ -145,7 +142,6 @@ class Icon extends React.PureComponent {
           break;
       }
 
-      // const theme = this.context;
       const t = this.props.theme ? this.props.theme : 'dark';
       try {
         // Dynamically load the image

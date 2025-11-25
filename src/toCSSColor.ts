@@ -28,7 +28,7 @@ export function toCSSColor(source: string): string {
     return '';
   }
   if (source in ColorMaping) {
-    return ColorMaping[source] as string | null;
+    return ColorMaping[source] as string;
   }
 
   if (source && RGBA_PATTERN.test(source)) {

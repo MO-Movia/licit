@@ -4,15 +4,19 @@
  */
 
 import cx from 'classnames';
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
-import { CustomButton, createPopUp,ThemeContext } from '@modusoperandi/licit-ui-commands';
+import {
+  CustomButton,
+  createPopUp,
+  ThemeContext,
+} from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid';
 import ListTypeMenu from './listTypeMenu';
 import '../styles/czi-custom-menu-button.css';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 type ListTypeButtonType = {
   className?: string;
@@ -21,14 +25,14 @@ type ListTypeButtonType = {
   dispatch: (tr: Transform) => void;
   editorState: EditorState;
   editorView: EditorView;
-  icon?: string | React.ReactElement | null;
-  label?: string | React.ReactElement | null;
+  icon?: string | React.ReactElement;
+  label?: string | React.ReactElement;
   title?: string;
-  theme?:string
+  theme?: string;
 };
 class ListTypeButton extends React.PureComponent<ListTypeButtonType> {
   public static readonly contextType = ThemeContext;
- declare  props: ListTypeButtonType;
+  declare props: ListTypeButtonType;
 
   _menu = null;
   _id = uuid();
@@ -38,7 +42,7 @@ class ListTypeButton extends React.PureComponent<ListTypeButtonType> {
   };
 
   render(): React.ReactElement<CustomButton> {
-    const { className, label, commandGroups, icon, disabled, title,theme } =
+    const {className, label, commandGroups, icon, disabled, title, theme} =
       this.props;
     const enabled =
       !disabled &&
@@ -49,12 +53,11 @@ class ListTypeButton extends React.PureComponent<ListTypeButtonType> {
         });
       });
 
-    const { expanded } = this.state;
+    const {expanded} = this.state;
     const buttonClassName = cx(className, {
       'czi-custom-menu-button': true,
       expanded,
     });
-    // const theme = this.context;
     return (
       <CustomButton
         className={buttonClassName}

@@ -3,21 +3,18 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
-import { EditorView } from 'prosemirror-view';
+import {EditorState, Plugin, PluginKey} from 'prosemirror-state';
+import {EditorView} from 'prosemirror-view';
 
 import findActionableCell from '../findActionableCell';
-import {
-  atAnchorTopRight,
-  createPopUp,
-} from '@modusoperandi/licit-ui-commands';
+import {atAnchorTopRight, createPopUp} from '@modusoperandi/licit-ui-commands';
 import TableCellMenu from '../ui/tableCellMenu';
 import bindScrollHandler from '../bindScrollHandler';
 import isElementFullyVisible from '../isElementFullyVisible';
 
 import '../styles/czi-pop-up.css';
-import { EditorViewEx } from '../constants';
-import { CellSelection } from 'prosemirror-tables';
+import {EditorViewEx} from '../constants';
+import {CellSelection} from 'prosemirror-tables';
 
 class TableCellTooltipView {
   _cellElement: Node | null;
@@ -30,7 +27,7 @@ class TableCellTooltipView {
   }
 
   update(view: EditorViewEx, _lastState: EditorState): void {
-    const { state, readOnly } = view;
+    const {state, readOnly} = view;
     const result = findActionableCell(state);
 
     if (!result || readOnly) {
@@ -58,7 +55,6 @@ class TableCellTooltipView {
       actionNode,
     };
 
-
     if (cellEl && !isElementFullyVisible(cellEl as HTMLElement)) {
       cellEl = null;
     }
@@ -66,7 +62,6 @@ class TableCellTooltipView {
     if (!cellEl) {
       // Closes the popup.
       popUp?.close();
-      // this._cellElement = null;
     } else if (popUp && cellEl === this._cellElement) {
       // Updates the popup.
       popUp.update(viewPops);
@@ -113,8 +108,6 @@ class TableCellTooltipView {
     if (!popUp || !cellEl) {
       return;
     }
-    // if (!isElementFullyVisible(cellEl as HTMLElement)) {
-    //   popUp.close();
     // }
   };
 }

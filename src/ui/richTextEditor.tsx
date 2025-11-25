@@ -3,25 +3,24 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
-import { Editor, EditorContent } from '@tiptap/react';
+import {Editor, EditorContent} from '@tiptap/react';
 import EditorFrameset from './editorFrameset';
 import EditorToolbar from './editorToolbar';
 import Frag from './frag';
 import uuid from './uuid';
 
-import type { EditorFramesetProps } from './editorFrameset';
-import type { EditorProps } from './editor';
-import { Transaction } from 'prosemirror-state';
-// import { EditorToolbar } from '@modusoperandi/licit-toolbar';
-type EditorContainer = { editor?: Editor };
+import type {EditorFramesetProps} from './editorFrameset';
+import type {EditorProps} from './editor';
+import {Transaction} from 'prosemirror-state';
+type EditorContainer = {editor?: Editor};
 
 type RichTextEditorProps = EditorContainer &
   EditorFramesetProps &
   EditorProps &
-  RichTextEditorState & { children?};
+  RichTextEditorState & {children?};
 
 type RichTextEditorState = {
   editorView?: EditorView;
@@ -33,7 +32,7 @@ class RichTextEditor extends React.PureComponent<
 > {
   declare props: RichTextEditorProps;
 
- declare  state: RichTextEditorState;
+  declare state: RichTextEditorState;
 
   _id: string;
 
@@ -61,11 +60,11 @@ class RichTextEditor extends React.PureComponent<
       //placeholder,
       readOnly,
       width,
-      toolbarConfig
+      toolbarConfig,
     } = this.props;
 
-    const { editorState /*, runtime*/ } = this.props;
-    const { editorView } = this.props;
+    const {editorState /*, runtime*/} = this.props;
+    const {editorView} = this.props;
     //Seybi : This causes delay in edit
     // this.props.editor.setEditable(!readOnly);
 
@@ -111,8 +110,8 @@ class RichTextEditor extends React.PureComponent<
 
   _onReady = (editorView: EditorView): void => {
     if (editorView !== this.state.editorView) {
-      this.setState({ editorView });
-      const { onReady } = this.props;
+      this.setState({editorView});
+      const {onReady} = this.props;
       onReady?.(editorView);
     }
   };

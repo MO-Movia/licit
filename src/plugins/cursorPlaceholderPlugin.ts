@@ -46,7 +46,7 @@ export const SPEC = {
   props: {
     decorations: (state) => {
       const plugin = singletonInstance;
-      return plugin ? plugin.getState(state)  as DecorationSet : null;
+      return plugin ? (plugin.getState(state) as DecorationSet) : null;
     },
   },
 };
@@ -65,14 +65,14 @@ function specFinder(spec: Record<string, unknown>): boolean {
   return spec.id === PLACE_HOLDER_ID;
 }
 
-export function findCursorPlaceholderPos(state: EditorState): number | null {
+export function findCursorPlaceholderPos(state: EditorState): number {
   if (!singletonInstance) {
     return null;
   }
   const decos = singletonInstance.getState(state);
   const found = decos.find(null, null, specFinder);
   const pos = found.length ? found[0].from : null;
-  return pos as number || null;
+  return (pos as number) || null;
 }
 
 export function showCursorPlaceholder(state: EditorState): Transform {

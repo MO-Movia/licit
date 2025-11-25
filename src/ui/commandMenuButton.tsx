@@ -4,8 +4,8 @@
  */
 
 import cx from 'classnames';
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
 import * as React from 'react';
 
 import CommandMenu from './commandMenu';
@@ -13,13 +13,13 @@ import {
   CustomButton,
   createPopUp,
   atAnchorRight,
-  ThemeContext
+  ThemeContext,
 } from '@modusoperandi/licit-ui-commands';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import uuid from './uuid';
-import { isExpandButton } from './editorToolbarConfig';
+import {isExpandButton} from './editorToolbarConfig';
 import '../styles/czi-custom-menu-button.css';
-import { EditorViewEx } from '../constants';
+import {EditorViewEx} from '../constants';
 export interface Arr {
   [key: string]: UICommand;
 }
@@ -30,8 +30,8 @@ type PropsType = {
   dispatch: (tr: Transform) => void;
   editorState: EditorState;
   editorView: EditorViewEx;
-  icon?: string | React.ReactElement | null;
-  label?: string | React.ReactElement | null;
+  icon?: string | React.ReactElement;
+  label?: string | React.ReactElement;
   title?: string;
   sub?: boolean;
 };
@@ -80,22 +80,9 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
         });
       });
 
-    const { expanded } = this.state;
+    const {expanded} = this.state;
     const isMaximizeButton = isExpandButton(title);
-    // const theme_1 = this.context;
     const theme_1 = UICommand.theme;
-    // const buttonClassName = sub
-    //   ? cx(className, {
-    //       'czi-custom-submenu-button': true,
-    //       expanded,
-    //     })
-    //   : cx(className, {
-    //       'czi-custom-menu-button': true,
-    //       expanded,
-    //     });
-
-    // let className = 'czi-custom-menu-item ' + theme;
-
     const buttonClassName = cx(className, {
       'czi-custom-menu-button': true,
       'menu-expand-btn': isMaximizeButton,
@@ -137,7 +124,6 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
     const menu = this._menu;
     this._menu = null;
     menu?.close();
-    // alert('hello seybi');
   };
 
   _showMenu = (): void => {
@@ -145,7 +131,7 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
     const menuProps = {
       ...this.props,
       onCommand: this._onCommand,
-      theme: UICommand.theme
+      theme: UICommand.theme,
     };
     if (menu) {
       menu.update(menuProps);
@@ -174,13 +160,13 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
   };
 
   _onCommand = (): void => {
-    this.setState({ expanded: false });
+    this.setState({expanded: false});
     this._hideMenu();
   };
 
   _onClose = (): void => {
     if (this._menu) {
-      this.setState({ expanded: false });
+      this.setState({expanded: false});
       this._menu = null;
     }
   };

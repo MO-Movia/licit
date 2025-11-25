@@ -106,7 +106,7 @@ export interface LicitHandle {
   setContent: (content: JSONContent) => void;
   getContent: () => JSONContent;
   insertJSON: (json: JSONContent) => void;
-  isNodeHasAttribute: (node: Node, attrName: string) => boolean | undefined;
+  isNodeHasAttribute: (node: Node, attrName: string) => boolean;
 }
 
 const effectiveSchema: Schema | null = null;
@@ -120,7 +120,10 @@ let applyDevTools: ((view: EditorView) => void) | null = null;
 export const configCollab = (
   docID: string,
   instanceID: string,
-  ref: {collaboration: boolean; currentUser: Record<string, unknown>},
+  ref: {
+    collaboration: boolean;
+    currentUser: Record<string, unknown>;
+  },
   collabServiceURL: string
 ): void => {
   if (docID && 0 < docID.length) {
@@ -184,7 +187,7 @@ export const configCollab = (
 
 const prepareEffectiveSchema = (
   defaultExtensions: Extension[],
-  plugins: Plugin[] | null
+  plugins: Plugin[]
 ): {
   editorSchema: Schema;
   licitPlugins: Extension;
@@ -209,7 +212,7 @@ const prepareEffectiveSchema = (
 
       // Create new attrs object instead of mutating
       const mergedAttrs = {
-        ...(tiptapNode.attrs),
+        ...tiptapNode.attrs,
         ...Object.fromEntries(
           Object.entries(licitNode.attrs).filter(
             ([key]) => !tiptapNode.attrs?.[key]
@@ -439,7 +442,7 @@ const onUpdate = (editor: Editor, onChange?: ChangeCB): void => {
 
 const getCollabExtensions = (
   collaboration: boolean,
-  currentUser: Record<string, unknown> | null
+  currentUser: Record<string, unknown>
 ): Extension[] => {
   if (collaboration && ydoc && provider && currentUser) {
     return [
@@ -504,7 +507,7 @@ const LicitComponent = (
   const finalTheme = theme || 'dark';
   const finalToolbarConfig = toolbarConfig || null;
 
-  let currentUser: Record<string, unknown> | null = null;
+  let currentUser: Record<string, unknown> = null;
   let collaboration = false;
   const defaultExtensions = [
     StarterKit.configure({
@@ -557,29 +560,29 @@ const LicitComponent = (
       );
       view.focus();
     }
-  }, [editor]); 
+  }, [editor]);
 
   const pageLayout = useCallback((): void => {
-  if (editor) {
-    const DOC_LAYOUT = new DocLayoutCommand();
-     DOC_LAYOUT.waitForUserInput(
-      editor.view.state,
-      editor.view.dispatch,
-      editor.view
-    )
-      .then((inputs) => {
-        DOC_LAYOUT.executeWithUserInput(
-          editor.view.state,
-          editor.view.dispatch,
-          editor.view,
-          inputs
-        );
-      })
-      .catch((error) => {
-        console.error('Page layout error:', error);
-      });
-  }
-}, [editor]);
+    if (editor) {
+      const DOC_LAYOUT = new DocLayoutCommand();
+      DOC_LAYOUT.waitForUserInput(
+        editor.view.state,
+        editor.view.dispatch,
+        editor.view
+      )
+        .then((inputs) => {
+          DOC_LAYOUT.executeWithUserInput(
+            editor.view.state,
+            editor.view.dispatch,
+            editor.view,
+            inputs
+          );
+        })
+        .catch((error) => {
+          console.error('Page layout error:', error);
+        });
+    }
+  }, [editor]);
   const setContent = useCallback(
     (content: JSONContent): void => {
       if (editor) {
@@ -606,9 +609,9 @@ const LicitComponent = (
   );
 
   const isNodeHasAttribute = useCallback(
-    (node: Node, attrName: string): boolean | undefined => {
-    const value = node.attrs?.[attrName];
-    return typeof value === 'boolean' ? value : undefined;
+    (node: Node, attrName: string): boolean => {
+      const value = node.attrs?.[attrName];
+      return typeof value === 'boolean' ? value : undefined;
     },
     []
   );

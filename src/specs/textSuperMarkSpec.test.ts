@@ -39,7 +39,7 @@ describe('TextSuperMarkSpec', () => {
           r
         ): r is {
           style: string;
-          getAttrs: (value: string) => {overridden: boolean} | null;
+          getAttrs: (value: string) => {overridden: boolean};
         } => (r as {style?: string}).style === 'vertical-align'
       );
 
