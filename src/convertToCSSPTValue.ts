@@ -18,15 +18,15 @@ export default function convertToCSSPTValue(styleValue: string): number {
 
   if (trimmed.endsWith('px')) {
     unit = 'px';
-    value = parseFloat(trimmed.slice(0, -2));
+    value = Number.parseFloat(trimmed.slice(0, -2));
   } else if (trimmed.endsWith('pt')) {
     unit = 'pt';
-    value = parseFloat(trimmed.slice(0, -2));
+    value = Number.parseFloat(trimmed.slice(0, -2));
   } else {
     return 0;
   }
 
-  if (isNaN(value) || !unit) {
+  if (Number.isNaN(value) || !unit) {
     return 0;
   }
 

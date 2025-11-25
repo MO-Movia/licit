@@ -79,10 +79,7 @@ export interface ChangeCB {
   (data: JSONContent, isEmpty: boolean, view: EditorView): void;
 }
 
-export interface ReadyCB {
-  (ref: LicitHandle): void;
-}
-
+export type ReadyCB = (ref: LicitHandle) => void;
 export interface LicitProps {
   docID?: string;
   collabServiceURL?: string;
@@ -112,13 +109,13 @@ export interface LicitHandle {
   isNodeHasAttribute: (node: Node, attrName: string) => boolean | undefined;
 }
 
-let effectiveSchema: Schema | null = null;
+const effectiveSchema: Schema | null = null;
 let editorSchema: Schema | null = null;
 let licitPlugins: Extension | null = null;
 let provider: WebrtcProvider | null = null;
 let ydoc: Y.Doc | null = null;
 let devTools: Promise<() => void> | null = null;
-let applyDevTools: ((view: any) => void) | null = null;
+let applyDevTools: ((view: EditorView) => void) | null = null;
 
 export const configCollab = (
   docID: string,
@@ -212,7 +209,7 @@ const prepareEffectiveSchema = (
 
       // Create new attrs object instead of mutating
       const mergedAttrs = {
-        ...(tiptapNode.attrs || {}),
+        ...(tiptapNode.attrs),
         ...Object.fromEntries(
           Object.entries(licitNode.attrs).filter(
             ([key]) => !tiptapNode.attrs?.[key]
@@ -255,7 +252,7 @@ const prepareEffectiveSchema = (
     });
 
     // Update module-level variables (consider refactoring this pattern)
-    effectiveSchema = finalSchema;
+    // effectiveSchema = finalSchema;
     editorSchema = finalSchema;
     licitPlugins = pluginsExtension;
 
@@ -289,7 +286,8 @@ const updateSpec = (
   // Convert OrderedMap to array [name, spec, name, spec, ...]
   const specMap = schema.spec[attrName] as OrderedMap<unknown>;
   const collection: unknown[] = [];
-  specMap.forEach((name, spec) => {
+  //forEach is the standard approach for OrderedMap
+  specMap.forEach((name, spec) => { //NOSONAR
     collection.push(name, spec);
   });
 
@@ -324,7 +322,8 @@ export const updateSpecAttrs = (
     const specMap = existingSchema.spec[attrName] as OrderedMap<unknown>;
 
     // Find the matching spec in the existing schema
-    specMap?.forEach((name, spec) => {
+     //forEach is the standard approach for OrderedMap
+    specMap?.forEach((name, spec) => { //NOSONAR
       if (name === collection[i]) {
         const attrsLicit = (spec as {attrs?: Record<string, unknown>})?.attrs;
         if (attrsLicit) {
@@ -558,26 +557,29 @@ const LicitComponent = (
       );
       view.focus();
     }
-  }, [editor]);
+  }, [editor]); 
 
   const pageLayout = useCallback((): void => {
-    if (editor) {
-      const DOC_LAYOUT = new DocLayoutCommand();
-      DOC_LAYOUT.waitForUserInput(
-        editor.view.state,
-        editor.view.dispatch,
-        editor.view
-      ).then((inputs) => {
+  if (editor) {
+    const DOC_LAYOUT = new DocLayoutCommand();
+     DOC_LAYOUT.waitForUserInput(
+      editor.view.state,
+      editor.view.dispatch,
+      editor.view
+    )
+      .then((inputs) => {
         DOC_LAYOUT.executeWithUserInput(
           editor.view.state,
           editor.view.dispatch,
           editor.view,
           inputs
         );
+      })
+      .catch((error) => {
+        console.error('Page layout error:', error);
       });
-    }
-  }, [editor]);
-
+  }
+}, [editor]);
   const setContent = useCallback(
     (content: JSONContent): void => {
       if (editor) {
@@ -605,7 +607,8 @@ const LicitComponent = (
 
   const isNodeHasAttribute = useCallback(
     (node: Node, attrName: string): boolean | undefined => {
-      return node.attrs?.[attrName];
+    const value = node.attrs?.[attrName];
+    return typeof value === 'boolean' ? value : undefined;
     },
     []
   );

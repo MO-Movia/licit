@@ -52,7 +52,7 @@ class DocLayoutCommand extends UICommand {
     _dispatch?: (tr: Transform) => void,
     _view?: EditorView,
     _event?: React.SyntheticEvent
-  ): Promise<any> => {
+  ): Promise<DocLayoutEditorValue> => {
     if (this._popUp) {
       return Promise.resolve(undefined);
     }

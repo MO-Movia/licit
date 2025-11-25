@@ -127,7 +127,7 @@ class EditorToolbar extends React.PureComponent {
 
   private _getDefaultCommandGroups(theme: string): React.ReactElement[] {
     const pluginCommands = (
-      (this.props.editorState && this.props.editorState.plugins) ||
+      (this.props.editorState?.plugins) ||
       []
     )
       .map((p) =>
