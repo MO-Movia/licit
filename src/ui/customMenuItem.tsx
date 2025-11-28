@@ -7,7 +7,6 @@ import '../styles/czi-custom-menu-item.css';
 import {
   CustomButton,
   PointerSurfaceProps,
-  TextAlignCommand,
   ThemeContext,
 } from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
@@ -34,9 +33,9 @@ class CustomMenuItem extends React.PureComponent {
     // const theme = this.context;
     // const className = 'czi-custom-menu-item';
     let className = 'czi-custom-menu-item ' + this.props.theme;
-    if (this.props.value instanceof TextAlignCommand) {
+   if (this.props.value.constructor.name.startsWith('TextAlignCommand')) {
       const command = this.props.value;
-      if (command?._alignment) {
+      if (command['_alignment']) {
         className = 'czi-custom-menu-item-button ' + this.props.theme;
       }
     }
