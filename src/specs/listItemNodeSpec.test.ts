@@ -8,7 +8,7 @@ import {Node as ProseMirrorNode} from 'prosemirror-model';
 
 interface MockNode extends Partial<ProseMirrorNode> {
   attrs: {
-    align: string | null;
+    align: string;
   };
 }
 describe('ListItemNodeSpec', () => {

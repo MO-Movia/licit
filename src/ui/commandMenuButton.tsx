@@ -30,8 +30,8 @@ type PropsType = {
   dispatch: (tr: Transform) => void;
   editorState: EditorState;
   editorView: EditorViewEx;
-  icon?: string | React.ReactElement | null;
-  label?: string | React.ReactElement | null;
+  icon?: string | React.ReactElement;
+  label?: string | React.ReactElement;
   title?: string;
   sub?: boolean;
 };
@@ -82,7 +82,6 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
 
     const {expanded} = this.state;
     const isMaximizeButton = isExpandButton(title);
-    // const theme_1 = this.context;
     const theme_1 = UICommand.theme;
     const buttonClassName = cx(className, {
       'czi-custom-menu-button': true,
@@ -125,7 +124,6 @@ class CommandMenuButton extends React.PureComponent<PropsType, StateType> {
     const menu = this._menu;
     this._menu = null;
     menu?.close();
-    // alert('hello seybi');
   };
 
   _showMenu = (): void => {

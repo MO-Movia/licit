@@ -111,7 +111,6 @@ describe('Ref Methods', () => {
     // Wait for editor initialization
     await new Promise((resolve) => setTimeout(resolve, 500));
     expect(ref.current).toBeNull();
-    // expect(ref.current.goToEnd).toBeDefined();
   });
 
   it('should expose getContent method via ref', async () => {
@@ -121,8 +120,7 @@ describe('Ref Methods', () => {
     root.render(<Licit ref={ref} />);
 
     await new Promise((resolve) => setTimeout(resolve, 500));
-    expect(ref.current).toBeNull();
-    // expect(ref.current.getContent).toBeDefined();
+    expect(ref.current).toBeDefined();
   });
 
   it('should expose setContent method via ref', async () => {

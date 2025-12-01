@@ -3,12 +3,12 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
 
-import { FontSizeCommand } from '@modusoperandi/licit-ui-commands';
+import {FontSizeCommand} from '@modusoperandi/licit-ui-commands';
 import CommandMenuButton from './commandMenuButton';
 import findActiveFontSize from '../findActiveFontSize';
 
@@ -31,17 +31,18 @@ const FONT_PT_SIZE_COMMANDS = FONT_PT_SIZES.reduce((memo, size) => {
 }, {});
 
 const COMMAND_GROUPS = [
-  { Default: new FontSizeCommand(0) },
+  {Default: new FontSizeCommand(0)},
   FONT_PT_SIZE_COMMANDS,
 ];
 
 class FontSizeCommandMenuButton extends React.PureComponent<PropsType> {
   declare props: PropsType;
   render(): React.ReactElement<CommandMenuButton> {
-    const { dispatch, editorState, editorView } = this.props;
+    const {dispatch, editorState, editorView} = this.props;
     const fontSize = findActiveFontSize(editorState);
-    // const className = String(fontSize).length <= 2 ? 'width-30' : 'width-60';
-    const className = (String(fontSize).length <= 2 ? 'width-30' : 'width-60') + ' czi-dropdown-border';
+    const className =
+      (String(fontSize).length <= 2 ? 'width-30' : 'width-60') +
+      ' czi-dropdown-border';
     return (
       <CommandMenuButton
         className={className}

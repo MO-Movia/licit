@@ -3,12 +3,12 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import { EditorState, PluginView } from 'prosemirror-state';
-import { EditorView } from 'prosemirror-view';
+import {EditorState, PluginView} from 'prosemirror-state';
+import {EditorView} from 'prosemirror-view';
 import * as React from 'react';
 
 import CommandMenuButton from './commandMenuButton';
-import { TABLE_COMMANDS_GROUP } from './editorToolbarConfig';
+import {TABLE_COMMANDS_GROUP} from './editorToolbarConfig';
 import Icon from './icon';
 
 import '../styles/czi-table-cell-menu.css';
@@ -16,8 +16,8 @@ import '../styles/czi-table-cell-menu.css';
 type TableCellMenuProps = {
   editorState: EditorState;
   editorView: EditorView;
-  pluginView: PluginView,
-  actionNode: Node,
+  pluginView: PluginView;
+  actionNode: Node;
 };
 
 class TableCellMenu extends React.PureComponent<TableCellMenuProps> {
@@ -26,12 +26,15 @@ class TableCellMenu extends React.PureComponent<TableCellMenuProps> {
   declare props: TableCellMenuProps;
 
   render(): React.ReactElement<CommandMenuButton> {
-    // const { editorState, editorView } = this.props;
-    const { editorState, editorView, pluginView, actionNode } = this.props;
+    const {editorState, editorView, pluginView, actionNode} = this.props;
     let cmdGrps = null;
 
     if (pluginView['_menu']) {
-      cmdGrps = pluginView['_menu'](editorState, actionNode, TABLE_COMMANDS_GROUP);
+      cmdGrps = pluginView['_menu'](
+        editorState,
+        actionNode,
+        TABLE_COMMANDS_GROUP
+      );
     }
 
     if (!cmdGrps) {

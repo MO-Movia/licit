@@ -12,8 +12,8 @@ import {
 } from '@modusoperandi/licit-ui-commands';
 import * as React from 'react';
 type CustomButtonProps = PointerSurfaceProps & {
-  icon?: string | React.ReactElement | null;
-  label?: string | React.ReactElement | null;
+  icon?: string | React.ReactElement;
+  label?: string | React.ReactElement;
   theme?: string;
 };
 

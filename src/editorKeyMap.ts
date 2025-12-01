@@ -7,11 +7,11 @@ import Keymap from 'browserkeymap';
 
 import browser from './browser';
 
-import { makeKeyMapWithCommon } from '@modusoperandi/licit-doc-attrs-step';
+import {makeKeyMapWithCommon} from '@modusoperandi/licit-doc-attrs-step';
 
 // https://tinyurl.com/ybwf3wex
 
-export function tooltip(keymap?: Keymap): string | null {
+export function tooltip(keymap?: Keymap): string {
   if (keymap) {
     let shortcut;
     if (browser.isMac()) {
@@ -28,12 +28,12 @@ export function tooltip(keymap?: Keymap): string | null {
   return null;
 }
 
-export function findShortcutByKeymap(keymap: Keymap): string | null {
+export function findShortcutByKeymap(keymap: Keymap): string {
   if (browser.isMac()) {
-    return keymap.mac as string | null;;
+    return keymap.mac as string;
   }
 
-  return keymap.windows as string | null;;
+  return keymap.windows as string;
 }
 export const KEY_SPLIT_LIST_ITEM = makeKeyMapWithCommon(
   'Split list item',
@@ -50,7 +50,7 @@ export function findKeymapByDescription(description: string): any {
   return matches[0];
 }
 
-export function findShortcutByDescription(description: string): string | null {
+export function findShortcutByDescription(description: string): string {
   const keymap = findKeymapByDescription(description);
   if (keymap) {
     return findShortcutByKeymap(keymap);

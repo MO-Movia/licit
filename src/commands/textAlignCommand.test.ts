@@ -3,10 +3,10 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
-import { Editor } from '@tiptap/react';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
+import {Editor} from '@tiptap/react';
 import TextAlignCommand from './textAlignCommand';
 
 // Mock Editor class
@@ -21,7 +21,6 @@ jest.mock('@tiptap/react', () => {
 });
 
 describe('TextAlignCommand', () => {
-  //let editor;
   let command;
 
   beforeEach(() => {
@@ -110,11 +109,11 @@ describe('TextAlignCommand', () => {
   });
 
   it('should handle executeCustomStyleForTable', () => {
-  const mockState = {} as EditorState;
-  const mockTransform = {} as Transform;  
-  const result = command.executeCustomStyleForTable(mockState, mockTransform);  
-  expect(result).toBe(mockTransform);
-});
+    const mockState = {} as EditorState;
+    const mockTransform = {} as Transform;
+    const result = command.executeCustomStyleForTable(mockState, mockTransform);
+    expect(result).toBe(mockTransform);
+  });
 
   describe('executeCustom', () => {
     it('should return the given Transform', () => {

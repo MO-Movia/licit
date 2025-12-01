@@ -5,7 +5,7 @@
 
 import cx from 'classnames';
 import * as React from 'react';
-import { ThemeContext } from '@modusoperandi/licit-ui-commands';
+import {ThemeContext} from '@modusoperandi/licit-ui-commands';
 
 import '../styles/czi-editor-frameset.css';
 
@@ -15,7 +15,7 @@ export type EditorFramesetProps = {
   embedded?: boolean;
   header?: React.ReactElement;
   height?: string | number;
-  toolbarPlacement?: 'header' | 'body' | null;
+  toolbarPlacement?: 'header' | 'body';
   toolbar?: React.ReactElement;
   width?: string | number;
 };
@@ -31,12 +31,11 @@ function toCSS(val?: number | string): string {
   if (isNaN(val as number)) {
     return `${val}`;
   }
-  // return `${val}px`;
   return `${val}vh`;
 }
 
 class EditorFrameset extends React.PureComponent {
- public static readonly contextType = ThemeContext;
+  public static readonly contextType = ThemeContext;
   declare props: EditorFramesetProps;
 
   render(): React.ReactElement {

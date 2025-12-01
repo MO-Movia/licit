@@ -10,9 +10,9 @@ import * as React from 'react';
 
 import CustomMenu from './customMenu';
 import CustomMenuItem from './customMenuItem';
-import { parseLabel, isExpandButton } from './editorToolbarConfig';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import CommandMenuButton, { Arr } from './commandMenuButton';
+import {parseLabel, isExpandButton} from './editorToolbarConfig';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import CommandMenuButton, {Arr} from './commandMenuButton';
 
 type PropsType = {
   commandGroups: Array<Arr>;
@@ -30,15 +30,14 @@ class CommandMenu extends React.PureComponent<PropsType> {
   declare props: PropsType;
 
   render(): React.ReactElement {
-    const { commandGroups, editorState, title, theme } = this.props;
+    const {commandGroups, editorState, title, theme} = this.props;
     const children = [];
     const jj = commandGroups.length - 1;
-    // const theme = this.context;
     commandGroups.forEach((group, ii) => {
       Object.keys(group).forEach((label) => {
         const command = group[label];
         if (command instanceof UICommand) {
-          const { icon } = parseLabel(label, theme.toString());
+          const {icon} = parseLabel(label, theme.toString());
           children.push(
             this._renderCustomMenuItem(label, command, editorState, icon, theme)
           );
@@ -61,7 +60,7 @@ class CommandMenu extends React.PureComponent<PropsType> {
     label: string,
     command: UICommand,
     editorState: EditorState,
-    icon: string | React.ReactElement | null,
+    icon: string | React.ReactElement,
     theme: string
   ): React.ReactElement<CustomMenuItem> => {
     return (
@@ -85,32 +84,6 @@ class CommandMenu extends React.PureComponent<PropsType> {
       />
     );
   };
-
-  /*_renderCommandButton = (
-    label: string,
-    command: UICommand,
-    disabled: boolean,
-    dispatch: (tr: Transform) => void,
-    editorState: EditorState,
-    editorView: EditorView
-  ): React.ReactElement<CommandButton> => {
-    const { icon, title } = parseLabel(label, 'dark');
-    const isDropdown = command instanceof UICommand;
-    return (
-      <CommandButton
-        command={command}
-        disabled={disabled}
-        dispatch={dispatch}
-        editorState={editorState}
-        editorView={editorView}
-        icon={icon}
-        key={label}
-        label={icon ? null : title}
-        sub={isDropdown ? false : true}
-        title={title}
-      />
-    );
-  };*/
 
   _renderMenuButton = (
     label: string,
