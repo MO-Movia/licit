@@ -99,7 +99,7 @@ export interface LicitProps {
 }
 
 export interface LicitHandle {
-  editor: Editor | null;
+  editor: Editor ;
   editorView: EditorView | null;
   goToEnd: () => void;
   pageLayout: () => void;

@@ -15,6 +15,7 @@ jest.mock('@tiptap/react', () => {
     Editor: jest.fn().mockImplementation(() => ({
       commands: {
         setTextAlign: jest.fn(),
+        updateAttributes: jest.fn(),
       },
     })),
   };
@@ -37,37 +38,41 @@ describe('TextAlignCommand', () => {
   });
 
   it('should call setTextAlign with the correct alignment when execute is called', () => {
-    // Mock the execute method's parameters
-    const mockState = {} as EditorState;
-    const mockDispatch = jest.fn();
-    const mockView = {} as EditorView;
+    const mockSetTextAlign = jest.fn().mockReturnValue(true);
+    const mockUpdateAttributes = jest.fn();
 
     jest.spyOn(command, 'getEditor').mockReturnValue({
       commands: {
-        setTextAlign: () => {
-          return true;
-        },
+        setTextAlign: mockSetTextAlign,
+        updateAttributes: mockUpdateAttributes,
       },
     } as unknown as Editor);
 
     command.alignment = 'center';
-    // Call the execute method
-    command.execute(mockState, mockDispatch, mockView);
 
-    // Ensure setTextAlign is called with the correct alignment
-    expect(command.alignment).toBe('center');
+    command.execute({} as EditorState, jest.fn(), {} as EditorView);
+
+    expect(mockSetTextAlign).toHaveBeenCalledWith('center');
+    expect(mockUpdateAttributes).toHaveBeenCalledWith('paragraph', {
+      overriddenAlign: 'true',
+      overriddenAlignValue: 'center',
+      align: 'center',
+    });
   });
 
   it('should return true when execute is called', () => {
     jest.spyOn(command, 'getEditor').mockReturnValue({
       commands: {
-        setTextAlign: () => {
-          return true;
-        },
+        setTextAlign: () => true,
+        updateAttributes: jest.fn(),
       },
     } as unknown as Editor);
-    // Call the execute method and ensure it returns true
-    const result = command.execute({}, jest.fn(), {} as EditorView);
+
+    const result = command.execute(
+      {} as EditorState,
+      jest.fn(),
+      {} as EditorView
+    );
     expect(result).toBe(true);
   });
 
