@@ -30,7 +30,7 @@ const OverrideMarkSpec: MarkSpec = {
       },
     },
   ],
-  toDOM: (mark, inline) => {
+  toDOM: (mark, _inline) => {
     // Only render the <span> if at least one attribute is true
     if (
       mark.attrs.strong ||

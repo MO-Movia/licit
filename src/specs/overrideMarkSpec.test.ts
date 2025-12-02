@@ -1,3 +1,4 @@
+import {Mark} from 'prosemirror-model';
 import OverrideMarkSpec from './overrideMarkSpec';
 
 describe('OverrideMarkSpec', () => {
@@ -137,9 +138,9 @@ describe('OverrideMarkSpec', () => {
           underline: true,
           strike: true,
         },
-      };
+      } as unknown as Mark;
 
-      const result = OverrideMarkSpec.toDOM!(mark as any, true);
+      const result = OverrideMarkSpec.toDOM!(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -161,9 +162,9 @@ describe('OverrideMarkSpec', () => {
           underline: false,
           strike: false,
         },
-      };
+      } as unknown as Mark;
 
-      const result = OverrideMarkSpec.toDOM!(mark as any, true);
+      const result = OverrideMarkSpec.toDOM!(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -185,9 +186,9 @@ describe('OverrideMarkSpec', () => {
           underline: true,
           strike: false,
         },
-      };
+      } as unknown as Mark;
 
-      const result = OverrideMarkSpec.toDOM!(mark as any, true);
+      const result = OverrideMarkSpec.toDOM!(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -209,9 +210,9 @@ describe('OverrideMarkSpec', () => {
           underline: false,
           strike: false,
         },
-      };
+      } as unknown as Mark;
 
-      const result = OverrideMarkSpec.toDOM!(mark as any, true);
+      const result = OverrideMarkSpec.toDOM!(mark, true);
 
       expect(result).toBeNull();
     });
@@ -224,9 +225,9 @@ describe('OverrideMarkSpec', () => {
           underline: false,
           strike: false,
         },
-      };
+      } as unknown as Mark;
 
-      const result = OverrideMarkSpec.toDOM!(mark as any, true);
+      const result = OverrideMarkSpec.toDOM!(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -248,9 +249,9 @@ describe('OverrideMarkSpec', () => {
           underline: false,
           strike: true,
         },
-      };
+      } as unknown as Mark;
 
-      const result = OverrideMarkSpec.toDOM!(mark as any, true);
+      const result = OverrideMarkSpec.toDOM!(mark, true);
 
       expect(result).toEqual([
         'span',

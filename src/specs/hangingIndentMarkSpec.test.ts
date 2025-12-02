@@ -1,3 +1,4 @@
+import {Mark} from 'prosemirror-model';
 import HangingIndentMarkSpec from './hangingIndentMarkSpec';
 
 describe('HangingIndentMarkSpec', () => {
@@ -120,9 +121,9 @@ describe('HangingIndentMarkSpec', () => {
           prefix: 'test-prefix',
           overridden: false,
         },
-      };
+      } as unknown as Mark;
 
-      const result = HangingIndentMarkSpec.toDOM!(mark as any, true);
+      const result = HangingIndentMarkSpec.toDOM!(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -140,9 +141,9 @@ describe('HangingIndentMarkSpec', () => {
           prefix: null,
           overridden: false,
         },
-      };
+      } as unknown as Mark;
 
-      const result = HangingIndentMarkSpec.toDOM!(mark as any, true);
+      const result = HangingIndentMarkSpec.toDOM!(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -160,9 +161,9 @@ describe('HangingIndentMarkSpec', () => {
           prefix: '123',
           overridden: false,
         },
-      };
+      } as unknown as Mark;
 
-      const result = HangingIndentMarkSpec.toDOM!(mark as any, true);
+      const result = HangingIndentMarkSpec.toDOM!(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -180,9 +181,9 @@ describe('HangingIndentMarkSpec', () => {
           prefix: '• ',
           overridden: false,
         },
-      };
+      } as unknown as Mark;
 
-      const result = HangingIndentMarkSpec.toDOM!(mark as any, true);
+      const result = HangingIndentMarkSpec.toDOM!(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -200,9 +201,9 @@ describe('HangingIndentMarkSpec', () => {
           prefix: 'test',
           overridden: false, // This should be ignored
         },
-      };
+      } as unknown as Mark;
 
-      const result = HangingIndentMarkSpec.toDOM!(mark as any, true);
+      const result = HangingIndentMarkSpec.toDOM!(mark, true);
 
       expect(result![1]).toHaveProperty('overridden', true);
     });
@@ -213,9 +214,9 @@ describe('HangingIndentMarkSpec', () => {
           prefix: '',
           overridden: false,
         },
-      };
+      } as unknown as Mark;
 
-      const result = HangingIndentMarkSpec.toDOM!(mark as any, true);
+      const result = HangingIndentMarkSpec.toDOM!(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -248,8 +249,8 @@ describe('HangingIndentMarkSpec', () => {
       const parsed = parser.getAttrs!(element as HTMLElement & string);
 
       // Convert back to DOM
-      const mark = {attrs: parsed};
-      const domOutput = HangingIndentMarkSpec.toDOM!(mark as any, true);
+      const mark = {attrs: parsed} as unknown as Mark;
+      const domOutput = HangingIndentMarkSpec.toDOM!(mark, true);
 
       expect(domOutput).toEqual([
         'span',
@@ -276,8 +277,8 @@ describe('HangingIndentMarkSpec', () => {
       });
 
       // Convert back to DOM
-      const mark = {attrs: parsed};
-      const domOutput = HangingIndentMarkSpec.toDOM!(mark as any, true);
+      const mark = {attrs: parsed} as unknown as Mark;
+      const domOutput = HangingIndentMarkSpec.toDOM!(mark, true);
 
       expect(domOutput).toEqual([
         'span',

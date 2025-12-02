@@ -19,7 +19,7 @@ const HangingIndentMarkSpec: MarkSpec = {
       },
     },
   ],
-  toDOM(mark, inline) {
+  toDOM(mark, _inline) {
     const {prefix} = mark.attrs;
     const attrs = {prefix, overridden: true};
     return ['span', attrs, 0];
