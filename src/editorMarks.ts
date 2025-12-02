@@ -3,7 +3,7 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import type {MarkSpec} from 'prosemirror-model';
+import type { MarkSpec } from 'prosemirror-model';
 import OrderedMap from 'orderedmap';
 
 import CodeMarkSpec from './specs/codeMarkSpec';

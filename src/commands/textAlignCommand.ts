@@ -7,20 +7,35 @@ import { EditorState } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { Editor } from '@tiptap/react';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import {Editor} from '@tiptap/react';
 
 class TextAlignCommand extends UICommand {
-waitForUserInput(_state: EditorState, _dispatch?: (tr: Transform) => void, _view?: EditorView, _event?: React.SyntheticEvent): Promise<PromiseConstructor> {
+  waitForUserInput(
+    _state: EditorState,
+    _dispatch?: (tr: Transform) => void,
+    _view?: EditorView,
+    _event?: React.SyntheticEvent
+  ): Promise<PromiseConstructor> {
     return Promise.resolve(null);
   }
-  executeWithUserInput(_state: EditorState, _dispatch?: (tr: Transform) => void, _view?: EditorView, _inputs?: string): boolean {
+  executeWithUserInput(
+    _state: EditorState,
+    _dispatch?: (tr: Transform) => void,
+    _view?: EditorView,
+    _inputs?: string
+  ): boolean {
     return false;
   }
   cancel(): void {
     return null;
   }
-  executeCustom(_state: EditorState, tr: Transform, _from: number, _to: number): Transform {
+  executeCustom(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
     return tr;
   }
   executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
@@ -46,7 +61,18 @@ waitForUserInput(_state: EditorState, _dispatch?: (tr: Transform) => void, _view
     _dispatch?: (tr: Transform) => void,
     _view?: EditorView
   ): boolean => {
-    return this.getEditor().commands.setTextAlign(this.alignment);
+    const editor = this.getEditor();
+    const success = editor.commands.setTextAlign(this.alignment);
+    // set the overridden align attributes to preserve the alignment
+    if (success) {
+      editor.commands.updateAttributes('paragraph', {
+        overriddenAlign: 'true',
+        overriddenAlignValue: this.alignment,
+        align: this.alignment,
+      });
+    }
+
+    return success;
   };
 }
 
