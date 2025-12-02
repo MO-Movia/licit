@@ -8,21 +8,21 @@ import {JSONContent} from '@tiptap/react';
 
 import {Licit} from '../../src/';
 import CustomLicitRuntime from './runtime';
-import {CustomstylePlugin} from '@modusoperandi/licit-custom-styles';
-import {ExportPDFPlugin} from '@modusoperandi/licit-export-pdf';
-import {MultimediaPlugin} from '@modusoperandi/licit-multimedia';
-import {VignettePlugins} from '@modusoperandi/licit-vignette';
-import {ChangeCasePlugin} from '@modusoperandi/licit-changecase';
-import {CitationPlugin} from '@modusoperandi/licit-citation';
-import {GlossaryPlugin} from '@modusoperandi/licit-glossary';
-import {InfoIconPlugin} from '@modusoperandi/licit-info-icon';
+// import {CustomstylePlugin} from '@modusoperandi/licit-custom-styles';
+// import {ExportPDFPlugin} from '@modusoperandi/licit-export-pdf';
+// import {MultimediaPlugin} from '@modusoperandi/licit-multimedia';
+// import {VignettePlugins} from '@modusoperandi/licit-vignette';
+// import {ChangeCasePlugin} from '@modusoperandi/licit-changecase';
+// import {CitationPlugin} from '@modusoperandi/licit-citation';
+// import {GlossaryPlugin} from '@modusoperandi/licit-glossary';
+// import {InfoIconPlugin} from '@modusoperandi/licit-info-icon';
 import '@modusoperandi/licit-ui-commands/styles.css';
-import '@modusoperandi/licit-custom-styles/styles.css';
-import '@modusoperandi/licit-export-pdf/styles.css';
-import '@modusoperandi/licit-multimedia/styles.css';
-import '@modusoperandi/licit-citation/styles.css';
-import '@modusoperandi/licit-glossary/styles.css';
-import '@modusoperandi/licit-info-icon/styles.css';
+// import '@modusoperandi/licit-custom-styles/styles.css';
+// import '@modusoperandi/licit-export-pdf/styles.css';
+// import '@modusoperandi/licit-multimedia/styles.css';
+// import '@modusoperandi/licit-citation/styles.css';
+// import '@modusoperandi/licit-glossary/styles.css';
+// import '@modusoperandi/licit-info-icon/styles.css';
 import '../../src/styles/styles.css';
 function main(): void {
   const el = document.createElement('div');
@@ -365,16 +365,17 @@ function main(): void {
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
   //new ReferencingPlugin() doc top node not found issue
   const runtime = new CustomLicitRuntime();
-  const plugins = [
-    new CustomstylePlugin(runtime),
-    new ExportPDFPlugin(true),
-    new MultimediaPlugin(),
-    ...VignettePlugins,
-    new ChangeCasePlugin(),
-    new CitationPlugin(),
-    new GlossaryPlugin(),
-    new InfoIconPlugin(),
-  ];
+  const plugins = [];
+  // const plugins = [
+  //   new CustomstylePlugin(runtime),
+  //   new ExportPDFPlugin(true),
+  //   new MultimediaPlugin(),
+  //   ...VignettePlugins,
+  //   new ChangeCasePlugin(),
+  //   new CitationPlugin(),
+  //   new GlossaryPlugin(),
+  //   new InfoIconPlugin(),
+  // ];
   ReactDOM.render(
     <React.StrictMode>
       <Licit

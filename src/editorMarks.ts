@@ -38,7 +38,10 @@ import TextSelectionMarkSpec from './specs/textSelectionMarkSpec';
 import TextSuperMarkSpec from './specs/textSuperMarkSpec';
 import TextSubMarkSpec from './specs/textSubMarkSpec';
 import TextUnderlineMarkSpec from './specs/textUnderlineMarkSpec';
-
+import HangingIndentMarkSpec from './specs/hangingIndentMarkSpec';
+import OverrideMarkSpec from './specs/overrideMarkSpec';
+const MARK_OVERRIDE = 'override';
+const MARK_HANGING_INDENT = 'mark-hanging-indent';
 export function updateEditorMarks(
   specMarks: OrderedMap<MarkSpec>
 ): OrderedMap<MarkSpec> {
@@ -57,6 +60,8 @@ export function updateEditorMarks(
   specMarks = specMarks.addToEnd(MARK_TEXT_HIGHLIGHT, TextHighlightMarkSpec);
   specMarks = specMarks.addToEnd(MARK_TEXT_SELECTION, TextSelectionMarkSpec);
   specMarks = specMarks.addToEnd(MARK_UNDERLINE, TextUnderlineMarkSpec);
+  specMarks = specMarks.addToEnd(MARK_OVERRIDE, OverrideMarkSpec);
+  specMarks = specMarks.addToEnd(MARK_HANGING_INDENT, HangingIndentMarkSpec);
 
   return specMarks;
 }
