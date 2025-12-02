@@ -36,9 +36,9 @@ export const Indent = Extension.create<IndentOptions, never>({
   addOptions() {
     return {
       names: ['heading', 'paragraph'],
-      indentRange: 24,
+      indentRange: 1,
       minIndentLevel: 0,
-      maxIndentLevel: 24 * 10,
+      maxIndentLevel: 7,
       defaultIndentLevel: 0,
       HTMLAttributes: {},
     };
@@ -140,6 +140,8 @@ function setNodeIndentMarkup(
   const nodeAttrs = {
     ...node.attrs,
     indent: indentVal,
+    overriddenIndent: 'true',
+    overriddenIndentValue: indentVal,
   };
   return tr.setNodeMarkup(pos, node.type, nodeAttrs, node.marks);
 }
