@@ -44,9 +44,9 @@ import {Indent} from './extensions/indent';
 import {WebrtcProvider} from 'y-webrtc';
 import {EditorRuntime, ToolbarMenuConfig} from './types';
 import {EditorViewEx} from './constants';
-import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableCellEx from './extensions/tableCellEx';
+import {TableEx} from './extensions/tableEx';
 import TableHeader from '@tiptap/extension-table-header';
 import ParagraphNodeSpec from './specs/paragraphNodeSpec';
 import * as awarenessProtocol from 'y-protocols/awareness';
@@ -520,7 +520,7 @@ const LicitComponent = (
       types: [HEADING, PARAGRAPH],
     }),
     Indent,
-    Table.configure({
+    TableEx.configure({
       resizable: true,
     }),
     TableRow,
