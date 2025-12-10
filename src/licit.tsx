@@ -36,6 +36,7 @@ import {
   noop,
   PARAGRAPH,
   ThemeProvider,
+  DOC
 } from '@modusoperandi/licit-ui-commands';
 import {updateEditorMarks} from './editorMarks';
 import {updateEditorNodes} from './editorNodes';
@@ -49,6 +50,7 @@ import TableCellEx from './extensions/tableCellEx';
 import {TableEx} from './extensions/tableEx';
 import TableHeader from '@tiptap/extension-table-header';
 import ParagraphNodeSpec from './specs/paragraphNodeSpec';
+import docNodeSpec from './specs/docNodeSpec';
 import * as awarenessProtocol from 'y-protocols/awareness';
 import * as math from 'lib0/math';
 import * as random from 'lib0/random';
@@ -225,6 +227,7 @@ const prepareEffectiveSchema = (
     };
 
     // Update paragraph node
+    updateNodeAttrs(DOC, docNodeSpec);
     updateNodeAttrs(PARAGRAPH, ParagraphNodeSpec);
 
     // Process nodes and marks
