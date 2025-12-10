@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {Mark} from 'prosemirror-model';
 import HangingIndentMarkSpec from './hangingIndentMarkSpec';
 
@@ -35,8 +40,8 @@ describe('HangingIndentMarkSpec', () => {
     it('should parse span with prefix attribute', () => {
       (mockElement as HTMLElement).setAttribute('prefix', 'test-prefix');
 
-      const parser = HangingIndentMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = HangingIndentMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toEqual({
         prefix: 'test-prefix',
@@ -47,8 +52,8 @@ describe('HangingIndentMarkSpec', () => {
     it('should parse span with empty prefix attribute', () => {
       (mockElement as HTMLElement).setAttribute('prefix', '');
 
-      const parser = HangingIndentMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = HangingIndentMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toEqual({
         prefix: null,
@@ -59,8 +64,8 @@ describe('HangingIndentMarkSpec', () => {
     it('should parse span with numeric prefix', () => {
       (mockElement as HTMLElement).setAttribute('prefix', '123');
 
-      const parser = HangingIndentMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = HangingIndentMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toEqual({
         prefix: '123',
@@ -71,8 +76,8 @@ describe('HangingIndentMarkSpec', () => {
     it('should parse span with special characters in prefix', () => {
       (mockElement as HTMLElement).setAttribute('prefix', '>> ');
 
-      const parser = HangingIndentMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = HangingIndentMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toEqual({
         prefix: '>> ',
@@ -83,8 +88,8 @@ describe('HangingIndentMarkSpec', () => {
     it('should parse span with bullet point prefix', () => {
       (mockElement as HTMLElement).setAttribute('prefix', '• ');
 
-      const parser = HangingIndentMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = HangingIndentMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toEqual({
         prefix: '• ',
@@ -95,8 +100,8 @@ describe('HangingIndentMarkSpec', () => {
     it('should parse span with numbered list prefix', () => {
       (mockElement as HTMLElement).setAttribute('prefix', '1. ');
 
-      const parser = HangingIndentMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = HangingIndentMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toEqual({
         prefix: '1. ',
@@ -107,8 +112,8 @@ describe('HangingIndentMarkSpec', () => {
     it('should always set overridden to true', () => {
       (mockElement as HTMLElement).setAttribute('prefix', 'any-value');
 
-      const parser = HangingIndentMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = HangingIndentMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toHaveProperty('overridden', true);
     });
@@ -123,7 +128,7 @@ describe('HangingIndentMarkSpec', () => {
         },
       } as unknown as Mark;
 
-      const result = HangingIndentMarkSpec.toDOM!(mark, true);
+      const result = HangingIndentMarkSpec.toDOM(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -143,7 +148,7 @@ describe('HangingIndentMarkSpec', () => {
         },
       } as unknown as Mark;
 
-      const result = HangingIndentMarkSpec.toDOM!(mark, true);
+      const result = HangingIndentMarkSpec.toDOM(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -163,7 +168,7 @@ describe('HangingIndentMarkSpec', () => {
         },
       } as unknown as Mark;
 
-      const result = HangingIndentMarkSpec.toDOM!(mark, true);
+      const result = HangingIndentMarkSpec.toDOM(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -183,7 +188,7 @@ describe('HangingIndentMarkSpec', () => {
         },
       } as unknown as Mark;
 
-      const result = HangingIndentMarkSpec.toDOM!(mark, true);
+      const result = HangingIndentMarkSpec.toDOM(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -203,9 +208,9 @@ describe('HangingIndentMarkSpec', () => {
         },
       } as unknown as Mark;
 
-      const result = HangingIndentMarkSpec.toDOM!(mark, true);
+      const result = HangingIndentMarkSpec.toDOM(mark, true);
 
-      expect(result![1]).toHaveProperty('overridden', true);
+      expect(result[1]).toHaveProperty('overridden', true);
     });
 
     it('should render span with empty string prefix', () => {
@@ -216,7 +221,7 @@ describe('HangingIndentMarkSpec', () => {
         },
       } as unknown as Mark;
 
-      const result = HangingIndentMarkSpec.toDOM!(mark, true);
+      const result = HangingIndentMarkSpec.toDOM(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -231,7 +236,7 @@ describe('HangingIndentMarkSpec', () => {
 
   describe('parseDOM tag selector', () => {
     it('should target span tags with prefix attribute', () => {
-      const parser = HangingIndentMarkSpec.parseDOM![0];
+      const parser = HangingIndentMarkSpec.parseDOM[0];
       expect(parser.tag).toBe('span[prefix]');
     });
   });
@@ -245,12 +250,12 @@ describe('HangingIndentMarkSpec', () => {
       element.setAttribute('prefix', originalPrefix);
 
       // Parse it
-      const parser = HangingIndentMarkSpec.parseDOM![0];
-      const parsed = parser.getAttrs!(element as HTMLElement & string);
+      const parser = HangingIndentMarkSpec.parseDOM[0];
+      const parsed = parser.getAttrs(element as HTMLElement & string);
 
       // Convert back to DOM
       const mark = {attrs: parsed} as unknown as Mark;
-      const domOutput = HangingIndentMarkSpec.toDOM!(mark, true);
+      const domOutput = HangingIndentMarkSpec.toDOM(mark, true);
 
       expect(domOutput).toEqual([
         'span',
@@ -268,8 +273,8 @@ describe('HangingIndentMarkSpec', () => {
       element.setAttribute('prefix', '');
 
       // Parse it
-      const parser = HangingIndentMarkSpec.parseDOM![0];
-      const parsed = parser.getAttrs!(element as HTMLElement & string);
+      const parser = HangingIndentMarkSpec.parseDOM[0];
+      const parsed = parser.getAttrs(element as HTMLElement & string);
 
       expect(parsed).toEqual({
         prefix: null,
@@ -278,7 +283,7 @@ describe('HangingIndentMarkSpec', () => {
 
       // Convert back to DOM
       const mark = {attrs: parsed} as unknown as Mark;
-      const domOutput = HangingIndentMarkSpec.toDOM!(mark, true);
+      const domOutput = HangingIndentMarkSpec.toDOM(mark, true);
 
       expect(domOutput).toEqual([
         'span',

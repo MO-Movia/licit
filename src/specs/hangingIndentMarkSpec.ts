@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {MarkSpec} from 'prosemirror-model';
 
 const HangingIndentMarkSpec: MarkSpec = {
@@ -13,7 +18,7 @@ const HangingIndentMarkSpec: MarkSpec = {
       getAttrs: (domNode) => {
         if (typeof domNode === 'string') return false;
 
-        const element = domNode as HTMLElement;
+        const element = domNode;
         const _prefix = element.getAttribute('prefix');
         return {prefix: _prefix || null, overridden: true};
       },
