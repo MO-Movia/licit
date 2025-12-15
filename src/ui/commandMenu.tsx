@@ -63,6 +63,7 @@ class CommandMenu extends React.PureComponent<PropsType> {
     icon: string | React.ReactElement,
     theme: string
   ): React.ReactElement<CustomMenuItem> => {
+    const {title} = parseLabel(label, theme);
     return (
       <CustomMenuItem
         active={command.isActive(editorState)}
@@ -81,6 +82,7 @@ class CommandMenu extends React.PureComponent<PropsType> {
         onMouseEnter={this._onUIEnter}
         value={command}
         theme={theme}
+        title={title}
       />
     );
   };

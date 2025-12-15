@@ -4,16 +4,16 @@
  */
 
 import * as React from 'react';
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
-import { Editor } from '@tiptap/react';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
+import {Editor} from '@tiptap/react';
 import TableColorCommand from './tableColorCommand';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { createPopUp } from '@modusoperandi/licit-ui-commands';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import {createPopUp} from '@modusoperandi/licit-ui-commands';
 
 // Typed popup mock
-type MockPopup = { close: jest.Mock<void, [unknown]> };
+type MockPopup = {close: jest.Mock<void, [unknown]>};
 
 // Mock licit-ui-commands (typed)
 const createPopUpMock = jest
@@ -22,7 +22,7 @@ const createPopUpMock = jest
     (
       _Component: unknown,
       _props: unknown,
-      opts: { onClose?: (v: string) => void }
+      opts: {onClose?: (v: string) => void}
     ): MockPopup => {
       return {
         close: jest.fn((_val: unknown) => opts.onClose?.('mocked value')),
@@ -32,17 +32,19 @@ const createPopUpMock = jest
 
 jest.mock('@modusoperandi/licit-ui-commands', () => {
   // define inside the factory → safe from hoisting issues
-  const createPopUpMock = jest.fn().mockImplementation(
-    (
-      _Component: unknown,
-      _props: unknown,
-      opts: { onClose?: (v: string) => void }
-    ) => {
-      return {
-        close: jest.fn((_value: unknown) => opts.onClose?.('mocked value')),
-      };
-    }
-  );
+  const createPopUpMock = jest
+    .fn()
+    .mockImplementation(
+      (
+        _Component: unknown,
+        _props: unknown,
+        opts: {onClose?: (v: string) => void}
+      ) => {
+        return {
+          close: jest.fn((_value: unknown) => opts.onClose?.('mocked value')),
+        };
+      }
+    );
 
   const actual = jest.requireActual<
     typeof import('@modusoperandi/licit-ui-commands')
@@ -52,10 +54,9 @@ jest.mock('@modusoperandi/licit-ui-commands', () => {
     ...actual,
     createPopUp: createPopUpMock,
     atAnchorRight: jest.fn(),
-    RuntimeService: { Runtime: 'mockRuntime' },
+    RuntimeService: {Runtime: 'mockRuntime'},
   };
 });
-
 
 // Mock color-picker import
 jest.mock('@modusoperandi/color-picker', () => ({
@@ -83,7 +84,11 @@ describe('TableColorCommand (typed)', () => {
     viewMock = {} as EditorView;
 
     setCellAttributeMock = jest.fn();
-
+    const chainMock = {
+      focus: jest.fn().mockReturnThis(),
+      updateAttributes: jest.fn().mockReturnThis(),
+      run: jest.fn(),
+    };
     // Inject a typed mock editor into UICommand
     const mockEditor: Editor = {
       view: {
@@ -93,6 +98,7 @@ describe('TableColorCommand (typed)', () => {
       commands: {
         setCellAttribute: setCellAttributeMock,
       },
+      chain: jest.fn(() => chainMock),
     } as unknown as Editor;
 
     UICommand.prototype.editor = mockEditor;
@@ -117,7 +123,6 @@ describe('TableColorCommand (typed)', () => {
       mockTransform
     );
   });
-
 
   it('should respond only to mouseenter', () => {
     const evtEnter: FakeReactEvent = {
@@ -155,7 +160,7 @@ describe('TableColorCommand (typed)', () => {
   });
 
   it('should not create popup when already open', async () => {
-    command._popUp = { close: jest.fn() } as MockPopup;
+    command._popUp = {close: jest.fn()} as MockPopup;
 
     const evt: FakeReactEvent = {
       type: 'mouseenter',
@@ -184,19 +189,34 @@ describe('TableColorCommand (typed)', () => {
       mockState,
       dispatchMock,
       viewMock,
-      '#333333'
+      {color: '#333333'}
     );
 
-    expect(setCellAttributeMock).toHaveBeenCalledWith(
-      'backgroundColor',
-      '#333333'
-    );
-    expect(result).toBeUndefined();
+    expect(setCellAttributeMock).toHaveBeenCalledWith('backgroundColor', {
+      color: '#333333',
+    });
+    expect(result).toBeFalsy();
   });
+
+it('calls setCellBorders when success is true', () => {
+  const setCellBordersSpy = jest.spyOn(command, 'setCellBorders');
+  setCellAttributeMock.mockReturnValue(true);
+
+  const hex = { color: '#333333', selectedPosition: ['Top', 'Bottom'] };
+
+  command.executeWithUserInput(mockState, dispatchMock, viewMock, hex);
+
+  expect(setCellBordersSpy).toHaveBeenCalledWith(
+    expect.any(Object),
+    ['Top', 'Bottom'],
+    '#333333'
+  );
+});
+
 
   it('cancel closes popup if exists', () => {
     const close = jest.fn();
-    command._popUp = { close } as MockPopup;
+    command._popUp = {close} as MockPopup;
 
     command.cancel();
     expect(close).toHaveBeenCalledWith(undefined);
@@ -208,25 +228,30 @@ describe('TableColorCommand (typed)', () => {
   });
 
   it('should clear popup and resolve value when onClose is triggered', async () => {
-  const div = document.createElement('div');
+    const div = document.createElement('div');
 
-  // Prepare event
-  const event = {
-    type: 'mouseenter',
-    currentTarget: div,
-  } as unknown as React.SyntheticEvent;
+    // Prepare event
+    const event = {
+      type: 'mouseenter',
+      currentTarget: div,
+    } as unknown as React.SyntheticEvent;
 
-  const promise = command.waitForUserInput(mockState, dispatchMock, viewMock, event);
+    const promise = command.waitForUserInput(
+      mockState,
+      dispatchMock,
+      viewMock,
+      event
+    );
 
-  // Extract the call arguments for createPopUp
-  const call = (createPopUp as jest.Mock).mock.calls[0];
-  const options = call[2];
+    // Extract the call arguments for createPopUp
+    const call = (createPopUp as jest.Mock).mock.calls[0];
+    const options = call[2];
 
-  expect(options).toHaveProperty('onClose');
-  const onClose = options.onClose!;
-  expect(command._popUp).not.toBeNull();
-  onClose('close-value');
-  expect(command._popUp).toBeNull();
-  await expect(promise).resolves.toBe('close-value');
-});
+    expect(options).toHaveProperty('onClose');
+    const onClose = options.onClose!;
+    expect(command._popUp).not.toBeNull();
+    onClose('close-value');
+    expect(command._popUp).toBeNull();
+    await expect(promise).resolves.toBe('close-value');
+  });
 });

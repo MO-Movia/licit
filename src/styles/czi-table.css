@@ -8,7 +8,7 @@
 
 .ProseMirror table {
   border: 1px solid var(--czi-table-border-color);
-  border-collapse: initial;
+  border-collapse: collapse;
   border-spacing: 0;
   border-width: 0 thin thin 0;
   margin: 0;

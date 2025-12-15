@@ -130,8 +130,7 @@ describe('Ref Methods', () => {
     root.render(<Licit ref={ref} />);
 
     await new Promise((resolve) => setTimeout(resolve, 500));
-    expect(ref.current).not.toBeNull();
-    expect(ref.current.setContent)?.toBeDefined();
+    expect(ref.current?.setContent)?.toBeDefined();
   });
 
   it('should expose insertJSON method via ref', async () => {

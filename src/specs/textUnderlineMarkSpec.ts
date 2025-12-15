@@ -5,7 +5,6 @@
 
 import type { MarkSpec } from 'prosemirror-model';
 
-// https://bitbucket.org/atlassian/atlaskit/src/34facee3f461/packages/editor-core/src/schema/nodes/?at=master
 const TextUnderlineMarkSpec: MarkSpec = {
   attrs: {
     overridden: { default: false },

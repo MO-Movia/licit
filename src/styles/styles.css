@@ -8,6 +8,7 @@
 @import url('@modusoperandi/licit-ui-commands/ui/czi-pop-up.css');
 @import url('@modusoperandi/licit-ui-commands/ui/czi-tooltip-surface.css');
 @import url('./listType.css');
+@import url("@modusoperandi/color-picker/styles.css");
 
 /* [FS] IRAD-1061 2020-09-19 */
 

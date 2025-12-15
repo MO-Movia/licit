@@ -24,8 +24,8 @@
     "start": "cross-env NODE_ENV=development webpack serve --config tools/webpack/webpack.config.dev.js",
     "build:bin": "cross-env NODE_ENV=production webpack --config tools/webpack/webpack.config.prod.js",
     "serve": "cross-env NODE_ENV=production webpack --config tools/webpack/webpack.config.prod.js && cross-env serve dist/",
-    "lint:ts": "eslint src --fix",
-    "lint:css": "stylelint \"**/*.css\" --fix",
+    "lint:ts": "eslint src",
+    "lint:css": "stylelint \"**/*.css\"",
     "lint": "npm run lint:css & npm run lint:ts",
     "prebuild:style-service-docker": "node utils/build_customstyle_server.js",
     "build:style-service-docker": "docker build . -f style-service.Dockerfile -t style-service:latest"
@@ -142,4 +142,3 @@
     "@modusoperandi/licit-ui-commands": "file:modusoperandi-licit-ui-commands-3.0.0.tgz"
   }
 }
-

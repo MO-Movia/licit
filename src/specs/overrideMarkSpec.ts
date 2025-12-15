@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {MarkSpec} from 'prosemirror-model';
 
 const OverrideMarkSpec: MarkSpec = {
@@ -15,7 +20,7 @@ const OverrideMarkSpec: MarkSpec = {
       getAttrs: (dom) => {
         if (typeof dom === 'string') return false;
 
-        const element = dom as HTMLElement;
+        const element = dom;
         const strong = element.getAttribute('cs-strong') === 'true';
         const em = element.getAttribute('cs-em') === 'true';
         const underline = element.getAttribute('cs-underline') === 'true';

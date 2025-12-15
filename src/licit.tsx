@@ -10,6 +10,8 @@ import React, {
   useImperativeHandle,
   forwardRef,
   ForwardedRef,
+  useMemo,
+  useEffect,
 } from 'react';
 import ReactDOM from 'react-dom';
 import {Extension, Editor} from '@tiptap/core';
@@ -36,6 +38,7 @@ import {
   noop,
   PARAGRAPH,
   ThemeProvider,
+  DOC,
 } from '@modusoperandi/licit-ui-commands';
 import {updateEditorMarks} from './editorMarks';
 import {updateEditorNodes} from './editorNodes';
@@ -44,11 +47,12 @@ import {Indent} from './extensions/indent';
 import {WebrtcProvider} from 'y-webrtc';
 import {EditorRuntime, ToolbarMenuConfig} from './types';
 import {EditorViewEx} from './constants';
-import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableCellEx from './extensions/tableCellEx';
+import {TableEx} from './extensions/tableEx';
 import TableHeader from '@tiptap/extension-table-header';
 import ParagraphNodeSpec from './specs/paragraphNodeSpec';
+import docNodeSpec from './specs/docNodeSpec';
 import * as awarenessProtocol from 'y-protocols/awareness';
 import * as math from 'lib0/math';
 import * as random from 'lib0/random';
@@ -99,7 +103,7 @@ export interface LicitProps {
 }
 
 export interface LicitHandle {
-  editor: Editor ;
+  editor: Editor;
   editorView: EditorView | null;
   goToEnd: () => void;
   pageLayout: () => void;
@@ -225,6 +229,7 @@ const prepareEffectiveSchema = (
     };
 
     // Update paragraph node
+    updateNodeAttrs(DOC, docNodeSpec);
     updateNodeAttrs(PARAGRAPH, ParagraphNodeSpec);
 
     // Process nodes and marks
@@ -290,7 +295,8 @@ const updateSpec = (
   const specMap = schema.spec[attrName] as OrderedMap<unknown>;
   const collection: unknown[] = [];
   //forEach is the standard approach for OrderedMap
-  specMap.forEach((name, spec) => { //NOSONAR
+  specMap.forEach((name, spec) => {
+    //NOSONAR
     collection.push(name, spec);
   });
 
@@ -313,6 +319,7 @@ const updateSpec = (
     });
   }
 };
+
 export const updateSpecAttrs = (
   i: number,
   collection: Array<unknown>,
@@ -325,8 +332,9 @@ export const updateSpecAttrs = (
     const specMap = existingSchema.spec[attrName] as OrderedMap<unknown>;
 
     // Find the matching spec in the existing schema
-     //forEach is the standard approach for OrderedMap
-    specMap?.forEach((name, spec) => { //NOSONAR
+    //forEach is the standard approach for OrderedMap
+    specMap?.forEach((name, spec) => {
+      //NOSONAR
       if (name === collection[i]) {
         const attrsLicit = (spec as {attrs?: Record<string, unknown>})?.attrs;
         if (attrsLicit) {
@@ -341,6 +349,7 @@ export const updateSpecAttrs = (
     });
   }
 };
+
 const initDevTool = (debug: boolean, editorView: EditorView): void => {
   if (debug) {
     // Use nullish coalescing assignment operator
@@ -481,6 +490,13 @@ const LicitComponent = (
   const instanceIDRef = useRef<string>(uuidv4());
   const instanceID = instanceIDRef.current;
 
+  // Track initialization state
+  const isSchemaInitializedRef = useRef(false);
+  const collabConfigRef = useRef({
+    collaboration: false,
+    currentUser: null as Record<string, unknown> | null,
+  });
+
   // [FS] IRAD-981 2020-06-10
   // Component's configurations.
   // [FS] IRAD-1552 2021-08-26
@@ -507,39 +523,59 @@ const LicitComponent = (
   const finalTheme = theme || 'dark';
   const finalToolbarConfig = toolbarConfig || null;
 
-  let currentUser: Record<string, unknown> = null;
-  let collaboration = false;
-  const defaultExtensions = [
-    StarterKit.configure({
-      codeBlock: false,
-    }),
-    Subscript,
-    Superscript,
-    Underline,
-    TextAlign.configure({
-      types: [HEADING, PARAGRAPH],
-    }),
-    Indent,
-    Table.configure({
-      resizable: true,
-    }),
-    TableRow,
-    TableHeader,
-    TableCellEx,
-  ];
+  // Memoize default extensions to prevent recreation on every render
+  const defaultExtensions = useMemo(
+    () => [
+      StarterKit.configure({
+        codeBlock: false,
+        bold: false,
+        italic: false,
+      }),
+      Subscript,
+      Superscript,
+      Underline,
+      TextAlign.configure({
+        types: [HEADING, PARAGRAPH],
+      }),
+      Indent,
+      TableEx.configure({
+        resizable: true,
+      }),
+      TableRow,
+      TableHeader,
+      TableCellEx,
+    ],
+    []
+  );
 
-  const collabCfg = {collaboration, currentUser};
+  // Configure collaboration only when docID changes
+  useEffect(() => {
+    configCollab(
+      finalDocID,
+      instanceID,
+      collabConfigRef.current,
+      finalCollabServiceURL
+    );
+  }, [finalDocID, instanceID, finalCollabServiceURL]);
 
-  configCollab(finalDocID, instanceID, collabCfg, finalCollabServiceURL);
-  collaboration = collabCfg.collaboration;
-  currentUser = collabCfg.currentUser;
+  // Prepare effective schema before creating editor
+  if (!isSchemaInitializedRef.current) {
+    prepareEffectiveSchema(defaultExtensions as Extension[], finalPlugins);
+    isSchemaInitializedRef.current = true;
+  }
 
-  prepareEffectiveSchema(defaultExtensions as Extension[], finalPlugins);
+  // Memoize collaboration extensions
+  const collabExtensions = useMemo(() => {
+    return getCollabExtensions(
+      collabConfigRef.current.collaboration,
+      collabConfigRef.current.currentUser
+    );
+  }, []);
 
   const editor = useEditor({
     extensions: [
       ...defaultExtensions,
-      ...getCollabExtensions(collaboration, currentUser),
+      ...collabExtensions,
       ...(licitPlugins ? [licitPlugins] : []),
     ],
     onBeforeCreate(props: EditorEvents['beforeCreate']): void {
@@ -583,6 +619,7 @@ const LicitComponent = (
         });
     }
   }, [editor]);
+
   const setContent = useCallback(
     (content: JSONContent): void => {
       if (editor) {
@@ -640,9 +677,11 @@ const LicitComponent = (
     ]
   );
 
-  if (editor) {
-    editor.on('create', (props: EditorEvents['create']) => {
-      // The editor is ready.
+  // Register event handlers only once when editor is available
+  useEffect(() => {
+    if (!editor) return;
+
+    const handleCreate = (props: EditorEvents['create']) => {
       const handle: LicitHandle = {
         editor: editor,
         editorView: editor.view,
@@ -660,15 +699,13 @@ const LicitComponent = (
         finalOnReady,
         handle
       );
-    });
+    };
 
-    editor.on('update', (props: EditorEvents['update']) => {
-      // The content has changed.
+    const handleUpdate = (props: EditorEvents['update']) => {
       onUpdate(props.editor, finalOnChange);
-    });
+    };
 
-    editor.on('destroy', (_props: EditorEvents['destroy']) => {
-      // The editor is being destroyed.
+    const handleDestroy = () => {
       destroyDevTool();
       // Cleanup collaboration
       if (provider) {
@@ -679,10 +716,41 @@ const LicitComponent = (
         ydoc.destroy();
         ydoc = null;
       }
-    });
+    };
 
+    editor.on('create', handleCreate);
+    editor.on('update', handleUpdate);
+    editor.on('destroy', handleDestroy);
+
+    // Cleanup: remove listeners when component unmounts or editor changes
+    return () => {
+      editor.off('create', handleCreate);
+      editor.off('update', handleUpdate);
+      editor.off('destroy', handleDestroy);
+    };
+  }, [
+    editor,
+    goToEnd,
+    pageLayout,
+    setContent,
+    getContent,
+    insertJSON,
+    isNodeHasAttribute,
+    finalDebug,
+    finalOnReady,
+    finalOnChange,
+  ]);
+
+  // Set runtime on editor view when available
+  useEffect(() => {
+    if (editor?.view) {
+      const eView: EditorViewEx = editor.view as EditorViewEx;
+      eView.runtime = finalRuntime;
+    }
+  }, [editor, finalRuntime]);
+
+  if (editor) {
     const eView: EditorViewEx = editor.view as EditorViewEx;
-    eView.runtime = finalRuntime;
     const wrapperClass = 'prosemirror-editor-wrapper' + ' ' + finalTheme;
     const mainClassName = cx(wrapperClass, {
       embedded: finalEmbedded,

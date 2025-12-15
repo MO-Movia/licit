@@ -1,3 +1,8 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ */
+
 import {Mark} from 'prosemirror-model';
 import OverrideMarkSpec from './overrideMarkSpec';
 
@@ -33,8 +38,8 @@ describe('OverrideMarkSpec', () => {
     it('should parse span with only strong attribute', () => {
       (mockElement as HTMLElement).setAttribute('cs-strong', 'true');
 
-      const parser = OverrideMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as string & HTMLElement);
+      const parser = OverrideMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as string & HTMLElement);
 
       expect(result).toEqual({
         strong: true,
@@ -47,8 +52,8 @@ describe('OverrideMarkSpec', () => {
     it('should parse span with only em attribute', () => {
       (mockElement as HTMLElement).setAttribute('cs-em', 'true');
 
-      const parser = OverrideMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = OverrideMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toEqual({
         strong: false,
@@ -61,8 +66,8 @@ describe('OverrideMarkSpec', () => {
     it('should parse span with only underline attribute', () => {
       (mockElement as HTMLElement).setAttribute('cs-underline', 'true');
 
-      const parser = OverrideMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = OverrideMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toEqual({
         strong: false,
@@ -75,8 +80,8 @@ describe('OverrideMarkSpec', () => {
     it('should parse span with only strike attribute', () => {
       (mockElement as HTMLElement).setAttribute('cs-strike', 'true');
 
-      const parser = OverrideMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = OverrideMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toEqual({
         strong: false,
@@ -90,8 +95,8 @@ describe('OverrideMarkSpec', () => {
       (mockElement as HTMLElement).setAttribute('cs-strong', 'true');
       (mockElement as HTMLElement).setAttribute('cs-underline', 'true');
 
-      const parser = OverrideMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = OverrideMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toEqual({
         strong: true,
@@ -102,8 +107,8 @@ describe('OverrideMarkSpec', () => {
     });
 
     it('should return false when all attributes are false', () => {
-      const parser = OverrideMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = OverrideMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toBe(false);
     });
@@ -112,8 +117,8 @@ describe('OverrideMarkSpec', () => {
       (mockElement as HTMLElement).setAttribute('cs-strong', 'false');
       (mockElement as HTMLElement).setAttribute('cs-em', 'false');
 
-      const parser = OverrideMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = OverrideMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toBe(false);
     });
@@ -122,8 +127,8 @@ describe('OverrideMarkSpec', () => {
       (mockElement as HTMLElement).setAttribute('class', 'some-class');
       (mockElement as HTMLElement).setAttribute('id', 'some-id');
 
-      const parser = OverrideMarkSpec.parseDOM![0];
-      const result = parser.getAttrs!(mockElement as HTMLElement & string);
+      const parser = OverrideMarkSpec.parseDOM[0];
+      const result = parser.getAttrs(mockElement as HTMLElement & string);
 
       expect(result).toBe(false);
     });
@@ -140,7 +145,7 @@ describe('OverrideMarkSpec', () => {
         },
       } as unknown as Mark;
 
-      const result = OverrideMarkSpec.toDOM!(mark, true);
+      const result = OverrideMarkSpec.toDOM(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -164,7 +169,7 @@ describe('OverrideMarkSpec', () => {
         },
       } as unknown as Mark;
 
-      const result = OverrideMarkSpec.toDOM!(mark, true);
+      const result = OverrideMarkSpec.toDOM(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -188,7 +193,7 @@ describe('OverrideMarkSpec', () => {
         },
       } as unknown as Mark;
 
-      const result = OverrideMarkSpec.toDOM!(mark, true);
+      const result = OverrideMarkSpec.toDOM(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -212,7 +217,7 @@ describe('OverrideMarkSpec', () => {
         },
       } as unknown as Mark;
 
-      const result = OverrideMarkSpec.toDOM!(mark, true);
+      const result = OverrideMarkSpec.toDOM(mark, true);
 
       expect(result).toBeNull();
     });
@@ -227,7 +232,7 @@ describe('OverrideMarkSpec', () => {
         },
       } as unknown as Mark;
 
-      const result = OverrideMarkSpec.toDOM!(mark, true);
+      const result = OverrideMarkSpec.toDOM(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -251,7 +256,7 @@ describe('OverrideMarkSpec', () => {
         },
       } as unknown as Mark;
 
-      const result = OverrideMarkSpec.toDOM!(mark, true);
+      const result = OverrideMarkSpec.toDOM(mark, true);
 
       expect(result).toEqual([
         'span',
@@ -268,7 +273,7 @@ describe('OverrideMarkSpec', () => {
 
   describe('parseDOM tag selector', () => {
     it('should target span tags', () => {
-      const parser = OverrideMarkSpec.parseDOM![0];
+      const parser = OverrideMarkSpec.parseDOM[0];
       expect(parser.tag).toBe('span');
     });
   });

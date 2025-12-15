@@ -57,10 +57,11 @@ class TableColorCommand extends UICommand {
     if (!(target instanceof HTMLElement)) {
       return Promise.resolve(undefined);
     }
+    
 
     const anchor = event ? event.currentTarget : null;
     return new Promise((resolve) => {
-      this._popUp = createPopUp(ColorEditor, { hex: null, runtime: RuntimeService.Runtime, Textcolor: null }, {
+      this._popUp = createPopUp(ColorEditor, { hex: null, runtime: RuntimeService.Runtime, Textcolor: null, showCheckbox: this.attribute !== 'backgroundColor' }, {
         anchor,
         popUpId: 'mo-menuList-child',
         position: atAnchorRight,
@@ -83,10 +84,14 @@ class TableColorCommand extends UICommand {
     _state: EditorState,
     _dispatch?: (tr: Transform) => void,
     _view?: EditorView,
-    hex?: string
+    hex?:{ color: string, selectedPosition?: string[] }
   ): boolean => {
     if (hex !== undefined) {
-      return this.getEditor().commands.setCellAttribute(this.attribute, hex);
+        const editor = this.getEditor();
+    const success = editor.commands.setCellAttribute(this.attribute, hex);
+   if(success){
+    this.setCellBorders(editor, hex.selectedPosition, hex.color);
+   }
     }
     return false;
   };
@@ -94,6 +99,22 @@ class TableColorCommand extends UICommand {
   cancel(): void {
     this._popUp?.close(undefined);
   }
+
+  setCellBorders(editor: Editor, selectedPosition: string[], color: string) {
+  const width = '0.25px';
+  const style = 'solid';
+  const cssValue = `${width} ${style} ${color}`;
+
+  const attrs: Record<string, string> = {};
+  
+for (const side of selectedPosition) {
+    attrs[`border${side}`] = cssValue;
+  }
+
+
+  editor.chain().focus().updateAttributes('tableCell', attrs).run();
+}
+
 }
 
 export default TableColorCommand;
