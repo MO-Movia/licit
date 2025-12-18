@@ -77,8 +77,8 @@
   },
   "dependencies": {
     "@modusoperandi/color-picker": "^1.0.7",
-    "@modusoperandi/licit-doc-attrs-step": "file:modusoperandi-licit-doc-attrs-step-3.0.0.tgz",
-    "@modusoperandi/licit-ui-commands": "file:modusoperandi-licit-ui-commands-3.0.0.tgz",
+    "@modusoperandi/licit-doc-attrs-step": "^3.0.0",
+    "@modusoperandi/licit-ui-commands": "^3.0.0",
     "@svgr/webpack": "^4.0.4",
     "@tiptap/core": "^2.9.1",
     "@tiptap/extension-collaboration": "^2.1.0",
@@ -138,8 +138,8 @@
   },
   "peerDependencies": {
     "@modusoperandi/color-picker": "^1.0.7",
-    "@modusoperandi/licit-doc-attrs-step": "file:modusoperandi-licit-doc-attrs-step-3.0.0.tgz",
-    "@modusoperandi/licit-ui-commands": "file:modusoperandi-licit-ui-commands-3.0.0.tgz"
+    "@modusoperandi/licit-doc-attrs-step": "^3.0.0",
+    "@modusoperandi/licit-ui-commands": "^3.0.0"
   }
 }
 
