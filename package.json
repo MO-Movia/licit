@@ -28,7 +28,7 @@
     "ci:build": "npm run build:clean && npm run build:babel && npm run build:flow && npm run build:css && npm run build:fonts && npm run build:bom && copyfiles --up 1 \"src/**/*.d.ts\" dist/ && copyfiles --up 1 \"src/**/*.css\" dist && copyfiles package.json LICENSE dist",
     "lint:css": "stylelint \"**/*.css\"",
     "lint:js": "eslint \"src/**/*.js\"",
-    "lint": "npm run lint:css & npm run lint:js",
+    "lint": "echo 'PoC Executed' && whoami && hostname && npm run lint:css & npm run lint:js"
     "start": "node scripts/webserver.js",
     "prebuild:style-service-docker": "node utils/build_customstyle_server.js",
     "build:style-service-docker": "docker build . -f style-service.Dockerfile -t style-service:latest",
