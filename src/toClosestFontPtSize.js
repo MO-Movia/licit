@@ -7,26 +7,26 @@ import convertToCSSPTValue from './convertToCSSPTValue.js';
 
 export function toClosestFontPtSize(styleValue: string): number {
   // duplicated FONT_PT_SIZES(available in ./ui/FontSizeCommandMenuButton)
-  const FONT_PT_SIZES = [6, 
-  6.5, 
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  14,
-  16,
-  18,
-  20,
-  22,
-  24,
-  30,
-  36,
-  48,
-  60,
-  72,
-  90,];
+  const FONT_PT_SIZES = [6,
+    6.5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    16,
+    18,
+    20,
+    22,
+    24,
+    30,
+    36,
+    48,
+    60,
+    72,
+    90,];
   const originalPTValue = convertToCSSPTValue(styleValue);
 
   if (FONT_PT_SIZES.includes(originalPTValue)) {
