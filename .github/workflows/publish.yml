@@ -25,12 +25,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
-      
+
       # Ensure npm 11.5.1 or later is installed for secure auth
       - name: Update npm
         run: npm install -g npm@latest
 
-      - run: npm ci
+      - run: npm ci --ignore-scripts
         
       - name: Build
         run: npm run ci:build
@@ -49,10 +49,3 @@ jobs:
           tag_name: ${{ env.TAG }}
           target_commitish: main
           generate_release_notes: true
-
-      - name: Sync
-        # Workflow actions will not trigger new workflows
-        run: |
-          git checkout -b develop origin/develop
-          git merge --no-ff main -m "Sync master back to develop"
-          git push -u origin develop

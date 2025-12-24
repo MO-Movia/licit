@@ -23,11 +23,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci
+      - run: npm update --ignore-scripts
 
       # Dependency-Check
       - name: Dependency-Check
-        run: npx owasp-dependency-check --scan . --failOnCVSS 1 --nvdApiKey ${{ secrets.NVD_KEY }} --disableYarnAudit --exclude node_modules/node-gyp/**/* --exclude dependency-check-bin/**/* --suppression https://github.com/MO-Movia/suppressions/raw/refs/heads/main/suppression.xml
+        run: npx owasp-dependency-check --scan . --failOnCVSS 1 --nvdApiKey ${{ secrets.NVD_KEY }} --ossIndexUsername ${{ secrets.SONATYPE_OSS_INDEX_USERNAME }} --ossIndexPassword ${{ secrets.SONATYPE_OSS_INDEX_TOKEN }} --disableYarnAudit --exclude node_modules/node-gyp/**/* --exclude dependency-check-bin/**/* --suppression https://github.com/MO-Movia/suppressions/raw/refs/heads/main/suppression.xml
       - name: Upload Report
         uses: actions/upload-artifact@v4
         if: ${{ failure() }}
@@ -35,6 +35,6 @@ jobs:
           name: dependency-check-reports
           path: dependency-check-reports
       # Dependency-Track
-      - name: Dependency-Track
-        run: npx @cyclonedx/cyclonedx-npm --package-lock-only --output-file SBOM.json
+      #- name: Dependency-Track
+      #  run: npx @cyclonedx/cyclonedx-npm --package-lock-only --output-file SBOM.json
         
