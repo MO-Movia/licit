@@ -1,4 +1,9 @@
-// @flow
+/**
+ * @license MIT
+ * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
+ *
+ * @flow
+ */
 
 import convertToCSSPTValue from '../convertToCSSPTValue';
 
@@ -11,7 +16,7 @@ export const LAYOUT = {
 
 export const ATTRIBUTE_LAYOUT = 'data-layout';
 
-export function getAttrs(el: HTMLElement): Object {
+export function getAttrs(el: HTMLElement): object {
     const attrs = {
         layout: null,
         width: null,

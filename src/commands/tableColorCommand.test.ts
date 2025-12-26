@@ -139,9 +139,21 @@ describe('TableColorCommand (typed)', () => {
     expect(command.shouldRespondToUIEvent(evtClick)).toBe(false);
   });
 
-  it('isEnabled always true', () => {
-    expect(command.isEnabled(mockState)).toBe(true);
-  });
+ it('should return true when selection is inside a table', () => {
+  const mockState = {
+    selection: {
+      $from: {
+        depth: 3,
+        node: (depth: number) =>
+          depth === 1
+            ? { type: { name: 'table' } }
+            : { type: { name: 'paragraph' } },
+      },
+    },
+  };
+
+  expect(command.isEnabled(mockState as unknown as EditorState)).toBe(true);
+});
 
   it('returns undefined when target invalid', async () => {
     const badEvent = {

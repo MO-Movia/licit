@@ -98,10 +98,21 @@ describe('TableAddColumnBeforeCommand', () => {
     } as unknown as EditorState;
   });
 
-  it('should always return true for isEnabled', () => {
-    // Test that isEnabled method always returns true
-    expect(command.isEnabled(mockState)).toBe(true);
-  });
+ it('should return true when selection is inside a table', () => {
+  const mockState = {
+    selection: {
+      $from: {
+        depth: 3,
+        node: (depth: number) =>
+          depth === 1
+            ? { type: { name: 'table' } }
+            : { type: { name: 'paragraph' } },
+      },
+    },
+  };
+
+  expect(command.isEnabled(mockState as unknown as EditorState)).toBe(true);
+});
 
   it('should call addColumnBefore when execute is called', () => {
     // Mock the addColumnBefore command method

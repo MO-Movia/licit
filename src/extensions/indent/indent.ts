@@ -1,4 +1,3 @@
- 
 /**
  * @license MIT
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
@@ -11,7 +10,7 @@ import {
   isList,
   KeyboardShortcutCommand,
 } from '@tiptap/core';
-import { TextSelection, Transaction } from 'prosemirror-state';
+import {TextSelection, Transaction} from 'prosemirror-state';
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -34,15 +33,15 @@ export const Indent = Extension.create<IndentOptions, never>({
   name: 'indent',
 
   addOptions() {
-    return {
-      names: ['heading', 'paragraph'],
-      indentRange: 1,
-      minIndentLevel: 0,
-      maxIndentLevel: 7,
-      defaultIndentLevel: 0,
-      HTMLAttributes: {},
-    };
-  },
+  return {
+    names: ['heading', 'paragraph', 'bulletList', 'orderedList'], 
+    indentRange: 1, 
+    minIndentLevel: 0,
+    maxIndentLevel: 7,
+    defaultIndentLevel: 0,
+    HTMLAttributes: {},
+  };
+},
 
   addGlobalAttributes() {
     return [
@@ -51,56 +50,71 @@ export const Indent = Extension.create<IndentOptions, never>({
         attributes: {
           indent: {
             default: this.options.defaultIndentLevel,
-            renderHTML: (attributes) => ({
-              style: `margin-left: ${attributes.indent}px!important;`,
-            }),
-            parseHTML: (element) =>
-              parseInt(element.style.marginLeft, 10) ||
-              this.options.defaultIndentLevel,
+
+            renderHTML: (attributes) => {
+              if (attributes.isList) {
+                return {
+                  'data-indent': attributes.indent,
+                };
+              }
+
+              return {
+                'data-indent': attributes.indent,
+                style: `margin-left: ${attributes.indent * 36}px`,
+              };
+            },
+
+            parseHTML: (element) => {
+              const attr = element.getAttribute('data-indent');
+              if (attr !== null) {
+                const val = parseInt(attr, 10);
+                return isNaN(val) ? this.options.defaultIndentLevel : val;
+              }
+              return this.options.defaultIndentLevel;
+            },
           },
         },
       },
     ];
   },
-
   addCommands() {
     return {
       indent:
         () =>
-          ({ tr, state, dispatch, editor }: CommandProps) => {
-            const { selection } = state;
-            tr = tr.setSelection(selection);
-            tr = updateIndentLevel(
-              tr,
-              this.options,
-              editor.extensionManager.extensions,
-              'indent'
-            );
-            if (tr.docChanged && dispatch) {
-              dispatch(tr);
-              return true;
-            }
-            editor.chain().focus().run();
-            return false;
-          },
+        ({tr, state, dispatch, editor}: CommandProps) => {
+          const {selection} = state;
+          tr = tr.setSelection(selection);
+          tr = updateIndentLevel(
+            tr,
+            this.options,
+            editor.extensionManager.extensions,
+            'indent'
+          );
+          if (tr.docChanged && dispatch) {
+            dispatch(tr);
+            return true;
+          }
+          editor.chain().focus().run();
+          return false;
+        },
       outdent:
         () =>
-          ({ tr, state, dispatch, editor }: CommandProps) => {
-            const { selection } = state;
-            tr = tr.setSelection(selection);
-            tr = updateIndentLevel(
-              tr,
-              this.options,
-              editor.extensionManager.extensions,
-              'outdent'
-            );
-            if (tr.docChanged && dispatch) {
-              dispatch(tr);
-              return true;
-            }
-            editor.chain().focus().run();
-            return false;
-          },
+        ({tr, state, dispatch, editor}: CommandProps) => {
+          const {selection} = state;
+          tr = tr.setSelection(selection);
+          tr = updateIndentLevel(
+            tr,
+            this.options,
+            editor.extensionManager.extensions,
+            'outdent'
+          );
+          if (tr.docChanged && dispatch) {
+            dispatch(tr);
+            return true;
+          }
+          editor.chain().focus().run();
+          return false;
+        },
     };
   },
 
@@ -153,12 +167,12 @@ const updateIndentLevel = (
   extensions: Extensions,
   type: IndentType
 ): Transaction => {
-  const { doc, selection } = tr;
+  const {doc, selection} = tr;
   if (!doc || !selection) return tr;
   if (!(selection instanceof TextSelection)) {
     return tr;
   }
-  const { from, to } = selection;
+  const {from, to} = selection;
   doc.nodesBetween(from, to, (node, pos) => {
     if (options.names.includes(node.type.name)) {
       tr = setNodeIndentMarkup(
@@ -177,27 +191,27 @@ const updateIndentLevel = (
 
 const indent: () => KeyboardShortcutCommand =
   () =>
-    ({ editor }) => {
-      if (
-        !isList(editor.state.doc.type.name, editor.extensionManager.extensions)
-      ) {
-        return editor.commands.indent();
-      }
-      return false;
-    };
+  ({editor}) => {
+    if (
+      !isList(editor.state.doc.type.name, editor.extensionManager.extensions)
+    ) {
+      return editor.commands.indent();
+    }
+    return false;
+  };
 const outdent: (outdentOnlyAtHead: boolean) => KeyboardShortcutCommand =
   (outdentOnlyAtHead) =>
-    ({ editor }) => {
-      if (
-        !(
-          isList(
-            editor.state.doc.type.name,
-            editor.extensionManager.extensions
-          ) ||
-          (outdentOnlyAtHead && editor.state.selection.$head.parentOffset !== 0)
-        )
-      ) {
-        return editor.commands.outdent();
-      }
-      return false;
-    };
+  ({editor}) => {
+    if (
+      !(
+        isList(
+          editor.state.doc.type.name,
+          editor.extensionManager.extensions
+        ) ||
+        (outdentOnlyAtHead && editor.state.selection.$head.parentOffset !== 0)
+      )
+    ) {
+      return editor.commands.outdent();
+    }
+    return false;
+  };

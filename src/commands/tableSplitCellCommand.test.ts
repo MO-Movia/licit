@@ -3,11 +3,11 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { Editor } from '@tiptap/react';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {Editor} from '@tiptap/react';
 import tableSplitCellCommand from './tableSplitCellCommand';
-import { Schema } from 'prosemirror-model';
+import {Schema} from 'prosemirror-model';
 
 // Mock Editor (used by tableSplitCellCommand)
 jest.mock('@tiptap/react', () => {
@@ -29,16 +29,16 @@ describe('tableSplitCellCommand', () => {
     const mySchema = new Schema({
       nodes: {
         doc: {
-          attrs: { lineSpacing: { default: 'test' } },
+          attrs: {lineSpacing: {default: 'test'}},
           content: 'block+',
         },
         paragraph: {
-          attrs: { lineSpacing: { default: 'test' } },
+          attrs: {lineSpacing: {default: 'test'}},
           content: 'text*',
           group: 'block',
         },
         heading: {
-          attrs: { lineSpacing: { default: 'test' } },
+          attrs: {lineSpacing: {default: 'test'}},
           content: 'text*',
           group: 'block',
           defining: true,
@@ -48,12 +48,12 @@ describe('tableSplitCellCommand', () => {
           group: 'block',
         },
         list_item: {
-          attrs: { lineSpacing: { default: 'test' } },
+          attrs: {lineSpacing: {default: 'test'}},
           content: 'paragraph',
           defining: true,
         },
         blockquote: {
-          attrs: { lineSpacing: { default: 'test' } },
+          attrs: {lineSpacing: {default: 'test'}},
           content: 'block+',
           group: 'block',
         },
@@ -63,24 +63,24 @@ describe('tableSplitCellCommand', () => {
       },
     });
     const dummyDoc = mySchema.node('doc', null, [
-      mySchema.node('heading', { marks: [] }, [mySchema.text('Heading 1')]),
-      mySchema.node('paragraph', { marks: [] }, [
+      mySchema.node('heading', {marks: []}, [mySchema.text('Heading 1')]),
+      mySchema.node('paragraph', {marks: []}, [
         mySchema.text('This is a paragraph'),
       ]),
-      mySchema.node('bullet_list', { marks: [] }, [
-        mySchema.node('list_item', { marks: [] }, [
-          mySchema.node('paragraph', { marks: [] }, [
+      mySchema.node('bullet_list', {marks: []}, [
+        mySchema.node('list_item', {marks: []}, [
+          mySchema.node('paragraph', {marks: []}, [
             mySchema.text('List item 1'),
           ]),
         ]),
-        mySchema.node('list_item', { marks: [] }, [
-          mySchema.node('paragraph', { marks: [] }, [
+        mySchema.node('list_item', {marks: []}, [
+          mySchema.node('paragraph', {marks: []}, [
             mySchema.text('List item 2'),
           ]),
         ]),
       ]),
-      mySchema.node('blockquote', { marks: [] }, [
-        mySchema.node('paragraph', { marks: [] }, [
+      mySchema.node('blockquote', {marks: []}, [
+        mySchema.node('paragraph', {marks: []}, [
           mySchema.text('This is a blockquote'),
         ]),
       ]),
@@ -98,9 +98,68 @@ describe('tableSplitCellCommand', () => {
     } as unknown as EditorState;
   });
 
-  it('should always return true for isEnabled', () => {
-    // Test that isEnabled method always returns true
-    expect(command.isEnabled(mockState)).toBe(true);
+  it('should return true when selection is inside a table with cells that have spans', () => {
+    const mockState = {
+      selection: {
+        $from: {
+          depth: 3,
+          node: (depth: number) => {
+            if (depth === 2) {
+              // tableCell with colspan
+              return {
+                type: {name: 'tableCell'},
+                attrs: {colspan: 2, rowspan: 1},
+              };
+            }
+            if (depth === 1) {
+              // table
+              return {type: {name: 'table'}};
+            }
+            return {type: {name: 'paragraph'}};
+          },
+        },
+      },
+    };
+
+    expect(command.isEnabled(mockState as unknown as EditorState)).toBe(true);
+  });
+
+  it('should return false when selection is inside a table but no cells have spans', () => {
+    const mockState = {
+      selection: {
+        $from: {
+          depth: 3,
+          node: (depth: number) => {
+            if (depth === 2) {
+              // tableCell without spans
+              return {
+                type: {name: 'tableCell'},
+                attrs: {colspan: 1, rowspan: 1},
+              };
+            }
+            if (depth === 1) {
+              return {type: {name: 'table'}};
+            }
+            return {type: {name: 'paragraph'}};
+          },
+        },
+      },
+    };
+
+    expect(command.isEnabled(mockState as unknown as EditorState)).toBe(false);
+  });
+
+  it('should return false when selection is not inside a table', () => {
+    const mockState = {
+      selection: {
+        $from: {
+          depth: 2,
+          node: (_depth: number) => ({type: {name: 'paragraph'}}),
+        },
+      },
+    };
+
+    expect(command.isEnabled(mockState as unknown as EditorState)).toBe(false);
   });
 
   it('should call splitCell when execute is called', () => {

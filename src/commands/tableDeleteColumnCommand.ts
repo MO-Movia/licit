@@ -30,8 +30,16 @@ waitForUserInput(_state: EditorState, _dispatch?: (tr: Transform) => void, _view
     return UICommand.prototype.editor;
   };
 
-  isEnabled = (_state: EditorState): boolean => {
-    return true;
+  isEnabled = (state: EditorState): boolean => {
+    const {$from} = state.selection;
+
+    for (let depth = $from.depth; depth > 0; depth--) {
+      if ($from.node(depth).type.name === 'table') {
+        return true;
+      }
+    }
+
+    return false;
   };
 
   execute = (
