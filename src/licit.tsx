@@ -103,7 +103,7 @@ export interface LicitProps {
 }
 
 export interface LicitHandle {
-  editor: Editor ;
+  editor: Editor;
   editorView: EditorView | null;
   goToEnd: () => void;
   pageLayout: () => void;
@@ -295,7 +295,8 @@ const updateSpec = (
   const specMap = schema.spec[attrName] as OrderedMap<unknown>;
   const collection: unknown[] = [];
   //forEach is the standard approach for OrderedMap
-  specMap.forEach((name, spec) => { //NOSONAR
+  specMap.forEach((name, spec) => {
+    //NOSONAR
     collection.push(name, spec);
   });
 
@@ -318,6 +319,7 @@ const updateSpec = (
     });
   }
 };
+
 export const updateSpecAttrs = (
   i: number,
   collection: Array<unknown>,
@@ -330,8 +332,9 @@ export const updateSpecAttrs = (
     const specMap = existingSchema.spec[attrName] as OrderedMap<unknown>;
 
     // Find the matching spec in the existing schema
-     //forEach is the standard approach for OrderedMap
-    specMap?.forEach((name, spec) => { //NOSONAR
+    //forEach is the standard approach for OrderedMap
+    specMap?.forEach((name, spec) => {
+      //NOSONAR
       if (name === collection[i]) {
         const attrsLicit = (spec as {attrs?: Record<string, unknown>})?.attrs;
         if (attrsLicit) {
@@ -346,6 +349,7 @@ export const updateSpecAttrs = (
     });
   }
 };
+
 const initDevTool = (debug: boolean, editorView: EditorView): void => {
   if (debug) {
     // Use nullish coalescing assignment operator
@@ -615,6 +619,7 @@ const LicitComponent = (
         });
     }
   }, [editor]);
+
   const setContent = useCallback(
     (content: JSONContent): void => {
       if (editor) {

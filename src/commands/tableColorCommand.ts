@@ -69,6 +69,7 @@ class TableColorCommand extends UICommand {
     if (!(target instanceof HTMLElement)) {
       return Promise.resolve(undefined);
     }
+    
 
     const anchor = event ? event.currentTarget : null;
     return new Promise((resolve) => {
