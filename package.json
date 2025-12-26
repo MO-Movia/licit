@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/licit-tiptap",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "subversion": "1",
   "description": "Rich text editor built with React and ProseMirror",
   "type": "module",
