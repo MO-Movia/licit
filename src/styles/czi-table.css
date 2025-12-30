@@ -18,6 +18,10 @@
   width: 100%;
 }
 
+.ProseMirror table:has(td[vignette="true"]) {
+  border: none;
+}
+
 .ProseMirror td,
 .ProseMirror th {
   background-color: #fff;

@@ -5,9 +5,9 @@
 
 import * as React from 'react';
 import nullthrows from 'nullthrows';
-import { EditorState } from 'prosemirror-state';
-import { Transform } from 'prosemirror-transform';
-import { EditorView } from 'prosemirror-view';
+import {EditorState} from 'prosemirror-state';
+import {Transform} from 'prosemirror-transform';
+import {EditorView} from 'prosemirror-view';
 
 import {
   atAnchorRight,
@@ -15,12 +15,17 @@ import {
   RuntimeService,
   // ColorEditor
 } from '@modusoperandi/licit-ui-commands';
-import { ColorEditor } from '@modusoperandi/color-picker';
-import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
-import { Editor } from '@tiptap/react';
+import {ColorEditor} from '@modusoperandi/color-picker';
+import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
+import {Editor} from '@tiptap/react';
 
 class TableColorCommand extends UICommand {
-  executeCustom(_state: EditorState, tr: Transform, _from: number, _to: number): Transform {
+  executeCustom(
+    _state: EditorState,
+    tr: Transform,
+    _from: number,
+    _to: number
+  ): Transform {
     return tr;
   }
   executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
@@ -38,8 +43,15 @@ class TableColorCommand extends UICommand {
     return e.type === UICommand.EventType.MOUSEENTER;
   };
 
-  isEnabled = (_state: EditorState): boolean => {
-    return true;
+  isEnabled = (state: EditorState): boolean => {
+    const {$from} = state.selection;
+
+    for (let depth = $from.depth; depth > 0; depth--) {
+      if ($from.node(depth).type.name === 'table') {
+        return true;
+      }
+    }
+    return false;
   };
 
   waitForUserInput = (
@@ -61,18 +73,27 @@ class TableColorCommand extends UICommand {
 
     const anchor = event ? event.currentTarget : null;
     return new Promise((resolve) => {
-      this._popUp = createPopUp(ColorEditor, { hex: null, runtime: RuntimeService.Runtime, Textcolor: null, showCheckbox: this.attribute !== 'backgroundColor' }, {
-        anchor,
-        popUpId: 'mo-menuList-child',
-        position: atAnchorRight,
-        autoDismiss: true,
-        onClose: (val) => {
-          if (this._popUp) {
-            this._popUp = null;
-            resolve(val);
-          }
+      this._popUp = createPopUp(
+        ColorEditor,
+        {
+          hex: null,
+          runtime: RuntimeService.Runtime,
+          Textcolor: null,
+          showCheckbox: this.attribute !== 'backgroundColor',
         },
-      });
+        {
+          anchor,
+          popUpId: 'mo-menuList-child',
+          position: atAnchorRight,
+          autoDismiss: false,
+          onClose: (val) => {
+            if (this._popUp) {
+              this._popUp = null;
+              resolve(val);
+            }
+          },
+        }
+      );
     });
   };
 
@@ -84,14 +105,14 @@ class TableColorCommand extends UICommand {
     _state: EditorState,
     _dispatch?: (tr: Transform) => void,
     _view?: EditorView,
-    hex?:{ color: string, selectedPosition?: string[] }
+    hex?: {color: string; selectedPosition?: string[]}
   ): boolean => {
     if (hex !== undefined) {
-        const editor = this.getEditor();
-    const success = editor.commands.setCellAttribute(this.attribute, hex);
-   if(success){
-    this.setCellBorders(editor, hex.selectedPosition, hex.color);
-   }
+      const editor = this.getEditor();
+      const success = editor.commands.setCellAttribute(this.attribute, hex);
+      if (success) {
+        this.setCellBorders(editor, hex.selectedPosition, hex.color);
+      }
     }
     return false;
   };
@@ -101,20 +122,18 @@ class TableColorCommand extends UICommand {
   }
 
   setCellBorders(editor: Editor, selectedPosition: string[], color: string) {
-  const width = '0.25px';
-  const style = 'solid';
-  const cssValue = `${width} ${style} ${color}`;
+    const width = '0.25px';
+    const style = 'solid';
+    const cssValue = `${width} ${style} ${color}`;
 
-  const attrs: Record<string, string> = {};
-  
-for (const side of selectedPosition) {
-    attrs[`border${side}`] = cssValue;
+    const attrs: Record<string, string> = {};
+
+    for (const side of selectedPosition) {
+      attrs[`border${side}`] = cssValue;
+    }
+
+    editor.chain().focus().updateAttributes('tableCell', attrs).run();
   }
-
-
-  editor.chain().focus().updateAttributes('tableCell', attrs).run();
-}
-
 }
 
 export default TableColorCommand;

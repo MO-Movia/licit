@@ -30,9 +30,29 @@ class TableSplitCellCommand extends UICommand {
     return UICommand.prototype.editor;
   };
 
-  isEnabled = (_state: EditorState): boolean => {
-    return true;
-  };
+  isEnabled = (state: EditorState): boolean => {
+  const { $from } = state.selection;
+
+  let inTable = false;
+  let hasSpan = false;
+
+  for (let depth = $from.depth; depth > 0; depth--) {
+    const node = $from.node(depth);
+
+    if (node.type.name === 'tableCell' || node.type.name === 'tableHeader') {
+      if ((node.attrs?.rowspan && node.attrs.rowspan > 1) || (node.attrs?.colspan && node.attrs.colspan > 1)) {
+        hasSpan = true;
+      }
+    }
+
+    if (node.type.name === 'table') {
+      inTable = true;
+      break;
+    }
+  }
+
+  return inTable && hasSpan;
+};
 
   execute = (
     _state: EditorState,

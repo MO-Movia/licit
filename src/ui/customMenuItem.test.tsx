@@ -57,7 +57,7 @@ describe('CustomMenuItem', () => {
       label?: string;
     }>;
 
-    expect(result.props.className).toContain('czi-custom-menu-item blue');
+    expect(result.props.className).toContain('czi-custom-menu-item-button blue');
     expect(result.props.theme).toBe('blue');
     expect(result.props.label).toBe('AlignBtn');
   });
