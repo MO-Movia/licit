@@ -104,16 +104,19 @@ const TableNodesSpecs = tableNodes({
 // Override the default table node spec to support custom attributes.
 const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
   attrs: {
+    ...TableNodesSpecs.table.attrs,
     marginLeft: { default: null },
     dirty: { default: false },
+    coverPage: { default: false },
   },
   parseDOM: [
     {
       tag: 'table',
       getAttrs(dom: HTMLElement): ?Object {
         const dirty = dom.getAttribute('dirty') || false;
+        const coverPage = dom.getAttribute('data-cover-page') === 'true';
         const { marginLeft } = dom.style;
-        const attrs = { dirty };
+        const attrs = { dirty, coverPage };
 
         if (marginLeft && /\d+px/.test(marginLeft)) {
           attrs.marginLeft = parseFloat(marginLeft);
@@ -128,13 +131,16 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
     // `TableNodeView`. This method is only called when user selects a
     // table node and copies it, which triggers the "serialize to HTML" flow
     //  that calles this method.
-    const { marginLeft, dirty } = node.attrs;
+    const { marginLeft, dirty, coverPage } = node.attrs;
     const domAttrs = {};
     if (marginLeft) {
       domAttrs.style = `margin-left: ${marginLeft}px`;
     }
     if (dirty) {
       domAttrs.dirty = dirty;
+    }
+    if (coverPage) {
+      domAttrs['data-cover-page'] = 'true';
     }
     return ['table', domAttrs, 0];
   },
