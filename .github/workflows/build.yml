@@ -4,7 +4,6 @@
 name: build
 
 on:
-  
   workflow_dispatch:
   pull_request:
     branches: [develop, main, master]
@@ -19,7 +18,7 @@ jobs:
 
     timeout-minutes: 60 # Default 5 days for self hosted
     # Ignore PRs from master. Assumtion is master is always a good branch, so this PR is just a sync.
-    if: github.ref_name != 'main' && github.ref_name != 'master'
+    if: ${{ (github.head_ref || github.ref_name) != 'main' && (github.head_ref || github.ref_name) != 'master' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,7 +28,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: install
-        run: npm ci
+        run: npm ci --ignore-scripts
       - name: lint
         run: npm run lint
       - name: Build
@@ -38,6 +37,7 @@ jobs:
         run: npm run test:coverage
 
       - name: Set Version number
+        if: github.actor != 'dependabot[bot]' # Don't scan/block dependabot updates
         run: echo "TAG=$(npm pkg get version --workspaces=false | tr -d \")" >> "$GITHUB_ENV"
       # Sonar scan. https://github.com/marketplace/actions/sonarqube-scan
       - name: SonarQube Scan
@@ -48,7 +48,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.projectVersion=$TAG
+            -Dsonar.projectVersion=${{ env.TAG }}
       # Sonar verify https://github.com/marketplace/actions/sonarqube-quality-gate-check
       - name: SonarQube Quality Gate check
         if: github.actor != 'dependabot[bot]' # Don't scan/block dependabot updates

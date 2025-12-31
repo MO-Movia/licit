@@ -32,6 +32,15 @@
   vertical-align: top;
 }
 
+.ProseMirror table[data-cover-page="true"] td,
+.ProseMirror table[data-cover-page="true"] th {
+  padding: 4px;
+}
+
+table[data-cover-page="true"].molm-czi-image-view.align-center {
+  margin: 0 0 -18px;
+}
+
 .ProseMirror th {
   background-color: var(--czi-table-header-background-color);
   font-weight: bold;

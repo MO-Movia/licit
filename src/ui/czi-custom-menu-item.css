@@ -3,10 +3,10 @@
   border-radius: 0;
   display: block;
   margin: 0;
-  padding-bottom: 8px;
+  padding-bottom: 6px;
   padding-left: 20px;
   padding-right: 20px;
-  padding-top: 8px;
+  padding-top: 5px;
 }
 
 .czi-custom-menu-item.czi-custom-button:hover {
