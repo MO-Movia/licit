@@ -32,5 +32,10 @@ export default class TableNodeView extends TableView {
     } else {
       this.table.removeAttribute('dirty');
     }
+    if (node.attrs?.coverPage) {
+      this.table.setAttribute('data-cover-page', 'true');
+    } else {
+      this.table.removeAttribute('data-cover-page');
+    }
   }
 }
