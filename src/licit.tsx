@@ -230,7 +230,7 @@ const prepareEffectiveSchema = (
 
     // Update paragraph node
     updateNodeAttrs(DOC, docNodeSpec);
-    updateNodeAttrs(PARAGRAPH, ParagraphNodeSpec);
+    // updateNodeAttrs(PARAGRAPH, ParagraphNodeSpec);
 
     // Process nodes and marks
     const nodesMap = baseSchema.spec.nodes;
@@ -530,7 +530,9 @@ const LicitComponent = (
         codeBlock: false,
         bold: false,
         italic: false,
+        paragraph: false,
       }),
+      ParagraphNodeSpec,
       Subscript,
       Superscript,
       Underline,

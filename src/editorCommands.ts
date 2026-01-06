@@ -15,12 +15,13 @@ import {
   TextColorCommand,
   TextHighlightCommand,
   TextLineSpacingCommand,
+  TextAlignCommand,
 } from '@modusoperandi/licit-ui-commands';
 import HistoryRedoCommand from './commands/historyRedoCommand';
 import HistoryUndoCommand from './commands/historyUndoCommand';
 import HorizontalRuleCommand from './commands/horizontalRuleCommand';
 import LinkSetURLCommand from './commands/linkSetURLCommand';
-import { ListToggleCommand } from './commands/listToggleCommand';
+import {ListToggleCommand} from './commands/listToggleCommand';
 import MarksClearCommand from './commands/marksClearCommand';
 import TableBackgroundColorCommand from './commands/tableBackgroundColorCommand';
 import TableBorderColorCommand from './commands/tableBorderColorCommand';
@@ -40,7 +41,7 @@ import TableMoveToPreviousCellCommand from './commands/tableMoveToPreviousCellCo
 import TableSplitCellCommand from './commands/tableSplitCellCommand';
 import TableToggleHeaderCellCommand from './commands/tableToggleHeaderCellCommand';
 import TableToggleHeaderRowCommand from './commands/tableToggleHeaderRowCommand';
-import TextAlignCommand from './commands/textAlignCommand';
+// import TextAlignCommand from './commands/textAlignCommand';
 import TableToggleHeaderColumnCommand from './commands/tableToggleHeaderColumnCommand';
 import MarkToggleCommandEx from './commands/markToggleCommandEx';
 import ListSplitCommand from './commands/listSplitCommand';

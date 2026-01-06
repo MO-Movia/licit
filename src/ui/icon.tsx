@@ -99,9 +99,9 @@ class Icon extends React.PureComponent {
  if (type === 'icon_edit') {
     imgStyle = {
       width: 'auto',
-      height: '32px',
-      marginLeft: '-11px',
-      marginTop: '-6px'
+      height: '19px',
+      marginLeft: '-10px',
+      marginTop: '-5px'
     };
   }
  

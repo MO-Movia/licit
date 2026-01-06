@@ -1,12 +1,11 @@
-
 /**
  * @license MIT
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
+import {Node, mergeAttributes} from '@tiptap/core';
 import toCSSLineSpacing from '../toCSSLineSpacing';
 import convertToCSSPTValue from '../convertToCSSPTValue';
-import { Node, NodeSpec, DOMOutputSpec } from 'prosemirror-model';
 
 // This assumes that every 36pt maps to one indent level.
 export const INDENT_MARGIN_PT_SIZE = 36;
@@ -41,70 +40,8 @@ export type AttrType = {
 
 const ALIGN_PATTERN = /(left|right|center|justify)/;
 
-// https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
-// :: NodeSpec A plain paragraph textblock. Represented in the DOM
-// as a `<p>` element.
-const ParagraphNodeSpec: NodeSpec = {
-  attrs: {
-    align: {
-      default: null,
-    },
-    color: {
-      default: null,
-    },
-    id: {
-      default: null,
-    },
-    indent: {
-      default: null,
-    },
-    lineSpacing: {
-      default: null,
-    },
-    paddingBottom: {
-      default: null,
-    },
-    paddingTop: {
-      default: null,
-    },
-    reset: {
-      default: null,
-    },
-
-    // added attributes for indent, align and linespacing overrides.
-    overriddenAlign: {
-      default: null,
-    },
-    overriddenLineSpacing: {
-      default: null,
-    },
-    overriddenIndent: {
-      default: null,
-    },
-    overriddenAlignValue: {
-      default: null,
-    },
-    overriddenLineSpacingValue: {
-      default: null,
-    },
-    overriddenIndentValue: {
-      default: null,
-    },
-  },
-  content: 'inline*',
-  group: 'block',
-  defining: true,
-  parseDOM: [
-    {
-      tag: 'p',
-      getAttrs,
-    },
-  ],
-  toDOM,
-};
-
 function getAttrs(dom: HTMLElement): Record<string, unknown> {
-  const { lineHeight, textAlign, marginLeft, paddingTop, paddingBottom } =
+  const {lineHeight, textAlign, marginLeft, paddingTop, paddingBottom} =
     dom.style;
 
   let align = dom.getAttribute('align') || textAlign || 'left';
@@ -150,7 +87,7 @@ function getAttrs(dom: HTMLElement): Record<string, unknown> {
   };
 }
 
-function getStyle(attrs: { [key: string]: unknown }): string {
+function getStyle(attrs: {[key: string]: unknown}): string {
   return getStyleEx(
     attrs.align,
     attrs.lineSpacing,
@@ -183,7 +120,7 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom): string {
   return style;
 }
 
-function toDOM(node: Node): DOMOutputSpec {
+function toDOM(node) {
   const {
     indent,
     id,
@@ -196,12 +133,12 @@ function toDOM(node: Node): DOMOutputSpec {
     overriddenIndentValue,
     selectionId,
   } = node.attrs;
-  const attrs = { ...node.attrs };
+  const attrs = {...node.attrs};
   const style = getStyle(node.attrs);
 
   if (style) {
-  attrs.style = style;
-}
+    attrs.style = style;
+  }
 
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);
@@ -236,4 +173,170 @@ export function convertMarginLeftToIndentValue(marginLeft: string): number {
   );
 }
 
-export default ParagraphNodeSpec;
+// TipTap Node Definition
+const ParagraphNode = Node.create({
+  name: 'paragraph',
+
+  priority: 1000,
+
+  addOptions() {
+    return {
+      HTMLAttributes: {},
+    };
+  },
+
+  group: 'block',
+
+  content: 'inline*',
+
+  defining: true,
+
+  addAttributes() {
+    return {
+      align: {
+        default: null,
+        parseHTML: (element) => {
+          getAttrs(element).align;
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.align) return {};
+          return {align: String(attributes.align)};
+        },
+      },
+      color: {
+        default: null,
+      },
+      id: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).id,
+        renderHTML: (attributes) => {
+          if (!attributes.id) return {};
+          return {id: attributes.id};
+        },
+      },
+      indent: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).indent,
+        renderHTML: (attributes) => {
+          if (!attributes.indent) return {};
+          return {[ATTRIBUTE_INDENT]: String(attributes.indent)};
+        },
+      },
+      lineSpacing: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).lineSpacing,
+        renderHTML: (attributes) => {
+          if (!attributes.lineSpacing) return {};
+          return {};
+        },
+      },
+      paddingBottom: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).paddingBottom,
+        renderHTML: (attributes) => {
+          if (!attributes.paddingBottom) return {};
+          return {};
+        },
+      },
+      paddingTop: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).paddingTop,
+        renderHTML: (attributes) => {
+          if (!attributes.paddingTop) return {};
+          return {};
+        },
+      },
+      reset: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).reset,
+        renderHTML: (attributes) => {
+          return {reset: attributes.reset || ''};
+        },
+      },
+      overriddenAlign: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).overriddenAlign,
+        renderHTML: (attributes) => {
+          return {overriddenAlign: attributes.overriddenAlign || ''};
+        },
+      },
+      overriddenLineSpacing: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).overriddenLineSpacing,
+        renderHTML: (attributes) => {
+          return {
+            overriddenLineSpacing: attributes.overriddenLineSpacing || '',
+          };
+        },
+      },
+      overriddenIndent: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).overriddenIndent,
+        renderHTML: (attributes) => {
+          return {overriddenIndent: attributes.overriddenIndent || ''};
+        },
+      },
+      overriddenAlignValue: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).overriddenAlignValue,
+        renderHTML: (attributes) => {
+          return {
+            overriddenAlignValue: attributes.overriddenAlignValue || '',
+          };
+        },
+      },
+      overriddenLineSpacingValue: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).overriddenLineSpacingValue,
+        renderHTML: (attributes) => {
+          return {
+            overriddenLineSpacingValue:
+              attributes.overriddenLineSpacingValue || '',
+          };
+        },
+      },
+      overriddenIndentValue: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).overriddenIndentValue,
+        renderHTML: (attributes) => {
+          return {
+            overriddenIndentValue: attributes.overriddenIndentValue || '',
+          };
+        },
+      },
+      selectionId: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).selectionId,
+        renderHTML: (attributes) => {
+          if (!attributes.selectionId) return {};
+          return {selectionId: attributes.selectionId};
+        },
+      },
+      objectId: {
+        default: null,
+        parseHTML: (element) => getAttrs(element).objectId,
+        renderHTML: (attributes) => {
+          if (!attributes.objectId) return {};
+          return {objectId: attributes.objectId};
+        },
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{tag: 'p'}];
+  },
+
+  renderHTML({HTMLAttributes}) {
+    const style = getStyle(HTMLAttributes);
+    const attrs = {...HTMLAttributes};
+
+    if (style) {
+      attrs.style = style;
+    }
+
+    return ['p', mergeAttributes(this.options.HTMLAttributes, attrs), 0];
+  },
+});
+
+export default ParagraphNode;
