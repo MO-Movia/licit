@@ -102,16 +102,6 @@ describe('Licit Editor Component', () => {
 });
 
 describe('Ref Methods', () => {
-  xit('should expose goToEnd method via ref', async () => {
-    const ref = React.createRef<LicitHandle>();
-    const container = document.createElement('div');
-    const root = createRoot(container);
-    root.render(<Licit ref={ref} />);
-
-    // Wait for editor initialization
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    expect(ref.current).toBeNull();
-  });
 
   it('should expose getContent method via ref', async () => {
     const ref = React.createRef<LicitHandle>();

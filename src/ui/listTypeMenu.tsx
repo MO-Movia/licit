@@ -9,7 +9,6 @@ import {EditorState} from 'prosemirror-state';
 import {Transform} from 'prosemirror-transform';
 import {EditorView} from 'prosemirror-view';
 import uuid from './uuid';
-import '../styles/listType.css';
 
 // [FS] IRAD-1039 2020-09-24
 // UI to show the list buttons

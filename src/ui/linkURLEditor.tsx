@@ -12,8 +12,6 @@ import {
   preventEventDefault,
 } from '@modusoperandi/licit-ui-commands';
 
-import '../styles/czi-form.css';
-import '../styles/czi-image-url-editor.css';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 type LinkURLEditorProps = {
   href;

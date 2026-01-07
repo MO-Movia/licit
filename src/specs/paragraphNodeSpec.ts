@@ -6,6 +6,7 @@
 import {Node, mergeAttributes} from '@tiptap/core';
 import toCSSLineSpacing from '../toCSSLineSpacing';
 import convertToCSSPTValue from '../convertToCSSPTValue';
+import { DOMOutputSpec } from 'prosemirror-model';
 
 // This assumes that every 36pt maps to one indent level.
 export const INDENT_MARGIN_PT_SIZE = 36;
@@ -120,7 +121,7 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom): string {
   return style;
 }
 
-function toDOM(node) {
+function toDOM(node):DOMOutputSpec  {
   const {
     indent,
     id,
@@ -195,9 +196,8 @@ const ParagraphNode = Node.create({
     return {
       align: {
         default: null,
-        parseHTML: (element) => {
-          getAttrs(element).align;
-        },
+        parseHTML: (element) => 
+          getAttrs(element).align,
         renderHTML: (attributes) => {
           if (!attributes.align) return {};
           return {align: String(attributes.align)};
