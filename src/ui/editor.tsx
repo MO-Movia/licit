@@ -10,7 +10,6 @@ import { EditorView, Decoration } from 'prosemirror-view';
 import * as React from 'react';
 
 import { preLoadFonts } from '../specs/fontTypeMarkSpec';
-import '../styles/czi-editor.css';
 import type { EditorRuntime, ToolbarMenuConfig } from '../types';
 
 export type EditorProps = {

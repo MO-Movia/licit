@@ -3,8 +3,7 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import {Node} from '@tiptap/core';
-import ParagraphNode, {
+import {
   INDENT_MARGIN_PT_SIZE,
   MIN_INDENT_LEVEL,
   MAX_INDENT_LEVEL,
@@ -22,18 +21,27 @@ import ParagraphNode, {
 // Mock dependencies
 jest.mock('@tiptap/core', () => ({
   Node: {
-    create: jest.fn((config) => ({
+    create: jest.fn((config: Record<string, unknown>) => ({
       ...config,
-      // Ensure the config is accessible as a Node instance would be
       config,
     })),
   },
-  mergeAttributes: jest.fn((...args) => Object.assign({}, ...args)),
+  mergeAttributes: jest.fn(
+    (...args: Array<Record<string, unknown>>): Record<string, unknown> =>
+      args.reduce<Record<string, unknown>>(
+        (acc, obj) => ({ ...acc, ...obj }),
+        {}
+      )
+  ),
 }));
+
+
 
 jest.mock('../toCSSLineSpacing', () => ({
   __esModule: true,
-  default: jest.fn((value) => value),
+  default: jest.fn(
+    (value: unknown): unknown => value
+  ),
 }));
 
 jest.mock('../convertToCSSPTValue', () => ({

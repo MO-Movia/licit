@@ -17,7 +17,6 @@ import ReactDOM from 'react-dom';
 import {Extension, Editor} from '@tiptap/core';
 import {EditorEvents, getSchema, JSONContent, useEditor} from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import './styles/licit.css';
 import Underline from '@tiptap/extension-underline';
 import {v4 as uuidv4} from 'uuid';
 import Collaboration from '@tiptap/extension-collaboration';
@@ -295,8 +294,7 @@ const updateSpec = (
   const specMap = schema.spec[attrName] as OrderedMap<unknown>;
   const collection: unknown[] = [];
   //forEach is the standard approach for OrderedMap
-  specMap.forEach((name, spec) => {
-    //NOSONAR
+  specMap.forEach((name, spec) => { //NOSONAR
     collection.push(name, spec);
   });
 
@@ -332,9 +330,8 @@ export const updateSpecAttrs = (
     const specMap = existingSchema.spec[attrName] as OrderedMap<unknown>;
 
     // Find the matching spec in the existing schema
-    //forEach is the standard approach for OrderedMap
-    specMap?.forEach((name, spec) => {
-      //NOSONAR
+     //forEach is the standard approach for OrderedMap
+    specMap?.forEach((name, spec) => { //NOSONAR
       if (name === collection[i]) {
         const attrsLicit = (spec as {attrs?: Record<string, unknown>})?.attrs;
         if (attrsLicit) {

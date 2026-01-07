@@ -11,8 +11,6 @@ import { EditorViewEx } from '../constants';
 
 import isEditorStateEmpty from '../isEditorStateEmpty';
 
-import '../styles/czi-editor.css';
-
 const CLASS_NAME_HAS_PLACEHOLDER = 'czi-has-placeholder';
 
 class ContentPlaceholderView {

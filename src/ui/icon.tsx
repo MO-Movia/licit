@@ -8,10 +8,6 @@ import React from 'react';
 import canUseCSSFont from '../canUseCSSFont';
 import {ThemeContext} from '@modusoperandi/licit-ui-commands';
 
-import '../styles/czi-icon.css';
-
-import '../styles/icon-font.css';
-
 const cached = {};
 
 const CSS_FONT = 'Material Icons';
@@ -99,9 +95,9 @@ class Icon extends React.PureComponent {
  if (type === 'icon_edit') {
     imgStyle = {
       width: 'auto',
-      height: '19px',
-      marginLeft: '-10px',
-      marginTop: '-5px'
+      height: '32px',
+      marginLeft: '-11px',
+      marginTop: '-6px'
     };
   }
  

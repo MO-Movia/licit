@@ -18,7 +18,6 @@ import {
 import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import uuid from './uuid';
 import {isExpandButton} from './editorToolbarConfig';
-import '../styles/czi-custom-menu-button.css';
 import {EditorViewEx} from '../constants';
 export interface Arr {
   [key: string]: UICommand;

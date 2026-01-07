@@ -18,8 +18,6 @@ import Icon from './icon';
 import ResizeObserver from '../resizeObserver';
 import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 import isReactClass from '../isReactClass';
-
-import '../styles/czi-editor-toolbar.css';
 import {LicitPlugin} from '../convertFromJSON';
 import {EditorViewEx} from '../constants';
 import {ToolbarMenuConfig} from '../types';

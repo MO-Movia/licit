@@ -7,8 +7,6 @@ import { EditorState, Plugin, PluginKey, Transaction } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 
-import '../styles/czi-selection-placeholder.css';
-
 const PLACE_HOLDER_ID = { name: 'SelectionPlaceholderPlugin' };
 
 let singletonInstance = null;

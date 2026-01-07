@@ -41,7 +41,6 @@ import TableMoveToPreviousCellCommand from './commands/tableMoveToPreviousCellCo
 import TableSplitCellCommand from './commands/tableSplitCellCommand';
 import TableToggleHeaderCellCommand from './commands/tableToggleHeaderCellCommand';
 import TableToggleHeaderRowCommand from './commands/tableToggleHeaderRowCommand';
-// import TextAlignCommand from './commands/textAlignCommand';
 import TableToggleHeaderColumnCommand from './commands/tableToggleHeaderColumnCommand';
 import MarkToggleCommandEx from './commands/markToggleCommandEx';
 import ListSplitCommand from './commands/listSplitCommand';

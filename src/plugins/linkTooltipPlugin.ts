@@ -22,8 +22,6 @@ import { hideSelectionPlaceholder } from './selectionPlaceholderPlugin';
 import lookUpElement from '../lookUpElement';
 import LinkTooltip from '../ui/linkTooltip';
 import LinkURLEditor from '../ui/linkURLEditor';
-
-import '../styles/czi-pop-up.css';
 import { EditorViewEx } from '../constants';
 
 // https://prosemirror.net/examples/tooltip/

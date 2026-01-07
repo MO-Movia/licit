@@ -11,8 +11,6 @@ import {atAnchorTopRight, createPopUp} from '@modusoperandi/licit-ui-commands';
 import TableCellMenu from '../ui/tableCellMenu';
 import bindScrollHandler from '../bindScrollHandler';
 import isElementFullyVisible from '../isElementFullyVisible';
-
-import '../styles/czi-pop-up.css';
 import {EditorViewEx} from '../constants';
 import {CellSelection} from 'prosemirror-tables';
 

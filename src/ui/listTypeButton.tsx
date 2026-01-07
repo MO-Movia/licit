@@ -15,7 +15,6 @@ import {
 } from '@modusoperandi/licit-ui-commands';
 import uuid from './uuid';
 import ListTypeMenu from './listTypeMenu';
-import '../styles/czi-custom-menu-button.css';
 import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 type ListTypeButtonType = {

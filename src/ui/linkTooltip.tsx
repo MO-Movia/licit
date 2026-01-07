@@ -10,8 +10,6 @@ import scrollIntoView from 'smooth-scroll-into-view-if-needed';
 import sanitizeURL from '../sanitizeURL';
 import { CustomButton } from '@modusoperandi/licit-ui-commands';
 
-import '../styles/czi-link-tooltip.css';
-
 function isBookMarkHref(href: string): boolean {
   return !!href && href.indexOf('#') === 0 && href.length >= 2;
 }
