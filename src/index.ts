@@ -4,5 +4,5 @@
  */
 
 export { Licit } from './licit';
-export type { ChangeCB, ReadyCB, LicitProps } from './licit';
+export type { ChangeCB, ReadyCB, LicitProps, LicitHandle } from './licit';
 export type { ImageLike, EditorRuntime } from './types';
