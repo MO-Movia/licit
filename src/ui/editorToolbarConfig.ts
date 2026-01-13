@@ -57,7 +57,6 @@ export function isExpandButton(title: string): boolean {
 }
 const {
   CLEAR_FORMAT,
-  DOC_LAYOUT,
   EM,
   HISTORY_REDO,
   HISTORY_UNDO,
