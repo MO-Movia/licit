@@ -192,8 +192,4 @@ export const COMMAND_GROUPS: CommandGroup[] | UICommand[] = [
     '[grid_on] Table...': TABLE_COMMANDS_GROUP,
     '[hr] Horizontal line': HR,
   },
-  {
-    '[settings_overscan] Page layout': DOC_LAYOUT,
-  },
-
 ];
