@@ -88,16 +88,15 @@ class Icon extends React.PureComponent {
       }
     }
 
-     let imgStyle: React.CSSProperties = {
+    let imgStyle: React.CSSProperties = {
     width: '100%',
     height: '100%'
   };
- if (type === 'icon_edit') {
+  if (type === 'icon_edit') {
     imgStyle = {
       width: 'auto',
-      height: '32px',
-      marginLeft: '-11px',
-      marginTop: '-6px'
+      height: '30px',
+      marginLeft: '-3px',
     };
   }
  
