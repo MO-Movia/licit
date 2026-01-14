@@ -16,7 +16,7 @@ export const TableCellEx = TableCell.extend({
             return {};
           }        
           return {
-            style: `background-color:  ${attributes.backgroundColor?.color || attributes.backgroundColor}`,
+            style: `background-color:  ${attributes.backgroundColor?.color || attributes.backgroundColor};`,
           };
         },
         parseHTML: (element) => {

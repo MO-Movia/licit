@@ -3,18 +3,25 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import { applyMark, BULLET_LIST, HEADING, LIST_ITEM, MARK_SPACER, PARAGRAPH } from '@modusoperandi/licit-ui-commands';
-import { HAIR_SPACE_CHAR, SPACER_SIZE_TAB } from '../../specs/spacerMarkSpec';
-import {  
+import {
+  applyMark,
+  BULLET_LIST,
+  HEADING,
+  LIST_ITEM,
+  MARK_SPACER,
+  PARAGRAPH,
+} from '@modusoperandi/licit-ui-commands';
+import {HAIR_SPACE_CHAR, SPACER_SIZE_TAB} from '../../specs/spacerMarkSpec';
+import {
   CommandProps,
   Extension,
   Extensions,
   isList,
   KeyboardShortcutCommand,
 } from '@tiptap/core';
-import { EditorState, TextSelection, Transaction } from 'prosemirror-state';
-import { findParentNodeOfType } from 'prosemirror-utils';
-import { Fragment, Schema,Node as ProsemirrorNode } from 'prosemirror-model';
+import {EditorState, TextSelection, Transaction} from 'prosemirror-state';
+import {findParentNodeOfType} from 'prosemirror-utils';
+import {Fragment, Schema, Node as ProsemirrorNode} from 'prosemirror-model';
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -72,7 +79,9 @@ export const Indent = Extension.create<IndentOptions, never>({
               const attr = element.getAttribute('data-indent');
               if (attr !== null) {
                 const val = Number.parseInt(attr, 10);
-                return Number.isNaN(val) ? this.options.defaultIndentLevel : val;
+                return Number.isNaN(val)
+                  ? this.options.defaultIndentLevel
+                  : val;
               }
               return this.options.defaultIndentLevel;
             },
@@ -85,55 +94,79 @@ export const Indent = Extension.create<IndentOptions, never>({
     return {
       indent:
         () =>
-        ({ state, dispatch }) => {
+        ({state, dispatch, editor}) => {
           if (!(state.selection instanceof TextSelection)) return false;
 
-          const { $from } = state.selection;
+          const {$from} = state.selection;
           const tr = state.tr;
 
-          const { listDepth, listItemDepth } = findListDepths($from);
+          const {listDepth, listItemDepth} = findListDepths($from);
+          const isInList = listDepth !== -1 && listItemDepth !== -1;
 
-          if (listDepth === -1 || listItemDepth === -1) return false;
+          if (isInList) {
+            const listNode = $from.node(listDepth);
+            const listPos = $from.before(listDepth);
+            const listItem = $from.node(listItemDepth);
+            const listItemPos = $from.before(listItemDepth);
 
-          const listNode = $from.node(listDepth);
-          const listPos = $from.before(listDepth);
-          const listItem = $from.node(listItemDepth);
-          const listItemPos = $from.before(listItemDepth);
+            const currentIndent = listNode.attrs.indent || 0;
 
-          const currentIndent = listNode.attrs.indent || 0;
+            if (currentIndent >= this.options.maxIndentLevel) {
+              return false;
+            }
 
-          if (currentIndent >= this.options.maxIndentLevel) {
+            const newIndent = currentIndent + 1;
+            const actualItemIndex = findActualItemIndex(
+              listNode,
+              listPos,
+              listItemPos
+            );
+
+            if (actualItemIndex === -1) return false;
+
+            // Case 1: Only one item
+            if (listNode.childCount === 1) {
+              return handleSingleItemIndent(
+                tr,
+                listPos,
+                listNode,
+                newIndent,
+                dispatch
+              );
+            }
+
+            // Case 2: Multiple items - need to split
+            const indentedListPos = createSplitLists(
+              tr,
+              listNode,
+              listPos,
+              actualItemIndex,
+              newIndent,
+              listItem
+            );
+
+            // Set cursor position to the indented item
+            const newCursorPos = indentedListPos + 2;
+            tr.setSelection(TextSelection.create(tr.doc, newCursorPos));
+
+            if (dispatch) {
+              dispatch(tr);
+            }
+            return true;
+          } else {
+            const updatedTr = updateIndentLevel(
+              tr,
+              this.options,
+              editor.extensionManager.extensions,
+              'indent'
+            );
+
+            if (updatedTr.docChanged && dispatch) {
+              dispatch(updatedTr);
+              return true;
+            }
             return false;
           }
-
-          const newIndent = currentIndent + 1;
-          const actualItemIndex = findActualItemIndex(listNode, listPos, listItemPos);
-          
-          if (actualItemIndex === -1) return false;
-
-          // Case 1: Only one item
-          if (listNode.childCount === 1) {
-            return handleSingleItemIndent(tr, listPos, listNode, newIndent, dispatch);
-          }
-
-          // Case 2: Multiple items - need to split
-          const indentedListPos = createSplitLists(
-            tr,
-            listNode,
-            listPos,
-            actualItemIndex,
-            newIndent,
-            listItem
-          );
-
-          // Set cursor position to the indented item
-          const newCursorPos = indentedListPos + 2;
-          tr.setSelection(TextSelection.create(tr.doc, newCursorPos));
-
-          if (dispatch) {
-            dispatch(tr);
-          }
-          return true;
         },
       outdent:
         () =>
@@ -157,49 +190,49 @@ export const Indent = Extension.create<IndentOptions, never>({
   },
 
   addKeyboardShortcuts() {
-  return {
-    Tab: () => {
-      const { state } = this.editor;
-      const { selection } = state;
-      
-      // Check if we're inside a list item at all
-      if (selection instanceof TextSelection && selection.empty) {
-        const { $from } = selection;
-        
-        // Check if cursor is inside a list item
-        let isInListItem = false;
-        for (let d = $from.depth; d > 0; d--) {
-          const node = $from.node(d);
-          if (node.type.name === 'list_item') {
-            isInListItem = true;
-            break;
-          }
-        }       
+    return {
+      Tab: () => {
+        const {state} = this.editor;
+        const {selection} = state;
 
-        if (isInListItem) {
-          if ($from.parentOffset === 0) {
-            return this.editor.commands.indent();
+        // Check if we're inside a list item at all
+        if (selection instanceof TextSelection && selection.empty) {
+          const {$from} = selection;
+
+          // Check if cursor is inside a list item
+          let isInListItem = false;
+          for (let d = $from.depth; d > 0; d--) {
+            const node = $from.node(d);
+            if (node.type.name === 'list_item') {
+              isInListItem = true;
+              break;
+            }
+          }
+
+          if (isInListItem) {
+            if ($from.parentOffset === 0) {
+              return this.editor.commands.indent();
+            }
           }
         }
-      }
-      
-      // Otherwise, insert tab space
-      const { view } = this.editor;
-      const tr = insertTabSpace(state, state.tr, state.schema);
 
-      if (tr.docChanged) {
-        view.dispatch(tr);
-        return true;
-      }
-      return false;
-    },
-    'Shift-Tab': outdent(false),
+        // Otherwise, insert tab space
+        const {view} = this.editor;
+        const tr = insertTabSpace(state, state.tr, state.schema);
 
-    Backspace: outdent(true),
-    'Mod-]': indent(),
-    'Mod-[': outdent(false),
-  };
-},
+        if (tr.docChanged) {
+          view.dispatch(tr);
+          return true;
+        }
+        return false;
+      },
+      'Shift-Tab': outdent(false),
+
+      Backspace: outdent(true),
+      'Mod-]': indent(),
+      'Mod-[': outdent(false),
+    };
+  },
 });
 
 export const clamp = (val: number, min: number, max: number): number => {
@@ -291,9 +324,9 @@ const outdent: (outdentOnlyAtHead: boolean) => KeyboardShortcutCommand =
 function insertTabSpace(
   _state: EditorState,
   tr: Transaction,
-  schema: Schema,
+  schema: Schema
 ): Transaction {
-  const { selection } = tr;
+  const {selection} = tr;
   if (!selection.empty || !(selection instanceof TextSelection)) {
     return tr;
   }
@@ -315,7 +348,7 @@ function insertTabSpace(
     return tr;
   }
 
-  const { to } = selection;
+  const {to} = selection;
 
   const textNode = schema.text(HAIR_SPACE_CHAR);
   tr = tr.insert(to, Fragment.from(textNode));
@@ -349,14 +382,14 @@ function findListDepths($from) {
     }
   }
 
-  return { listDepth, listItemDepth };
+  return {listDepth, listItemDepth};
 }
 
 // Helper function to find the actual item index
 export function findActualItemIndex(listNode, listPos, listItemPos) {
   let actualItemIndex = -1;
   let currentPos = listPos + 1;
-  
+
   for (let i = 0; i < listNode.childCount; i++) {
     if (currentPos === listItemPos) {
       actualItemIndex = i;
@@ -364,19 +397,25 @@ export function findActualItemIndex(listNode, listPos, listItemPos) {
     }
     currentPos += listNode.child(i).nodeSize;
   }
-  
+
   return actualItemIndex;
 }
 
 // Helper function to handle single item indent
-export function handleSingleItemIndent(tr, listPos, listNode, newIndent, dispatch) {
+export function handleSingleItemIndent(
+  tr,
+  listPos,
+  listNode,
+  newIndent,
+  dispatch
+) {
   tr.setNodeMarkup(listPos, null, {
     ...listNode.attrs,
     indent: newIndent,
     overriddenIndent: true,
     overriddenIndentValue: newIndent,
   });
-  
+
   if (dispatch) {
     dispatch(tr);
   }
@@ -384,12 +423,14 @@ export function handleSingleItemIndent(tr, listPos, listNode, newIndent, dispatc
 }
 
 // Helper function to create split lists
-export function createSplitLists( tr: Transaction,
+export function createSplitLists(
+  tr: Transaction,
   listNode: ProsemirrorNode,
   listPos: number,
   actualItemIndex: number,
   newIndent: number,
-  listItem: ProsemirrorNode) {
+  listItem: ProsemirrorNode
+) {
   const itemsBefore = actualItemIndex;
   const itemsAfter = listNode.childCount - actualItemIndex - 1;
 
@@ -403,7 +444,7 @@ export function createSplitLists( tr: Transaction,
       beforeItems.push(listNode.child(i));
     }
     const beforeList = listNode.type.create(
-      { ...listNode.attrs },
+      {...listNode.attrs},
       Fragment.from(beforeItems)
     );
     tr.insert(insertPosition, beforeList);
@@ -433,9 +474,9 @@ export function createSplitLists( tr: Transaction,
     for (let i = actualItemIndex + 1; i < listNode.childCount; i++) {
       afterItems.push(listNode.child(i));
     }
-    
+
     const afterList = listNode.type.create(
-      { 
+      {
         ...listNode.attrs,
         counterReset: 'none',
         following: 'true',
@@ -448,5 +489,3 @@ export function createSplitLists( tr: Transaction,
 
   return indentedListPos;
 }
-
-

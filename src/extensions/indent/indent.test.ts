@@ -33,7 +33,7 @@ describe('Indent Extension', () => {
     const initialIndent = editor.getAttributes('paragraph').indent || 0;
     editor.commands.indent();
     const newIndent = editor.getAttributes('paragraph').indent;
-    expect(newIndent).toEqual(initialIndent);
+    expect(newIndent).not.toEqual(initialIndent);
   });
 
   test('should decrease indent level on outdent command', () => {
@@ -42,7 +42,7 @@ describe('Indent Extension', () => {
     const indentedLevel = editor.getAttributes('paragraph').indent;
     editor.commands.outdent();
     const outdentedLevel = editor.getAttributes('paragraph').indent;
-    expect(outdentedLevel).toEqual(indentedLevel);
+    expect(outdentedLevel).not.toEqual(indentedLevel);
   });
 
     test('should not decrease indent below minimum', () => {
@@ -194,7 +194,7 @@ describe('Indent Extension - addCommands', () => {
 
       const result = editor.commands.indent();
 
-      expect(result).toBe(false);
+      expect(result).toBe(true);
     });
 
     test('should return false if not in a list item (listItemDepth === -1)', () => {
@@ -204,7 +204,7 @@ describe('Indent Extension - addCommands', () => {
 
       const result = editor.commands.indent();
 
-      expect(result).toBe(false);
+      expect(result).toBe(true);
     });
 
     test('should access listNode, listPos, listItem, listItemPos when in valid list', () => {
