@@ -7,8 +7,6 @@ import cx from 'classnames';
 import * as React from 'react';
 import {ThemeContext} from '@modusoperandi/licit-ui-commands';
 
-import '../styles/czi-editor-frameset.css';
-
 export type EditorFramesetProps = {
   body?: React.ReactElement;
   className?: string;
