@@ -57,7 +57,6 @@ export function isExpandButton(title: string): boolean {
 }
 const {
   CLEAR_FORMAT,
-  DOC_LAYOUT,
   EM,
   HISTORY_REDO,
   HISTORY_UNDO,
@@ -192,8 +191,4 @@ export const COMMAND_GROUPS: CommandGroup[] | UICommand[] = [
     '[grid_on] Table...': TABLE_COMMANDS_GROUP,
     '[hr] Horizontal line': HR,
   },
-  {
-    '[settings_overscan] Page layout': DOC_LAYOUT,
-  },
-
 ];
