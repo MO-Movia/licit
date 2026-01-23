@@ -229,7 +229,6 @@ const prepareEffectiveSchema = (
 
     // Update paragraph node
     updateNodeAttrs(DOC, docNodeSpec);
-    // updateNodeAttrs(PARAGRAPH, ParagraphNodeSpec);
 
     // Process nodes and marks
     const nodesMap = baseSchema.spec.nodes;

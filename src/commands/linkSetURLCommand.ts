@@ -38,6 +38,10 @@ class LinkSetURLCommand extends UICommand {
     return from < to;
   };
 
+  isActive = (_state: EditorState): boolean => {
+      return false;
+    };
+
   waitForUserInput = (
     state: EditorState,
     dispatch?: (tr: Transform) => void,

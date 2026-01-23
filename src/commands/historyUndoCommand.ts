@@ -59,6 +59,10 @@ class HistoryUndoCommand extends UICommand {
   executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
     return tr;
   }
+
+  isActive = (_state: EditorState): boolean => {
+    return false;
+  };
 }
 
 export default HistoryUndoCommand;

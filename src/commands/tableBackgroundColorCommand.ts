@@ -14,6 +14,9 @@ class TableBackgroundColorCommand extends TableColorCommand {
   executeCustomStyleForTable(_state: EditorState, tr: Transform): Transform {
     return tr;
   }
+  isActive = (_state: EditorState): boolean => {
+    return false;
+  };
 
   constructor() {
     super('backgroundColor');

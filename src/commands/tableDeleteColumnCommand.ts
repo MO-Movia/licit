@@ -30,6 +30,10 @@ waitForUserInput(_state: EditorState, _dispatch?: (tr: Transform) => void, _view
     return UICommand.prototype.editor;
   };
 
+  isActive = (_state: EditorState): boolean => {
+      return false;
+    };
+
   isEnabled = (state: EditorState): boolean => {
     const {$from} = state.selection;
 
