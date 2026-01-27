@@ -18,6 +18,7 @@ import MarksClearCommand from './MarksClearCommand.js';
 import PrintCommand from './PrintCommand.js';
 import TableBackgroundColorCommand from './TableBackgroundColorCommand.js';
 import TableBorderColorCommand from './TableBorderColorCommand.js';
+import TableDetailsCommand from './TableDetailsCommand.js';
 import TableInsertCommand from './TableInsertCommand.js';
 import TableMergeCellsCommand from './TableMergeCellsCommand.js';
 import {
@@ -101,6 +102,7 @@ export const TABLE_ADD_ROW_AFTER = createCommand(addRowAfter);
 export const TABLE_ADD_ROW_BEFORE = createCommand(addRowBefore);
 export const TABLE_BACKGROUND_COLOR = new TableBackgroundColorCommand();
 export const TABLE_BORDER_COLOR = new TableBorderColorCommand();
+export const TABLE_DETAILS = new TableDetailsCommand();
 export const TABLE_DELETE_COLUMN = createCommand(deleteColumn);
 export const TABLE_DELETE_ROW = createCommand(deleteRow);
 export const TABLE_DELETE_TABLE = createCommand(deleteTable);

@@ -51,6 +51,7 @@ const {
   TABLE_ADD_ROW_AFTER,
   TABLE_ADD_ROW_BEFORE,
   TABLE_BORDER_COLOR,
+  TABLE_DETAILS,
   TABLE_BACKGROUND_COLOR,
   TABLE_DELETE_COLUMN,
   TABLE_DELETE_ROW,
@@ -102,6 +103,9 @@ export const TABLE_COMMANDS_GROUP = [
   },
   {
     'Delete Table': TABLE_DELETE_TABLE,
+  },
+   {
+    'Container Dimensions': TABLE_DETAILS,
   },
 ];
 
