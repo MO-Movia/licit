@@ -30,6 +30,10 @@ class TableToggleHeaderCellCommand extends UICommand {
     return UICommand.prototype.editor;
   };
 
+  isActive = (_state: EditorState): boolean => {
+    return false;
+  };
+
   isEnabled = (state: EditorState): boolean => {
     const {$from} = state.selection;
 

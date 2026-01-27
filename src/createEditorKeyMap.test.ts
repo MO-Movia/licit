@@ -11,11 +11,35 @@ jest.mock('./editorCommands', () => ({
   LIST_SPLIT: {
     execute: jest.fn(),
   },
+  STRONG: {
+    execute: jest.fn(),
+  },
+  EM: {
+    execute: jest.fn(),
+  },
+  UNDERLINE: {
+    execute: jest.fn(),
+  },
+  STRIKE: {
+    execute: jest.fn(),
+  },
 }));
 
 jest.mock('./editorKeyMap', () => ({
   KEY_SPLIT_LIST_ITEM: {
-    common: 'Enter', // Assuming 'Enter' is the key mapping for splitting the list item.
+    common: 'Enter',
+  },
+  KEY_TOGGLE_BOLD: {
+    common: 'Ctrl-B',
+  },
+  KEY_TOGGLE_ITALIC: {
+    common: 'Ctrl-I',
+  },
+  KEY_TOGGLE_UNDERLINE: {
+    common: 'Ctrl-U',
+  },
+  KEY_TOGGLE_STRIKETHROUGH: {
+    common: 'Ctrl-Shift-S',
   },
 }));
 
@@ -33,5 +57,41 @@ describe('createEditorKeyMap', () => {
 
     // Optional: You can also test that `execute` is a mock function
     expect(mockExecute).toHaveBeenCalledTimes(0); // Ensure it hasn't been called yet
+  });
+
+  it('should map bold toggle command correctly', () => {
+    const mockExecute = EditorCommands.STRONG.execute;
+    const keyMap = createEditorKeyMap();
+
+    expect(keyMap).toHaveProperty(EditorKeyMap.KEY_TOGGLE_BOLD.common);
+    expect(keyMap[EditorKeyMap.KEY_TOGGLE_BOLD.common]).toBe(mockExecute);
+    expect(mockExecute).toHaveBeenCalledTimes(0);
+  });
+
+  it('should map italic toggle command correctly', () => {
+    const mockExecute = EditorCommands.EM.execute;
+    const keyMap = createEditorKeyMap();
+
+    expect(keyMap).toHaveProperty(EditorKeyMap.KEY_TOGGLE_ITALIC.common);
+    expect(keyMap[EditorKeyMap.KEY_TOGGLE_ITALIC.common]).toBe(mockExecute);
+    expect(mockExecute).toHaveBeenCalledTimes(0);
+  });
+
+  it('should map underline toggle command correctly', () => {
+    const mockExecute = EditorCommands.UNDERLINE.execute;
+    const keyMap = createEditorKeyMap();
+
+    expect(keyMap).toHaveProperty(EditorKeyMap.KEY_TOGGLE_UNDERLINE.common);
+    expect(keyMap[EditorKeyMap.KEY_TOGGLE_UNDERLINE.common]).toBe(mockExecute);
+    expect(mockExecute).toHaveBeenCalledTimes(0);
+  });
+
+  it('should map strikethrough toggle command correctly', () => {
+    const mockExecute = EditorCommands.STRIKE.execute;
+    const keyMap = createEditorKeyMap();
+
+    expect(keyMap).toHaveProperty(EditorKeyMap.KEY_TOGGLE_STRIKETHROUGH.common);
+    expect(keyMap[EditorKeyMap.KEY_TOGGLE_STRIKETHROUGH.common]).toBe(mockExecute);
+    expect(mockExecute).toHaveBeenCalledTimes(0);
   });
 });

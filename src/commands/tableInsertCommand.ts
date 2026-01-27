@@ -87,6 +87,10 @@ class TableInsertCommand extends UICommand {
     return UICommand.prototype.editor;
   };
 
+  isActive = (_state: EditorState): boolean => {
+    return false;
+  };
+
   executeWithUserInput = (
     _state: EditorState,
     _dispatch?: (tr: Transform) => void,

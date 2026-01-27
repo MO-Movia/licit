@@ -42,6 +42,10 @@ class TableDeleteTableCommand extends UICommand {
     return false;
   };
 
+  isActive = (_state: EditorState): boolean => {
+    return false;
+  };
+
   execute = (
     _state: EditorState,
     _dispatch?: (tr: Transform) => void,

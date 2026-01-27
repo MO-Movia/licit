@@ -43,6 +43,10 @@ class TableMergeCellsCommand extends UICommand {
     return UICommand.prototype.editor;
   };
 
+  isActive = (_state: EditorState): boolean => {
+    return false;
+  };
+
   execute = (
     state: EditorState,
     _dispatch?: (tr: Transform) => void,

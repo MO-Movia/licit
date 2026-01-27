@@ -34,6 +34,7 @@ class FontTypeCommandMenuButton extends React.PureComponent<PropsType> {
   render(): React.ReactElement<CommandMenuButton> {
     const { dispatch, editorState, editorView } = this.props;
     const fontType = findActiveFontType(editorState);
+    const MAX_CHARS = 12;
     return (
       // <CommandMenuButton  className="width-100"
       <CommandMenuButton  className="width-100 czi-dropdown-border"
@@ -45,6 +46,7 @@ class FontTypeCommandMenuButton extends React.PureComponent<PropsType> {
         editorState={editorState}
         editorView={editorView}
         label={fontType}
+        title={fontType.length >= MAX_CHARS ? fontType : undefined}
       />
     );
   }

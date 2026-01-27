@@ -39,8 +39,18 @@ export const KEY_SPLIT_LIST_ITEM = makeKeyMapWithCommon(
   'Split list item',
   'Enter'
 );
+export const KEY_TOGGLE_BOLD = makeKeyMapWithCommon('Toggle bold', 'Mod-b');
+export const KEY_TOGGLE_ITALIC = makeKeyMapWithCommon('Toggle italic', 'Mod-i');
+export const KEY_TOGGLE_UNDERLINE = makeKeyMapWithCommon(
+  'Toggle underline',
+  'Mod-u'
+);
+export const KEY_TOGGLE_STRIKETHROUGH = makeKeyMapWithCommon(
+  'Toggle strikethrough',
+  'Mod-Shift-s'
+);
 
-export const ALL_KEYS = [KEY_SPLIT_LIST_ITEM];
+export const ALL_KEYS = [KEY_SPLIT_LIST_ITEM, KEY_TOGGLE_BOLD, KEY_TOGGLE_ITALIC, KEY_TOGGLE_UNDERLINE, KEY_TOGGLE_STRIKETHROUGH];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function findKeymapByDescription(description: string): any {

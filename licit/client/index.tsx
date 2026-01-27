@@ -367,7 +367,6 @@ function main(): void {
   // the plugin object must contain a method getEffectiveSchema() which accept schema and returns schema.
   //new ReferencingPlugin() doc top node not found issue
   const runtime = new CustomLicitRuntime();
-  // const plugins = [];
   const plugins = [
     // new CustomstylePlugin(runtime),
     //   new ExportPDFPlugin(true),
