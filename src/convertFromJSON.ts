@@ -32,7 +32,14 @@ export function getEffectiveSchema(
         }
 
         if ('initKeyCommands' in p) {
-          effectivePlugins.push((p as LicitPlugin).initKeyCommands());
+             if ((p as LicitPlugin).initKeyCommands) {
+          const keyCommandPlugins = (p as LicitPlugin).initKeyCommands();
+          if (Array.isArray(keyCommandPlugins)) {
+            effectivePlugins.push(...keyCommandPlugins);
+          } else if (keyCommandPlugins) {
+            effectivePlugins.push(keyCommandPlugins);
+          }
+        }
         }
       }
     }
