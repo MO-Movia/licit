@@ -33,7 +33,7 @@ class CustomMenuItem extends React.PureComponent {
     // const className = 'czi-custom-menu-item';
     let className = 'czi-custom-menu-item ' + this.props.theme;
       const command = this.props.value;
-      if (command['alignment']) {
+      if (command['_alignment']) {
         className = 'czi-custom-menu-item-button ' + this.props.theme;
       }
     return (

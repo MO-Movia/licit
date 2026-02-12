@@ -99,7 +99,15 @@ class Icon extends React.PureComponent {
       marginLeft: '-3px',
     };
   }
- 
+  if (type.split('/').pop() === 'Icon_glossary.svg') {
+    imgStyle = {
+    width: '100%',
+    height: '100%',
+    marginLeft: '2px',
+    marginTop: '2px',
+
+    };
+  } 
     return (
       <img
         alt={title}
