@@ -37,7 +37,7 @@
   padding: 4px;
 }
 
-table[data-cover-page="true"].molm-czi-image-view.align-center {
+table[data-cover-page="true"] .molm-czi-image-view.align-center {
   margin: 0 0 -18px;
 }
 
