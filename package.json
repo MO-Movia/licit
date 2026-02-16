@@ -82,7 +82,7 @@
     "copyfiles": "^2.4.1",
     "cors": "^2.8.6",
     "css-loader": "^7.1.4",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jest": "^29.15.0",
     "eslint-plugin-prettier": "^5.5.5",
