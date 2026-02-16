@@ -19,7 +19,7 @@ class TableDetailsCommand extends UICommand {
     state: EditorState,
     _dispatch: (tr: Transform) => void,
     view: EditorView
-  ): boolean | Promise<unknown> => {
+  ): boolean => {
     if (!view) {
       return false;
     }
@@ -54,17 +54,15 @@ class TableDetailsCommand extends UICommand {
         : null,
     };
 
-    return new Promise((resolve) => {
       this._popUp = createPopUp(TableDetails, viewProps, {
         modal: true,
-        onClose: (val) => {
+        onClose: () => {
           if (this._popUp) {
-            resolve(val);
             this._popUp = null;
           }
         },
       });
-    });
+    return true;
   };
 
   isActive = (_state: EditorState): boolean => {

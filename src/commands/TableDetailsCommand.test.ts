@@ -43,12 +43,12 @@ describe('TableDetailsCommand', () => {
   });
 
   describe('execute', () => {
-    it('should return false when view is not provided', async () => {
-      const result = await command.execute(mockState, mockDispatch, undefined as unknown as EditorView);
+    it('should return false when view is not provided', () => {
+      const result = command.execute(mockState, mockDispatch, undefined as unknown as EditorView);
       expect(result).toBe(false);
     });
 
-    it('should return false when table node is not found', async () => {
+    it('should return false when table node is not found', () => {
       const doc = mockSchema.node('doc', null, [
         mockSchema.node('paragraph', null, [mockSchema.text('test')]),
       ]);
@@ -63,11 +63,11 @@ describe('TableDetailsCommand', () => {
         domAtPos: jest.fn(),
       } as unknown as EditorView;
 
-      const result = await command.execute(mockState, mockDispatch, mockView);
+      const result =  command.execute(mockState, mockDispatch, mockView);
       expect(result).toBe(false);
     });
 
-    it('should return false when table DOM is not found', async () => {
+    it('should return false when table DOM is not found', () => {
       const tableCell = mockSchema.node('table_cell', null, [
         mockSchema.node('paragraph', null, [mockSchema.text('cell')]),
       ]);
@@ -87,11 +87,11 @@ describe('TableDetailsCommand', () => {
 
       jest.spyOn(command, 'findTableDOM').mockReturnValue(null);
 
-      const result = await command.execute(mockState, mockDispatch, mockView);
+      const result = command.execute(mockState, mockDispatch, mockView);
       expect(result).toBe(false);
     });
 
-    it('should create popup with table details when table is found', async () => {
+    it('should create popup with table details when table is found', () => {
       const tableCell = mockSchema.node('table_cell', null, [
         mockSchema.node('paragraph', null, [mockSchema.text('cell')]),
       ]);
@@ -143,7 +143,7 @@ describe('TableDetailsCommand', () => {
       const onClose = (createPopUp as jest.Mock).mock.calls[0][2].onClose;
       onClose(undefined);
 
-      await expect(promise).resolves.toBeUndefined();
+      expect(promise).toBeTruthy();
     });
 
 it('should include cell details when cell is selected', () => {
@@ -187,12 +187,6 @@ it('should include cell details when cell is selected', () => {
   (createPopUp as jest.Mock).mockReturnValue(mockPopUp);
 
   const result = command.execute(mockState, mockDispatch, mockView);
-  if (result instanceof Promise) {
-    result.catch(() => {
-      // Intentionally ignore promise rejection
-    });
-  }
-
   expect(createPopUp).toHaveBeenCalledWith(
     expect.anything(),
     expect.objectContaining({
