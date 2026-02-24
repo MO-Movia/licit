@@ -25,6 +25,7 @@ import {ListToggleCommand} from './commands/listToggleCommand';
 import MarksClearCommand from './commands/marksClearCommand';
 import TableBackgroundColorCommand from './commands/tableBackgroundColorCommand';
 import TableBorderColorCommand from './commands/tableBorderColorCommand';
+import TableDetailsCommand from './commands/TableDetailsCommand';
 import TableInsertCommand from './commands/tableInsertCommand';
 import TableMergeCellsCommand from './commands/tableMergeCellsCommand';
 import IndentMoreCommand from './commands/indentMoreCommand';
