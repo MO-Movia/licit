@@ -9,6 +9,7 @@
 
 .czi-editor-frame-body {
   background-color: var(--czi-page-background-color);
+  position: relative;
 }
 
 .czi-editor-frameset.embedded .czi-editor-frame-body {
@@ -17,11 +18,59 @@
 
 .czi-editor-frame-body-scroll {
   box-sizing: border-box;
+  position: relative;
   padding-top: 20px;
 }
 
 .czi-editor-frameset.embedded .czi-editor-frame-body-scroll {
   padding-top: unset;
+}
+
+.czi-editor-frame-body-scroll.czi-landscape-proxy-visible {
+  padding-bottom: 20px;
+}
+
+.czi-editor-frame-body .czi-landscape-horizontal-proxy {
+  background: #b8b8b8;
+  border-top: 1px solid #8d8d8d;
+  bottom: 0;
+  display: none;
+  height: 18px;
+  left: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: absolute;
+  right: 0;
+  scrollbar-color: #6b6b6b #c0c0c0;
+  scrollbar-width: thin;
+  z-index: 4;
+}
+
+.czi-editor-frame-body .czi-landscape-horizontal-proxy.czi-visible {
+  display: block;
+}
+
+.czi-editor-frame-body .czi-landscape-horizontal-proxy-track {
+  height: 1px;
+}
+
+.czi-editor-frame-body .czi-landscape-horizontal-proxy::-webkit-scrollbar {
+  background: #c0c0c0;
+  height: 14px;
+}
+
+.czi-editor-frame-body .czi-landscape-horizontal-proxy::-webkit-scrollbar-track {
+  background: #c0c0c0;
+}
+
+.czi-editor-frame-body .czi-landscape-horizontal-proxy::-webkit-scrollbar-thumb {
+  background: #6b6b6b;
+  border: 2px solid #c0c0c0;
+  border-radius: 8px;
+}
+
+.czi-editor-frame-body .czi-landscape-horizontal-proxy::-webkit-scrollbar-thumb:hover {
+  background: #525252;
 }
 
 .czi-editor-frameset.with-fixed-layout .czi-editor-frame-main {
@@ -69,6 +118,10 @@
 
   .czi-editor-frameset.with-fixed-layout .czi-editor-frame-body-scroll {
     position: relative;
+  }
+
+  .czi-editor-frame-body .czi-landscape-horizontal-proxy {
+    display: none !important;
   }
 
   .czi-editor-frameset.with-fixed-layout .czi-editor-frame-body {

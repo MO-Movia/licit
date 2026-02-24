@@ -13,6 +13,9 @@ import {
 import OrderedListNodeSpec from './specs/orderedListNodeSpec';
 import OrderedMap from 'orderedmap';
 import BulletListNodeSpec from './specs/bulletListNodeSpec';
+import LandscapeSectionNodeSpec from './specs/landscapeSectionNodeSpec';
+
+const LANDSCAPE_SECTION = 'landscape_section';
 
 export function updateEditorNodes(
   specNodes: OrderedMap<NodeSpec>
@@ -20,5 +23,6 @@ export function updateEditorNodes(
   specNodes = specNodes.addToEnd(BULLET_LIST, BulletListNodeSpec);
   specNodes = specNodes.addToEnd(ORDERED_LIST, OrderedListNodeSpec);
   specNodes = specNodes.addToEnd(LIST_ITEM, ListItemNodeSpec);
+  specNodes = specNodes.addToEnd(LANDSCAPE_SECTION, LandscapeSectionNodeSpec);
   return specNodes;
 }

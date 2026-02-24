@@ -25,7 +25,6 @@ import {ListToggleCommand} from './commands/listToggleCommand';
 import MarksClearCommand from './commands/marksClearCommand';
 import TableBackgroundColorCommand from './commands/tableBackgroundColorCommand';
 import TableBorderColorCommand from './commands/tableBorderColorCommand';
-import TableDetailsCommand from './commands/TableDetailsCommand';
 import TableInsertCommand from './commands/tableInsertCommand';
 import TableMergeCellsCommand from './commands/tableMergeCellsCommand';
 import IndentMoreCommand from './commands/indentMoreCommand';
@@ -45,6 +44,7 @@ import TableToggleHeaderRowCommand from './commands/tableToggleHeaderRowCommand'
 import TableToggleHeaderColumnCommand from './commands/tableToggleHeaderColumnCommand';
 import MarkToggleCommandEx from './commands/markToggleCommandEx';
 import ListSplitCommand from './commands/listSplitCommand';
+import LandscapeCommand from './commands/LandscapeCommand'; 
 
 // Note that Firefox will, by default, add various kinds of controls to
 // editable tables, even though those don't work in ProseMirror. The only way
@@ -99,3 +99,4 @@ export const TEXT_LINE_SPACINGS = TextLineSpacingCommand.createGroup();
 export const UL = new ListToggleCommand(false, '');
 export const UNDERLINE = new MarkToggleCommandEx(MARK_UNDERLINE);
 export const LIST_SPLIT = new ListSplitCommand();
+export const LANDSCAPE = new LandscapeCommand();
