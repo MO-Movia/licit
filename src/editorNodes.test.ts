@@ -32,7 +32,7 @@ describe('updateEditorNodes', () => {
     test('should add BULLET_LIST, ORDERED_LIST, and LIST_ITEM to OrderedMap', () => {
         const updatedNodes = updateEditorNodes(initialSpecNodes);
 
-        expect(updatedNodes.size).toBe(5); // 2 initial nodes + 3 new ones
+        expect(updatedNodes.size).toBe(6); // 2 initial nodes + 4 new ones
         expect(updatedNodes.get(BULLET_LIST)).toBe(BulletListNodeSpec);
         expect(updatedNodes.get(ORDERED_LIST)).toBe(OrderedListNodeSpec);
         expect(updatedNodes.get(LIST_ITEM)).toBe(ListItemNodeSpec);

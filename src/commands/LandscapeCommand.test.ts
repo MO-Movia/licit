@@ -117,4 +117,33 @@ describe('LandscapeCommand', () => {
     expect(applied.doc.child(1).child(0).type.name).toBe('table');
   });
 
+  test('returns false when landscape_section node is unavailable in schema', () => {
+    const schemaWithoutLandscape = new Schema({
+      nodes: {
+        doc: { content: 'block+' },
+        paragraph: { content: 'text*', group: 'block' },
+        text: { group: 'inline' },
+      },
+      marks: {},
+    });
+
+    const doc = schemaWithoutLandscape.node('doc', null, [
+      schemaWithoutLandscape.node('paragraph', null, [
+        schemaWithoutLandscape.text('Hello'),
+      ]),
+    ]);
+
+    const state = EditorState.create({
+      schema: schemaWithoutLandscape,
+      doc,
+      selection: TextSelection.create(doc, 2),
+    });
+
+    const command = new LandscapeCommand();
+    const dispatch = jest.fn();
+
+    expect(command.execute(state, dispatch)).toBe(false);
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
 });
