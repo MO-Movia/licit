@@ -3,7 +3,7 @@
     --czi-landscape-content-width: calc(var(--czi-landscape-page-width) - (2 * var(--czi-doc-padding-default)));
     border-left: 5px solid #5882eb;
     padding: 2px 20px;
-    margin: -10px 0 12px;
+    margin: -2px 0 12px;
     width: calc(100% + (2 * var(--czi-doc-padding-default)));
     margin-left: calc(-1 * var(--czi-doc-padding-default));
     max-width: none;
