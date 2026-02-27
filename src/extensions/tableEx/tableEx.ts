@@ -4,7 +4,7 @@
  */
 
 import {findParentNodeClosestToPos} from '@tiptap/core';
-import Table, {createTable} from '@tiptap/extension-table';
+import {Table,createTable} from '@tiptap/extension-table';
 import {TextSelection} from 'prosemirror-state';
 
 export const TableEx = Table.extend({

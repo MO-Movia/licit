@@ -186,7 +186,7 @@ it('should include cell details when cell is selected', () => {
   const mockPopUp = { close: jest.fn() };
   (createPopUp as jest.Mock).mockReturnValue(mockPopUp);
 
-  const result = command.execute(mockState, mockDispatch, mockView);
+  command.execute(mockState, mockDispatch, mockView);
   expect(createPopUp).toHaveBeenCalledWith(
     expect.anything(),
     expect.objectContaining({
