@@ -12,6 +12,7 @@ import React, {
   ForwardedRef,
   useMemo,
   useEffect,
+  useState,
 } from 'react';
 import ReactDOM from 'react-dom';
 import { Extension, Editor } from '@tiptap/core';
@@ -679,7 +680,7 @@ const LicitComponent = (
       isNodeHasAttribute,
     ]
   );
-
+  const [, setEditorState] = useState(editor?.state);
   // Register event handlers only once when editor is available
   useEffect(() => {
     if (!editor) return;
@@ -708,6 +709,10 @@ const LicitComponent = (
       onUpdate(props.editor, finalOnChange);
     };
 
+    const handleTransaction = (props: EditorEvents['transaction']) => {
+      setEditorState(props.editor.state);
+    };
+
     const handleDestroy = () => {
       destroyDevTool();
       // Cleanup collaboration
@@ -723,12 +728,14 @@ const LicitComponent = (
 
     editor.on('create', handleCreate);
     editor.on('update', handleUpdate);
+    editor.on('transaction', handleTransaction);
     editor.on('destroy', handleDestroy);
 
     // Cleanup: remove listeners when component unmounts or editor changes
     return () => {
       editor.off('create', handleCreate);
       editor.off('update', handleUpdate);
+      editor.off('transaction', handleTransaction);
       editor.off('destroy', handleDestroy);
     };
   }, [

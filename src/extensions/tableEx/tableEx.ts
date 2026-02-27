@@ -6,6 +6,8 @@
 import {findParentNodeClosestToPos, mergeAttributes} from '@tiptap/core';
 import Table, {createColGroup, createTable} from '@tiptap/extension-table';
 import {DOMOutputSpec, Node as ProseMirrorNode} from 'prosemirror-model';
+import {findParentNodeClosestToPos} from '@tiptap/core';
+import {Table,createTable} from '@tiptap/extension-table';
 import {TextSelection} from 'prosemirror-state';
 
 const DEFAULT_TABLE_COLUMNS = 3;
