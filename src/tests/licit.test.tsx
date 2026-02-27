@@ -34,6 +34,22 @@ jest.mock('y-protocols/awareness', () => ({
   Awareness: jest.fn(),
 }));
 
+const waitForValue = async (
+  getter: () => unknown,
+  timeoutMs = 3000,
+  intervalMs = 25
+): Promise<unknown> => {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    const value = getter();
+    if (value != null) {
+      return value;
+    }
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+  }
+  throw new Error('Timed out waiting for value');
+};
+
 describe('Licit Editor Component', () => {
   describe('Rendering', () => {
     it('should render without crashing', () => {
@@ -119,8 +135,8 @@ describe('Ref Methods', () => {
     const root = createRoot(container);
     root.render(<Licit ref={ref} />);
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    expect(ref.current?.setContent)?.toBeUndefined();
+    const setContent = await waitForValue(() => ref.current?.setContent);
+    expect(typeof setContent).toBe('function');
   });
 
   it('should expose insertJSON method via ref', async () => {

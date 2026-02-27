@@ -14,6 +14,7 @@ import SelectionPlaceholderPlugin from './plugins/selectionPlaceholderPlugin';
 import buildInputRules from './buildInputRules';
 import { setPluginKey } from '@modusoperandi/licit-doc-attrs-step';
 import TableCellMenuPlugin from './plugins/tableCellMenuPlugin';
+import { LandscapePlugin } from './plugins/LandscapePlugin';
 
 jest.mock('./plugins/contentPlaceholderPlugin', () => jest.fn(() => new Plugin({})));
 jest.mock('./plugins/cursorPlaceholderPlugin', () => jest.fn(() => new Plugin({})));
@@ -21,10 +22,14 @@ jest.mock('./plugins/editorPageLayoutPlugin', () => jest.fn(() => new Plugin({})
 jest.mock('./plugins/linkTooltipPlugin', () => jest.fn(() => new Plugin({})));
 jest.mock('./plugins/selectionPlaceholderPlugin', () => jest.fn(() => new Plugin({})));
 jest.mock('./plugins/tableCellMenuPlugin', () => jest.fn(() => new Plugin({})));
+jest.mock('./plugins/LandscapePlugin', () => ({
+  LandscapePlugin: jest.fn(() => new Plugin({})),
+}));
 jest.mock('./buildInputRules', () => jest.fn(() => new Plugin({})));
 jest.mock('./createEditorKeyMap', () => jest.fn(() => ({})));
 jest.mock('@modusoperandi/licit-doc-attrs-step', () => ({
   setPluginKey: jest.fn((plugin: Plugin, _key: string): Plugin => plugin),
+  UICommand: class UICommand {},
 }));
 
 describe('DefaultEditorPlugins', () => {
@@ -45,13 +50,14 @@ describe('DefaultEditorPlugins', () => {
         const editorPlugins = new DefaultEditorPlugins(schema);
         const plugins = editorPlugins.get();
 
-        expect(plugins).toHaveLength(8);
+        expect(plugins).toHaveLength(9);
         expect(ContentPlaceholderPlugin).toHaveBeenCalledTimes(1);
         expect(CursorPlaceholderPlugin).toHaveBeenCalledTimes(1);
         expect(EditorPageLayoutPlugin).toHaveBeenCalledTimes(1);
         expect(LinkTooltipPlugin).toHaveBeenCalledTimes(1);
         expect(SelectionPlaceholderPlugin).toHaveBeenCalledTimes(1);
         expect(TableCellMenuPlugin).toHaveBeenCalledTimes(1);
+        expect(LandscapePlugin).toHaveBeenCalledTimes(1);
         expect(buildInputRules).toHaveBeenCalledWith(schema);
         expect(setPluginKey).toHaveBeenCalledWith(expect.any(Plugin), 'InputRules');
         expect(setPluginKey).toHaveBeenCalledWith(expect.any(Plugin), 'EditorKeyMap');

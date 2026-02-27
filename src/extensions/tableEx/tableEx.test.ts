@@ -6,7 +6,7 @@
 import {Editor} from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import {TableEx} from './tableEx';
-import TableRow from '@tiptap/extension-table-row';
+import TableRowEx from '../tableRowEx';
 import TableHeader from '@tiptap/extension-table-header';
 import TableCell from '@tiptap/extension-table-cell';
 
@@ -15,7 +15,7 @@ describe('TableEx Extension', () => {
 
   beforeEach(() => {
     editor = new Editor({
-      extensions: [StarterKit, TableEx, TableRow, TableHeader, TableCell],
+      extensions: [StarterKit, TableEx, TableRowEx, TableHeader, TableCell],
       content:
         '<table><tr><td>Cell 1</td><td>Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></table>',
     });
@@ -32,6 +32,43 @@ describe('TableEx Extension', () => {
 
     expect(extension).toBeDefined();
     expect(extension?.name).toBe('table');
+  });
+
+  test('should expose noOfColumns and tableHeight attributes', () => {
+    const tableNode = editor.schema.nodes.table;
+
+    expect(tableNode.spec.attrs).toHaveProperty('noOfColumns');
+    expect(tableNode.spec.attrs).toHaveProperty('tableHeight');
+    expect(tableNode.spec.attrs?.noOfColumns.default).toBe(3);
+    expect(tableNode.spec.attrs?.tableHeight.default).toBe('auto');
+  });
+
+  test('should infer noOfColumns from HTML when not provided', () => {
+    editor.commands.setContent(
+      '<table><tr><td>First</td><td>Second</td><td>Third</td></tr></table>'
+    );
+
+    let tableAttrs = null;
+    editor.state.doc.descendants((node) => {
+      if (node.type.name === 'table') {
+        tableAttrs = node.attrs;
+      }
+    });
+
+    expect(tableAttrs?.noOfColumns).toBe(3);
+  });
+
+  test('should render table using noOfColumns and tableHeight values', () => {
+    editor.commands.setContent('<table><tr><td>Cell 1</td><td>Cell 2</td></tr></table>');
+    editor.commands.setTextSelection(4);
+    editor.commands.updateAttributes('table', {
+      noOfColumns: 4,
+      tableHeight: '360px',
+    });
+
+    const html = editor.getHTML();
+    expect(html).toContain('min-width: 100px');
+    expect(html).toContain('height: 360px');
   });
 
   test('should navigate to next cell with goToNextCell command', () => {

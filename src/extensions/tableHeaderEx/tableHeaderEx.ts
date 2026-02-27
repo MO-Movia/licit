@@ -3,7 +3,7 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import TableCell from '@tiptap/extension-table-cell';
+import TableHeader from '@tiptap/extension-table-header';
 
 const DEFAULT_CELL_WIDTH = '25px';
 const DEFAULT_FONT_SIZE = '16px';
@@ -33,7 +33,7 @@ const normalizeCssSize = (value: unknown, fallback: string): string => {
   return trimmed;
 };
 
-export const TableCellEx = TableCell.extend({
+export const TableHeaderEx = TableHeader.extend({
   addAttributes() {
     return {
       ...this.parent?.(),
@@ -173,7 +173,7 @@ export const TableCellEx = TableCell.extend({
         renderHTML: (attributes) => {
           if (!attributes.backgroundColor) {
             return {};
-          }        
+          }
           return {
             style: `background-color:  ${attributes.backgroundColor?.color || attributes.backgroundColor};`,
           };
@@ -236,3 +236,4 @@ export const TableCellEx = TableCell.extend({
     };
   },
 });
+

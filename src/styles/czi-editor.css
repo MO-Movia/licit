@@ -167,7 +167,7 @@
 }
 
 /* CodeBlock */
-.ProseMirror pre > code {
+.ProseMirror pre>code {
   background-color: #eee;
   border: 1px solid #999;
   display: block;
@@ -216,4 +216,3 @@
 .ProseMirror-hideselection *::selection {
   background-color: transparent;
 }
-

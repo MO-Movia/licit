@@ -15,21 +15,21 @@ import React, {
   useState,
 } from 'react';
 import ReactDOM from 'react-dom';
-import {Extension, Editor} from '@tiptap/core';
-import {EditorEvents, getSchema, JSONContent, useEditor} from '@tiptap/react';
+import { Extension, Editor } from '@tiptap/core';
+import { EditorEvents, getSchema, JSONContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import * as Y from 'yjs';
-import {IndexeddbPersistence} from 'y-indexeddb';
+import { IndexeddbPersistence } from 'y-indexeddb';
 import RichTextEditor from './ui/richTextEditor';
 import DefaultEditorPlugins from './defaultEditorPlugins';
-import {Plugin, TextSelection} from 'prosemirror-state';
-import {getEffectiveSchema} from './convertFromJSON';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
-import {Schema, NodeSpec, Node} from 'prosemirror-model';
+import { Plugin, TextSelection } from 'prosemirror-state';
+import { getEffectiveSchema } from './convertFromJSON';
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { Schema, NodeSpec, Node } from 'prosemirror-model';
 import Subscript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
 import TextAlign from '@tiptap/extension-text-align';
@@ -40,23 +40,23 @@ import {
   ThemeProvider,
   DOC,
 } from '@modusoperandi/licit-ui-commands';
-import {updateEditorMarks} from './editorMarks';
-import {updateEditorNodes} from './editorNodes';
+import { updateEditorMarks } from './editorMarks';
+import { updateEditorNodes } from './editorNodes';
 import OrderedMap from 'orderedmap';
-import {Indent} from './extensions/indent';
-import {WebrtcProvider} from 'y-webrtc';
-import {EditorRuntime, ToolbarMenuConfig} from './types';
-import {EditorViewEx} from './constants';
-import TableRow from '@tiptap/extension-table-row';
+import { Indent } from './extensions/indent';
+import { WebrtcProvider } from 'y-webrtc';
+import { EditorRuntime, ToolbarMenuConfig } from './types';
+import { EditorViewEx } from './constants';
+import TableRowEx from './extensions/tableRowEx';
 import TableCellEx from './extensions/tableCellEx';
-import {TableEx} from './extensions/tableEx';
-import TableHeader from '@tiptap/extension-table-header';
+import { TableEx } from './extensions/tableEx';
+import TableHeaderEx from './extensions/tableHeaderEx';
 import ParagraphNodeSpec from './specs/paragraphNodeSpec';
 import docNodeSpec from './specs/docNodeSpec';
 import * as awarenessProtocol from 'y-protocols/awareness';
 import * as math from 'lib0/math';
 import * as random from 'lib0/random';
-import {EditorView} from 'prosemirror-view';
+import { EditorView } from 'prosemirror-view';
 import cx from 'classnames';
 import DocLayoutCommand from './commands/docLayoutCommand';
 
@@ -225,7 +225,7 @@ const prepareEffectiveSchema = (
       };
 
       // Safe mutation if we own this object
-      Object.assign(tiptapNode, {attrs: mergedAttrs});
+      Object.assign(tiptapNode, { attrs: mergedAttrs });
     };
 
     // Update paragraph node
@@ -239,7 +239,7 @@ const prepareEffectiveSchema = (
     const marks = updateEditorMarks(marksMap);
 
     // Create default schema and plugins
-    const defaultEditorSchema = new Schema({nodes, marks});
+    const defaultEditorSchema = new Schema({ nodes, marks });
     const defaultEditorPlugins = new DefaultEditorPlugins(
       defaultEditorSchema
     ).get();
@@ -324,16 +324,16 @@ export const updateSpecAttrs = (
   existingSchema: Schema,
   attrName: 'marks' | 'nodes'
 ): void => {
-  const attrsTipTap = (collection[i + 1] as {attrs?: Record<string, unknown>})
+  const attrsTipTap = (collection[i + 1] as { attrs?: Record<string, unknown> })
     ?.attrs;
   if (attrsTipTap) {
     const specMap = existingSchema.spec[attrName] as OrderedMap<unknown>;
 
     // Find the matching spec in the existing schema
-     //forEach is the standard approach for OrderedMap
+    //forEach is the standard approach for OrderedMap
     specMap?.forEach((name, spec) => { //NOSONAR
       if (name === collection[i]) {
-        const attrsLicit = (spec as {attrs?: Record<string, unknown>})?.attrs;
+        const attrsLicit = (spec as { attrs?: Record<string, unknown> })?.attrs;
         if (attrsLicit) {
           const attrKeys = Object.keys(attrsTipTap);
           attrKeys.forEach((key) => {
@@ -520,6 +520,8 @@ const LicitComponent = (
   const finalTheme = theme || 'dark';
   const finalToolbarConfig = toolbarConfig || null;
 
+
+
   // Memoize default extensions to prevent recreation on every render
   const defaultExtensions = useMemo(
     () => [
@@ -543,8 +545,8 @@ const LicitComponent = (
       TableEx.configure({
         resizable: true,
       }),
-      TableRow,
-      TableHeader,
+      TableRowEx,
+      TableHeaderEx,
       TableCellEx,
     ],
     []
@@ -582,7 +584,7 @@ const LicitComponent = (
     ],
     onBeforeCreate(props: EditorEvents['beforeCreate']): void {
       // Before the view is created.
-      onBeforeCreate({props, schema: effectiveSchema});
+      onBeforeCreate({ props, schema: effectiveSchema });
     },
     content: finalData,
     editable: !finalReadOnly,

@@ -5,6 +5,7 @@
 
 import {Editor} from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
+import TableRowEx from '../tableRowEx';
 import {Table} from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableHeader from '@tiptap/extension-table-header';
@@ -15,7 +16,7 @@ describe('TableCellEx Extension', () => {
 
   beforeEach(() => {
     editor = new Editor({
-      extensions: [StarterKit, Table, TableRow, TableHeader, TableCellEx],
+      extensions: [StarterKit, Table, TableRowEx, TableHeader, TableCellEx],
       content: '<table><tr><td>Cell</td></tr></table>',
     });
   });
@@ -23,7 +24,6 @@ describe('TableCellEx Extension', () => {
   afterEach(() => {
     editor.destroy();
   });
-
 
   test('should have backgroundColor attribute', () => {
     const schema = editor.schema;
@@ -44,20 +44,72 @@ describe('TableCellEx Extension', () => {
     expect(node.spec.attrs).toHaveProperty('borderBottom');
   });
 
-test('should render backgroundColor as string when vignette is true', () => {
-  editor.commands.setContent('<table><tr><td>Cell</td></tr></table>');
+  test('should have cell layout and typography attributes', () => {
+    const schema = editor.schema;
+    const node = schema.nodes.tableCell;
 
-  editor
-    .chain()
-    .setCellAttribute('backgroundColor', 'red')   
-    .setCellAttribute('vignette', true)          
-    .run();
+    expect(node.spec.attrs).toHaveProperty('cellWidth');
+    expect(node.spec.attrs).toHaveProperty('cellStyle');
+    expect(node.spec.attrs).toHaveProperty('fontSize');
+    expect(node.spec.attrs).toHaveProperty('letterSpacing');
+    expect(node.spec.attrs).toHaveProperty('marginTop');
+    expect(node.spec.attrs).toHaveProperty('MarginBottom');
+    expect(node.spec.attrs?.cellWidth.default).toBe('25px');
+    expect(node.spec.attrs?.cellStyle.default).toBe('');
+    expect(node.spec.attrs?.fontSize.default).toBe('16px');
+    expect(node.spec.attrs?.letterSpacing.default).toBe('0px');
+    expect(node.spec.attrs?.marginTop.default).toBe('0px');
+    expect(node.spec.attrs?.MarginBottom.default).toBe('0px');
+  });
 
-  const html = editor.getHTML();
+  test('should render backgroundColor as string when vignette is true', () => {
+    editor.commands.setContent('<table><tr><td>Cell</td></tr></table>');
 
-  expect(html).toContain('<table style="min-width: 25px;"><colgroup><col style="min-width: 25px;"></colgroup><tbody><tr><td colspan="1" rowspan="1" style="background-color: red;"><p>Cell</p></td></tr></tbody></table>');
-});
+    editor
+      .chain()
+      .setCellAttribute('backgroundColor', 'red')
+      .setCellAttribute('vignette', true)
+      .run();
 
+    const html = editor.getHTML();
+
+    expect(html).toContain('background-color: red');
+    expect(html).toContain('width: 25px');
+    expect(html).toContain('font-size: 16px');
+    expect(html).toContain('letter-spacing: 0px');
+    expect(html).toContain('margin-top: 0px');
+    expect(html).toContain('margin-bottom: 0px');
+  });
+
+  test('should parse cellWidth, font and margin attributes from HTML', () => {
+    editor.commands.setContent(
+      '<table><tr><td style="width: 140px; font-size: 18px; letter-spacing: 1.5px; margin-top: 6px; margin-bottom: 9px;">Cell</td></tr></table>'
+    );
+
+    let cellAttrs = null;
+    editor.state.doc.descendants((node) => {
+      if (node.type.name === 'tableCell') {
+        cellAttrs = node.attrs;
+      }
+    });
+
+    expect(cellAttrs?.cellWidth).toBe('140px');
+    expect(cellAttrs?.fontSize).toBe('18px');
+    expect(cellAttrs?.letterSpacing).toBe('1.5px');
+    expect(cellAttrs?.marginTop).toBe('6px');
+    expect(cellAttrs?.MarginBottom).toBe('9px');
+  });
+
+  test('should render cellStyle inline CSS when provided', () => {
+    editor
+      .chain()
+      .setCellAttribute('cellStyle', 'line-height: 20px; text-align: center;')
+      .run();
+
+    const html = editor.getHTML();
+    expect(html).toContain('line-height: 20px');
+    expect(html).toContain('text-align: center');
+  });
 
   test('should render nested color value when vignette is false', () => {
     // Add backgroundColor as object
@@ -142,7 +194,7 @@ test('should render backgroundColor as string when vignette is true', () => {
       '<table><tr><td style="border-bottom: 4px double #000">Cell</td></tr></table>'
     );
     const html = editor.getHTML();
-    expect(html).toContain('<table style="min-width: 25px;"><colgroup><col style="min-width: 25px;"></colgroup><tbody><tr><td colspan="1" rowspan="1" style="border-bottom: 4px double rgb(0, 0, 0);"><p>Cell</p></td></tr></tbody></table>');
+    expect(html).toContain('border-bottom: 4px double rgb(0, 0, 0)');
   });
 
   test('should parse border side values correctly', () => {

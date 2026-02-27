@@ -1,0 +1,53 @@
+.section-landscape {
+    --czi-landscape-page-width: var(--czi-doc-width-us-letter-landscape);
+    --czi-landscape-content-width: calc(var(--czi-landscape-page-width) - (2 * var(--czi-doc-padding-default)));
+    border-left: 5px solid #5882eb;
+    padding: 2px 20px;
+    margin: -2px 0 12px;
+    width: calc(100% + (2 * var(--czi-doc-padding-default)));
+    margin-left: calc(-1 * var(--czi-doc-padding-default));
+    max-width: none;
+    background: #fdfdff;
+    position: relative;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.24), 0 -1px 3px rgba(0, 0, 0, 0.24);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.section-landscape::-webkit-scrollbar {
+    display: none;
+    height: 0;
+}
+
+.section-landscape::before {
+    content: 'LANDSCAPE SECTION';
+    position: absolute;
+    top: -18px;
+    left: 0;
+    font-size: 10px;
+    color: #5882eb;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Force tables inside landscape section to fill width */
+.section-landscape .tableWrapper {
+    min-width: var(--czi-landscape-content-width);
+}
+
+.ProseMirror[data-layout='a4_portrait'] .section-landscape {
+    --czi-landscape-page-width: var(--czi-doc-width-a4-landscape);
+}
+
+.section-landscape .tableWrapper table {
+    width: 100% !important;
+    table-layout: auto !important;
+}
+
+/* Ensure content inside doesn't overflow baseline width if not needed, 
+   but allow it to use the full 10.5in */
+.section-landscape>* {
+    min-width: var(--czi-landscape-content-width);
+}

@@ -81,6 +81,7 @@ class Icon extends React.PureComponent {
         case 'border_color':
         case 'settings_overscan':
         case 'icon_edit':
+        case 'landscape':
           _fileName = type;
           break;
         default:
@@ -152,6 +153,7 @@ class Icon extends React.PureComponent {
         case 'settings_overscan':
         case 'icon_edit':
         case 'more_horiz':
+        case 'landscape':
           fileName = type;
           break;
         default:
