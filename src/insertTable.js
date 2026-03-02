@@ -44,7 +44,10 @@ export default function insertTable(
     const rowNode = row.create({}, Fragment.from(cellNodes));
     rowNodes.push(rowNode);
   }
-  const tableNode = table.create({}, Fragment.from(rowNodes));
+  const tableNode = table.create(
+    { noOfColumns: cols },
+    Fragment.from(rowNodes)
+  );
   tr = tr.insert(from, Fragment.from(tableNode));
 
   const selection = TextSelection.create(tr.doc, from + 5, from + 5);
