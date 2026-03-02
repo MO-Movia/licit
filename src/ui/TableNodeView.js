@@ -1,23 +1,7 @@
 import { Node } from 'prosemirror-model';
 import { EditorView } from 'prosemirror-view';
 import { TableView } from 'prosemirror-tables';
-
-function toCSSLength(value: mixed): string {
-  if (value === null || value === undefined || value === '') {
-    return '';
-  }
-  if (typeof value === 'number' && isFinite(value)) {
-    return `${value}px`;
-  }
-  const stringValue = String(value).trim();
-  if (!stringValue) {
-    return '';
-  }
-  if (/^-?\d+(\.\d+)?$/.test(stringValue)) {
-    return `${stringValue}px`;
-  }
-  return stringValue;
-}
+import toCSSLength from './toCSSLength.js';
 
 // A custom table view that renders the margin-left style.
 export default class TableNodeView extends TableView {

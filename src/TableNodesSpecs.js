@@ -1,27 +1,11 @@
 // @flow
 
 import toCSSColor from './ui/toCSSColor.js';
+import { toCSSLengthOrNull as toCSSLength } from './ui/toCSSLength.js';
 import { Node } from 'prosemirror-model';
 import { tableNodes } from 'prosemirror-tables';
 
 const NO_VISIBLE_BORDER_WIDTH = new Set(['0pt', '0px']);
-
-function toCSSLength(value: mixed): ?string {
-  if (value === null || value === undefined) {
-    return null;
-  }
-  if (typeof value === 'number' && isFinite(value)) {
-    return `${value}px`;
-  }
-  const stringValue = String(value).trim();
-  if (!stringValue) {
-    return null;
-  }
-  if (/^-?\d+(\.\d+)?$/.test(stringValue)) {
-    return `${stringValue}px`;
-  }
-  return stringValue;
-}
 
 function appendStyle(attrs: Object, cssText: string): void {
   attrs.style = (attrs.style || '') + `;${cssText};`;
@@ -222,13 +206,13 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
           dom.getAttribute('no-of-columns');
         const attrs = { dirty, coverPage };
 
-        if (marginLeft && /\d+px/.test(marginLeft)) {
+        if (marginLeft && /\d{1,1000}px/.test(marginLeft)) {
           attrs.marginLeft = parseFloat(marginLeft);
         }
         if (height || dom.getAttribute('height')) {
           attrs.tableheight = height || dom.getAttribute('height');
         }
-        if (noOfColumnsAttr && /^\d+$/.test(noOfColumnsAttr)) {
+        if (noOfColumnsAttr && /^\d{1,1000}$/.test(noOfColumnsAttr)) {
           attrs.noOfColumns = parseInt(noOfColumnsAttr, 10);
         }
         if (!attrs.noOfColumns) {
