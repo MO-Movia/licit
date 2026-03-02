@@ -1,6 +1,7 @@
 import { Node } from 'prosemirror-model';
 import { EditorView } from 'prosemirror-view';
 import { TableView } from 'prosemirror-tables';
+import toCSSLength from './toCSSLength.js';
 
 // A custom table view that renders the margin-left style.
 export default class TableNodeView extends TableView {
@@ -20,6 +21,14 @@ export default class TableNodeView extends TableView {
     // Handle marginLeft
     const marginLeft = node.attrs?.marginLeft || 0;
     this.table.style.marginLeft = marginLeft ? `${marginLeft}px` : '';
+    this.table.style.height = toCSSLength(node.attrs?.tableheight);
+
+    const noOfColumns = node.attrs?.noOfColumns;
+    if (typeof noOfColumns === 'number' && noOfColumns > 0) {
+      this.table.setAttribute('data-no-of-columns', String(noOfColumns));
+    } else {
+      this.table.removeAttribute('data-no-of-columns');
+    }
 
     // Handle vignette
     if (node.attrs?.vignette) {
