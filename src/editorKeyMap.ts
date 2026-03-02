@@ -3,13 +3,15 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import Keymap from 'browserkeymap';
-
 import browser from './browser';
 
 import {makeKeyMapWithCommon} from '@modusoperandi/licit-doc-attrs-step';
 
-// https://tinyurl.com/ybwf3wex
+interface Keymap {
+  mac: string;
+  windows: string;
+  description: string;
+}
 
 export function tooltip(keymap?: Keymap): string {
   if (keymap) {
@@ -28,12 +30,12 @@ export function tooltip(keymap?: Keymap): string {
   return null;
 }
 
-export function findShortcutByKeymap(keymap: Keymap): string {
+function findShortcutByKeymap(keymap: Keymap): string {
   if (browser.isMac()) {
-    return keymap.mac as string;
+    return keymap.mac;
   }
 
-  return keymap.windows as string;
+  return keymap.windows;
 }
 export const KEY_SPLIT_LIST_ITEM = makeKeyMapWithCommon(
   'Split list item',

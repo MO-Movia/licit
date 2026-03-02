@@ -239,11 +239,6 @@ class CustomLicitRuntime {
     return false;
   }
 
-  getProxyVideoSrc(src: string): string {
-    // eslint-disable-next-line
-    return this.getProxyImageSrc(src);
-  }
-
   // Video Upload
   canUploadVideo(): boolean {
     return true;

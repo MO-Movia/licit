@@ -46,13 +46,6 @@ export type DirectEditorProps = {
   // https://github.com/ProseMirror/prosemirror-view/blob/master/src/index.js
 };
 
-export type RenderCommentProps = {
-  commentThreadId: string;
-  isActive: boolean;
-  requestCommentThreadDeletion: () => void;
-  requestCommentThreadReflow: () => void;
-};
-
 export type ImageLike = {
   height: number;
   id: string;
@@ -76,18 +69,9 @@ export type RecentColor = {
 export type EditorRuntime = {
   // Image Proxy
   canProxyImageSrc?: (src: string) => boolean;
-  getProxyImageSrc?: (src: string) => string;
+  getProxyImageSrc?: (src: string) => Promise<string>;
 
   // Image Upload
   canUploadImage?: () => boolean;
   uploadImage?: (obj: Blob) => Promise<ImageLike>;
-
-  // Comments
-  canComment?: () => boolean;
-  createCommentThreadID?: () => string;
-  renderComment?: (props: RenderCommentProps) => React.ReactElement | null;
-
-  // External HTML
-  canLoadHTML?: () => boolean;
-  loadHTML?: () => Promise<string>;
 };
