@@ -1,0 +1,21 @@
+.czi-table-details-popup {
+  min-width: 420px;
+  max-width: 480px;
+}
+
+.czi-input-grid-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.czi-input-row.grid-item {
+  flex: unset;
+}
+
+.czi-row--inset {
+  background: #1e1e1e;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 6px 10px;
+}

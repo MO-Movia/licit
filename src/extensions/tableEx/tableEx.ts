@@ -4,7 +4,7 @@
  */
 
 import {findParentNodeClosestToPos} from '@tiptap/core';
-import Table, {
+import  { Table,
   createTable,
   TableOptions,
   TableView as TiptapTableView,

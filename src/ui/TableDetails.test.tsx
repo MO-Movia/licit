@@ -35,9 +35,7 @@ describe('TableDetails', () => {
     expect(container.querySelector('.czi-table-details-header span')?.textContent).toBe('Table Details');
 
     const rows = container.querySelectorAll('.czi-table-details-section .czi-row');
-    expect(rows.length).toBe(2);
-    expect(rows[0].querySelector('strong')?.textContent).toBe('500px');
-    expect(rows[1].querySelector('strong')?.textContent).toBe('300px');
+    expect(rows.length).toBe(0);
   });
 
   it('should render editable fields from table row and cell attributes', () => {

@@ -37,8 +37,7 @@
   display: none;
   height: 18px;
   left: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: auto hidden;
   position: absolute;
   right: 0;
   scrollbar-color: #6b6b6b #c0c0c0;

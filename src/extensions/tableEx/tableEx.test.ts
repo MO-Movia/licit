@@ -3,9 +3,10 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import {Editor} from '@tiptap/core';
+import {Editor, Extension} from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import {TableEx} from './tableEx';
+import {createTable} from '@tiptap/extension-table';
 import TableHeader from '@tiptap/extension-table-header';
 import TableCell from '@tiptap/extension-table-cell';
 import {TableRowEx} from '../tableRowEx';
@@ -319,4 +320,91 @@ test('should apply tableHeight to table DOM when attributes are updated', () => 
   const tableElement = editor.view.dom.querySelector('table') as HTMLTableElement;
   expect(tableElement.style.height).toBe('280px');
 });
+
+  test('should return true when insertTable is called without dispatch', () => {
+    const insertTableCommand = editor.extensionManager.commands.insertTable;
+    const command = insertTableCommand({rows: 2, cols: 2});
+
+    const result = command({
+      tr: editor.state.tr,
+      dispatch: undefined,
+      editor,
+      state: editor.state,
+      view: editor.view,
+      commands: editor.commands,
+      chain: editor.chain,
+      can: editor.can,
+    });
+
+    expect(result).toBe(true);
+  });
+});
+
+type TableExtensionType = Extension & {
+  options: {
+    View: unknown;
+  };
+};
+
+describe('TableEx Extension - attributes', () => {
+  let editor: Editor;
+
+  beforeEach(() => {
+    editor = new Editor({
+      extensions: [StarterKit, TableEx, TableRowEx, TableHeader, TableCell],
+      content: '<table><tr><td>Cell</td></tr></table>',
+    });
+  });
+
+  afterEach(() => {
+    editor.destroy();
+  });
+
+  test('should ignore invalid attribute types when applying table attributes', () => {
+    const baseTable = createTable(editor.schema, 1, 1, false);
+    const tableNode = baseTable.type.createChecked(
+      {
+        ...baseTable.attrs,
+        noOfColumns: {},
+        tableHeight: '',
+      },
+      baseTable.content,
+      baseTable.marks
+    );
+
+    const tableExtension = editor.extensionManager.extensions.find(
+      (ext) => ext.name === 'table'
+    ) as TableExtensionType;
+
+    const ViewCtor = tableExtension.options.View as unknown as new (
+      node: unknown,
+      cellMinWidth: number
+    ) => {table: HTMLTableElement};
+
+    const view = new ViewCtor(tableNode, 25);
+
+    expect(view.table.getAttribute('data-no-of-columns')).toBeNull();
+    expect(view.table.getAttribute('data-table-height')).toBeNull();
+    expect(view.table.style.height).toBe('');
+  });
+
+  test('TableViewEx update should apply table attributes when updated', () => {
+    editor.commands.updateAttributes('table', {tableHeight: '120', noOfColumns: 3});
+    const tableNode = editor.state.doc.firstChild;
+    const tableExtension = editor.extensionManager.extensions.find(
+      (ext) => ext.name === 'table'
+    ) as TableExtensionType;
+
+    const ViewCtor = tableExtension.options.View as unknown as new (
+      node: unknown,
+      cellMinWidth: number
+    ) => {update: (node: unknown) => boolean; table: HTMLTableElement};
+
+    const view = new ViewCtor(tableNode, 25);
+    const result = view.update(tableNode);
+
+    expect(result).toBe(true);
+    expect(view.table.getAttribute('data-table-height')).toBe('120px');
+    expect(view.table.getAttribute('data-no-of-columns')).toBe('3');
+  });
 });

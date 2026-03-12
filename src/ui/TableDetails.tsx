@@ -3,8 +3,8 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
+import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import React, {PureComponent} from 'react';
-import {UICommand} from '@modusoperandi/licit-doc-attrs-step';
 
 export type TableDetailsInput = {
   noOfColumns: string;
@@ -51,131 +51,6 @@ const toInputValue = (value: string | number | null | undefined): string => {
   return String(value);
 };
 
-const styles: Record<string, React.CSSProperties> = {
-  popup: {
-    background: '#2b2b2b',
-    borderRadius: '6px',
-    color: '#e0e0e0',
-    display: 'flex',
-    flexDirection: 'column',
-    fontFamily: 'sans-serif',
-    fontSize: '13px',
-    minWidth: '420px',
-    maxWidth: '480px',
-    boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-  },
-  header: {
-    alignItems: 'center',
-    background: '#333',
-    borderBottom: '1px solid #444',
-    borderRadius: '6px 6px 0 0',
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '12px 16px',
-    fontWeight: 600,
-    fontSize: '14px',
-  },
-  closeBtn: {
-    background: 'transparent',
-    border: 'none',
-    color: '#aaa',
-    cursor: 'pointer',
-    fontSize: '14px',
-    lineHeight: '1',
-    padding: '2px 6px',
-  },
-  sizeRow: {
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '6px 16px',
-  },
-  sizeRow2: {
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'space-between',
-    background: '#1e1e1e',
-    border: '1px solid #555',
-    borderRadius: '4px',
-    padding: '6px 10px',
-  },
-  sizeValue: {
-    color: '#fff',
-    fontWeight: 600,
-  },
-  divider: {
-    borderTop: '1px solid #444',
-    borderBottom: 'none',
-    borderLeft: 'none',
-    borderRight: 'none',
-    margin: '0',
-  },
-  section: {
-    padding: '12px 16px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-  },
-  subtitle: {
-    color: '#aaa',
-    fontSize: '11px',
-    fontWeight: 600,
-    letterSpacing: '0.06em',
-    textTransform: 'uppercase',
-    marginBottom: '2px',
-  },
-  gridRow: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '12px',
-  },
-  inputField: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-  },
-  label: {
-    color: '#bbb',
-    fontSize: '12px',
-  },
-  input: {
-    background: '#1e1e1e',
-    border: '1px solid #555',
-    borderRadius: '4px',
-    color: '#e0e0e0',
-    fontSize: '13px',
-    outline: 'none',
-    padding: '6px 10px',
-    width: '100%',
-    boxSizing: 'border-box',
-  },
-  actions: {
-    borderTop: '1px solid #444',
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: '8px',
-    padding: '12px 16px',
-  },
-  cancelBtn: {
-    borderRadius: '4px',
-    border: '1px solid #555',
-    background: '#3a3a3a',
-    color: '#ddd',
-    cursor: 'pointer',
-    fontSize: '13px',
-    padding: '7px 20px',
-  },
-  applyBtn: {
-    borderRadius: '4px',
-    border: '1px solid #2e6bbd',
-    background: '#2e6bbd',
-    color: '#fff',
-    cursor: 'pointer',
-    fontSize: '13px',
-    padding: '7px 20px',
-  },
-};
-
 class TableDetails extends PureComponent<TableDetailsProps, TableDetailsInput> {
   declare props: TableDetailsProps;
 
@@ -199,19 +74,17 @@ class TableDetails extends PureComponent<TableDetailsProps, TableDetailsInput> {
   renderInputField(
     name: keyof TableDetailsInput,
     label: string,
-    placeholder = ''
+    placeholder = '',
+    className = ''
   ): React.ReactElement {
     return (
-      <div style={styles.inputField}>
-        <label htmlFor={`table-details-${name}`} style={styles.label}>
-          {label}
-        </label>
+      <div className={`czi-input-row ${className} ${UICommand.theme}`}>
+        <label htmlFor={`table-details-${name}`}>{label}</label>
         <input
           id={`table-details-${name}`}
           name={name}
           onChange={this._onInputChange}
           placeholder={placeholder}
-          style={styles.input}
           type="text"
           value={this.state[name]}
         />
@@ -224,9 +97,9 @@ class TableDetails extends PureComponent<TableDetailsProps, TableDetailsInput> {
     right: {name: keyof TableDetailsInput; label: string; placeholder?: string}
   ): React.ReactElement {
     return (
-      <div style={styles.gridRow}>
-        {this.renderInputField(left.name, left.label, left.placeholder || '')}
-        {this.renderInputField(right.name, right.label, right.placeholder || '')}
+      <div className="czi-input-grid-row">
+        {this.renderInputField(left.name, left.label, left.placeholder || '', 'grid-item')}
+        {this.renderInputField(right.name, right.label, right.placeholder || '', 'grid-item')}
       </div>
     );
   }
@@ -235,30 +108,34 @@ class TableDetails extends PureComponent<TableDetailsProps, TableDetailsInput> {
     const {table, row, cell, close} = this.props;
 
     return (
-      <div style={styles.popup}>
+      <div className={'czi-table-details-popup ' + UICommand.theme}>
         {/* Header */}
-        <div style={styles.header}>
+        <div className={'czi-table-details-header ' + UICommand.theme}>
           <span>Table Details</span>
-          <button onClick={() => close?.()} style={styles.closeBtn} title="Close">
-            ✕
+          <button
+            className={'czi-table-details-close ' + UICommand.theme}
+            onClick={() => close?.()}
+            title="Close"
+          >
+            X
           </button>
         </div>
 
-        {/* Table Width + Height display rows */}
-        <div style={styles.sizeRow}>
+        {/* Table Width / Table Height — two separate read-only rows */}
+        <div className={'czi-row ' + UICommand.theme}>
           <span>Table Width</span>
-          <strong style={styles.sizeValue}>{table.width}px</strong>
+          <strong>{table.width}px</strong>
         </div>
-        <div style={styles.sizeRow}>
+        <div className={'czi-row ' + UICommand.theme}>
           <span>Table Height</span>
-          <strong style={styles.sizeValue}>{table.height}px</strong>
+          <strong>{table.height}px</strong>
         </div>
 
-        <hr style={styles.divider} />
+        <div className="czi-divider" />
 
         {/* Table Attributes */}
-        <div style={styles.section}>
-          <div style={styles.subtitle}>Table Attributes</div>
+        <div className="czi-table-details-section">
+          <div className={'czi-table-details-subtitle ' + UICommand.theme}>Table Attributes</div>
           {this.renderInputPair(
             {name: 'noOfColumns', label: 'No Of Columns', placeholder: 'e.g. 4'},
             {name: 'tableHeight', label: 'Table Height', placeholder: 'e.g. 280 or 280px'}
@@ -268,9 +145,10 @@ class TableDetails extends PureComponent<TableDetailsProps, TableDetailsInput> {
         {/* Row Attributes */}
         {row && (
           <>
-            <hr style={styles.divider} />
-            <div style={styles.section}>
-              <div style={styles.subtitle}>Row Attributes</div>
+            <div className="czi-divider" />
+            <div className="czi-table-details-section">
+              <div className={'czi-table-details-subtitle ' + UICommand.theme}>Row Attributes</div>
+              {/* Full-width single input */}
               {this.renderInputField('rowHeight', 'Row Height', 'e.g. 48 or 48px')}
             </div>
           </>
@@ -279,19 +157,19 @@ class TableDetails extends PureComponent<TableDetailsProps, TableDetailsInput> {
         {/* Cell Attributes */}
         {cell && (
           <>
-            <hr style={styles.divider} />
-            <div style={styles.section}>
-              <div style={styles.subtitle}>Cell Attributes</div>
+            <div className="czi-divider" />
+            <div className="czi-table-details-section">
+              <div className={'czi-table-details-subtitle ' + UICommand.theme}>Cell Attributes</div>
 
               {/* Read-only Cell Width / Cell Height display */}
-              <div style={styles.gridRow}>
-                <div style={styles.sizeRow2}>
-                  <span style={styles.label}>Cell Width</span>
-                  <strong style={styles.sizeValue}>{cell.width}px</strong>
+              <div className="czi-input-grid-row">
+                <div className={'czi-row czi-row--inset ' + UICommand.theme}>
+                  <span>Cell Width</span>
+                  <strong>{cell.width}px</strong>
                 </div>
-                <div style={styles.sizeRow2}>
-                  <span style={styles.label}>Cell Height</span>
-                  <strong style={styles.sizeValue}>{cell.height}px</strong>
+                <div className={'czi-row czi-row--inset ' + UICommand.theme}>
+                  <span>Cell Height</span>
+                  <strong>{cell.height}px</strong>
                 </div>
               </div>
 
@@ -312,11 +190,21 @@ class TableDetails extends PureComponent<TableDetailsProps, TableDetailsInput> {
         )}
 
         {/* Actions */}
-        <div style={styles.actions}>
-          <button onClick={this._cancel} style={styles.cancelBtn} title="Cancel" type="button">
+        <div className="czi-table-details-actions">
+          <button
+            className={'czi-table-details-button ' + UICommand.theme}
+            onClick={this._cancel}
+            title="Cancel"
+            type="button"
+          >
             Cancel
           </button>
-          <button onClick={this._apply} style={styles.applyBtn} title="Apply" type="button">
+          <button
+            className={'czi-table-details-button primary ' + UICommand.theme}
+            onClick={this._apply}
+            title="Apply"
+            type="button"
+          >
             Apply
           </button>
         </div>

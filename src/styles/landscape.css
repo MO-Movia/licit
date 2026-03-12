@@ -1,6 +1,7 @@
 .section-landscape {
     --czi-landscape-page-width: var(--czi-doc-width-us-letter-landscape);
     --czi-landscape-content-width: calc(var(--czi-landscape-page-width) - (2 * var(--czi-doc-padding-default)));
+
     border-left: 5px solid #5882eb;
     padding: 2px 20px;
     margin: -2px 0 12px;
@@ -10,7 +11,7 @@
     background: #fdfdff;
     position: relative;
     box-sizing: border-box;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.24), 0 -1px 3px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 24%), 0 -1px 3px rgb(0 0 0 / 24%);
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;

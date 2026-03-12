@@ -30,7 +30,7 @@ export function tooltip(keymap?: Keymap): string {
   return null;
 }
 
-function findShortcutByKeymap(keymap: Keymap): string {
+export function findShortcutByKeymap(keymap: Keymap): string {
   if (browser.isMac()) {
     return keymap.mac;
   }

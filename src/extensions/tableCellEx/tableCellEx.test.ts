@@ -5,7 +5,7 @@
 
 import {Editor} from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
-import Table from '@tiptap/extension-table';
+import {Table} from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableHeader from '@tiptap/extension-table-header';
 import {TableCellEx} from './tableCellEx';
