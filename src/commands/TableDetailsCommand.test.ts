@@ -31,9 +31,32 @@ describe('TableDetailsCommand', () => {
         doc: { content: 'block+' },
         text: { group: 'inline' },
         paragraph: { content: 'inline*', group: 'block' },
-        table: { content: 'table_row+', group: 'block' },
-        table_row: { content: 'table_cell+' },
-        table_cell: { content: 'paragraph+' },
+        table: {
+          attrs: {
+            noOfColumns: {default: null},
+            tableHeight: {default: null},
+          },
+          content: 'table_row+',
+          group: 'block',
+        },
+        table_row: {
+          attrs: {
+            rowHeight: {default: null},
+            rowWidth: {default: null},
+          },
+          content: 'table_cell+',
+        },
+        table_cell: {
+          attrs: {
+            cellWidth: {default: null},
+            cellStyle: {default: null},
+            fontSize: {default: null},
+            letterSpacing: {default: null},
+            marginTop: {default: null},
+            MarginBottom: {default: null},
+          },
+          content: 'paragraph+',
+        },
       },
     });
   });
@@ -128,10 +151,10 @@ describe('TableDetailsCommand', () => {
       expect(createPopUp).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          table: {
+          table: expect.objectContaining({
             width: 501,
             height: 300,
-          },
+          }),
           cell: null,
         }),
         expect.objectContaining({
@@ -190,10 +213,10 @@ it('should include cell details when cell is selected', () => {
   expect(createPopUp).toHaveBeenCalledWith(
     expect.anything(),
     expect.objectContaining({
-      cell: {
+      cell: expect.objectContaining({
         width: 100,
         height: 51,
-      },
+      }),
     }),
     expect.anything()
   );
@@ -451,6 +474,75 @@ it('should include cell details when cell is selected', () => {
         'input'
       );
       expect(result).toBe(false);
+    });
+  });
+
+  describe('applyAttributeInputs', () => {
+    it('should update table row and cell attributes', () => {
+      const tableCell = mockSchema.node('table_cell', null, [
+        mockSchema.node('paragraph', null, [mockSchema.text('cell')]),
+      ]);
+      const tableRow = mockSchema.node('table_row', null, [tableCell]);
+      const table = mockSchema.node('table', null, [tableRow]);
+      const doc = mockSchema.node('doc', null, [table]);
+
+      mockState = EditorState.create({
+        doc,
+        schema: mockSchema,
+        selection: TextSelection.create(doc, 4),
+      });
+
+      const dispatch = jest.fn();
+      const focus = jest.fn();
+      mockView = {
+        state: mockState,
+        dispatch,
+        focus,
+      } as unknown as EditorView;
+
+      const tableRef = command.getParentNodeRef(mockState.selection, mockSchema.nodes.table);
+      const rowRef = command.getParentNodeRef(mockState.selection, mockSchema.nodes.table_row);
+      const cellRef = command.getParentNodeRef(mockState.selection, mockSchema.nodes.table_cell);
+
+      command.applyAttributeInputs(
+        mockView,
+        {
+          table: tableRef,
+          row: rowRef,
+          cell: cellRef,
+        },
+        {
+          noOfColumns: '5',
+          tableHeight: '300px',
+          rowHeight: '50px',
+          rowWidth: '600px',
+          cellWidth: '120px',
+          cellStyle: 'padding: 8px;',
+          fontSize: '14px',
+          letterSpacing: '1px',
+          marginTop: '2px',
+          MarginBottom: '3px',
+        }
+      );
+
+      expect(dispatch).toHaveBeenCalledTimes(1);
+      expect(focus).toHaveBeenCalledTimes(1);
+
+      const tr = dispatch.mock.calls[0][0];
+      const updatedTable = tr.doc.firstChild;
+      const updatedRow = updatedTable?.firstChild;
+      const updatedCell = updatedRow?.firstChild;
+
+      expect(updatedTable?.attrs.noOfColumns).toBe(5);
+      expect(updatedTable?.attrs.tableHeight).toBe('300px');
+      expect(updatedRow?.attrs.rowHeight).toBe('50px');
+      expect(updatedRow?.attrs.rowWidth).toBe('600px');
+      expect(updatedCell?.attrs.cellWidth).toBe('120px');
+      expect(updatedCell?.attrs.cellStyle).toBe('padding: 8px;');
+      expect(updatedCell?.attrs.fontSize).toBe('14px');
+      expect(updatedCell?.attrs.letterSpacing).toBe('1px');
+      expect(updatedCell?.attrs.marginTop).toBe('2px');
+      expect(updatedCell?.attrs.MarginBottom).toBe('3px');
     });
   });
 });

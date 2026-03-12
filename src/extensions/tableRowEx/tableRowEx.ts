@@ -5,28 +5,30 @@
 
 import TableRow from '@tiptap/extension-table-row';
 
-const DEFAULT_ROW_HEIGHT = 'auto';
-const DEFAULT_ROW_WIDTH = 'auto';
+const NUMERIC_VALUE_PATTERN = /^-?\d+(\.\d+)?$/;
 
-const normalizeCssSize = (value: unknown, fallback: string): string => {
-  if (typeof value === 'number' && Number.isFinite(value) && value >= 0) {
-    return `${value}px`;
+const normalizeValue = (value: unknown): string | null => {
+  if (value === null || value === undefined) {
+    return null;
   }
 
-  if (typeof value !== 'string') {
-    return fallback;
+  if (typeof value !== 'string' && typeof value !== 'number') {
+    return null;
   }
 
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return fallback;
+  const normalized = `${value}`.trim();
+  return normalized.length ? normalized : null;
+};
+
+const normalizeCssSize = (value: unknown): string | null => {
+  const normalized = normalizeValue(value);
+  if (!normalized) {
+    return null;
   }
 
-  if (/^\d+(\.\d+)?$/.test(trimmed)) {
-    return `${trimmed}px`;
-  }
-
-  return trimmed;
+  return NUMERIC_VALUE_PATTERN.test(normalized)
+    ? `${normalized}px`
+    : normalized;
 };
 
 export const TableRowEx = TableRow.extend({
@@ -34,45 +36,37 @@ export const TableRowEx = TableRow.extend({
     return {
       ...this.parent?.(),
       rowHeight: {
-        default: DEFAULT_ROW_HEIGHT,
-        parseHTML: (element) => {
-          return normalizeCssSize(
-            element.getAttribute('rowHeight') ??
-              element.getAttribute('rowheight') ??
-              element.style.height,
-            DEFAULT_ROW_HEIGHT
-          );
-        },
+        default: null,
         renderHTML: (attributes) => {
-          const rowHeight = normalizeCssSize(
-            attributes.rowHeight,
-            DEFAULT_ROW_HEIGHT
-          );
+          const rowHeight = normalizeCssSize(attributes.rowHeight);
+          if (!rowHeight) {
+            return {};
+          }
+
           return {
-            rowHeight,
-            style: `height: ${rowHeight};`,
+            style: `height: ${rowHeight}`,
           };
+        },
+        parseHTML: (element) => {
+          return normalizeValue(element.style.height);
         },
       },
       rowWidth: {
-        default: DEFAULT_ROW_WIDTH,
-        parseHTML: (element) => {
-          return normalizeCssSize(
-            element.getAttribute('rowWidth') ??
-              element.getAttribute('rowwidth') ??
-              element.style.width,
-            DEFAULT_ROW_WIDTH
-          );
-        },
+        default: null,
         renderHTML: (attributes) => {
-          const rowWidth = normalizeCssSize(attributes.rowWidth, DEFAULT_ROW_WIDTH);
+          const rowWidth = normalizeCssSize(attributes.rowWidth);
+          if (!rowWidth) {
+            return {};
+          }
+
           return {
-            rowWidth,
-            style: `width: ${rowWidth};`,
+            style: `width: ${rowWidth}`,
           };
+        },
+        parseHTML: (element) => {
+          return normalizeValue(element.style.width);
         },
       },
     };
   },
 });
-

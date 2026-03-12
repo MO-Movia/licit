@@ -5,169 +5,36 @@
 
 import TableCell from '@tiptap/extension-table-cell';
 
-const DEFAULT_CELL_WIDTH = '25px';
-const DEFAULT_FONT_SIZE = '16px';
-const DEFAULT_LETTER_SPACING = '0px';
-const DEFAULT_MARGIN_TOP = '0px';
-const DEFAULT_MARGIN_BOTTOM = '0px';
-const DEFAULT_CELL_STYLE = '';
+const NUMERIC_VALUE_PATTERN = /^-?\d+(\.\d+)?$/;
 
-const normalizeCssSize = (value: unknown, fallback: string): string => {
-  if (typeof value === 'number' && Number.isFinite(value) && value >= 0) {
-    return `${value}px`;
+const normalizeValue = (value: unknown): string | null => {
+  if (value === null || value === undefined) {
+    return null;
   }
 
-  if (typeof value !== 'string') {
-    return fallback;
+  if (typeof value !== 'string' && typeof value !== 'number') {
+    return null;
   }
 
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return fallback;
+  const normalized = `${value}`.trim();
+  return normalized.length ? normalized : null;
+};
+
+const normalizeCssSize = (value: unknown): string | null => {
+  const normalized = normalizeValue(value);
+  if (!normalized) {
+    return null;
   }
 
-  if (/^\d+(\.\d+)?$/.test(trimmed)) {
-    return `${trimmed}px`;
-  }
-
-  return trimmed;
+  return NUMERIC_VALUE_PATTERN.test(normalized)
+    ? `${normalized}px`
+    : normalized;
 };
 
 export const TableCellEx = TableCell.extend({
   addAttributes() {
     return {
       ...this.parent?.(),
-      cellWidth: {
-        default: DEFAULT_CELL_WIDTH,
-        renderHTML: (attributes) => {
-          const cellWidth = normalizeCssSize(
-            attributes.cellWidth,
-            DEFAULT_CELL_WIDTH
-          );
-          return {
-            cellWidth,
-            style: `width: ${cellWidth}; min-width: ${cellWidth};`,
-          };
-        },
-        parseHTML: (element) => {
-          return normalizeCssSize(
-            element.getAttribute('cellWidth') ??
-              element.getAttribute('data-cell-width') ??
-              element.style.width,
-            DEFAULT_CELL_WIDTH
-          );
-        },
-      },
-      cellStyle: {
-        default: DEFAULT_CELL_STYLE,
-        renderHTML: (attributes) => {
-          const cellStyle =
-            typeof attributes.cellStyle === 'string'
-              ? attributes.cellStyle.trim()
-              : DEFAULT_CELL_STYLE;
-
-          if (!cellStyle) {
-            return {};
-          }
-
-          return {
-            cellStyle,
-            style: cellStyle,
-          };
-        },
-        parseHTML: (element) => {
-          return (
-            element.getAttribute('cellStyle') ??
-            element.getAttribute('data-cell-style') ??
-            DEFAULT_CELL_STYLE
-          );
-        },
-      },
-      fontSize: {
-        default: DEFAULT_FONT_SIZE,
-        renderHTML: (attributes) => {
-          const fontSize = normalizeCssSize(
-            attributes.fontSize,
-            DEFAULT_FONT_SIZE
-          );
-          return {
-            fontSize,
-            style: `font-size: ${fontSize};`,
-          };
-        },
-        parseHTML: (element) => {
-          return normalizeCssSize(
-            element.getAttribute('fontSize') ??
-              element.getAttribute('data-font-size') ??
-              element.style.fontSize,
-            DEFAULT_FONT_SIZE
-          );
-        },
-      },
-      letterSpacing: {
-        default: DEFAULT_LETTER_SPACING,
-        renderHTML: (attributes) => {
-          const letterSpacing = normalizeCssSize(
-            attributes.letterSpacing,
-            DEFAULT_LETTER_SPACING
-          );
-          return {
-            letterSpacing,
-            style: `letter-spacing: ${letterSpacing};`,
-          };
-        },
-        parseHTML: (element) => {
-          return normalizeCssSize(
-            element.getAttribute('letterSpacing') ??
-              element.getAttribute('data-letter-spacing') ??
-              element.style.letterSpacing,
-            DEFAULT_LETTER_SPACING
-          );
-        },
-      },
-      marginTop: {
-        default: DEFAULT_MARGIN_TOP,
-        renderHTML: (attributes) => {
-          const marginTop = normalizeCssSize(
-            attributes.marginTop,
-            DEFAULT_MARGIN_TOP
-          );
-          return {
-            marginTop,
-            style: `margin-top: ${marginTop};`,
-          };
-        },
-        parseHTML: (element) => {
-          return normalizeCssSize(
-            element.getAttribute('marginTop') ??
-              element.getAttribute('data-margin-top') ??
-              element.style.marginTop,
-            DEFAULT_MARGIN_TOP
-          );
-        },
-      },
-      MarginBottom: {
-        default: DEFAULT_MARGIN_BOTTOM,
-        renderHTML: (attributes) => {
-          const marginBottom = normalizeCssSize(
-            attributes.MarginBottom,
-            DEFAULT_MARGIN_BOTTOM
-          );
-          return {
-            MarginBottom: marginBottom,
-            style: `margin-bottom: ${marginBottom};`,
-          };
-        },
-        parseHTML: (element) => {
-          return normalizeCssSize(
-            element.getAttribute('MarginBottom') ??
-              element.getAttribute('marginBottom') ??
-              element.getAttribute('data-margin-bottom') ??
-              element.style.marginBottom,
-            DEFAULT_MARGIN_BOTTOM
-          );
-        },
-      },
       backgroundColor: {
         default: null,
         renderHTML: (attributes) => {
@@ -231,6 +98,121 @@ export const TableCellEx = TableCell.extend({
         },
         parseHTML: (element) => {
           return element.style.borderColor.replace(/['"]+/g, '');
+        },
+      },
+      cellStyle: {
+        default: null,
+        renderHTML: (attributes) => {
+          const cellStyle = normalizeValue(attributes.cellStyle);
+          if (!cellStyle) {
+            return {};
+          }
+
+          return {
+            'data-cell-style': cellStyle,
+            style: cellStyle,
+          };
+        },
+        parseHTML: (element) => {
+          return normalizeValue(element.getAttribute('data-cell-style'));
+        },
+      },
+      cellWidth: {
+        default: null,
+        renderHTML: (attributes) => {
+          const cellWidth = normalizeCssSize(attributes.cellWidth);
+          if (!cellWidth) {
+            return {};
+          }
+
+          return {
+            'data-cell-width': cellWidth,
+            style: `width: ${cellWidth}; min-width: ${cellWidth};`,
+          };
+        },
+        parseHTML: (element) => {
+          return (
+            normalizeValue(element.dataset.cellWidth) ||
+            normalizeValue(element.style.width)
+          );
+        },
+      },
+      fontSize: {
+        default: null,
+        renderHTML: (attributes) => {
+          const fontSize = normalizeCssSize(attributes.fontSize);
+          if (!fontSize) {
+            return {};
+          }
+
+          return {
+            'data-cell-font-size': fontSize,
+            style: `font-size: ${fontSize}; --czi-cell-font-size: ${fontSize};`,
+          };
+        },
+        parseHTML: (element) => {
+          return (
+            normalizeValue(element.dataset.cellFontSize) ||
+            normalizeValue(element.style.fontSize)
+          );
+        },
+      },
+      letterSpacing: {
+        default: null,
+        renderHTML: (attributes) => {
+          const letterSpacing = normalizeCssSize(attributes.letterSpacing);
+          if (!letterSpacing) {
+            return {};
+          }
+
+          return {
+            style: `letter-spacing: ${letterSpacing};`,
+          };
+        },
+        parseHTML: (element) => {
+          return normalizeValue(element.style.letterSpacing);
+        },
+      },
+      marginTop: {
+        default: null,
+        renderHTML: (attributes) => {
+          const marginTop = normalizeCssSize(attributes.marginTop);
+          if (!marginTop) {
+            return {};
+          }
+
+          return {
+            'data-cell-margin-top': marginTop,
+            style: `margin-top: ${marginTop}; padding-top: ${marginTop}; --czi-cell-margin-top: ${marginTop};`,
+          };
+        },
+        parseHTML: (element) => {
+          return (
+            normalizeValue(element.dataset.cellMarginTop) ||
+            normalizeValue(element.style.marginTop) ||
+            normalizeValue(element.style.paddingTop)
+          );
+        },
+      },
+      MarginBottom: {
+        default: null,
+        renderHTML: (attributes) => {
+          const marginBottom = normalizeCssSize(attributes.MarginBottom);
+          if (!marginBottom) {
+            return {};
+          }
+
+          return {
+            'data-cell-margin-bottom': marginBottom,
+            style: `margin-bottom: ${marginBottom}; padding-bottom: ${marginBottom}; --czi-cell-margin-bottom: ${marginBottom};`,
+          };
+        },
+        parseHTML: (element) => {
+          return (
+            normalizeValue(element.dataset.cellMarginBottom) ||
+            normalizeValue(element.style.marginBottom) ||
+            normalizeValue(element.style.paddingBottom)
+          );
         },
       },
     };

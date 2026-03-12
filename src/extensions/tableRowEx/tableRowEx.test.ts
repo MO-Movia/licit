@@ -24,40 +24,22 @@ describe('TableRowEx Extension', () => {
     editor.destroy();
   });
 
-  test('should expose rowHeight and rowWidth attributes', () => {
+  test('should have rowHeight and rowWidth attributes', () => {
     const schema = editor.schema;
-    const rowNode = schema.nodes.tableRow;
+    const tableRowNode = schema.nodes.tableRow;
 
-    expect(rowNode.spec.attrs).toHaveProperty('rowHeight');
-    expect(rowNode.spec.attrs).toHaveProperty('rowWidth');
-    expect(rowNode.spec.attrs?.rowHeight.default).toBe('auto');
-    expect(rowNode.spec.attrs?.rowWidth.default).toBe('auto');
+    expect(tableRowNode.spec.attrs).toHaveProperty('rowHeight');
+    expect(tableRowNode.spec.attrs).toHaveProperty('rowWidth');
   });
 
-  test('should parse rowHeight and rowWidth from HTML', () => {
+  test('should render rowHeight and rowWidth styles from html', () => {
     editor.commands.setContent(
-      '<table><tr rowheight="40px" rowwidth="320px"><td>Cell</td></tr></table>'
-    );
-
-    let parsedRowAttrs = null;
-    editor.state.doc.descendants((node) => {
-      if (node.type.name === 'tableRow') {
-        parsedRowAttrs = node.attrs;
-      }
-    });
-
-    expect(parsedRowAttrs?.rowHeight).toBe('40px');
-    expect(parsedRowAttrs?.rowWidth).toBe('320px');
-  });
-
-  test('should render rowHeight and rowWidth styles', () => {
-    editor.commands.setContent(
-      '<table><tr rowheight="45px" rowwidth="280px"><td>Cell</td></tr></table>'
+      '<table><tr style="height: 40px; width: 240px;"><td>Cell</td></tr></table>'
     );
 
     const html = editor.getHTML();
-    expect(html).toContain('height: 45px');
-    expect(html).toContain('width: 280px');
+    expect(html).toContain('height: 40px');
+    expect(html).toContain('width: 240px');
   });
 });
 
