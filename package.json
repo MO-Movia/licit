@@ -111,7 +111,7 @@
     "mv": "^2.1.1",
     "prettier": "^3.8.1",
     "style-loader": "^4.0.0",
-    "stylelint": "^16.26.1",
+    "stylelint": "^17.4.0",
     "stylelint-config-standard": "^39.0.1",
     "stylelint-prettier": "^5.0.3",
     "terser-webpack-plugin": "^5.3.16",
