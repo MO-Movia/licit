@@ -74,6 +74,9 @@ const ParagraphNodeSpec: NodeSpec = {
     indentPosition: {
       default: null,
     },
+    dirty: {
+      default: null,
+    },
     isDeco: {
       default: {
         isTag: false,
@@ -123,6 +126,7 @@ function getAttrs(dom: HTMLElement): Object {
   const objectId = dom.getAttribute('objectId');
   const hangingIndent = dom.getAttribute('hangingIndent');
   const indentPosition = dom.getAttribute('indentPosition');
+  const dirty = dom.getAttribute('dirty');
   const isDeco = {
     isTag: dom.getAttribute('isTag') === 'true',
     isComment: dom.getAttribute('isComment') === 'true',
@@ -146,6 +150,7 @@ function getAttrs(dom: HTMLElement): Object {
     objectId,
     hangingIndent,
     indentPosition,
+    dirty,
     isDeco
   };
 }
@@ -197,6 +202,7 @@ function toDOM(node: Node): Array<any> {
     selectionId,
     hangingIndent,
     indentPosition,
+    dirty,
     isDeco
   } = node.attrs;
   const attrs = { ...node.attrs };
@@ -228,7 +234,7 @@ function toDOM(node: Node): Array<any> {
   if (selectionId) {
     attrs.selectionId = selectionId;
   }
-
+  attrs.dirty = dirty;
   if (isDeco) {
     if (isDeco.isTag !== undefined) attrs.isTag = String(isDeco.isTag);
     if (isDeco.isComment !== undefined) attrs.isComment = String(isDeco.isComment);
