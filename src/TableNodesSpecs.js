@@ -159,24 +159,24 @@ const TableNodesSpecs = tableNodes({
     marginTop: {
       default: null,
       getFromDOM(dom) {
-        return dom.style.marginTop || null;
+        return dom.style.paddingTop || null;
       },
       setDOMAttr(value, attrs) {
         const cssValue = toCSSLength(value);
         if (cssValue) {
-          appendStyle(attrs, `margin-top: ${cssValue}`);
+          appendStyle(attrs, `padding-top: ${cssValue}`);
         }
       },
     },
     marginBottom: {
       default: null,
       getFromDOM(dom) {
-        return dom.style.marginBottom || null;
+        return dom.style.paddingBottom || null;
       },
       setDOMAttr(value, attrs) {
         const cssValue = toCSSLength(value);
         if (cssValue) {
-          appendStyle(attrs, `margin-bottom: ${cssValue}`);
+          appendStyle(attrs, `padding-bottom: ${cssValue}`);
         }
       },
     },

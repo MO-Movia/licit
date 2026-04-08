@@ -42,9 +42,55 @@ export default class TableNodeView extends TableView {
       this.table.removeAttribute('dirty');
     }
     if (node.attrs?.coverPage) {
-      this.table.setAttribute('data-cover-page', 'true');
+      this.table.dataset.coverPage = 'true';
     } else {
-      this.table.removeAttribute('data-cover-page');
+      delete this.table.dataset.coverPage;
+    }
+
+    this._updateCellAttrs(node);
+  }
+
+  _updateCellAttrs(tableNode: Node): void {
+    const tbody = this.table.tBodies?.[0];
+    if (!tbody) {
+      return;
+    }
+
+    const rowElements = Array.from(tbody.rows);
+    const rowCount = Math.min(tableNode.childCount, rowElements.length);
+
+    for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+      const rowNode = tableNode.child(rowIndex);
+      const rowEl = rowElements[rowIndex];
+      const cellElements = Array.from(rowEl.cells);
+      const cellCount = Math.min(rowNode.childCount, cellElements.length);
+
+      for (let colIndex = 0; colIndex < cellCount; colIndex++) {
+        const cellNode = rowNode.child(colIndex);
+        const cellEl = cellElements[colIndex];
+        const {
+          fontSize,
+          letterSpacing,
+          marginTop,
+          marginBottom,
+          cellWidth,
+        } = cellNode.attrs;
+
+        const cssFontSize = fontSize ? toCSSLength(fontSize) : '';
+        const cssMarginTop = marginTop ? toCSSLength(marginTop) : '';
+        const cssMarginBottom = marginBottom ? toCSSLength(marginBottom) : '';
+
+        cellEl.style.fontSize = cssFontSize;
+        cellEl.style.letterSpacing = letterSpacing
+          ? toCSSLength(letterSpacing)
+          : '';
+        cellEl.style.marginTop = cssMarginTop;
+        cellEl.style.marginBottom = cssMarginBottom;
+        // Keep visual spacing on table-cells consistent.
+        cellEl.style.paddingTop = cssMarginTop;
+        cellEl.style.paddingBottom = cssMarginBottom;
+        cellEl.style.width = cellWidth ? toCSSLength(cellWidth) : '';
+      }
     }
   }
 }

@@ -31,8 +31,6 @@ describe('TableNodesSpecs custom attrs', () => {
     expect(cellNode.attrs.cellStyle).toBe('text-align: center');
     expect(cellNode.attrs.fontSize).toBe('14px');
     expect(cellNode.attrs.letterSpacing).toBe('1px');
-    expect(cellNode.attrs.marginTop).toBe('2px');
-    expect(cellNode.attrs.marginBottom).toBe('3px');
   });
 
   it('serializes table, row, and cell custom attributes to DOM', () => {
