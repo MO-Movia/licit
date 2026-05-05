@@ -39,6 +39,18 @@ const ParagraphNodeSpec: NodeSpec = {
     lineSpacing: {
       default: null,
     },
+    marginBottom: {
+      default: null,
+    },
+    marginLeft: {
+      default: null,
+    },
+    marginRight: {
+      default: null,
+    },
+    marginTop: {
+      default: null,
+    },
     paddingBottom: {
       default: null,
     },
@@ -95,8 +107,16 @@ const ParagraphNodeSpec: NodeSpec = {
 };
 
 function getAttrs(dom: HTMLElement): Object {
-  const { lineHeight, textAlign, marginLeft, paddingTop, paddingBottom } =
-    dom.style;
+  const {
+    lineHeight,
+    textAlign,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    marginTop,
+    paddingTop,
+    paddingBottom,
+  } = dom.style;
 
   let align = dom.getAttribute('align') || textAlign || 'left';
   align = ALIGN_PATTERN.test(align) ? align : null;
@@ -132,6 +152,10 @@ function getAttrs(dom: HTMLElement): Object {
     align,
     indent,
     lineSpacing,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    marginTop,
     paddingTop,
     paddingBottom,
     reset,
@@ -154,12 +178,25 @@ function getStyle(attrs: Object) {
   return getStyleEx(
     attrs.align,
     attrs.lineSpacing,
+    attrs.marginTop,
+    attrs.marginBottom,
+    attrs.marginRight,
+    attrs.marginLeft,
     attrs.paddingTop,
     attrs.paddingBottom
   );
 }
 
-function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
+function getStyleEx(
+  align,
+  lineSpacing,
+  marginTop,
+  marginBottom,
+  marginRight,
+  marginLeft,
+  paddingTop,
+  paddingBottom
+) {
   let style = '';
   if (align && align !== 'left') {
     style += `text-align: ${align};`;
@@ -174,6 +211,18 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
       `--czi-content-line-height: ${cssLineSpacing};`;
   }
 
+  if (marginTop && !EMPTY_CSS_VALUE.has(marginTop)) {
+    style += `margin-top: ${marginTop};`;
+  }
+  if (marginBottom && !EMPTY_CSS_VALUE.has(marginBottom)) {
+    style += `margin-bottom: ${marginBottom};`;
+  }
+  if (marginRight && !EMPTY_CSS_VALUE.has(marginRight)) {
+    style += `margin-right: ${marginRight};`;
+  }
+  if (marginLeft && !EMPTY_CSS_VALUE.has(marginLeft)) {
+    style += `margin-left: ${marginLeft};`;
+  }
   if (paddingTop && !EMPTY_CSS_VALUE.has(paddingTop)) {
     style += `padding-top: ${paddingTop};`;
   }

@@ -22,6 +22,7 @@ import TextSubMarkSpec from './TextSubMarkSpec.js';
 import TextUnderlineMarkSpec from './TextUnderlineMarkSpec.js';
 import OverrideMarkSpec from './OverrideMarkSpec.js';
 import HangingIndentMarkSpec from './HangingIndentMarkSpec.js';
+import LetterSpacingMarkSpec from './LetterSpacingMarkSpec.js';
 
 const {
   MARK_CODE,
@@ -40,7 +41,8 @@ const {
   MARK_UNDERLINE,
   MARK_SPACER,
   MARK_OVERRIDE,
-  MARK_HANGING_INDENT
+  MARK_HANGING_INDENT,
+  MARK_LETTER_SPACING
 } = MarkNames;
 
 // These nodes are required to build basic marks.
@@ -54,6 +56,7 @@ const marks = {
   // Link mark should be rendered first.
   // https://discuss.prosemirror.net/t/prevent-marks-from-breaking-up-links/401/5
   [MARK_HANGING_INDENT]: HangingIndentMarkSpec,
+  [MARK_LETTER_SPACING]: LetterSpacingMarkSpec,
   [MARK_LINK]: LinkMarkSpec,
   [MARK_NO_BREAK]: TextNoWrapMarkSpec,
   [MARK_CODE]: CodeMarkSpec,

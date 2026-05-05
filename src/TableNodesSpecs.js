@@ -89,6 +89,50 @@ const TableNodesSpecs = tableNodes({
         }
       },
     },
+    borderLeftWidth: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderLeftWidth || null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value) {
+          attrs.style = (attrs.style || '') + `;border-left-width: ${value};`;
+        }
+      },
+    },
+    borderRightWidth: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderRightWidth || null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value) {
+          attrs.style = (attrs.style || '') + `;border-right-width: ${value};`;
+        }
+      },
+    },
+    borderTopWidth: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderTopWidth || null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value) {
+          attrs.style = (attrs.style || '') + `;border-top-width: ${value};`;
+        }
+      },
+    },
+    borderBottomWidth: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderBottomWidth || null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value) {
+          attrs.style = (attrs.style || '') + `;border-bottom-width: ${value};`;
+        }
+      },
+    },
     background: {
       default: null,
       // TODO: Move these to a table helper.
@@ -159,24 +203,214 @@ const TableNodesSpecs = tableNodes({
     marginTop: {
       default: null,
       getFromDOM(dom) {
-        return dom.style.marginTop || null;
+        return dom.style.paddingTop || null;
       },
       setDOMAttr(value, attrs) {
         const cssValue = toCSSLength(value);
         if (cssValue) {
-          appendStyle(attrs, `margin-top: ${cssValue}`);
+          appendStyle(attrs, `padding-top: ${cssValue}`);
         }
       },
     },
     marginBottom: {
       default: null,
       getFromDOM(dom) {
-        return dom.style.marginBottom || null;
+        return dom.style.paddingBottom || null;
       },
       setDOMAttr(value, attrs) {
         const cssValue = toCSSLength(value);
         if (cssValue) {
-          appendStyle(attrs, `margin-bottom: ${cssValue}`);
+          appendStyle(attrs, `padding-bottom: ${cssValue}`);
+        }
+      },
+    },
+    lineHeight: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.lineHeight || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `line-height: ${cssValue}`);
+        }
+      },
+    },
+    paddingTop: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.paddingTop || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `padding-top: ${cssValue}`);
+        }
+      },
+    },
+    paddingBottom: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.paddingBottom || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `padding-bottom: ${cssValue}`);
+        }
+      },
+    },
+    paddingRight: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.paddingBottom || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `padding-right: ${cssValue}`);
+        }
+      },
+    },
+    paddingLeft: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.paddingLeft || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `padding-left: ${cssValue}`);
+        }
+      },
+    },
+    //   borderLeftWidth?: string;
+    // borderRightWidth?: string;
+    // borderTopWidth?: string;
+    // borderBottomWidth?: string;
+    // borderLeftColor?: string;
+    // borderRightColor?: string;
+    // borderTopColor?: string;
+    // borderBottomColor?: string;
+
+    borderWidth: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderWidth || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `border-width: ${cssValue}`);
+        }
+      },
+    },
+    borderLeftColor: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderLeftColor || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `border-left-color: ${cssValue}`);
+        }
+      },
+    },
+    borderRightColor: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderRightColor || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `border-right-color: ${cssValue}`);
+        }
+      },
+    },
+    borderTopColor: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderTopColor || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `border-top-color: ${cssValue}`);
+        }
+      },
+    },
+    borderBottomColor: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderBottomColor || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `border-bottom-color: ${cssValue}`);
+        }
+      },
+    },
+
+    borderBottomStyle: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderBottomStyle || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `border-bottom-style: ${cssValue}`);
+        }
+      },
+    },
+    borderTopStyle: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderTopStyle || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `border-top-style: ${cssValue}`);
+        }
+      },
+    },
+    borderRightStyle: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderRightStyle || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `border-right-style: ${cssValue}`);
+        }
+      },
+    },
+    borderLeftStyle: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.borderLeftStyle || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `border-left-style: ${cssValue}`);
+        }
+      },
+    },
+    verticalAlign: {
+      default: null,
+      getFromDOM(dom) {
+        return dom.style.verticalAlign || null;
+      },
+      setDOMAttr(value, attrs) {
+        const cssValue = toCSSLength(value);
+        if (cssValue) {
+          appendStyle(attrs, `vertical-align: ${cssValue}`);
         }
       },
     },
