@@ -28,7 +28,7 @@
   outline: none;
   position: relative;
   user-zoom: fixed;
-
+  --capcoWidth: 52px; /* CAPCO label width */
   /* [FS] IRAD-1011 2020-07-10
     White space issue in FF
     https://github.com/ProseMirror/prosemirror-view/commit/06147b49efec62f06738ce593a365f0d1d953858#diff-a2771f42f3074df8a6954ad49a080d84
@@ -212,14 +212,18 @@ td[fullsize='1'] .czi-font-size-mark {
 
 .ProseMirror p[hangingindent='true'] {
   display: flex;
-  align-items: flex-start; /* align top edges */
+  align-items: flex-start;
+  position: relative;
 }
 
-/* First span (prefix=0) gets reserved width */
+/* prefix=0 always starts at 0 and has fixed width = hangingIndentMargin
+   capco overlays on top of it — no impact on layout */
 .ProseMirror p[hangingindent='true'] span[prefix='0'] {
   min-width: var(--hangingIndentMargin);
+  flex-shrink: 0;
   display: inline-block;
-  flex-shrink: 0; /* don’t shrink below 250px */
+  box-sizing: border-box;
+  padding-left: var(--capcoWidth, 52px); /* set this once globally */
 }
 
 /* All other spans should take remaining space */
