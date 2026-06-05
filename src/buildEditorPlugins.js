@@ -9,6 +9,7 @@ import { Plugin, PluginKey } from 'prosemirror-state';
 import ContentPlaceholderPlugin from './ContentPlaceholderPlugin.js';
 import CursorPlaceholderPlugin from './CursorPlaceholderPlugin.js';
 import EditorPageLayoutPlugin from './EditorPageLayoutPlugin.js';
+import LandscapePlugin from './LandscapePlugin.js';
 import LinkTooltipPlugin from './LinkTooltipPlugin.js';
 import SelectionPlaceholderPlugin from './SelectionPlaceholderPlugin.js';
 import TablePlugins from './TablePlugins.js';
@@ -19,6 +20,7 @@ export default class DefaultEditorPlugins {
   plugins: Array<Plugin>;
 
   constructor(schema: Schema) {
+    const landscapePlugin = new LandscapePlugin();
     this.plugins = [
       new ContentPlaceholderPlugin(),
       new CursorPlaceholderPlugin(),
@@ -30,6 +32,8 @@ export default class DefaultEditorPlugins {
       this.setPluginKey(gapCursor(), 'GapCursor'),
       history(),
       this.setPluginKey(keymap(createEditorKeyMap()), 'EditorKeyMap'),
+      this.setPluginKey(landscapePlugin.initKeyCommands(), 'LandscapeKeymap'),
+      landscapePlugin,
       this.setPluginKey(keymap(baseKeymap), 'BaseKeymap'),
     ].concat(TablePlugins);
   }

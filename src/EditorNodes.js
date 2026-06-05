@@ -7,6 +7,7 @@ import BulletListNodeSpec from './BulletListNodeSpec.js';
 import DocNodeSpec from './DocNodeSpec.js';
 import HardBreakNodeSpec from './HardBreakNodeSpec.js';
 import HorizontalRuleNodeSpec from './HorizontalRuleNodeSpec.js';
+import LandscapeSectionNodeSpec from './LandscapeSectionNodeSpec.js';
 import ListItemNodeSpec from './ListItemNodeSpec.js';
 import * as NodeNames from './NodeNames.js';
 import OrderedListNodeSpec from './OrderedListNodeSpec.js';
@@ -23,6 +24,7 @@ const {
   HARD_BREAK,
   HEADING,
   HORIZONTAL_RULE,
+  LANDSCAPE_SECTION,
   LIST_ITEM,
   ORDERED_LIST,
   PARAGRAPH,
@@ -40,6 +42,7 @@ const nodes = {
   [PARAGRAPH]: ParagraphNodeSpec,
   [BLOCKQUOTE]: BlockquoteNodeSpec,
   [HORIZONTAL_RULE]: HorizontalRuleNodeSpec,
+  [LANDSCAPE_SECTION]: LandscapeSectionNodeSpec,
   [HEADING]: ParagraphNodeSpec,
   [TEXT]: TextNodeSpec,
   [HARD_BREAK]: HardBreakNodeSpec,

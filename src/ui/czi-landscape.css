@@ -1,0 +1,52 @@
+.section-landscape {
+  --czi-landscape-page-width: var(--czi-doc-width-us-letter-landscape);
+  --czi-landscape-content-width: calc(
+    var(--czi-landscape-page-width) - (2 * var(--czi-doc-padding-default))
+  );
+
+  background: #fdfdff;
+  border-left: 5px solid #5882eb;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 24%), 0 -1px 3px rgb(0 0 0 / 24%);
+  box-sizing: border-box;
+  margin: -2px 0 12px calc(-1 * var(--czi-doc-padding-default));
+  max-width: none;
+  overflow-x: auto;
+  padding: 2px 20px;
+  position: relative;
+  scrollbar-width: none;
+  width: calc(100% + (2 * var(--czi-doc-padding-default)));
+  -ms-overflow-style: none;
+}
+
+.section-landscape::-webkit-scrollbar {
+  display: none;
+  height: 0;
+}
+
+.section-landscape::before {
+  color: #5882eb;
+  content: 'LANDSCAPE SECTION';
+  font-size: 10px;
+  font-weight: bold;
+  left: 0;
+  letter-spacing: 1px;
+  position: absolute;
+  top: -18px;
+}
+
+.section-landscape .tableWrapper {
+  min-width: var(--czi-landscape-content-width);
+}
+
+.ProseMirror[data-layout='a4_portrait'] .section-landscape {
+  --czi-landscape-page-width: var(--czi-doc-width-a4-landscape);
+}
+
+.section-landscape .tableWrapper table {
+  table-layout: auto !important;
+  width: 100% !important;
+}
+
+.section-landscape > * {
+  min-width: var(--czi-landscape-content-width);
+}
