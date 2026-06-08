@@ -2,15 +2,128 @@
 
 /* Table Styles */
 
-.ProseMirror .tableWrapper {
-  overflow-x: auto;
+.ProseMirror .czi-table-control {
+  position: relative;
 }
-.ProseMirror .tableWrapper::-webkit-scrollbar{
+
+.ProseMirror .tableWrapper {
+  box-sizing: border-box;
+  overflow-x: auto;
+  position: relative;
+}
+.ProseMirror .tableWrapper::-webkit-scrollbar {
   height: 12px;
- }
+}
+
+.ProseMirror .czi-table-hover-menu {
+  align-items: center;
+  background: #fff;
+  border: 1px solid rgb(0 0 0 / 25%);
+  border-radius: 2px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 18%);
+  color: #1f2937;
+  cursor: pointer;
+  display: flex;
+  height: 26px;
+  justify-content: center;
+  opacity: 0;
+  padding: 0;
+  pointer-events: none;
+  position: absolute;
+  right: -23px;
+  top: 2px;
+  transition: opacity 120ms ease;
+  visibility: hidden;
+  width: 22px;
+  z-index: 25;
+}
+
+.ProseMirror .czi-table-control:hover > .czi-table-hover-menu,
+.ProseMirror .czi-table-control:focus-within > .czi-table-hover-menu,
+.ProseMirror .czi-table-hover-menu:focus,
+.ProseMirror .czi-table-hover-menu.expanded {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.ProseMirror
+  .enhanced-table-figure-body
+  .czi-table-control:hover
+  .czi-table-hover-menu,
+.ProseMirror
+  .enhanced-table-figure-body
+  .czi-table-control:focus-within
+  .czi-table-hover-menu {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.ProseMirror .czi-table-hover-menu:hover,
+.ProseMirror .czi-table-hover-menu:focus {
+  background: #f8fafc;
+  border-color: rgb(0 0 0 / 40%);
+  outline: none;
+}
+
+.ProseMirror .czi-table-hover-menu::before {
+  background:
+    linear-gradient(currentColor 0 0) top / 12px 2px no-repeat,
+    linear-gradient(currentColor 0 0) center / 12px 2px no-repeat,
+    linear-gradient(currentColor 0 0) bottom / 12px 2px no-repeat;
+  content: '';
+  height: 10px;
+  width: 12px;
+}
+
+.ProseMirror .czi-table-hover-menu .czi-icon {
+  display: none;
+}
+
+.czi-table-context-menu {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 3px 12px rgb(0 0 0 / 18%);
+  color: #444;
+  min-width: 210px;
+  overflow: hidden;
+  padding: 2px 0;
+}
+
+.czi-table-context-menu-item {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #eee;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  gap: 8px;
+  min-height: 34px;
+  padding: 7px 12px;
+  text-align: left;
+  width: 100%;
+}
+
+.czi-table-context-menu-item:last-child {
+  border-bottom: 0;
+}
+
+.czi-table-context-menu-item:hover,
+.czi-table-context-menu-item:focus {
+  background: #f6f8fa;
+  outline: none;
+}
+
+.czi-table-context-menu-item .czi-icon {
+  font-size: 18px !important;
+  width: 18px;
+}
+
 .ProseMirror table {
   border: 1px solid var(--czi-table-border-color);
-  border-collapse:collapse;
+  border-collapse: collapse;
   border-spacing: 0;
   border-width: 0 thin thin 0;
   margin: 0;
@@ -32,12 +145,12 @@
   vertical-align: top;
 }
 
-.ProseMirror table[data-cover-page="true"] td,
-.ProseMirror table[data-cover-page="true"] th {
+.ProseMirror table[data-cover-page='true'] td,
+.ProseMirror table[data-cover-page='true'] th {
   padding: 4px;
 }
 
-table[data-cover-page="true"] .molm-czi-image-view.align-center {
+table[data-cover-page='true'] .molm-czi-image-view.align-center {
   margin: 0 0 -18px;
 }
 
@@ -100,7 +213,7 @@ Rezie cursor position issue fixed. */
 }
 
 .czi-table-details-header {
-   display: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
@@ -145,7 +258,6 @@ Rezie cursor position issue fixed. */
   background: #e5e7eb;
   margin: 4px 0;
 }
-
 
 @media only print {
   .ProseMirror table {
