@@ -54,9 +54,9 @@ class LandscapeCommand extends UICommand {
       return this._unwrapLandscape(state, dispatch, landscapeDepth);
     }
 
-    const tableDepth = this._findSharedTableDepth($from, $to);
-    if (tableDepth > -1) {
-      return this._wrapTableInLandscape(state, dispatch, type, tableDepth);
+    const wrapperDepth = this._findSharedLandscapeWrapperDepth($from, $to);
+    if (wrapperDepth > -1) {
+      return this._wrapNodeInLandscape(state, dispatch, type, wrapperDepth);
     }
 
     if (state.selection.empty) {
@@ -90,26 +90,26 @@ class LandscapeCommand extends UICommand {
     return true;
   }
 
-  _wrapTableInLandscape(
+  _wrapNodeInLandscape(
     state: EditorState,
     dispatch: ?(tr: Transform) => void,
     type: Object,
-    tableDepth: number
+    nodeDepth: number
   ): boolean {
     const { $from } = state.selection;
-    const tableNode = $from.node(tableDepth);
-    const parent = $from.node(tableDepth - 1);
-    const index = $from.index(tableDepth - 1);
+    const node = $from.node(nodeDepth);
+    const parent = $from.node(nodeDepth - 1);
+    const index = $from.index(nodeDepth - 1);
 
     if (!parent.canReplaceWith(index, index + 1, type)) {
       return false;
     }
 
     if (dispatch) {
-      const tableStart = $from.before(tableDepth);
-      const tableEnd = $from.after(tableDepth);
-      const landscapeNode = type.create(null, tableNode.copy(tableNode.content));
-      let tr = state.tr.replaceRangeWith(tableStart, tableEnd, landscapeNode);
+      const nodeStart = $from.before(nodeDepth);
+      const nodeEnd = $from.after(nodeDepth);
+      const landscapeNode = type.create(null, node.copy(node.content));
+      let tr = state.tr.replaceRangeWith(nodeStart, nodeEnd, landscapeNode);
       tr = this._setNearTextSelection(tr, tr.mapping.map($from.pos));
       dispatch(tr.scrollIntoView());
     }
@@ -161,6 +161,32 @@ class LandscapeCommand extends UICommand {
         return depth;
       }
     }
+    return -1;
+  }
+
+  _findSharedLandscapeWrapperDepth($from: Object, $to: Object): number {
+    const enhancedFigureDepth = this._findSharedEnhancedFigureDepth($from, $to);
+    if (enhancedFigureDepth > -1) {
+      return enhancedFigureDepth;
+    }
+
+    return this._findSharedTableDepth($from, $to);
+  }
+
+  _findSharedEnhancedFigureDepth($from: Object, $to: Object): number {
+    for (let depth = $from.depth; depth > 0; depth--) {
+      const node = $from.node(depth);
+      if (node.type.name !== 'enhanced_table_figure') {
+        continue;
+      }
+
+      const figureStart = $from.before(depth);
+      const figureEnd = $from.after(depth);
+      if ($to.pos >= figureStart && $to.pos <= figureEnd) {
+        return depth;
+      }
+    }
+
     return -1;
   }
 
