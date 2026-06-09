@@ -6,6 +6,8 @@ import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import TableContextMenu from './TableContextMenu.js';
 import toCSSLength from './toCSSLength.js';
 
+const TITLE_STYLE_NAMES = new Set(['chFigureTitle', 'chTableTitle']);
+
 // A custom table view that renders the margin-left style.
 export default class TableNodeView extends TableView {
   _menu = null;
@@ -253,10 +255,11 @@ export default class TableNodeView extends TableView {
       return;
     }
 
+    const posAfterTable = tableInfo.pos + tableInfo.node.nodeSize;
     const insertPos =
       placement === 'above'
-        ? tableInfo.pos
-        : tableInfo.pos + tableInfo.node.nodeSize;
+        ? this._getTitleAdjustedPositionBefore(tableInfo.pos - 1, tableInfo.pos)
+        : this._getTitleAdjustedPositionAfter(posAfterTable);
     const paragraphNode = paragraph.createAndFill();
     if (!paragraphNode) {
       return;
@@ -266,6 +269,52 @@ export default class TableNodeView extends TableView {
     const selection = TextSelection.create(tr.doc, insertPos + 1);
     view.dispatch(tr.setSelection(selection).scrollIntoView());
     view.focus();
+  }
+
+  _getTitleAdjustedPositionBefore(
+    resolvePos: number,
+    fallbackPos: number
+  ): number {
+    const view = this._view;
+    const docSize = view?.state.doc.content.size;
+    if (
+      !view ||
+      typeof docSize !== 'number' ||
+      resolvePos < 0 ||
+      resolvePos > docSize
+    ) {
+      return fallbackPos;
+    }
+
+    const $pos = view.state.doc.resolve(resolvePos);
+    const styleName = $pos.parent?.attrs?.styleName;
+    if (!TITLE_STYLE_NAMES.has(styleName)) {
+      return fallbackPos;
+    }
+
+    return resolvePos - ($pos.parentOffset + $pos.depth);
+  }
+
+  _getTitleAdjustedPositionAfter(resolvePos: number): number {
+    const view = this._view;
+    const docSize = view?.state.doc.content.size;
+    if (
+      !view ||
+      typeof docSize !== 'number' ||
+      resolvePos < 0 ||
+      resolvePos > docSize
+    ) {
+      return resolvePos;
+    }
+
+    const $pos = view.state.doc.resolve(resolvePos);
+    const nodeAfter = $pos.nodeAfter;
+    const styleName = nodeAfter?.attrs?.styleName;
+    if (!TITLE_STYLE_NAMES.has(styleName)) {
+      return resolvePos;
+    }
+
+    return resolvePos + (nodeAfter?.nodeSize || 0);
   }
 
   _deleteTable(): void {
