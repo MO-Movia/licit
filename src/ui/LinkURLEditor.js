@@ -69,7 +69,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
       }
 
       return TOCselectedNode_.some(
-        (item) => item?.content[0]?.text?.trim() !== ''
+        (item) => item?.content?.[0]?.text?.trim() !== ''
       );
     };
     const isValid = isTOCValid();
@@ -146,7 +146,7 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                 <select
                   defaultValue={
                     TOCselectedNode_.some(
-                      (res) => res?.content[0]?.text === url
+                      (res) => res?.content?.[0]?.text === url
                     )
                       ? url
                       : null
@@ -156,21 +156,21 @@ class LinkURLEditor extends React.PureComponent<any, any> {
                   size="3"
                 >
                   {TOCselectedNode_?.filter(
-                    (res) => res?.content[0]?.text?.trim() !== ''
+                    (res) => res?.content?.[0]?.text?.trim() !== ''
                   ).map((res, index) => (
                     <option
-                      data-tooltip-content={res?.content[0]?.text}
+                      data-tooltip-content={res?.content?.[0]?.text}
                       data-tooltip-id="select-toc-tooltip"
                       key={index}
                       onClick={() => {
                         this.handleOptionChange(
-                          res?.content[0]?.text,
+                          res?.content?.[0]?.text,
                           res?.attrs.selectionId
                         );
                       }}
-                      value={res?.content[0]?.text}
+                      value={res?.content?.[0]?.text}
                     >
-                      {res?.content[0]?.text}
+                      {res?.content?.[0]?.text}
                     </option>
                   ))}
                 </select>
