@@ -59,6 +59,19 @@
   visibility: hidden;
 }
 
+.export-pdf-mode .ProseMirror .czi-table-hover-menu,
+.export-pdf-mode .ProseMirror .czi-table-control:hover > .czi-table-hover-menu,
+.export-pdf-mode
+  .ProseMirror
+  .czi-table-control:focus-within
+  > .czi-table-hover-menu,
+.export-pdf-mode .ProseMirror .czi-table-hover-menu:focus,
+.export-pdf-mode .ProseMirror .czi-table-hover-menu.expanded {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
 .ProseMirror .czi-table-hover-menu:hover,
 .ProseMirror .czi-table-hover-menu:focus {
   background: #f8fafc;
