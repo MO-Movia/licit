@@ -275,6 +275,16 @@ Ordered list 1) formatting  fix */
   width: 24pt;
 }
 
+.ProseMirror ol[type='upper_alpha_bracket'][data-indent='0'] > li > p::before,
+.ProseMirror ol[type='lower_alpha_bracket'][data-indent='0'] > li > p::before,
+.ProseMirror
+  ol[type='lower_alpha_bracket_closed'][data-indent='0']
+  > li
+  > p::before {
+  overflow: visible;
+  white-space: nowrap;
+}
+
 .ProseMirror ol[type='lower_alpha_bracket'][data-indent='0'] > li > p::before {
   box-sizing: border-box;
   color: var(--czi-list-style-color);
