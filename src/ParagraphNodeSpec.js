@@ -19,6 +19,55 @@ export const EMPTY_CSS_VALUE = cssVal;
 
 const ALIGN_PATTERN = /(left|right|center|justify)/;
 
+function getInlineStyleProperty(
+  dom: HTMLElement,
+  propertyName: string
+): ?string {
+  const inlineStyle = dom.getAttribute('style') || '';
+  if (!inlineStyle) {
+    return null;
+  }
+
+  const escapedProperty = propertyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regexp = new RegExp(`(?:^|;)\\s*${escapedProperty}\\s*:\\s*([^;]+)`, 'i');
+  const match = inlineStyle.match(regexp);
+  if (!match || !match[1]) {
+    return null;
+  }
+
+  const value = match[1].trim();
+  return value || null;
+}
+
+function resolveMarginValue(dom: HTMLElement, cssProperty: string): ?string {
+  const fromStyleMap = {
+    'margin-top': dom.style.marginTop,
+    'margin-bottom': dom.style.marginBottom,
+    'margin-left': dom.style.marginLeft,
+    'margin-right': dom.style.marginRight,
+  };
+  const fromStyle = fromStyleMap[cssProperty] || '';
+
+  const attrNameMap = {
+    'margin-top': 'marginTop',
+    'margin-bottom': 'marginBottom',
+    'margin-left': 'marginLeft',
+    'margin-right': 'marginRight',
+  };
+  const attrName = attrNameMap[cssProperty] || cssProperty;
+
+  if (fromStyle) {
+    return fromStyle;
+  }
+
+  return (
+    getInlineStyleProperty(dom, cssProperty) ||
+    dom.getAttribute(cssProperty) ||
+    dom.getAttribute(attrName) ||
+    null
+  );
+}
+
 // https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
 // :: NodeSpec A plain paragraph textblock. Represented in the DOM
 // as a `<p>` element.
@@ -39,7 +88,25 @@ const ParagraphNodeSpec: NodeSpec = {
     lineSpacing: {
       default: null,
     },
+    marginTop: {
+      default: null,
+    },
+    marginBottom: {
+      default: null,
+    },
+    marginLeft: {
+      default: null,
+    },
+    marginRight: {
+      default: null,
+    },
     paddingBottom: {
+      default: null,
+    },
+    paddingLeft: {
+      default: null,
+    },
+    paddingRight: {
       default: null,
     },
     paddingTop: {
@@ -95,7 +162,15 @@ const ParagraphNodeSpec: NodeSpec = {
 };
 
 function getAttrs(dom: HTMLElement): Object {
-  const { lineHeight, textAlign, marginLeft, paddingTop, paddingBottom } =
+  const {
+    lineHeight,
+    textAlign,
+    marginLeft,
+    paddingTop,
+    paddingBottom,
+    paddingLeft,
+    paddingRight,
+  } =
     dom.style;
 
   let align = dom.getAttribute('align') || textAlign || 'left';
@@ -110,6 +185,10 @@ function getAttrs(dom: HTMLElement): Object {
   indent = indent || MIN_INDENT_LEVEL;
 
   const lineSpacing = lineHeight ? toCSSLineSpacing(lineHeight) : null;
+  const marginTop = resolveMarginValue(dom, 'margin-top');
+  const marginBottom = resolveMarginValue(dom, 'margin-bottom');
+  const marginLeftValue = resolveMarginValue(dom, 'margin-left');
+  const marginRight = resolveMarginValue(dom, 'margin-right');
 
   const id = dom.getAttribute('id') || '';
   const reset = dom.getAttribute('reset') || '';
@@ -132,8 +211,14 @@ function getAttrs(dom: HTMLElement): Object {
     align,
     indent,
     lineSpacing,
+    marginTop,
+    marginBottom,
+    marginLeft: marginLeftValue,
+    marginRight,
     paddingTop,
     paddingBottom,
+    paddingLeft,
+    paddingRight,
     reset,
     id,
     overriddenAlign,
@@ -154,12 +239,29 @@ function getStyle(attrs: Object) {
   return getStyleEx(
     attrs.align,
     attrs.lineSpacing,
+    attrs.marginTop,
+    attrs.marginBottom,
+    attrs.marginLeft,
+    attrs.marginRight,
     attrs.paddingTop,
-    attrs.paddingBottom
+    attrs.paddingBottom,
+    attrs.paddingLeft,
+    attrs.paddingRight
   );
 }
 
-function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
+function getStyleEx(
+  align,
+  lineSpacing,
+  marginTop,
+  marginBottom,
+  marginLeft,
+  marginRight,
+  paddingTop,
+  paddingBottom,
+  paddingLeft,
+  paddingRight
+) {
   let style = '';
   if (align && align !== 'left') {
     style += `text-align: ${align};`;
@@ -174,11 +276,34 @@ function getStyleEx(align, lineSpacing, paddingTop, paddingBottom) {
       `--czi-content-line-height: ${cssLineSpacing};`;
   }
 
+  if (marginTop !== null && marginTop !== undefined && marginTop !== '') {
+    style += `margin-top: ${marginTop};`;
+  }
+  if (
+    marginBottom !== null &&
+    marginBottom !== undefined &&
+    marginBottom !== ''
+  ) {
+    style += `margin-bottom: ${marginBottom};`;
+  }
+  if (marginLeft !== null && marginLeft !== undefined && marginLeft !== '') {
+    style += `margin-left: ${marginLeft};`;
+  }
+  if (marginRight !== null && marginRight !== undefined && marginRight !== '') {
+    style += `margin-right: ${marginRight};`;
+  }
+
   if (paddingTop && !EMPTY_CSS_VALUE.has(paddingTop)) {
     style += `padding-top: ${paddingTop};`;
   }
   if (paddingBottom && !EMPTY_CSS_VALUE.has(paddingBottom)) {
     style += `padding-bottom: ${paddingBottom};`;
+  }
+  if (paddingLeft && !EMPTY_CSS_VALUE.has(paddingLeft)) {
+    style += `padding-left: ${paddingLeft};`;
+  }
+  if (paddingRight && !EMPTY_CSS_VALUE.has(paddingRight)) {
+    style += `padding-right: ${paddingRight};`;
   }
   return { style };
 }

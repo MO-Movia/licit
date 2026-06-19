@@ -68,7 +68,7 @@ function insertTabSpace(
 function paragraphHasSpacerMark(node) {
   let found = false;
   node.descendants((child) => {
-    if (child.isText && child.marks.some(m => m.type.name === 'mark-hanging-indent')) {
+    if (child.isText && child.marks.some(m => m.type.name === 'mark-hanging-indent' && m.attrs?.prefix === 1)) {
       found = true;
       return false; // stop traversal
     }

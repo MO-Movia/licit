@@ -11,6 +11,58 @@ function appendStyle(attrs: Object, cssText: string): void {
   attrs.style = (attrs.style || '') + `;${cssText};`;
 }
 
+function appendStyleForValue(attrs: Object, cssProperty: string, value: any): void {
+  if (value !== null && value !== undefined && value !== '') {
+    appendStyle(attrs, `${cssProperty}: ${String(value)}`);
+  }
+}
+
+function toDataAttributeName(name: string): string {
+  return `data-${name.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+}
+
+function getCellAttributeValue(
+  dom: HTMLElement,
+  attrName: string,
+  styleName: string,
+  aliases?: Array<string> = []
+): ?string {
+  const attrNames = [attrName, toDataAttributeName(attrName), ...aliases];
+  for (let ii = 0; ii < attrNames.length; ii++) {
+    const attrValue = dom.getAttribute(attrNames[ii]);
+    if (attrValue !== null && attrValue !== '') {
+      return attrValue;
+    }
+  }
+
+  const styleValue = dom.style[styleName];
+  return styleValue || null;
+}
+
+function getLengthCellAttribute(
+  dom: HTMLElement,
+  attrName: string,
+  styleName: string,
+  aliases?: Array<string> = []
+): ?string {
+  return toCSSLength(getCellAttributeValue(dom, attrName, styleName, aliases));
+}
+
+function setLengthDOMAttr(cssProperty: string): Function {
+  return (value, attrs) => {
+    const cssValue = toCSSLength(value);
+    if (cssValue) {
+      appendStyle(attrs, `${cssProperty}: ${cssValue}`);
+    }
+  };
+}
+
+function setStyleDOMAttr(cssProperty: string): Function {
+  return (value, attrs) => {
+    appendStyleForValue(attrs, cssProperty, value);
+  };
+}
+
 // https://github.com/ProseMirror/prosemirror-tables/blob/master/demo.js
 const TableNodesSpecs = tableNodes({
   tableGroup: 'block',
@@ -106,12 +158,14 @@ const TableNodesSpecs = tableNodes({
     cellWidth: {
       default: null,
       getFromDOM(dom) {
-        return dom.style.width || dom.getAttribute('width') || null;
+        return getLengthCellAttribute(dom, 'cellWidth', 'width', ['width']);
       },
       setDOMAttr(value, attrs) {
         const cssValue = toCSSLength(value);
         if (cssValue) {
+          attrs.cellWidth = cssValue;
           appendStyle(attrs, `width: ${cssValue}`);
+          appendStyle(attrs, `min-width: ${cssValue}`);
         }
       },
     },
@@ -135,48 +189,188 @@ const TableNodesSpecs = tableNodes({
     fontSize: {
       default: null,
       getFromDOM(dom) {
-        return dom.style.fontSize || null;
+        return getLengthCellAttribute(dom, 'fontSize', 'fontSize');
+      },
+      setDOMAttr: setLengthDOMAttr('font-size'),
+    },
+    fontName: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(dom, 'fontName', 'fontFamily');
       },
       setDOMAttr(value, attrs) {
-        const cssValue = toCSSLength(value);
-        if (cssValue) {
-          appendStyle(attrs, `font-size: ${cssValue}`);
-        }
+        appendStyleForValue(attrs, 'font-family', value);
       },
     },
     letterSpacing: {
       default: null,
       getFromDOM(dom) {
-        return dom.style.letterSpacing || null;
+        return getLengthCellAttribute(dom, 'letterSpacing', 'letterSpacing');
       },
-      setDOMAttr(value, attrs) {
-        const cssValue = toCSSLength(value);
-        if (cssValue) {
-          appendStyle(attrs, `letter-spacing: ${cssValue}`);
-        }
-      },
+      setDOMAttr: setLengthDOMAttr('letter-spacing'),
     },
     marginTop: {
       default: null,
       getFromDOM(dom) {
-        return dom.style.marginTop || null;
+        return getLengthCellAttribute(dom, 'marginTop', 'marginTop');
       },
-      setDOMAttr(value, attrs) {
-        const cssValue = toCSSLength(value);
-        if (cssValue) {
-          appendStyle(attrs, `margin-top: ${cssValue}`);
-        }
-      },
+      setDOMAttr: setLengthDOMAttr('margin-top'),
     },
     marginBottom: {
       default: null,
       getFromDOM(dom) {
-        return dom.style.marginBottom || null;
+        return getLengthCellAttribute(dom, 'marginBottom', 'marginBottom');
+      },
+      setDOMAttr: setLengthDOMAttr('margin-bottom'),
+    },
+    paddingTop: {
+      default: null,
+      getFromDOM(dom) {
+        return getLengthCellAttribute(dom, 'paddingTop', 'paddingTop', [
+          'PaddingTop',
+        ]);
+      },
+      setDOMAttr: setLengthDOMAttr('padding-top'),
+    },
+    paddingBottom: {
+      default: null,
+      getFromDOM(dom) {
+        return getLengthCellAttribute(dom, 'paddingBottom', 'paddingBottom');
+      },
+      setDOMAttr: setLengthDOMAttr('padding-bottom'),
+    },
+    lineHeight: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(dom, 'lineHeight', 'lineHeight');
+      },
+      setDOMAttr: setStyleDOMAttr('line-height'),
+    },
+    borderWidth: {
+      default: null,
+      getFromDOM(dom) {
+        return getLengthCellAttribute(dom, 'borderWidth', 'borderWidth');
+      },
+      setDOMAttr: setLengthDOMAttr('border-width'),
+    },
+    borderLeftWidth: {
+      default: null,
+      getFromDOM(dom) {
+        return getLengthCellAttribute(dom, 'borderLeftWidth', 'borderLeftWidth');
+      },
+      setDOMAttr: setLengthDOMAttr('border-left-width'),
+    },
+    borderRightWidth: {
+      default: null,
+      getFromDOM(dom) {
+        return getLengthCellAttribute(dom, 'borderRightWidth', 'borderRightWidth');
+      },
+      setDOMAttr: setLengthDOMAttr('border-right-width'),
+    },
+    borderTopWidth: {
+      default: null,
+      getFromDOM(dom) {
+        return getLengthCellAttribute(dom, 'borderTopWidth', 'borderTopWidth');
+      },
+      setDOMAttr: setLengthDOMAttr('border-top-width'),
+    },
+    borderBottomWidth: {
+      default: null,
+      getFromDOM(dom) {
+        return getLengthCellAttribute(
+          dom,
+          'borderBottomWidth',
+          'borderBottomWidth'
+        );
+      },
+      setDOMAttr: setLengthDOMAttr('border-bottom-width'),
+    },
+    borderLeftColor: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(dom, 'borderLeftColor', 'borderLeftColor');
+      },
+      setDOMAttr: setStyleDOMAttr('border-left-color'),
+    },
+    borderRightColor: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(
+          dom,
+          'borderRightColor',
+          'borderRightColor'
+        );
+      },
+      setDOMAttr: setStyleDOMAttr('border-right-color'),
+    },
+    borderTopColor: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(dom, 'borderTopColor', 'borderTopColor');
+      },
+      setDOMAttr: setStyleDOMAttr('border-top-color'),
+    },
+    borderBottomColor: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(
+          dom,
+          'borderBottomColor',
+          'borderBottomColor'
+        );
+      },
+      setDOMAttr: setStyleDOMAttr('border-bottom-color'),
+    },
+    borderLeftStyle: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(dom, 'borderLeftStyle', 'borderLeftStyle');
+      },
+      setDOMAttr: setStyleDOMAttr('border-left-style'),
+    },
+    borderRightStyle: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(
+          dom,
+          'borderRightStyle',
+          'borderRightStyle'
+        );
+      },
+      setDOMAttr: setStyleDOMAttr('border-right-style'),
+    },
+    borderTopStyle: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(dom, 'borderTopStyle', 'borderTopStyle');
+      },
+      setDOMAttr: setStyleDOMAttr('border-top-style'),
+    },
+    borderBottomStyle: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(
+          dom,
+          'borderBottomStyle',
+          'borderBottomStyle'
+        );
+      },
+      setDOMAttr: setStyleDOMAttr('border-bottom-style'),
+    },
+    verticalAlign: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(dom, 'verticalAlign', 'verticalAlign', [
+          'valign',
+          'vAlign',
+        ]);
       },
       setDOMAttr(value, attrs) {
-        const cssValue = toCSSLength(value);
-        if (cssValue) {
-          appendStyle(attrs, `margin-bottom: ${cssValue}`);
+        if (value !== null && value !== undefined && value !== '') {
+          const verticalAlign = String(value);
+          attrs.verticalAlign = verticalAlign;
+          attrs.valign = verticalAlign;
+          appendStyle(attrs, `vertical-align: ${verticalAlign}`);
         }
       },
     },
