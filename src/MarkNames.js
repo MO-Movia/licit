@@ -18,3 +18,4 @@ export const MARK_UNDERLINE = 'underline';
 export const MARK_SPACER = 'spacer';
 export const MARK_OVERRIDE = 'override';
 export const MARK_HANGING_INDENT = 'mark-hanging-indent';
+export const MARK_LETTER_SPACING = 'mark-letter-spacing';

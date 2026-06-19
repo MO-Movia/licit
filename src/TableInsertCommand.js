@@ -9,7 +9,8 @@ import { atAnchorRight, createPopUp } from '@modusoperandi/licit-ui-commands';
 import TableGridSizeEditor from './ui/TableGridSizeEditor.js';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 import {
-  PARAGRAPH
+  PARAGRAPH,
+  TABLE
 } from './NodeNames.js';
 import type {
   TableGridSizeEditorValue
@@ -107,11 +108,23 @@ function insertParagraph(state, tr) {
   if (from !== to) {
     return tr;
   }
+
+  const $head = tr.selection.$head;
+  let tableDepth = -1;
+  for (let depth = $head.depth; depth > 0; depth--) {
+    if ($head.node(depth).type.name === TABLE) {
+      tableDepth = depth;
+      break;
+    }
+  }
+
+  if (tableDepth < 0) {
+    return tr;
+  }
+
   const paragraphNode = paragraph.create({}, textNode, null);
-  tr = tr.insert(
-    from + tr.selection.$head.node(1).nodeSize - 4,
-    Fragment.from(paragraphNode)
-  );
+  const insertPos = $head.after(tableDepth);
+  tr = tr.insert(insertPos, Fragment.from(paragraphNode));
   return tr;
 }
 export default TableInsertCommand;

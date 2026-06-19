@@ -10,6 +10,7 @@ export const HARD_BREAK = 'hard_break';
 export const HEADING = 'heading';
 export const HORIZONTAL_RULE = 'horizontal_rule';
 export const IMAGE = 'image';
+export const LANDSCAPE_SECTION = 'landscape_section';
 export const LINK = 'link';
 export const LIST_ITEM = 'list_item';
 export const MATH = 'math';
