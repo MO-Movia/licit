@@ -59,9 +59,6 @@ const {
   TABLE_INSERT_TABLE,
   TABLE_MERGE_CELLS,
   TABLE_SPLIT_ROW,
-  TABLE_TOGGLE_HEADER_CELL,
-  TABLE_TOGGLE_HEADER_COLUMN,
-  TABLE_TOGGLE_HEADER_ROW,
   TEXT_ALIGN_CENTER,
   TEXT_ALIGN_JUSTIFY,
   TEXT_ALIGN_LEFT,
@@ -95,12 +92,6 @@ export const TABLE_COMMANDS_GROUP = [
   {
     'Merge Cells': TABLE_MERGE_CELLS,
     'Split Row': TABLE_SPLIT_ROW,
-  },
-  // Disable these commands cause user rarely use them.
-  {
-    'Toggle Header Column': TABLE_TOGGLE_HEADER_COLUMN,
-    'Toggle Header Row': TABLE_TOGGLE_HEADER_ROW,
-    'Toggle Header Cells': TABLE_TOGGLE_HEADER_CELL,
   },
   {
     'Delete Table': TABLE_DELETE_TABLE,
