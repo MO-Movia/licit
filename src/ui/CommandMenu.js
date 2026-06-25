@@ -55,9 +55,16 @@ class CommandMenu extends React.PureComponent<any, any> {
     return <CustomMenu>{children}</CustomMenu>;
   }
 
+  componentWillUnmount(): void {
+    this._activeCommand?.cancel();
+    this._activeCommand = null;
+  }
+
   _onUIEnter = (command: UICommand, event: SyntheticEvent<>): void => {
     if (command.shouldRespondToUIEvent(event)) {
-      this._activeCommand && this._activeCommand.cancel();
+      if (this._activeCommand && this._activeCommand !== command) {
+        this._activeCommand.cancel();
+      }
       this._activeCommand = command;
       this._execute(command, event);
     }
