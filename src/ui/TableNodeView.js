@@ -53,6 +53,19 @@ export default class TableNodeView extends TableView {
     this.table.style.marginLeft = marginLeft ? `${marginLeft}px` : '';
     this.table.style.height = toCSSLength(node.attrs?.tableheight);
 
+    const wrapper = this.table?.parentElement;
+    if (wrapper && this.table) {
+      const computedStyle = globalThis.getComputedStyle(this.table);
+      const borderWidth = (Number.parseFloat(computedStyle.borderLeftWidth) || 0) + (Number.parseFloat(computedStyle.borderRightWidth) || 0);
+      const availableWidth = Math.max(0, wrapper.getBoundingClientRect().width - borderWidth);
+      if (availableWidth > 0) {
+        const currentWidth = Number.parseFloat(this.table.style.width);
+        if (!Number.isNaN(currentWidth) && currentWidth > availableWidth) {
+          this.table.style.width = `${Math.max(0, availableWidth)}px`;
+        }
+      }
+    }
+
     const noOfColumns = node.attrs?.noOfColumns;
     if (typeof noOfColumns === 'number' && noOfColumns > 0) {
       this.table.setAttribute('data-no-of-columns', String(noOfColumns));

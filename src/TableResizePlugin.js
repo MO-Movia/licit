@@ -70,6 +70,27 @@ const CELL_MIN_WIDTH = 30;
 const HANDLE_WIDTH = 5;
 const HANDLE_RIGHT_WIDTH = 20;
 
+function getBorderWidthContribution(element) {
+  if (!element) {
+    return 0;
+  }
+
+  const computedStyle = globalThis.getComputedStyle(element);
+  const left = Number.parseFloat(computedStyle.borderLeftWidth) || 0;
+  const right = Number.parseFloat(computedStyle.borderRightWidth) || 0;
+  return left + right;
+}
+
+function getAvailableTableWidth(tableElement, tableWrapper) {
+  const wrapperWidth = tableWrapper?.getBoundingClientRect().width || 0;
+  const borderWidth = getBorderWidthContribution(tableElement);
+  if (!wrapperWidth) {
+    return 0;
+  }
+
+  return Math.max(0, wrapperWidth - borderWidth);
+}
+
 let cancelDrag: ?Function = null;
 let isEnabled = true;
 
@@ -392,7 +413,8 @@ function calculateDraggingInfo(
     : [];
   const tableWrapperRect = tableWrapper.getBoundingClientRect();
   const tableRect = tableEl.getBoundingClientRect();
-  const defaultColumnWidth = tableWrapperRect.width / colEls.length;
+  const availableTableWidth = getAvailableTableWidth(tableEl, tableWrapper);
+  const defaultColumnWidth = availableTableWidth / Math.max(1, colEls.length);
   const startX = event.clientX;
   const offsetLeft = startX - tableRect.left;
 
@@ -417,12 +439,9 @@ function calculateDraggingInfo(
       (cssWidth && parseFloat(cssWidth)) || defaultColumnWidth
     );
 
-    if (tableWidth + colWidth > tableWrapperRect.width) {
+    if (tableWidth + colWidth > availableTableWidth) {
       // column is too wide, make it fit.
-      // colWidth -= tableWrapperRect.width - (tableWidth + colWidth);
-      // [FS] IRAD-993 2020-06-24
-      // Fix:Table exceeds the canvas
-      const tosub = Math.abs(tableWrapperRect.width - (tableWidth + colWidth));
+      const tosub = Math.abs(availableTableWidth - (tableWidth + colWidth));
       colWidth = colWidth - tosub;
     }
 
