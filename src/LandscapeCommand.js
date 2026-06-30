@@ -6,7 +6,7 @@ import { Transform } from 'prosemirror-transform';
 import { EditorView } from 'prosemirror-view';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
 
-import { LANDSCAPE_SECTION } from './NodeNames.js';
+import { BULLET_LIST, LANDSCAPE_SECTION, ORDERED_LIST } from './NodeNames.js';
 
 class LandscapeCommand extends UICommand {
   isEnabled = (state: EditorState): boolean => {
@@ -57,6 +57,11 @@ class LandscapeCommand extends UICommand {
     const wrapperDepth = this._findSharedLandscapeWrapperDepth($from, $to);
     if (wrapperDepth > -1) {
       return this._wrapNodeInLandscape(state, dispatch, type, wrapperDepth);
+    }
+
+    const listDepth = this._findListDepth($from);
+    if (listDepth > -1) {
+      return this._wrapNodeInLandscape(state, dispatch, type, listDepth);
     }
 
     if (state.selection.empty) {
@@ -209,6 +214,20 @@ class LandscapeCommand extends UICommand {
 
   _isTableNode(type: Object): boolean {
     return type.name === 'table' || type.spec.tableRole === 'table';
+  }
+
+  _findListDepth($from: Object): number {
+    let listDepth = -1;
+    for (let depth = $from.depth; depth > 0; depth--) {
+      if (this._isListNode($from.node(depth).type)) {
+        listDepth = depth;
+      }
+    }
+    return listDepth;
+  }
+
+  _isListNode(type: Object): boolean {
+    return type.name === ORDERED_LIST || type.name === BULLET_LIST;
   }
 
   _setNearTextSelection(tr: Transform, pos: number): Transform {
