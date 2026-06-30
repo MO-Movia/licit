@@ -50,9 +50,6 @@ const {
   splitCell,
   // tableEditing,
   // tableNodes,
-  toggleHeaderCell,
-  toggleHeaderColumn,
-  toggleHeaderRow,
 } = ProsemirrorTables;
 
 const {
@@ -113,9 +110,6 @@ export const TABLE_MERGE_CELLS = new TableMergeCellsCommand();
 export const TABLE_MOVE_TO_NEXT_CELL = createCommand(goToNextCell(1));
 export const TABLE_MOVE_TO_PREV_CELL = createCommand(goToNextCell(-1));
 export const TABLE_SPLIT_ROW = createCommand(splitCell);
-export const TABLE_TOGGLE_HEADER_CELL = createCommand(toggleHeaderCell);
-export const TABLE_TOGGLE_HEADER_COLUMN = createCommand(toggleHeaderColumn);
-export const TABLE_TOGGLE_HEADER_ROW = createCommand(toggleHeaderRow);
 export const TEXT_ALIGN_CENTER = new TextAlignCommand('center');
 export const TEXT_ALIGN_JUSTIFY = new TextAlignCommand('justify');
 export const TEXT_ALIGN_LEFT = new TextAlignCommand('left');
