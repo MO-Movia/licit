@@ -5,12 +5,18 @@ import { TableView } from 'prosemirror-tables';
 import { createPopUp } from '@modusoperandi/licit-ui-commands';
 import TableContextMenu from './TableContextMenu.js';
 import toCSSLength from './toCSSLength.js';
+import {
+  hasTableStylePlugin,
+  openTableStylePicker,
+  TABLE_STYLE_NAME_ATTRIBUTE,
+} from '../TableStylePlugin.js';
 
 const TITLE_STYLE_NAMES = new Set(['chFigureTitle', 'chTableTitle']);
 
 // A custom table view that renders the margin-left style.
 export default class TableNodeView extends TableView {
   _menu = null;
+  _stylePicker = null;
   _menuButton = null;
   _menuId = `czi-table-context-menu-${String(Math.random()).slice(2)}`;
   _tablePos = null;
@@ -75,6 +81,13 @@ export default class TableNodeView extends TableView {
       this.table.setAttribute('data-cover-page', 'true');
     } else {
       this.table.removeAttribute('data-cover-page');
+    }
+
+    const tableStyleName = node.attrs?.[TABLE_STYLE_NAME_ATTRIBUTE];
+    if (tableStyleName) {
+      this.table.setAttribute('data-table-style-name', tableStyleName);
+    } else {
+      this.table.removeAttribute('data-table-style-name');
     }
   }
 
@@ -165,7 +178,11 @@ export default class TableNodeView extends TableView {
     button.classList.add('expanded');
     this._menu = createPopUp(
       TableContextMenu,
-      { onAction: this._onMenuAction },
+      {
+        hideApplyStyle:
+          this._isVignette() || !hasTableStylePlugin(view.state),
+        onAction: this._onMenuAction,
+      },
       {
         anchor: button,
         autoDismiss: false,
@@ -178,9 +195,12 @@ export default class TableNodeView extends TableView {
 
   _closeMenu = (): void => {
     const menu = this._menu;
+    const stylePicker = this._stylePicker;
     this._menu = null;
+    this._stylePicker = null;
     this._removeOutsideClickHandler();
     this._menuButton?.classList.remove('expanded');
+    stylePicker?.close();
     menu?.close();
   };
 
@@ -210,6 +230,10 @@ export default class TableNodeView extends TableView {
       return;
     }
 
+    if (this._stylePicker) {
+      return;
+    }
+
     const menuRoot = document.getElementById(this._menuId);
     if (
       this._menuButton?.contains(target) ||
@@ -221,9 +245,16 @@ export default class TableNodeView extends TableView {
     this._closeMenu();
   };
 
-  _onMenuAction = (action: string): void => {
-    this._closeMenu();
+  _onMenuAction = (action: string, anchor: HTMLElement): void => {
+    if (action === 'apply-style') {
+      if (!this._isVignette() && this._openStylePicker(anchor)) {
+        return;
+      }
+      this._closeMenu();
+      return;
+    }
 
+    this._closeMenu();
     if (action === 'insert-above') {
       this._insertParagraph('above');
     } else if (action === 'insert-below') {
@@ -233,7 +264,39 @@ export default class TableNodeView extends TableView {
     }
   };
 
+  _isVignette(): boolean {
+    const vignette = this._getTableInfo()?.node?.attrs?.vignette;
+    return vignette === true || vignette === 'true';
+  }
+
+  _openStylePicker(anchor: HTMLElement): boolean {
+    const view = this._view;
+    if (!view || !anchor) {
+      return false;
+    }
+
+    this._stylePicker?.close();
+    const picker = openTableStylePicker(view, {
+      anchor,
+      getTablePos: () => this._getTableInfo()?.pos ?? null,
+      onClose: () => {
+        this._stylePicker = null;
+        this._closeMenu();
+      },
+      onSelect: () => view.focus(),
+    });
+    if (!picker) {
+      return false;
+    }
+
+    this._stylePicker = picker;
+    return true;
+  }
+
   _getTableInfo(): ?{ pos: number, node: Node } {
+    if (!this._view || typeof this._tablePos !== 'number') {
+      return null;
+    }
 
     const table = this._view.state.doc.nodeAt(this._tablePos);
     if (!table || table.type.spec.tableRole !== 'table') {

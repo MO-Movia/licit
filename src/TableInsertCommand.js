@@ -15,6 +15,10 @@ import {
 import type {
   TableGridSizeEditorValue
 } from './ui/TableGridSizeEditor.js';
+import {
+  applyTableStyle,
+  DEFAULT_TABLE_STYLE_NAME,
+} from './TableStylePlugin.js';
 
 class TableInsertCommand extends UICommand {
   _popUp = null;
@@ -84,8 +88,15 @@ class TableInsertCommand extends UICommand {
       let { tr } = state;
       if (inputs) {
         const { rows, cols } = inputs;
+        const tablePos = selection.from;
         tr = tr.setSelection(selection);
         tr = insertTable(tr, schema, rows, cols);
+        tr = applyTableStyle(
+          state,
+          tr,
+          tablePos,
+          DEFAULT_TABLE_STYLE_NAME
+        );
         tr = insertParagraph(state, tr);
       }
       dispatch(tr);

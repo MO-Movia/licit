@@ -8,3 +8,7 @@ export { default as uuid } from './ui/uuid';
 export { default as Licit, DataType } from './client/Licit.js';
 // export { ImageLike, EditorRuntime } from './Types'; //Flow garbles these types beyond use for now
 export { GET, POST, DELETE, PATCH } from './client/http';
+export {
+  DEFAULT_TABLE_STYLE_NAME,
+  TABLE_STYLE_NAME_ATTRIBUTE,
+} from './TableStylePlugin.js';

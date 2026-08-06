@@ -4,10 +4,11 @@ import * as React from 'react';
 
 import Icon from './Icon.js';
 
-type Action = 'insert-above' | 'insert-below' | 'add-notes' | 'delete';
+type Action = 'insert-above' | 'insert-below' | 'apply-style' | 'delete';
 
 type Props = {
-  onAction: (action: Action) => void,
+  hideApplyStyle?: boolean,
+  onAction: (action: Action, anchor: HTMLElement) => void,
 };
 
 const MENU_ITEMS: Array<{ action: Action, icon: string, label: string }> = [
@@ -21,6 +22,7 @@ const MENU_ITEMS: Array<{ action: Action, icon: string, label: string }> = [
     icon: 'south',
     label: 'Insert Paragraph Below',
   },
+  { action: 'apply-style', icon: 'style', label: 'Apply Style' },
   { action: 'delete', icon: 'delete', label: 'Delete' },
 ];
 
@@ -28,7 +30,9 @@ export default class TableContextMenu extends React.PureComponent<Props> {
   render(): React.Element<any> {
     return (
       <div className="czi-table-context-menu">
-        {MENU_ITEMS.map((item) => (
+        {MENU_ITEMS.filter(
+          (item) => !this.props.hideApplyStyle || item.action !== 'apply-style'
+        ).map((item) => (
           <button
             className="czi-table-context-menu-item"
             key={item.action}
@@ -43,9 +47,9 @@ export default class TableContextMenu extends React.PureComponent<Props> {
     );
   }
 
-  _onClick = (event: SyntheticEvent<>, action: Action): void => {
+  _onClick = (event: SyntheticEvent<HTMLElement>, action: Action): void => {
     event.preventDefault();
     event.stopPropagation();
-    this.props.onAction(action);
+    this.props.onAction(action, event.currentTarget);
   };
 }

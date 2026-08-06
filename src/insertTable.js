@@ -5,6 +5,10 @@ import { TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 
 import { PARAGRAPH, TABLE, TABLE_CELL, TABLE_ROW } from './NodeNames.js';
+import {
+  DEFAULT_TABLE_STYLE_NAME,
+  TABLE_STYLE_NAME_ATTRIBUTE,
+} from './TableStylePlugin.js';
 
 export default function insertTable(
   tr: Transform,
@@ -37,7 +41,9 @@ export default function insertTable(
       // Fix:Extra arrow key required for cell navigation using arrow right/Left
       const cellNode = cell.create(
         undefined,
-        Fragment.fromArray([paragraph.create()])
+        Fragment.fromArray([
+          paragraph.create({ styleName: DEFAULT_TABLE_STYLE_NAME }),
+        ])
       );
       cellNodes.push(cellNode);
     }
@@ -45,7 +51,10 @@ export default function insertTable(
     rowNodes.push(rowNode);
   }
   const tableNode = table.create(
-    { noOfColumns: cols },
+    {
+      noOfColumns: cols,
+      [TABLE_STYLE_NAME_ATTRIBUTE]: DEFAULT_TABLE_STYLE_NAME,
+    },
     Fragment.from(rowNodes)
   );
   tr = tr.insert(from, Fragment.from(tableNode));

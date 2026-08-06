@@ -33,6 +33,7 @@ import {
 } from '@modusoperandi/licit-ui-commands';
 import TextInsertTabSpaceCommand from './TextInsertTabSpaceCommand.js';
 import createCommand from './createCommand.js';
+import { applyStoredTableStyles } from './TableStylePlugin.js';
 
 const {
   addColumnAfter,
@@ -60,6 +61,18 @@ const {
   MARK_SUB,
   MARK_UNDERLINE,
 } = MarkNames;
+
+function createTableStructureCommand(command) {
+  return createCommand((state, dispatch, view) =>
+    command(
+      state,
+      dispatch
+        ? (tr) => dispatch(applyStoredTableStyles(state, tr))
+        : undefined,
+      view
+    )
+  );
+}
 
 // Note that Firefox will, by default, add various kinds of controls to
 // editable tables, even though those don't work in ProseMirror. The only way
@@ -95,10 +108,10 @@ export const STRIKE = new MarkToggleCommand(MARK_STRIKE);
 export const STRONG = new MarkToggleCommand(MARK_STRONG);
 export const SUPER = new MarkToggleCommand(MARK_SUPER);
 export const SUB = new MarkToggleCommand(MARK_SUB);
-export const TABLE_ADD_COLUMN_AFTER = createCommand(addColumnAfter);
-export const TABLE_ADD_COLUMN_BEFORE = createCommand(addColumnBefore);
-export const TABLE_ADD_ROW_AFTER = createCommand(addRowAfter);
-export const TABLE_ADD_ROW_BEFORE = createCommand(addRowBefore);
+export const TABLE_ADD_COLUMN_AFTER = createTableStructureCommand(addColumnAfter);
+export const TABLE_ADD_COLUMN_BEFORE = createTableStructureCommand(addColumnBefore);
+export const TABLE_ADD_ROW_AFTER = createTableStructureCommand(addRowAfter);
+export const TABLE_ADD_ROW_BEFORE = createTableStructureCommand(addRowBefore);
 export const TABLE_BACKGROUND_COLOR = new TableBackgroundColorCommand();
 export const TABLE_BORDER_COLOR = new TableBorderColorCommand();
 export const TABLE_DETAILS = new TableDetailsCommand();
@@ -109,7 +122,7 @@ export const TABLE_INSERT_TABLE = new TableInsertCommand();
 export const TABLE_MERGE_CELLS = new TableMergeCellsCommand();
 export const TABLE_MOVE_TO_NEXT_CELL = createCommand(goToNextCell(1));
 export const TABLE_MOVE_TO_PREV_CELL = createCommand(goToNextCell(-1));
-export const TABLE_SPLIT_ROW = createCommand(splitCell);
+export const TABLE_SPLIT_ROW = createTableStructureCommand(splitCell);
 export const TEXT_ALIGN_CENTER = new TextAlignCommand('center');
 export const TEXT_ALIGN_JUSTIFY = new TextAlignCommand('justify');
 export const TEXT_ALIGN_LEFT = new TextAlignCommand('left');

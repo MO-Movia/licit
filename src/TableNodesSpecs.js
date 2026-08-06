@@ -4,6 +4,10 @@ import toCSSColor from './ui/toCSSColor.js';
 import { toCSSLengthOrNull as toCSSLength } from './ui/toCSSLength.js';
 import { Node } from 'prosemirror-model';
 import { tableNodes } from 'prosemirror-tables';
+import {
+  DEFAULT_TABLE_STYLE_NAME,
+  TABLE_STYLE_NAME_ATTRIBUTE,
+} from './TableStylePlugin.js';
 
 const NO_VISIBLE_BORDER_WIDTH = new Set(['0pt', '0px']);
 
@@ -386,6 +390,7 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
     marginLeft: { default: null },
     dirty: { default: false },
     coverPage: { default: false },
+    [TABLE_STYLE_NAME_ATTRIBUTE]: { default: DEFAULT_TABLE_STYLE_NAME },
   },
   parseDOM: [
     {
@@ -398,7 +403,14 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
           dom.getAttribute('data-no-of-columns') ||
           dom.getAttribute('noOfColumns') ||
           dom.getAttribute('no-of-columns');
-        const attrs = { dirty, coverPage };
+        const tableStyleName =
+          dom.getAttribute('data-table-style-name') ||
+          DEFAULT_TABLE_STYLE_NAME;
+        const attrs = {
+          dirty,
+          coverPage,
+          [TABLE_STYLE_NAME_ATTRIBUTE]: tableStyleName,
+        };
 
         if (marginLeft && /\d{1,1000}px/.test(marginLeft)) {
           attrs.marginLeft = parseFloat(marginLeft);
@@ -428,8 +440,14 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
     // `TableNodeView`. This method is only called when user selects a
     // table node and copies it, which triggers the "serialize to HTML" flow
     //  that calles this method.
-    const { noOfColumns, tableheight, marginLeft, dirty, coverPage } =
-      node.attrs;
+    const {
+      noOfColumns,
+      tableheight,
+      marginLeft,
+      dirty,
+      coverPage,
+      tableStyleName,
+    } = node.attrs;
     const domAttrs = {};
     const styleChunks = [];
     if (marginLeft !== null && marginLeft !== undefined) {
@@ -450,6 +468,9 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
     }
     if (typeof noOfColumns === 'number' && noOfColumns > 0) {
       domAttrs['data-no-of-columns'] = String(noOfColumns);
+    }
+    if (tableStyleName) {
+      domAttrs['data-table-style-name'] = String(tableStyleName);
     }
     return ['table', domAttrs, 0];
   },

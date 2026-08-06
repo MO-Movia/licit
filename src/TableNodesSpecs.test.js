@@ -5,7 +5,7 @@ describe('TableNodesSpecs custom attrs', () => {
   it('parses table, row, and cell custom attributes from DOM', () => {
     const root = document.createElement('div');
     root.innerHTML = `
-      <table data-no-of-columns="3" style="height: 240px; margin-left: 12px;">
+      <table data-no-of-columns="3" data-table-style-name="Body Table" style="height: 240px; margin-left: 12px;">
         <tbody>
           <tr style="height: 44px;">
             <td
@@ -25,6 +25,7 @@ describe('TableNodesSpecs custom attrs', () => {
     const cellNode = rowNode.firstChild;
 
     expect(tableNode.attrs.noOfColumns).toBe(3);
+    expect(tableNode.attrs.tableStyleName).toBe('Body Table');
     expect(tableNode.attrs.tableheight).toBe('240px');
     expect(rowNode.attrs.rowHeight).toBe('44px');
     expect(cellNode.attrs.cellWidth).toBe('96px');
@@ -56,7 +57,12 @@ describe('TableNodesSpecs custom attrs', () => {
       cellNode
     );
     const tableNode = EditorSchema.nodes.table.create(
-      { noOfColumns: 1, tableheight: 300, marginLeft: 20 },
+      {
+        noOfColumns: 1,
+        tableheight: 300,
+        marginLeft: 20,
+        tableStyleName: 'Body Table',
+      },
       rowNode
     );
 
@@ -67,6 +73,7 @@ describe('TableNodesSpecs custom attrs', () => {
     const cellEl = tableEl.querySelector('td');
 
     expect(tableEl.getAttribute('data-no-of-columns')).toBe('1');
+    expect(tableEl.getAttribute('data-table-style-name')).toBe('Body Table');
     expect(tableEl.style.height).toBe('300px');
     expect(rowEl.style.height).toBe('52px');
     const cellStyleText = cellEl.getAttribute('style') || '';
