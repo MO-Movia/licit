@@ -39,17 +39,10 @@ const {
   addColumnBefore,
   addRowAfter,
   addRowBefore,
-  // columnResizing,
   deleteColumn,
   deleteRow,
-  deleteTable,
-  // fixTables,
   goToNextCell,
-  // mergeCells,
-  // setCellAttr,
   splitCell,
-  // tableEditing,
-  // tableNodes,
 } = ProsemirrorTables;
 
 const {
@@ -104,7 +97,6 @@ export const TABLE_BORDER_COLOR = new TableBorderColorCommand();
 export const TABLE_DETAILS = new TableDetailsCommand();
 export const TABLE_DELETE_COLUMN = createCommand(deleteColumn);
 export const TABLE_DELETE_ROW = createCommand(deleteRow);
-export const TABLE_DELETE_TABLE = createCommand(deleteTable);
 export const TABLE_INSERT_TABLE = new TableInsertCommand();
 export const TABLE_MERGE_CELLS = new TableMergeCellsCommand();
 export const TABLE_MOVE_TO_NEXT_CELL = createCommand(goToNextCell(1));
