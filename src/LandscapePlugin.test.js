@@ -1,6 +1,46 @@
 import LandscapePlugin from './LandscapePlugin.js';
+import ResizeObserver from './ui/ResizeObserver.js';
+
+jest.mock('./ui/ResizeObserver.js', () => ({
+  __esModule: true,
+  default: {
+    observe: jest.fn(),
+    unobserve: jest.fn(),
+  },
+}));
 
 describe('LandscapePlugin scroll proxy', () => {
+  let animationCallbacks;
+
+  beforeEach(() => {
+    animationCallbacks = [];
+    window.requestAnimationFrame = jest.fn((callback) => {
+      animationCallbacks.push(callback);
+      return animationCallbacks.length;
+    });
+    window.cancelAnimationFrame = jest.fn();
+  });
+
+  function setElementWidth(element, width) {
+    Object.defineProperty(element, 'clientWidth', {
+      configurable: true,
+      value: width,
+    });
+  }
+
+  function setElementRect(element, { height = 100, left = 0, top = 0, width }) {
+    element.getBoundingClientRect = () => ({
+      bottom: top + height,
+      height,
+      left,
+      right: left + width,
+      top,
+      width,
+      x: left,
+      y: top,
+    });
+  }
+
   function createPluginView(sectionCount = 3) {
     const frameBody = document.createElement('div');
     frameBody.className = 'czi-editor-frame-body';
@@ -26,11 +66,13 @@ describe('LandscapePlugin scroll proxy', () => {
       state: { doc: {} },
     });
 
-    return { pluginView, sections };
+    return { editorDom, frameBody, pluginView, scrollContainer, sections };
   }
 
   afterEach(() => {
     document.body.innerHTML = '';
+    delete window.requestAnimationFrame;
+    delete window.cancelAnimationFrame;
   });
 
   it('scrolls every landscape section when the proxy scrollbar is moved', () => {
@@ -64,5 +106,66 @@ describe('LandscapePlugin scroll proxy', () => {
     ]);
 
     pluginView.destroy();
+  });
+
+  it('refreshes the proxy when the editor viewport resizes', () => {
+    const { pluginView, scrollContainer, sections } = createPluginView(1);
+    const section = sections[0];
+
+    setElementRect(scrollContainer, { height: 500, left: 0, width: 900 });
+    setElementWidth(scrollContainer, 900);
+    setElementRect(section, { height: 100, left: 0, top: 100, width: 900 });
+    Object.defineProperty(section, 'scrollWidth', {
+      configurable: true,
+      value: 1054,
+    });
+    setElementWidth(section, 900);
+
+    const resizeCallback = ResizeObserver.observe.mock.calls[0][1];
+    resizeCallback();
+    animationCallbacks.shift()();
+    expect(pluginView.proxyScrollbar.classList.contains('czi-visible')).toBe(true);
+
+    setElementWidth(section, 1054);
+    resizeCallback();
+    animationCallbacks.shift()();
+    expect(pluginView.proxyScrollbar.classList.contains('czi-visible')).toBe(false);
+
+    pluginView.destroy();
+  });
+
+  it('hides the proxy when the complete landscape width is visible', () => {
+    const { pluginView, sections } = createPluginView(1);
+    const section = sections[0];
+
+    Object.defineProperty(section, 'scrollWidth', {
+      configurable: true,
+      value: 1054,
+    });
+    setElementWidth(section, 900);
+    pluginView._setActiveLandscape(section);
+    pluginView._syncProxyWithActiveLandscape();
+    expect(pluginView.proxyScrollbar.classList.contains('czi-visible')).toBe(true);
+
+    setElementWidth(section, 1054);
+    pluginView._syncProxyWithActiveLandscape();
+    expect(pluginView.proxyScrollbar.classList.contains('czi-visible')).toBe(false);
+
+    pluginView.destroy();
+  });
+
+  it('removes resize observation and pending work on destroy', () => {
+    const { frameBody, pluginView } = createPluginView(1);
+    const resizeCallback = ResizeObserver.observe.mock.calls[0][1];
+    resizeCallback();
+    const resizeFrameID = pluginView.resizeFrameID;
+
+    pluginView.destroy();
+
+    expect(ResizeObserver.unobserve).toHaveBeenCalledWith(
+      frameBody,
+      pluginView._onEditorResize
+    );
+    expect(window.cancelAnimationFrame).toHaveBeenCalledWith(resizeFrameID);
   });
 });
