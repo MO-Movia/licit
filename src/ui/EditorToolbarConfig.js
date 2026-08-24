@@ -55,7 +55,6 @@ const {
   TABLE_BACKGROUND_COLOR,
   TABLE_DELETE_COLUMN,
   TABLE_DELETE_ROW,
-  TABLE_DELETE_TABLE,
   TABLE_INSERT_TABLE,
   TABLE_MERGE_CELLS,
   TABLE_SPLIT_ROW,
@@ -94,9 +93,6 @@ export const TABLE_COMMANDS_GROUP = [
     'Split Row': TABLE_SPLIT_ROW,
   },
   {
-    'Delete Table': TABLE_DELETE_TABLE,
-  },
-   {
     'Container Dimensions': TABLE_DETAILS,
   },
 ];
