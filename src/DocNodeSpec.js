@@ -56,7 +56,7 @@ const DocNodeSpec = {
     // [FS] IRAD-1202 2021-02-15
     // Counter flags for Numbering
     counterFlags: { default: null },
-    deletedObjectIds: { default: null },
+    deletedObjectIds: { default: [] },
   },
   content: 'block+',
 };
