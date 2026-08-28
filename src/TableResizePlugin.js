@@ -480,7 +480,14 @@ function domCellAround(target: any): ?Element {
 // Helper that resolves the prose-mirror node postion of a cell from a given
 // event target.
 function edgeCell(view: EditorView, event: PointerEvent, side: string): number {
-  const { pos } = view.posAtCoords({ left: event.clientX, top: event.clientY });
+  // `posAtCoords` returns null when the coordinates don't point to a valid
+  // editor position (e.g. mouse moved outside the table during a drag).
+  // Return the "no cell" sentinel instead of crashing.
+  const coords = view.posAtCoords({ left: event.clientX, top: event.clientY });
+  if (!coords) {
+    return -1;
+  }
+  const { pos } = coords;
   const $cell = cellAround(view.state.doc.resolve(pos));
   if (!$cell) {
     return -1;
