@@ -21,6 +21,7 @@ import TableBackgroundColorCommand from './TableBackgroundColorCommand.js';
 import TableBorderColorCommand from './TableBorderColorCommand.js';
 import TableDetailsCommand from './TableDetailsCommand.js';
 import TableInsertCommand from './TableInsertCommand.js';
+import TableInsertPreserveStyleCommand from './TableInsertPreserveStyleCommand.js';
 import TableMergeCellsCommand from './TableMergeCellsCommand.js';
 import {
   HeadingCommand,
@@ -39,17 +40,10 @@ const {
   addColumnBefore,
   addRowAfter,
   addRowBefore,
-  // columnResizing,
   deleteColumn,
   deleteRow,
-  deleteTable,
-  // fixTables,
   goToNextCell,
-  // mergeCells,
-  // setCellAttr,
   splitCell,
-  // tableEditing,
-  // tableNodes,
 } = ProsemirrorTables;
 
 const {
@@ -95,16 +89,31 @@ export const STRIKE = new MarkToggleCommand(MARK_STRIKE);
 export const STRONG = new MarkToggleCommand(MARK_STRONG);
 export const SUPER = new MarkToggleCommand(MARK_SUPER);
 export const SUB = new MarkToggleCommand(MARK_SUB);
-export const TABLE_ADD_COLUMN_AFTER = createCommand(addColumnAfter);
-export const TABLE_ADD_COLUMN_BEFORE = createCommand(addColumnBefore);
-export const TABLE_ADD_ROW_AFTER = createCommand(addRowAfter);
-export const TABLE_ADD_ROW_BEFORE = createCommand(addRowBefore);
+export const TABLE_ADD_COLUMN_AFTER = new TableInsertPreserveStyleCommand(
+  addColumnAfter,
+  'column',
+  'after'
+);
+export const TABLE_ADD_COLUMN_BEFORE = new TableInsertPreserveStyleCommand(
+  addColumnBefore,
+  'column',
+  'before'
+);
+export const TABLE_ADD_ROW_AFTER = new TableInsertPreserveStyleCommand(
+  addRowAfter,
+  'row',
+  'after'
+);
+export const TABLE_ADD_ROW_BEFORE = new TableInsertPreserveStyleCommand(
+  addRowBefore,
+  'row',
+  'before'
+);
 export const TABLE_BACKGROUND_COLOR = new TableBackgroundColorCommand();
 export const TABLE_BORDER_COLOR = new TableBorderColorCommand();
 export const TABLE_DETAILS = new TableDetailsCommand();
 export const TABLE_DELETE_COLUMN = createCommand(deleteColumn);
 export const TABLE_DELETE_ROW = createCommand(deleteRow);
-export const TABLE_DELETE_TABLE = createCommand(deleteTable);
 export const TABLE_INSERT_TABLE = new TableInsertCommand();
 export const TABLE_MERGE_CELLS = new TableMergeCellsCommand();
 export const TABLE_MOVE_TO_NEXT_CELL = createCommand(goToNextCell(1));

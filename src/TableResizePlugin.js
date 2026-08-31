@@ -45,7 +45,13 @@ import {
 
 type DraggingInfo = {
   columnElements: Array<HTMLElement>,
+  columnWidths: Array<number>,
+  resizeType: 'column' | 'row',
+  rowElement: ?HTMLElement,
+  rowHeight: ?number,
+  rowPos: ?number,
   startX: number,
+  startY: number,
   tableElement: HTMLElement,
   tableMarginLeft: number,
   tableMarginRight: number,
@@ -55,7 +61,7 @@ type DraggingInfo = {
 };
 
 type PointerEvent = {
-  target: null,
+  target: any,
   clientX: number,
   clientY: number,
 };
@@ -67,6 +73,7 @@ const PLUGIN_KEY = new PluginKey('tableColumnResizing');
 // Rezie cursor position issue fixed.
 
 const CELL_MIN_WIDTH = 30;
+const ROW_MIN_HEIGHT = 20;
 const HANDLE_WIDTH = 5;
 const HANDLE_RIGHT_WIDTH = 20;
 
@@ -77,29 +84,38 @@ let isEnabled = true;
 class ResizeState {
   cellPos: ?number;
   forMarginLeft: ?boolean;
+  forRow: ?boolean;
   draggingInfo: ?DraggingInfo;
 
   constructor(
     cellPos: ?number,
     forMarginLeft: ?boolean,
+    forRow: ?boolean,
     draggingInfo: ?DraggingInfo
   ) {
     this.cellPos = cellPos;
     this.draggingInfo = draggingInfo;
     this.forMarginLeft = forMarginLeft;
+    this.forRow = forRow;
   }
 
   apply(tr: Transform): ResizeState {
     let state = this;
     const action = tr.getMeta(PLUGIN_KEY);
     if (action && typeof action.setCellPos === 'number') {
-      return new ResizeState(action.setCellPos, action.setForMarginLeft, null);
+      return new ResizeState(
+        action.setCellPos,
+        action.setForMarginLeft,
+        action.setForRow,
+        null
+      );
     }
 
     if (action && action.setDraggingInfo !== undefined) {
       return new ResizeState(
         state.cellPos,
         state.forMarginLeft,
+        state.forRow,
         action.setDraggingInfo
       );
     }
@@ -112,6 +128,7 @@ class ResizeState {
       state = new ResizeState(
         cellPos,
         cellPos ? state.forMarginLeft : false,
+        cellPos ? state.forRow : false,
         state.draggingInfo
       );
     }
@@ -128,15 +145,19 @@ function handleMouseMove(view: EditorView, event: PointerEvent): void {
 
   const target = domCellAround(event.target);
   let forMarginLeft = false;
+  let forRow = false;
   let cell = -1;
 
   if (target instanceof HTMLTableCellElement) {
-    const { left, right } = target.getBoundingClientRect();
+    const { bottom, left, right } = target.getBoundingClientRect();
     const offsetLeft = event.clientX - left;
     // [FS] IRAD-949 2020-05-27
     // Fix:Cell Resize Handler causes edit diificult to firsrst/last two chars in the cell.
     // Rezie cursor position issue fixed.
-    if (offsetLeft <= HANDLE_WIDTH) {
+    if (bottom - event.clientY <= HANDLE_WIDTH) {
+      forRow = true;
+      cell = edgeCell(view, event, 'right');
+    } else if (offsetLeft <= HANDLE_WIDTH) {
       if (target.cellIndex === 0) {
         forMarginLeft = true;
         cell = edgeCell(view, event, 'right');
@@ -150,7 +171,8 @@ function handleMouseMove(view: EditorView, event: PointerEvent): void {
 
   if (
     cell === resizeState?.cellPos &&
-    forMarginLeft === resizeState?.forMarginLeft
+    forMarginLeft === resizeState?.forMarginLeft &&
+    forRow === resizeState?.forRow
   ) {
     return;
   }
@@ -161,7 +183,7 @@ function handleMouseMove(view: EditorView, event: PointerEvent): void {
       return;
     }
   }
-  updateResizeHandle(view, cell, forMarginLeft);
+  updateResizeHandle(view, cell, forMarginLeft, forRow);
 }
 
 // Function that handles the mouseleave event from the table cell.
@@ -169,7 +191,7 @@ function handleMouseLeave(view: EditorView): void {
   const resizeState = PLUGIN_KEY.getState(view.state);
   const { cellPos, draggingInfo } = resizeState;
   if (cellPos > -1 && !draggingInfo) {
-    updateResizeHandle(view, -1, false);
+    updateResizeHandle(view, -1, false, false);
   }
 }
 
@@ -181,7 +203,12 @@ function handleMouseDown(view: EditorView, event: MouseEvent): boolean {
   cancelDrag?.(event);
 
   const resizeState = PLUGIN_KEY.getState(view.state);
-  if (resizeState.cellPos === -1 || resizeState.draggingInfo) {
+  if (
+    resizeState.cellPos === null ||
+    resizeState.cellPos === undefined ||
+    resizeState.cellPos < 0 ||
+    resizeState.draggingInfo
+  ) {
     return false;
   }
 
@@ -190,7 +217,7 @@ function handleMouseDown(view: EditorView, event: MouseEvent): boolean {
 
   const finish = (event: MouseEvent) => {
     window.removeEventListener('mouseup', finish, true);
-    window.removeEventListener('mousemove', this.move, true);
+    window.removeEventListener('mousemove', move, true);
     dragStarted && handleDragEnd(view, event);
     cancelDrag = null;
   };
@@ -219,7 +246,12 @@ function handleMouseDown(view: EditorView, event: MouseEvent): boolean {
 
 function handleDragStart(view: EditorView, event: MouseEvent): void {
   const resizeState = PLUGIN_KEY.getState(view.state);
-  if (resizeState.cellPos === -1 || resizeState.draggingInfo) {
+  if (
+    resizeState.cellPos === null ||
+    resizeState.cellPos === undefined ||
+    resizeState.cellPos < 0 ||
+    resizeState.draggingInfo
+  ) {
     return;
   }
 
@@ -238,6 +270,17 @@ function handleDragMove(view: EditorView, event: PointerEvent): void {
   if (!draggingInfo) {
     return;
   }
+  if (draggingInfo.resizeType === 'row') {
+    const { rowElement, rowHeight, startY } = draggingInfo;
+    if (!rowElement || !rowHeight) {
+      return;
+    }
+    const dy = event.clientY - startY;
+    rowElement.style.height =
+      Math.round(Math.max(ROW_MIN_HEIGHT, rowHeight + dy)) + 'px';
+    return;
+  }
+
   const {
     startX,
     columnWidths,
@@ -305,6 +348,11 @@ function handleDragEnd(view: EditorView, event: any): void {
   const resizeState = PLUGIN_KEY.getState(view.state);
   const { cellPos, draggingInfo } = resizeState;
   if (!draggingInfo) {
+    return;
+  }
+  if (draggingInfo.resizeType === 'row') {
+    handleRowDragEnd(view, draggingInfo);
+    view.dispatch(view.state.tr.setMeta(PLUGIN_KEY, { setDraggingInfo: null }));
     return;
   }
   const { columnElements, tableElement } = draggingInfo;
@@ -376,6 +424,35 @@ function handleDragEnd(view: EditorView, event: any): void {
   view.dispatch(view.state.tr.setMeta(PLUGIN_KEY, { setDraggingInfo: null }));
 }
 
+function handleRowDragEnd(view: EditorView, draggingInfo: DraggingInfo): void {
+  const { rowElement, rowPos } = draggingInfo;
+  if (!rowElement || rowPos === null || rowPos === undefined) {
+    return;
+  }
+
+  const rowHeight = parseFloat(rowElement.style.height);
+  if (isNaN(rowHeight)) {
+    return;
+  }
+
+  const row = view.state.doc.nodeAt(rowPos);
+  if (!row || row.type.spec.tableRole !== 'row') {
+    return;
+  }
+
+  const cssRowHeight = `${Math.round(rowHeight)}px`;
+  if (row.attrs.rowHeight === cssRowHeight) {
+    return;
+  }
+
+  view.dispatch(
+    view.state.tr.setNodeMarkup(rowPos, null, {
+      ...row.attrs,
+      rowHeight: cssRowHeight,
+    })
+  );
+}
+
 // Helper that prepares the information needed before the resizing starts.
 function calculateDraggingInfo(
   view: EditorView,
@@ -394,7 +471,34 @@ function calculateDraggingInfo(
   const tableRect = tableEl.getBoundingClientRect();
   const defaultColumnWidth = tableWrapperRect.width / colEls.length;
   const startX = event.clientX;
+  const startY = event.clientY;
   const offsetLeft = startX - tableRect.left;
+
+  if (resizeState.forRow) {
+    const rowElement = dom.node.closest('tr');
+    const $cell = view.state.doc.resolve(cellPos);
+    const rowInfo = findTableRowInfo($cell);
+    if (!rowElement || !rowInfo) {
+      return null;
+    }
+
+    return {
+      columnElements: colEls,
+      columnWidths: [],
+      resizeType: 'row',
+      rowElement,
+      rowHeight: rowElement.getBoundingClientRect().height,
+      rowPos: rowInfo.pos,
+      startX,
+      startY,
+      tableElement: tableEl,
+      tableMarginLeft: 0,
+      tableMarginRight: 0,
+      tableWidth: 0,
+      tableWrapperWidth: tableWrapperRect.width,
+      taregtColumnIndex: -1,
+    };
+  }
 
   let tableWidth = 0;
   let taregtColumnIndex = -1;
@@ -456,15 +560,42 @@ function calculateDraggingInfo(
 
   return {
     columnElements: colEls,
-    taregtColumnIndex,
     columnWidths,
+    resizeType: 'column',
+    rowElement: null,
+    rowHeight: null,
+    rowPos: null,
+    taregtColumnIndex,
     startX,
+    startY,
     tableElement: tableEl,
     tableMarginLeft,
     tableMarginRight,
     tableWidth,
     tableWrapperWidth: tableWrapperRect.width,
   };
+}
+
+function findTableRowInfo($cell: any): ?{ pos: number, node: Node } {
+  const cellPos = $cell.pos;
+  const table = $cell.node(-1);
+  const tableStart = $cell.start(-1);
+  let result = null;
+
+  table.forEach((rowNode, rowOffset) => {
+    if (result) {
+      return;
+    }
+    const rowPos = tableStart + rowOffset;
+    if (cellPos > rowPos && cellPos < rowPos + rowNode.nodeSize) {
+      result = {
+        pos: rowPos,
+        node: rowNode,
+      };
+    }
+  });
+
+  return result;
 }
 
 // Helper that finds the closest cell element from a given event target.
@@ -505,12 +636,14 @@ function edgeCell(view: EditorView, event: PointerEvent, side: string): number {
 function updateResizeHandle(
   view: EditorView,
   cellPos: number,
-  forMarginLeft: boolean
+  forMarginLeft: boolean,
+  forRow: boolean
 ): void {
   view.dispatch(
     view.state.tr.setMeta(PLUGIN_KEY, {
       setCellPos: cellPos,
       setForMarginLeft: forMarginLeft,
+      setForRow: forRow,
     })
   );
 }
@@ -529,6 +662,19 @@ function handleDecorations(
 
   const map = TableMap.get(table);
   const start = $cell.start(-1);
+  if (resizeState.forRow) {
+    const rowInfo = findTableRowInfo($cell);
+    if (!rowInfo) {
+      return DecorationSet.create(state.doc, []);
+    }
+    rowInfo.node.forEach((cellNode, cellOffset) => {
+      const pos = rowInfo.pos + 1 + cellOffset + cellNode.nodeSize - 1;
+      const dom = document.createElement('div');
+      dom.className = 'row-resize-handle';
+      decorations.push(Decoration.widget(pos, dom));
+    });
+    return DecorationSet.create(state.doc, decorations);
+  }
   const col = map.colCount($cell.pos - start) + $cell.nodeAfter.attrs.colspan;
   for (let row = 0; row < map.height; row++) {
     const index = col + row * map.width - 1;
@@ -610,7 +756,7 @@ export default class TableResizePlugin extends Plugin {
             this.spec.props.nodeViews[tableNodeTypes(state.schema).table.name] =
               createTableView;
           }
-          return new ResizeState(-1, null);
+          return new ResizeState(-1, null, false, null);
         },
         apply(tr: Transform, prev: EditorState): EditorState {
           return prev.apply(tr);
@@ -619,7 +765,17 @@ export default class TableResizePlugin extends Plugin {
       props: {
         attributes(state: EditorState): ?Object {
           const resizeState = PLUGIN_KEY.getState(state);
-          return resizeState?.cellPos > -1 ? { class: 'resize-cursor' } : null;
+          if (
+            !resizeState ||
+            resizeState.cellPos === null ||
+            resizeState.cellPos === undefined ||
+            resizeState.cellPos < 0
+          ) {
+            return null;
+          }
+          return {
+            class: resizeState.forRow ? 'row-resize-cursor' : 'resize-cursor',
+          };
         },
         handleDOMEvents: {
           // Move events should be batched to avoid over-handling the mouse

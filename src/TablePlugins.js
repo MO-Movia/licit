@@ -3,6 +3,7 @@
 import { tableEditing } from 'prosemirror-tables';
 
 import TableCellMenuPlugin from './TableCellMenuPlugin.js';
+import TablePendingStyleMarksPlugin from './TablePendingStyleMarksPlugin.js';
 import TableResizePlugin from './TableResizePlugin.js';
 
 // Tables
@@ -10,5 +11,6 @@ import TableResizePlugin from './TableResizePlugin.js';
 export default [
   new TableCellMenuPlugin(),
   new TableResizePlugin(),
+  TablePendingStyleMarksPlugin(),
   tableEditing(),
 ];
