@@ -173,6 +173,14 @@ table[data-cover-page='true'] .molm-czi-image-view.align-center {
   text-align: left;
 }
 
+.ProseMirror td[data-cell-text-rotation='clockwise'],
+.ProseMirror th[data-cell-text-rotation='clockwise'] {
+  text-align: center;
+  text-orientation: mixed;
+  vertical-align: middle;
+  writing-mode: vertical-rl;
+}
+
 .ProseMirror .column-resize-handle {
   background-color: #adf;
   border: solid 1px #fff;
@@ -201,6 +209,49 @@ Rezie cursor position issue fixed. */
 .ProseMirror .column-resize-handle:hover {
   cursor: ew-resize;
   cursor: col-resize;
+}
+
+.czi-table-row-resize-handle {
+  display: block;
+  height: 6px;
+  pointer-events: none;
+  position: absolute;
+  visibility: hidden;
+  z-index: 2147483647;
+}
+
+.czi-table-row-resize-handle::before {
+  background: #4c9ffe;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 90%);
+  content: '';
+  height: 2px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 2px;
+}
+
+.czi-table-row-resize-handle.is-visible {
+  visibility: visible;
+}
+
+.czi-table-row-resize-grip {
+  background: #fff;
+  border: 1px solid #2563eb;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+  box-sizing: border-box;
+  height: 10px;
+  left: -5px;
+  position: absolute;
+  top: -2px;
+  width: 10px;
+}
+
+.czi-table-row-resize-handle.is-dragging::before {
+  background: #2563eb;
+  height: 3px;
+  top: 1px;
 }
 
 /* Give selected cells a blue overlay */

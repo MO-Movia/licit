@@ -21,7 +21,7 @@ export type MarkSpec = {
 
 export type RecentColor = {
   id: number,
-  color: string
+  color: string,
 };
 
 export type EditorProps = {
@@ -48,10 +48,32 @@ export type ImageLike = {
   width: number,
 };
 
+export type TableEditorBorderStyle = {
+  style: 'solid' | 'dashed' | 'dotted' | 'double' | 'none',
+  width: string,
+  color: string,
+};
 
+export type TableEditorDialogData = {
+  table?: Object,
+  borders?: Object,
+  typography?: Object,
+  layout?: Object,
+  metadata?: Object,
+  selectionMode?: 'single' | 'range',
+  fontOptions?: Array<{ label: string, value: string }>,
+  mixed?: Object,
+};
 
-
-
+export type TableEditorResult = {
+  table: Object,
+  borders: Object,
+  typography: Object,
+  layout: Object,
+  metadata: Object,
+  selectionMode: 'single' | 'range',
+  changed?: Object,
+};
 
 export type EditorRuntime = {
   // Image Proxy
@@ -71,6 +93,12 @@ export type EditorRuntime = {
   canLoadHTML?: () => boolean,
   loadHTML?: () => Promise<?string>,
 
+  // Host-owned Table Settings dialog
+  openTableEditorDialog?: (
+    data: TableEditorDialogData,
+    applyTableEditorResult?: (result: TableEditorResult) => void,
+    closeTableEditor?: () => void
+  ) => void,
 };
 export type EditorState = any;
 

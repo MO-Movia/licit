@@ -51,7 +51,9 @@ export default class TableNodeView extends TableView {
     // Handle marginLeft
     const marginLeft = node.attrs?.marginLeft || 0;
     this.table.style.marginLeft = marginLeft ? `${marginLeft}px` : '';
-    this.table.style.height = toCSSLength(node.attrs?.tableheight);
+    this.table.style.height = toCSSLength(
+      node.attrs?.tableHeight || node.attrs?.tableheight
+    );
 
     const noOfColumns = node.attrs?.noOfColumns;
     if (typeof noOfColumns === 'number' && noOfColumns > 0) {

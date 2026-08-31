@@ -26,7 +26,7 @@ const LetterSpacingMarkSpec: MarkSpec = {
     const { letterSpacing, overridden } = node.attrs;
     const attrs = { overridden };
     if (letterSpacing) {
-      attrs.style = `letter-spacing: ${letterSpacing}`;
+      attrs.style = `letter-spacing: ${letterSpacing};`;
     }
     return ['span', attrs, 0];
   },

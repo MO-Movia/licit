@@ -138,6 +138,41 @@ export type ImageLike = {
   width: number;
 };
 
+export type TableEditorBorderEdge =
+  'top' | 'bottom' | 'left' | 'right' | 'insideHorizontal' | 'insideVertical';
+
+export type TableEditorBorderStyle = {
+  style: 'solid' | 'dashed' | 'dotted' | 'double' | 'none';
+  width: string;
+  color: string;
+};
+
+export type TableEditorDialogData = {
+  table?: Record<string, unknown>;
+  borders?: {
+    targetEdges?: TableEditorBorderEdge[];
+    border?: Partial<TableEditorBorderStyle>;
+    edgeStyles?: Partial<Record<TableEditorBorderEdge, TableEditorBorderStyle>>;
+    applyMode?: 'cell' | 'selection';
+  };
+  typography?: Record<string, unknown>;
+  layout?: Record<string, unknown>;
+  metadata?: Record<string, number>;
+  selectionMode?: 'single' | 'range';
+  fontOptions?: Array<{ label: string; value: string }>;
+  mixed?: Record<string, unknown>;
+};
+
+export type TableEditorResult = {
+  table: Record<string, any>;
+  borders: Record<string, any>;
+  typography: Record<string, any>;
+  layout: Record<string, any>;
+  metadata: Record<string, number>;
+  selectionMode: 'single' | 'range';
+  changed?: Record<string, any>;
+};
+
 export type EditorRuntime = {
   // Image Proxy
   canProxyImageSrc?: (src: string) => boolean;
@@ -157,6 +192,13 @@ export type EditorRuntime = {
   // External HTML
   canLoadHTML?: () => boolean;
   loadHTML?: () => Promise<string>;
+
+  // Host-owned Table Settings dialog
+  openTableEditorDialog?: (
+    data: TableEditorDialogData,
+    applyTableEditorResult?: (result: TableEditorResult) => void,
+    closeTableEditor?: () => void
+  ) => void;
 };
 
 // from './client/http';
