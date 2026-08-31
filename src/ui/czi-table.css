@@ -185,6 +185,18 @@ table[data-cover-page='true'] .molm-czi-image-view.align-center {
   z-index: 20;
 }
 
+.ProseMirror .row-resize-handle {
+  background-color: #adf;
+  border: solid 1px #fff;
+  border-width: 1px 0;
+  bottom: -2px;
+  height: 4px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  z-index: 20;
+}
+
 .ProseMirror th:last-child > .column-resize-handle,
 .ProseMirror td:last-child > .column-resize-handle {
   right: 0;
@@ -201,6 +213,17 @@ Rezie cursor position issue fixed. */
 .ProseMirror .column-resize-handle:hover {
   cursor: ew-resize;
   cursor: col-resize;
+}
+
+.ProseMirror .row-resize-handle:focus,
+.ProseMirror .row-resize-handle:hover {
+  cursor: ns-resize;
+  cursor: row-resize;
+}
+
+.ProseMirror.row-resize-cursor {
+  cursor: ns-resize;
+  cursor: row-resize;
 }
 
 /* Give selected cells a blue overlay */

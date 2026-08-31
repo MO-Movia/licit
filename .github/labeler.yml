@@ -1,0 +1,21 @@
+# Auto-labels PRs based on branch name patterns.
+# Used by actions/labeler in .github/workflows/labeler.yml
+# https://github.com/actions/labeler
+
+breaking:
+- head_ref: ['^breaking/', '^Break/', '^BREAK/']
+
+feature:
+- head_ref: ['^feature/', '^Feature/', '^feat/']
+
+enhancement:
+- head_ref: ['^enhancement/', '^Enhancement/']
+
+bug:
+- head_ref: ['^bugfix/', '^BugFix/', '^bug/', '^Bug/', '^fix/', '^Fix/']
+
+dependencies:
+- head_ref: ['^dependabot/', '^deps/', '^Dependencies/']
+
+ignore-for-release:
+- head_ref: ['^chore/', '^ci/', '^docs/', '^test/']
