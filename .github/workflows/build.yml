@@ -1,5 +1,5 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+# Build workflow — delegates to the shared workflow in MO-Movia/CI.
+# For more information see: https://github.com/MO-Movia/CI
 
 name: build
 
@@ -10,52 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
-
-    strategy:
-      matrix:
-        node-version: [20.x]
-
-    timeout-minutes: 60 # Default 5 days for self hosted
-    # Ignore PRs from master. Assumtion is master is always a good branch, so this PR is just a sync.
-    if: ${{ (github.head_ref || github.ref_name) != 'main' && (github.head_ref || github.ref_name) != 'master' }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # extra info for sonar
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: install
-        run: npm ci --ignore-scripts
-      - name: lint
-        run: npm run lint
-      - name: Build
-        run: npm run ci:build
-      - name: tests
-        run: npm run test:coverage
-
-      - name: Set Version number
-        if: github.actor != 'dependabot[bot]' # Don't scan/block dependabot updates
-        run: echo "TAG=$(npm pkg get version --workspaces=false | tr -d \")" >> "$GITHUB_ENV"
-      # Sonar scan. https://github.com/marketplace/actions/sonarqube-scan
-      - name: SonarQube Scan
-        if: github.actor != 'dependabot[bot]' # Don't scan/block dependabot updates
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          args: >
-            -Dsonar.projectVersion=${{ env.TAG }}
-      # Sonar verify https://github.com/marketplace/actions/sonarqube-quality-gate-check
-      - name: SonarQube Quality Gate check
-        if: github.actor != 'dependabot[bot]' # Don't scan/block dependabot updates
-        id: sonarqube-quality-gate-check
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        with:
-          pollingTimeoutSec: 600
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    uses: MO-Movia/CI/.github/workflows/build.yml@main
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

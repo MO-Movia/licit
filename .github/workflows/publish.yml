@@ -1,4 +1,4 @@
-# This workflow will attest and publish build artifacts ready for release
+# Publish workflow — delegates to the shared workflow in MO-Movia/CI.
 
 name: publish
 
@@ -8,40 +8,4 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest # GitHub hosted runner required for provenance
-    permissions:
-      contents: write # write for release
-      id-token: write # required for provenance cert #https://docs.npmjs.com/generating-provenance-statements
-
-    strategy:
-      matrix:
-        node-version: [24.x]
-
-    timeout-minutes: 30 # Default 5 days for self hosted
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        name: Use Node.js ${{ matrix.node-version }}
-        with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: 'https://registry.npmjs.org'
-
-      - run: npm ci --ignore-scripts
-        
-      - name: Build
-        run: npm run ci:build
-
-      - name: NPM Publish
-        # Using trusted provider auth https://docs.npmjs.com/trusted-publishers#supported-cicd-providers
-        run: npm publish ./dist --access public --provenance # provenance requires a github hosted runner
-
-      - name: Set Version number
-        run: echo "TAG=$(npm pkg get version --workspaces=false | tr -d \")" >> "$GITHUB_ENV"
-
-      - name: Release
-        # https://github.com/softprops/action-gh-release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ env.TAG }}
-          target_commitish: main
-          generate_release_notes: true
+    uses: MO-Movia/CI/.github/workflows/publish.yml@main
