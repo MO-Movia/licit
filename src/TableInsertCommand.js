@@ -20,7 +20,10 @@ class TableInsertCommand extends UICommand {
   _popUp = null;
 
   shouldRespondToUIEvent = (e: SyntheticEvent<> | MouseEvent): boolean => {
-    return e.type === UICommand.EventType.MOUSEENTER;
+    return (
+      e.type === UICommand.EventType.MOUSEENTER ||
+      e.type === UICommand.EventType.CLICK
+    );
   };
 
   isEnabled = (state: EditorState): boolean => {
@@ -79,22 +82,22 @@ class TableInsertCommand extends UICommand {
     view: ?EditorView,
     inputs: ?TableGridSizeEditorValue
   ): boolean => {
-    if (dispatch) {
+    if (dispatch && inputs) {
       const { selection, schema } = state;
       let { tr } = state;
-      if (inputs) {
-        const { rows, cols } = inputs;
-        tr = tr.setSelection(selection);
-        tr = insertTable(tr, schema, rows, cols);
-        tr = insertParagraph(state, tr);
-      }
+      const { rows, cols } = inputs;
+      tr = tr.setSelection(selection);
+      tr = insertTable(tr, schema, rows, cols);
+      tr = insertParagraph(state, tr);
       dispatch(tr);
+      view?.focus();
+      return true;
     }
     return false;
   };
 
   cancel(): void {
-    return null;
+    this._popUp?.close();
   }
 }
 

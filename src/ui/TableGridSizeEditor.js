@@ -16,11 +16,26 @@ export type TableGridSizeEditorValue = {
   rows: number,
 };
 
+type TableGridSizeEditorState = {
+  cols: number | string,
+  rows: number | string,
+};
+
 const GUTTER_SIZE = 5;
 const CELL_SIZE = 16;
 // [FS] IRAD-1012 2020-07-14
 // Fix: Limited Table Grid size from 20 to 7
-const MAX_SIZE = 7;
+const MAX_SIZE = 9;
+const MAX_INPUT_SIZE = 100;
+
+function parseDimension(value: number | string): ?number {
+  const dimension = Number(value);
+  return Number.isInteger(dimension) &&
+    dimension >= 1 &&
+    dimension <= MAX_INPUT_SIZE
+    ? dimension
+    : null;
+}
 
 class GridCell extends React.PureComponent<any, any> {
   render(): React.Element<any> {
@@ -51,26 +66,28 @@ class TableGridSizeEditor extends React.PureComponent<any, any> {
     close: (val: TableGridSizeEditorValue) => void,
   };
 
-  state: TableGridSizeEditorValue = {
+  state: TableGridSizeEditorState = {
     rows: 1,
     cols: 1,
   };
 
   componentWillUnmount(): void {
-    if (this._entered) {
-      document.removeEventListener('mousemove', this._onMouseMove, true);
-    }
+    this._stopTrackingGrid();
     this._rafID && cancelAnimationFrame(this._rafID);
   }
 
   render(): React.Element<any> {
     const { rows, cols } = this.state;
-    let rr = Math.max(5, rows);
-    let cc = Math.max(5, cols);
-    if (rr === rows) {
+    const parsedRows = parseDimension(rows);
+    const parsedCols = parseDimension(cols);
+    const selectedRows = Math.min(MAX_SIZE, parsedRows || 0);
+    const selectedCols = Math.min(MAX_SIZE, parsedCols || 0);
+    let rr = Math.max(5, selectedRows);
+    let cc = Math.max(5, selectedCols);
+    if (rr === selectedRows) {
       rr = Math.min(MAX_SIZE, rr + 1);
     }
-    if (cc === cols) {
+    if (cc === selectedCols) {
       cc = Math.min(MAX_SIZE, cc + 1);
     }
     const cells = [];
@@ -84,7 +101,7 @@ class TableGridSizeEditor extends React.PureComponent<any, any> {
       let x = 0;
       while (jj < cc) {
         x += GUTTER_SIZE;
-        const selected = ii < rows && jj < cols;
+        const selected = ii < selectedRows && jj < selectedCols;
         cells.push(
           <GridCell
             key={`${String(ii)}-${String(jj)}`}
@@ -109,12 +126,43 @@ class TableGridSizeEditor extends React.PureComponent<any, any> {
           className="czi-table-grid-size-editor-body"
           onMouseDown={this._onMouseDown}
           onMouseEnter={this._onMouseEnter}
+          onMouseLeave={this._onMouseLeave}
           style={bodyStyle}
         >
           {cells}
         </div>
         <div className="czi-table-grid-size-editor-footer">
-          {rows} X {cols}
+          <form
+            className="czi-table-grid-size-editor-form"
+            onSubmit={this._onSubmit}
+          >
+            <label>
+              Rows
+              <input
+                aria-label="Rows"
+                max={MAX_INPUT_SIZE}
+                min="1"
+                onChange={this._onRowsChange}
+                type="number"
+                value={rows}
+              />
+            </label>
+            <span aria-hidden="true">×</span>
+            <label>
+              Columns
+              <input
+                aria-label="Columns"
+                max={MAX_INPUT_SIZE}
+                min="1"
+                onChange={this._onColsChange}
+                type="number"
+                value={cols}
+              />
+            </label>
+            <button disabled={!parsedRows || !parsedCols} type="submit">
+              Insert
+            </button>
+          </form>
         </div>
       </div>
     );
@@ -138,6 +186,17 @@ class TableGridSizeEditor extends React.PureComponent<any, any> {
         this._entered = true;
         document.addEventListener('mousemove', this._onMouseMove, true);
       }
+    }
+  };
+
+  _onMouseLeave = (): void => {
+    this._stopTrackingGrid();
+  };
+
+  _stopTrackingGrid = (): void => {
+    if (this._entered) {
+      this._entered = false;
+      document.removeEventListener('mousemove', this._onMouseMove, true);
     }
   };
 
@@ -170,7 +229,8 @@ class TableGridSizeEditor extends React.PureComponent<any, any> {
     const y = my - this._ey;
     const rr = clamp(1, Math.ceil(y / (CELL_SIZE + GUTTER_SIZE)), MAX_SIZE);
     const cc = clamp(1, Math.ceil(x / (CELL_SIZE + GUTTER_SIZE)), MAX_SIZE);
-    const { rows, cols } = this.state;
+    const rows = parseDimension(this.state.rows);
+    const cols = parseDimension(this.state.cols);
     if (rows !== rr || cols !== cc) {
       this.setState({ rows: rr, cols: cc });
     }
@@ -178,7 +238,28 @@ class TableGridSizeEditor extends React.PureComponent<any, any> {
 
   _onMouseDown = (e: SyntheticEvent<>): void => {
     e.preventDefault();
-    this.props.close(this.state);
+    const { rows, cols } = this.state;
+    this.props.close({
+      rows: parseDimension(rows) || 1,
+      cols: parseDimension(cols) || 1,
+    });
+  };
+
+  _onRowsChange = (e: SyntheticInputEvent<HTMLInputElement>): void => {
+    this.setState({ rows: e.currentTarget.value });
+  };
+
+  _onColsChange = (e: SyntheticInputEvent<HTMLInputElement>): void => {
+    this.setState({ cols: e.currentTarget.value });
+  };
+
+  _onSubmit = (e: SyntheticEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    const rows = parseDimension(this.state.rows);
+    const cols = parseDimension(this.state.cols);
+    if (rows && cols) {
+      this.props.close({ rows, cols });
+    }
   };
 }
 

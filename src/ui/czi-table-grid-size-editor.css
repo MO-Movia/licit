@@ -32,6 +32,47 @@
 }
 
 .czi-table-grid-size-editor-footer {
-  padding-bottom: 5px;
-  text-align: center;
+  border-top: var(--czi-border-grey);
+  padding: 8px;
+  position: relative;
+  z-index: 3;
+}
+
+.czi-table-grid-size-editor-form {
+  align-items: flex-end;
+  display: flex;
+  gap: 6px;
+}
+
+.czi-table-grid-size-editor-form label {
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  gap: 2px;
+}
+
+.czi-table-grid-size-editor-form input {
+  border: var(--czi-border-grey);
+  border-radius: 2px;
+  box-sizing: border-box;
+  font: inherit;
+  height: 26px;
+  padding: 2px 4px;
+  width: 48px;
+}
+
+.czi-table-grid-size-editor-form button {
+  background: #fff;
+  border: var(--czi-border-grey);
+  border-radius: 2px;
+  cursor: pointer;
+  font: inherit;
+  height: 26px;
+  padding: 2px 8px;
+}
+
+.czi-table-grid-size-editor-form button:disabled {
+  cursor: default;
+  opacity: 0.5;
 }
