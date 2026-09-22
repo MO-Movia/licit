@@ -64,8 +64,8 @@
 }
 
 .section-landscape .tableWrapper table {
-  table-layout: auto !important;
-  width: 100% !important;
+  table-layout: fixed;
+  width: 100%;
 }
 
 .section-landscape > * {
