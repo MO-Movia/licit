@@ -1,4 +1,4 @@
-# This workflow will do scan of dependencies to check for issues like vulnerabilities.
+# Dependency check workflow — delegates to the shared workflow in MO-Movia/CI.
 
 name: dependencycheck
 
@@ -11,30 +11,8 @@ on:
 
 jobs:
   dependencycheck:
-    runs-on: self-hosted
-
-    strategy:
-      matrix:
-        node-version: [20.x]
-
-    timeout-minutes: 60 # Default 5 days for self hosted
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm update --ignore-scripts
-
-      # Dependency-Check
-      - name: Dependency-Check
-        run: npx owasp-dependency-check --scan . --failOnCVSS 1 --nvdApiKey ${{ secrets.NVD_KEY }} --ossIndexUsername ${{ secrets.SONATYPE_OSS_INDEX_USERNAME }} --ossIndexPassword ${{ secrets.SONATYPE_OSS_INDEX_TOKEN }} --disableYarnAudit --exclude node_modules/node-gyp/**/* --exclude dependency-check-bin/**/* --suppression https://github.com/MO-Movia/suppressions/raw/refs/heads/main/suppression.xml
-      - name: Upload Report
-        uses: actions/upload-artifact@v4
-        if: ${{ failure() }}
-        with:
-          name: dependency-check-reports
-          path: dependency-check-reports
-      # Dependency-Track
-      #- name: Dependency-Track
-      #  run: npx @cyclonedx/cyclonedx-npm --package-lock-only --output-file SBOM.json
-        
+    uses: MO-Movia/CI/.github/workflows/dependencycheck.yml@main
+    secrets:
+      NVD_KEY: ${{ secrets.NVD_KEY }}
+      SONATYPE_OSS_INDEX_USERNAME: ${{ secrets.SONATYPE_OSS_INDEX_USERNAME }}
+      SONATYPE_OSS_INDEX_TOKEN: ${{ secrets.SONATYPE_OSS_INDEX_TOKEN }}

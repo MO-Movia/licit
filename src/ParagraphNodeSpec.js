@@ -156,6 +156,9 @@ const ParagraphNodeSpec: NodeSpec = {
         isSlice: false,
       },
     },
+    tableStyleMarks: {
+      default: null,
+    },
   },
   content: 'inline*',
   group: 'block',
@@ -334,6 +337,7 @@ function toDOM(node: Node): Array<any> {
   } = node.attrs;
   const attrs = { ...node.attrs };
   delete attrs.pendingMarks;
+  delete attrs.tableStyleMarks;
   const { style } = getStyle(node.attrs);
 
   style && (attrs.style = style);

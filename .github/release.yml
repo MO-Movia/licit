@@ -5,9 +5,24 @@ changelog:
     authors:
       - dependabot[bot]
   categories:
+    - title: Breaking Changes
+      labels:
+        - breaking
+    - title: New Features
+      labels:
+        - enhancement
+        - feature
+    - title: Bug Fixes
+      labels:
+        - bug
+        - bugfix
     - title: Updates
       labels:
         - '*'
       exclude:
         labels:
-          - dependencies
+          - breaking
+          - enhancement
+          - feature
+          - bug
+          - bugfix

@@ -1,21 +1,40 @@
+.czi-editor-frame-body-scroll {
+  container-type: inline-size;
+}
+
 .section-landscape {
+  --czi-landscape-border-width: 5px;
   --czi-landscape-page-width: var(--czi-doc-width-us-letter-landscape);
+  --czi-portrait-page-width: var(--czi-doc-width-us-letter-portrait);
+  --czi-portrait-half-page-width: 108mm;
   --czi-landscape-content-width: calc(
     var(--czi-landscape-page-width) - (2 * var(--czi-doc-padding-default))
   );
 
   background: #fdfdff;
-  border-left: 5px solid #5882eb;
+  border-left: var(--czi-landscape-border-width) solid #5882eb;
   box-shadow: 0 1px 3px rgb(0 0 0 / 24%), 0 -1px 3px rgb(0 0 0 / 24%);
   box-sizing: border-box;
   margin: -2px 0 12px calc(-1 * var(--czi-doc-padding-default));
-  max-width: none;
+  max-width: var(--czi-landscape-page-width);
   overflow-x: auto;
-  padding: 2px 20px;
+  padding: 2px var(--czi-doc-padding-default);
+  padding-left: calc(
+    var(--czi-doc-padding-default) - var(--czi-landscape-border-width)
+  );
   position: relative;
   scrollbar-width: none;
   width: calc(100% + (2 * var(--czi-doc-padding-default)));
+  width: clamp(
+    var(--czi-portrait-page-width),
+    calc(50cqw + var(--czi-portrait-half-page-width)),
+    var(--czi-landscape-page-width)
+  );
   -ms-overflow-style: none;
+}
+
+.ProseMirror:has(> .section-landscape) {
+  overflow: visible;
 }
 
 .section-landscape::-webkit-scrollbar {
@@ -40,6 +59,8 @@
 
 .ProseMirror[data-layout='a4_portrait'] .section-landscape {
   --czi-landscape-page-width: var(--czi-doc-width-a4-landscape);
+  --czi-portrait-page-width: var(--czi-doc-width-a4-portrait);
+  --czi-portrait-half-page-width: 105mm;
 }
 
 .section-landscape .tableWrapper table {

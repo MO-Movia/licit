@@ -45,6 +45,7 @@ import {
 
 type DraggingInfo = {
   columnElements: Array<HTMLElement>,
+  columnWidths: Array<number>,
   startX: number,
   tableElement: HTMLElement,
   tableMarginLeft: number,
@@ -55,7 +56,7 @@ type DraggingInfo = {
 };
 
 type PointerEvent = {
-  target: null,
+  target: any,
   clientX: number,
   clientY: number,
 };
@@ -181,7 +182,12 @@ function handleMouseDown(view: EditorView, event: MouseEvent): boolean {
   cancelDrag?.(event);
 
   const resizeState = PLUGIN_KEY.getState(view.state);
-  if (resizeState.cellPos === -1 || resizeState.draggingInfo) {
+  if (
+    resizeState.cellPos === null ||
+    resizeState.cellPos === undefined ||
+    resizeState.cellPos < 0 ||
+    resizeState.draggingInfo
+  ) {
     return false;
   }
 
@@ -190,7 +196,7 @@ function handleMouseDown(view: EditorView, event: MouseEvent): boolean {
 
   const finish = (event: MouseEvent) => {
     window.removeEventListener('mouseup', finish, true);
-    window.removeEventListener('mousemove', this.move, true);
+    window.removeEventListener('mousemove', move, true);
     dragStarted && handleDragEnd(view, event);
     cancelDrag = null;
   };
@@ -219,7 +225,12 @@ function handleMouseDown(view: EditorView, event: MouseEvent): boolean {
 
 function handleDragStart(view: EditorView, event: MouseEvent): void {
   const resizeState = PLUGIN_KEY.getState(view.state);
-  if (resizeState.cellPos === -1 || resizeState.draggingInfo) {
+  if (
+    resizeState.cellPos === null ||
+    resizeState.cellPos === undefined ||
+    resizeState.cellPos < 0 ||
+    resizeState.draggingInfo
+  ) {
     return;
   }
 
@@ -238,6 +249,7 @@ function handleDragMove(view: EditorView, event: PointerEvent): void {
   if (!draggingInfo) {
     return;
   }
+
   const {
     startX,
     columnWidths,
@@ -456,8 +468,8 @@ function calculateDraggingInfo(
 
   return {
     columnElements: colEls,
-    taregtColumnIndex,
     columnWidths,
+    taregtColumnIndex,
     startX,
     tableElement: tableEl,
     tableMarginLeft,
@@ -480,7 +492,14 @@ function domCellAround(target: any): ?Element {
 // Helper that resolves the prose-mirror node postion of a cell from a given
 // event target.
 function edgeCell(view: EditorView, event: PointerEvent, side: string): number {
-  const { pos } = view.posAtCoords({ left: event.clientX, top: event.clientY });
+  // `posAtCoords` returns null when the coordinates don't point to a valid
+  // editor position (e.g. mouse moved outside the table during a drag).
+  // Return the "no cell" sentinel instead of crashing.
+  const coords = view.posAtCoords({ left: event.clientX, top: event.clientY });
+  if (!coords) {
+    return -1;
+  }
+  const { pos } = coords;
   const $cell = cellAround(view.state.doc.resolve(pos));
   if (!$cell) {
     return -1;
@@ -603,7 +622,7 @@ export default class TableResizePlugin extends Plugin {
             this.spec.props.nodeViews[tableNodeTypes(state.schema).table.name] =
               createTableView;
           }
-          return new ResizeState(-1, null);
+          return new ResizeState(-1, null, null);
         },
         apply(tr: Transform, prev: EditorState): EditorState {
           return prev.apply(tr);
@@ -612,7 +631,17 @@ export default class TableResizePlugin extends Plugin {
       props: {
         attributes(state: EditorState): ?Object {
           const resizeState = PLUGIN_KEY.getState(state);
-          return resizeState?.cellPos > -1 ? { class: 'resize-cursor' } : null;
+          if (
+            !resizeState ||
+            resizeState.cellPos === null ||
+            resizeState.cellPos === undefined ||
+            resizeState.cellPos < 0
+          ) {
+            return null;
+          }
+          return {
+            class: 'resize-cursor',
+          };
         },
         handleDOMEvents: {
           // Move events should be batched to avoid over-handling the mouse

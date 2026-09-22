@@ -1,0 +1,20 @@
+# Auto-labels PRs based on branch name patterns defined in .github/labeler.yml.
+# Triggers on PR open, reopen, and edit (branch rename).
+
+name: PR Labeler
+
+on:
+  pull_request:
+    types: [opened, reopened, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          configuration-path: .github/labeler.yml

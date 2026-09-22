@@ -4,6 +4,7 @@ import { tableEditing } from 'prosemirror-tables';
 
 import TableCellMenuPlugin from './TableCellMenuPlugin.js';
 import TableCellStyleInheritancePlugin from './TableCellStyleInheritancePlugin.js';
+import TablePendingStyleMarksPlugin from './TablePendingStyleMarksPlugin.js';
 import TableResizePlugin from './TableResizePlugin.js';
 import createTableRowResizingPlugin from './createTableRowResizingPlugin.js';
 import createPendingTableMarksPlugin from './createPendingTableMarksPlugin.js';
@@ -16,5 +17,6 @@ export default [
   new TableResizePlugin(),
   new TableCellStyleInheritancePlugin(),
   createPendingTableMarksPlugin(),
+  TablePendingStyleMarksPlugin(),
   tableEditing(),
 ];
