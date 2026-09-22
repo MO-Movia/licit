@@ -6,12 +6,25 @@ import { Node } from 'prosemirror-model';
 import { tableNodes } from 'prosemirror-tables';
 
 const NO_VISIBLE_BORDER_WIDTH = new Set(['0pt', '0px']);
+const INLINE_STYLE_DECLARATION_PATTERN = /(?:^|;)\s*(?:--)?[a-z][\w-]*\s*:/i;
 
 function appendStyle(attrs: Object, cssText: string): void {
-  attrs.style = (attrs.style || '') + `;${cssText};`;
+  const declaration = String(cssText)
+    .trim()
+    .replace(/^;+|;+$/g, '');
+  if (!declaration) {
+    return;
+  }
+  const currentStyle = String(attrs.style || '').trim();
+  const separator = currentStyle && !currentStyle.endsWith(';') ? ';' : '';
+  attrs.style = `${currentStyle}${separator}${declaration};`;
 }
 
-function appendStyleForValue(attrs: Object, cssProperty: string, value: any): void {
+function appendStyleForValue(
+  attrs: Object,
+  cssProperty: string,
+  value: any
+): void {
   if (value !== null && value !== undefined && value !== '') {
     appendStyle(attrs, `${cssProperty}: ${String(value)}`);
   }
@@ -60,6 +73,38 @@ function setLengthDOMAttr(cssProperty: string): Function {
 function setStyleDOMAttr(cssProperty: string): Function {
   return (value, attrs) => {
     appendStyleForValue(attrs, cssProperty, value);
+  };
+}
+
+function isInlineStyleDeclaration(value: string): boolean {
+  return INLINE_STYLE_DECLARATION_PATTERN.test(value);
+}
+
+function getBooleanCellAttribute(dom: HTMLElement, attrName: string): ?boolean {
+  const dashedName = attrName.replace(/([A-Z])/g, '-$1').toLowerCase();
+  const values = [
+    dom.getAttribute(attrName),
+    dom.getAttribute(`data-${dashedName}`),
+    dom.getAttribute(`data-cell-${dashedName}`),
+  ];
+  if (values.some((value) => value === 'true')) {
+    return true;
+  }
+  return null;
+}
+
+function createOverrideCellAttribute(attrName: string): Object {
+  const dashedName = attrName.replace(/([A-Z])/g, '-$1').toLowerCase();
+  return {
+    default: null,
+    getFromDOM(dom) {
+      return getBooleanCellAttribute(dom, attrName);
+    },
+    setDOMAttr(value, attrs) {
+      if (value === true || value === 'true') {
+        attrs[`data-cell-${dashedName}`] = 'true';
+      }
+    },
   };
 }
 
@@ -155,6 +200,24 @@ const TableNodesSpecs = tableNodes({
         }
       },
     },
+    backgroundColor: {
+      default: null,
+      getFromDOM(dom) {
+        return (
+          getCellAttributeValue(dom, 'backgroundColor', 'backgroundColor', [
+            'background',
+          ]) || null
+        );
+      },
+      setDOMAttr(value, attrs) {
+        const colorValue =
+          value && typeof value === 'object' ? value.color : value;
+        appendStyleForValue(attrs, 'background-color', colorValue);
+      },
+    },
+    backgroundColorOverridden: createOverrideCellAttribute(
+      'backgroundColorOverridden'
+    ),
     cellWidth: {
       default: null,
       getFromDOM(dom) {
@@ -183,7 +246,9 @@ const TableNodesSpecs = tableNodes({
           return;
         }
         attrs['data-cell-style'] = styleValue;
-        attrs.style = (attrs.style || '') + `;${styleValue}`;
+        if (isInlineStyleDeclaration(styleValue)) {
+          appendStyle(attrs, styleValue);
+        }
       },
     },
     fontSize: {
@@ -202,6 +267,50 @@ const TableNodesSpecs = tableNodes({
         appendStyleForValue(attrs, 'font-family', value);
       },
     },
+    fontNameOverridden: createOverrideCellAttribute('fontNameOverridden'),
+    fontSizeOverridden: createOverrideCellAttribute('fontSizeOverridden'),
+    fontWeight: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(dom, 'fontWeight', 'fontWeight');
+      },
+      setDOMAttr: setStyleDOMAttr('font-weight'),
+    },
+    fontWeightOverridden: createOverrideCellAttribute('fontWeightOverridden'),
+    fontStyle: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(dom, 'fontStyle', 'fontStyle');
+      },
+      setDOMAttr: setStyleDOMAttr('font-style'),
+    },
+    fontStyleOverridden: createOverrideCellAttribute('fontStyleOverridden'),
+    textDecoration: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(dom, 'textDecoration', 'textDecoration');
+      },
+      setDOMAttr: setStyleDOMAttr('text-decoration'),
+    },
+    textDecorationOverridden: createOverrideCellAttribute(
+      'textDecorationOverridden'
+    ),
+    textColor: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(dom, 'textColor', 'color');
+      },
+      setDOMAttr: setStyleDOMAttr('color'),
+    },
+    textColorOverridden: createOverrideCellAttribute('textColorOverridden'),
+    textAlign: {
+      default: null,
+      getFromDOM(dom) {
+        return getCellAttributeValue(dom, 'textAlign', 'textAlign');
+      },
+      setDOMAttr: setStyleDOMAttr('text-align'),
+    },
+    textAlignOverridden: createOverrideCellAttribute('textAlignOverridden'),
     letterSpacing: {
       default: null,
       getFromDOM(dom) {
@@ -209,6 +318,9 @@ const TableNodesSpecs = tableNodes({
       },
       setDOMAttr: setLengthDOMAttr('letter-spacing'),
     },
+    letterSpacingOverridden: createOverrideCellAttribute(
+      'letterSpacingOverridden'
+    ),
     marginTop: {
       default: null,
       getFromDOM(dom) {
@@ -222,6 +334,22 @@ const TableNodesSpecs = tableNodes({
         return getLengthCellAttribute(dom, 'marginBottom', 'marginBottom');
       },
       setDOMAttr: setLengthDOMAttr('margin-bottom'),
+    },
+    marginLeft: {
+      default: null,
+      getFromDOM(dom) {
+        return getLengthCellAttribute(dom, 'marginLeft', 'marginLeft');
+      },
+      setDOMAttr: setLengthDOMAttr('margin-left'),
+    },
+    marginRight: {
+      default: null,
+      getFromDOM(dom) {
+        return getLengthCellAttribute(dom, 'marginRight', 'marginRight', [
+          'MarginRight',
+        ]);
+      },
+      setDOMAttr: setLengthDOMAttr('margin-right'),
     },
     paddingTop: {
       default: null,
@@ -239,6 +367,20 @@ const TableNodesSpecs = tableNodes({
       },
       setDOMAttr: setLengthDOMAttr('padding-bottom'),
     },
+    paddingLeft: {
+      default: null,
+      getFromDOM(dom) {
+        return getLengthCellAttribute(dom, 'paddingLeft', 'paddingLeft');
+      },
+      setDOMAttr: setLengthDOMAttr('padding-left'),
+    },
+    paddingRight: {
+      default: null,
+      getFromDOM(dom) {
+        return getLengthCellAttribute(dom, 'paddingRight', 'paddingRight');
+      },
+      setDOMAttr: setLengthDOMAttr('padding-right'),
+    },
     lineHeight: {
       default: null,
       getFromDOM(dom) {
@@ -246,6 +388,7 @@ const TableNodesSpecs = tableNodes({
       },
       setDOMAttr: setStyleDOMAttr('line-height'),
     },
+    lineHeightOverridden: createOverrideCellAttribute('lineHeightOverridden'),
     borderWidth: {
       default: null,
       getFromDOM(dom) {
@@ -256,14 +399,22 @@ const TableNodesSpecs = tableNodes({
     borderLeftWidth: {
       default: null,
       getFromDOM(dom) {
-        return getLengthCellAttribute(dom, 'borderLeftWidth', 'borderLeftWidth');
+        return getLengthCellAttribute(
+          dom,
+          'borderLeftWidth',
+          'borderLeftWidth'
+        );
       },
       setDOMAttr: setLengthDOMAttr('border-left-width'),
     },
     borderRightWidth: {
       default: null,
       getFromDOM(dom) {
-        return getLengthCellAttribute(dom, 'borderRightWidth', 'borderRightWidth');
+        return getLengthCellAttribute(
+          dom,
+          'borderRightWidth',
+          'borderRightWidth'
+        );
       },
       setDOMAttr: setLengthDOMAttr('border-right-width'),
     },
@@ -374,6 +525,71 @@ const TableNodesSpecs = tableNodes({
         }
       },
     },
+    verticalAlignOverridden: createOverrideCellAttribute(
+      'verticalAlignOverridden'
+    ),
+    vAlign: {
+      default: null,
+      getFromDOM(dom) {
+        return (
+          dom.getAttribute('vAlign') ||
+          dom.getAttribute('valign') ||
+          dom.style.verticalAlign ||
+          null
+        );
+      },
+      setDOMAttr(value, attrs) {
+        if (value !== null && value !== undefined && value !== '') {
+          const verticalAlign = String(value);
+          attrs.vAlign = verticalAlign;
+          attrs.valign = verticalAlign;
+          appendStyle(attrs, `vertical-align: ${verticalAlign}`);
+        }
+      },
+    },
+    textRotation: {
+      default: null,
+      getFromDOM(dom) {
+        const attributeValue =
+          dom.getAttribute('data-cell-text-rotation') ||
+          dom.getAttribute('textRotation');
+        if (
+          attributeValue &&
+          attributeValue.trim().toLowerCase() === 'clockwise'
+        ) {
+          return 'clockwise';
+        }
+
+        const writingMode = dom.style.writingMode.trim().toLowerCase();
+        return writingMode === 'vertical-rl' || writingMode === 'sideways-rl'
+          ? 'clockwise'
+          : null;
+      },
+      setDOMAttr(value, attrs) {
+        if (value === 'clockwise') {
+          attrs['data-cell-text-rotation'] = 'clockwise';
+          appendStyle(attrs, 'writing-mode: vertical-rl');
+          appendStyle(attrs, 'text-orientation: mixed');
+          appendStyle(attrs, 'text-align: center');
+          appendStyle(attrs, 'vertical-align: middle');
+        }
+      },
+    },
+    fullSize: {
+      default: 0,
+      getFromDOM(dom) {
+        const value = dom.getAttribute('fullSize');
+        return value ? Number.parseInt(value, 10) || 0 : 0;
+      },
+      setDOMAttr(value, attrs) {
+        const fullSize = Number(value) === 1 ? 1 : 0;
+        attrs.fullSize = fullSize;
+        if (fullSize) {
+          appendStyle(attrs, 'padding: 0');
+          appendStyle(attrs, 'margin: 0');
+        }
+      },
+    },
   },
 });
 
@@ -382,6 +598,7 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
   attrs: {
     ...TableNodesSpecs.table.attrs,
     noOfColumns: { default: null },
+    tableHeight: { default: null },
     tableheight: { default: null },
     marginLeft: { default: null },
     dirty: { default: false },
@@ -404,7 +621,9 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
           attrs.marginLeft = parseFloat(marginLeft);
         }
         if (height || dom.getAttribute('height')) {
-          attrs.tableheight = height || dom.getAttribute('height');
+          const tableHeight = height || dom.getAttribute('height');
+          attrs.tableHeight = tableHeight;
+          attrs.tableheight = tableHeight;
         }
         if (noOfColumnsAttr && /^\d{1,1000}$/.test(noOfColumnsAttr)) {
           attrs.noOfColumns = parseInt(noOfColumnsAttr, 10);
@@ -428,16 +647,22 @@ const TableNodeSpec = Object.assign({}, TableNodesSpecs.table, {
     // `TableNodeView`. This method is only called when user selects a
     // table node and copies it, which triggers the "serialize to HTML" flow
     //  that calles this method.
-    const { noOfColumns, tableheight, marginLeft, dirty, coverPage } =
-      node.attrs;
+    const {
+      noOfColumns,
+      tableHeight,
+      tableheight,
+      marginLeft,
+      dirty,
+      coverPage,
+    } = node.attrs;
     const domAttrs = {};
     const styleChunks = [];
     if (marginLeft !== null && marginLeft !== undefined) {
       styleChunks.push(`margin-left: ${marginLeft}px`);
     }
-    const tableHeight = toCSSLength(tableheight);
-    if (tableHeight) {
-      styleChunks.push(`height: ${tableHeight}`);
+    const normalizedTableHeight = toCSSLength(tableHeight || tableheight);
+    if (normalizedTableHeight) {
+      styleChunks.push(`height: ${normalizedTableHeight}`);
     }
     if (styleChunks.length) {
       domAttrs.style = styleChunks.join('; ');

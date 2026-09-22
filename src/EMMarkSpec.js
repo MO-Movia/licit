@@ -24,7 +24,7 @@ const EMMarkSpec: MarkSpec = {
     },
     {
       tag: 'span[style*=font-style]',
-      getAttrs: (value, dom: HTMLElement) => {
+      getAttrs: (dom: HTMLElement) => {
         const _overridden = dom.getAttribute('overridden');
         return { overridden: _overridden === 'true' };
 

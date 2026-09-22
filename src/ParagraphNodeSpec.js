@@ -29,7 +29,10 @@ function getInlineStyleProperty(
   }
 
   const escapedProperty = propertyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regexp = new RegExp(`(?:^|;)\\s*${escapedProperty}\\s*:\\s*([^;]+)`, 'i');
+  const regexp = new RegExp(
+    `(?:^|;)\\s*${escapedProperty}\\s*:\\s*([^;]+)`,
+    'i'
+  );
   const match = inlineStyle.match(regexp);
   if (!match || !match[1]) {
     return null;
@@ -115,6 +118,11 @@ const ParagraphNodeSpec: NodeSpec = {
     reset: {
       default: null,
     },
+    // Internal hand-off used when a styled table row/column creates an empty
+    // paragraph. It is deliberately removed from serialized HTML below.
+    pendingMarks: {
+      default: null,
+    },
 
     // added attributes for indent, align and linespacing overrides.
     overriddenAlign: {
@@ -173,8 +181,7 @@ function getAttrs(dom: HTMLElement): Object {
     paddingBottom,
     paddingLeft,
     paddingRight,
-  } =
-    dom.style;
+  } = dom.style;
 
   let align = dom.getAttribute('align') || textAlign || 'left';
   align = ALIGN_PATTERN.test(align) ? align : null;
@@ -198,7 +205,8 @@ function getAttrs(dom: HTMLElement): Object {
   const overriddenAlign = dom.getAttribute('overriddenAlign') || '';
   const overriddenAlignValue = dom.getAttribute('overriddenAlignValue') || '';
   const overriddenLineSpacing = dom.getAttribute('overriddenLineSpacing') || '';
-  const overriddenLineSpacingValue = dom.getAttribute('overriddenLineSpacingValue') || '';
+  const overriddenLineSpacingValue =
+    dom.getAttribute('overriddenLineSpacingValue') || '';
   const overriddenIndent = dom.getAttribute('overriddenIndent') || '';
   const overriddenIndentValue = dom.getAttribute('overriddenIndentValue') || '';
   const selectionId = dom.getAttribute('selectionId');
@@ -234,7 +242,7 @@ function getAttrs(dom: HTMLElement): Object {
     objectId,
     hangingIndent,
     indentPosition,
-    isDeco
+    isDeco,
   };
 }
 
@@ -325,9 +333,10 @@ function toDOM(node: Node): Array<any> {
     selectionId,
     hangingIndent,
     indentPosition,
-    isDeco
+    isDeco,
   } = node.attrs;
   const attrs = { ...node.attrs };
+  delete attrs.pendingMarks;
   delete attrs.tableStyleMarks;
   const { style } = getStyle(node.attrs);
 
@@ -337,7 +346,10 @@ function toDOM(node: Node): Array<any> {
     attrs['hangingIndent'] = 'true';
     attrs['indentPosition'] = indentPosition;
     const hIndentpx = Number(indentPosition) * 96;
-    document.documentElement.style.setProperty('--hangingIndentMargin', `${hIndentpx}px`);
+    document.documentElement.style.setProperty(
+      '--hangingIndentMargin',
+      `${hIndentpx}px`
+    );
   }
   if (indent) {
     attrs[ATTRIBUTE_INDENT] = String(indent);
@@ -360,7 +372,8 @@ function toDOM(node: Node): Array<any> {
 
   if (isDeco) {
     if (isDeco.isTag !== undefined) attrs.isTag = String(isDeco.isTag);
-    if (isDeco.isComment !== undefined) attrs.isComment = String(isDeco.isComment);
+    if (isDeco.isComment !== undefined)
+      attrs.isComment = String(isDeco.isComment);
     if (isDeco.isSlice !== undefined) attrs.isSlice = String(isDeco.isSlice);
   }
 

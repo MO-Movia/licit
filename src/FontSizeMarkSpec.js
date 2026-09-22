@@ -1,7 +1,7 @@
 // @flow
 
 import { Node } from 'prosemirror-model';
-import { toClosestFontPtSize } from './toClosestFontPtSize.js';
+import convertToCSSPTValue from './convertToCSSPTValue.js';
 import type { MarkSpec } from './Types.js';
 
 const FontSizeMarkSpec: MarkSpec = {
@@ -21,15 +21,19 @@ const FontSizeMarkSpec: MarkSpec = {
         let _mptValue = 0;
 
         const parentFontsize = domNode.parentNode?.style.fontSize || '';
-        const mparent_overriden = domNode.parentNode?.getAttribute('overridden');
+        const mparent_overriden =
+          domNode.parentNode?.getAttribute('overridden');
         if (fontSize !== '') {
-          ptValue = toClosestFontPtSize(fontSize);
+          ptValue = Math.round(convertToCSSPTValue(fontSize) * 1000) / 1000;
         }
         if (parentFontsize !== '') {
-          _mptValue = toClosestFontPtSize(parentFontsize);
+          _mptValue =
+            Math.round(convertToCSSPTValue(parentFontsize) * 1000) / 1000;
         }
 
-        const overridden = (_mOverriden === 'true' && fontSize !== '') || (parentFontsize !== '' && mparent_overriden === 'true');  // Check if the font is overridden
+        const overridden =
+          (_mOverriden === 'true' && fontSize !== '') ||
+          (parentFontsize !== '' && mparent_overriden === 'true'); // Check if the font is overridden
 
         return {
           pt: ptValue || _mptValue,

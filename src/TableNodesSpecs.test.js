@@ -10,7 +10,7 @@ describe('TableNodesSpecs custom attrs', () => {
           <tr style="height: 44px;">
             <td
               data-cell-style="text-align: center"
-              style="width: 96px; font-size: 14px; letter-spacing: 1px; margin-top: 2px; margin-bottom: 3px;"
+              style="width: 96px; font-size: 14px; letter-spacing: 1px; margin-top: 2px; margin-bottom: 3px; writing-mode: sideways-rl;"
             >
               <p>Cell</p>
             </td>
@@ -33,6 +33,7 @@ describe('TableNodesSpecs custom attrs', () => {
     expect(cellNode.attrs.letterSpacing).toBe('1px');
     expect(cellNode.attrs.marginTop).toBe('2px');
     expect(cellNode.attrs.marginBottom).toBe('3px');
+    expect(cellNode.attrs.textRotation).toBe('clockwise');
   });
 
   it('serializes table, row, and cell custom attributes to DOM', () => {
@@ -48,6 +49,7 @@ describe('TableNodesSpecs custom attrs', () => {
         letterSpacing: '0.8px',
         marginTop: 4,
         marginBottom: '5px',
+        textRotation: 'clockwise',
       },
       paragraph
     );
@@ -72,5 +74,9 @@ describe('TableNodesSpecs custom attrs', () => {
     const cellStyleText = cellEl.getAttribute('style') || '';
     expect(cellStyleText).toContain('font-size: 13px');
     expect(cellEl.getAttribute('data-cell-style')).toBe('text-align: center');
+    expect(cellEl.getAttribute('data-cell-text-rotation')).toBe('clockwise');
+    expect(cellStyleText).toContain('writing-mode: vertical-rl');
+    expect(cellStyleText).toContain('text-align: center');
+    expect(cellStyleText).toContain('vertical-align: middle');
   });
 });

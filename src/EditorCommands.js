@@ -21,8 +21,8 @@ import TableBackgroundColorCommand from './TableBackgroundColorCommand.js';
 import TableBorderColorCommand from './TableBorderColorCommand.js';
 import TableDetailsCommand from './TableDetailsCommand.js';
 import TableInsertCommand from './TableInsertCommand.js';
-import TableInsertPreserveStyleCommand from './TableInsertPreserveStyleCommand.js';
 import TableMergeCellsCommand from './TableMergeCellsCommand.js';
+import TableTextRotationCommand from './TableTextRotationCommand.js';
 import {
   HeadingCommand,
   IndentCommand,
@@ -34,6 +34,7 @@ import {
 } from '@modusoperandi/licit-ui-commands';
 import TextInsertTabSpaceCommand from './TextInsertTabSpaceCommand.js';
 import createCommand from './createCommand.js';
+import preserveTableProperties from './preserveTableProperties.js';
 
 const {
   addColumnAfter,
@@ -89,25 +90,17 @@ export const STRIKE = new MarkToggleCommand(MARK_STRIKE);
 export const STRONG = new MarkToggleCommand(MARK_STRONG);
 export const SUPER = new MarkToggleCommand(MARK_SUPER);
 export const SUB = new MarkToggleCommand(MARK_SUB);
-export const TABLE_ADD_COLUMN_AFTER = new TableInsertPreserveStyleCommand(
-  addColumnAfter,
-  'column',
-  'after'
+export const TABLE_ADD_COLUMN_AFTER = createCommand(
+  preserveTableProperties(addColumnAfter, 'addColumnAfter')
 );
-export const TABLE_ADD_COLUMN_BEFORE = new TableInsertPreserveStyleCommand(
-  addColumnBefore,
-  'column',
-  'before'
+export const TABLE_ADD_COLUMN_BEFORE = createCommand(
+  preserveTableProperties(addColumnBefore, 'addColumnBefore')
 );
-export const TABLE_ADD_ROW_AFTER = new TableInsertPreserveStyleCommand(
-  addRowAfter,
-  'row',
-  'after'
+export const TABLE_ADD_ROW_AFTER = createCommand(
+  preserveTableProperties(addRowAfter, 'addRowAfter')
 );
-export const TABLE_ADD_ROW_BEFORE = new TableInsertPreserveStyleCommand(
-  addRowBefore,
-  'row',
-  'before'
+export const TABLE_ADD_ROW_BEFORE = createCommand(
+  preserveTableProperties(addRowBefore, 'addRowBefore')
 );
 export const TABLE_BACKGROUND_COLOR = new TableBackgroundColorCommand();
 export const TABLE_BORDER_COLOR = new TableBorderColorCommand();
@@ -119,6 +112,7 @@ export const TABLE_MERGE_CELLS = new TableMergeCellsCommand();
 export const TABLE_MOVE_TO_NEXT_CELL = createCommand(goToNextCell(1));
 export const TABLE_MOVE_TO_PREV_CELL = createCommand(goToNextCell(-1));
 export const TABLE_SPLIT_ROW = createCommand(splitCell);
+export const TABLE_TEXT_ROTATION = new TableTextRotationCommand();
 export const TEXT_ALIGN_CENTER = new TextAlignCommand('center');
 export const TEXT_ALIGN_JUSTIFY = new TextAlignCommand('justify');
 export const TEXT_ALIGN_LEFT = new TextAlignCommand('left');
