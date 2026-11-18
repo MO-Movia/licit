@@ -12,6 +12,7 @@ import {
   PARAGRAPH,
   TABLE
 } from './NodeNames.js';
+import { canNodeTypeReplaceBlockAt } from './canNodeTypeReplaceBlock.js';
 import type {
   TableGridSizeEditorValue
 } from './ui/TableGridSizeEditor.js';
@@ -40,6 +41,16 @@ class TableInsertCommand extends UICommand {
           if ($head.node(d).type.spec.tableRole == 'row') {
             return false;
           }
+        }
+        // Disable when the block containing the selection lives in a
+        // parent that cannot hold a table (e.g.
+        // enhanced_table_figure_notes).
+        const table = state.schema.nodes[TABLE];
+        if (
+          table &&
+          !canNodeTypeReplaceBlockAt(state.doc, selection.from, table)
+        ) {
+          return false;
         }
       }
       return bOK;

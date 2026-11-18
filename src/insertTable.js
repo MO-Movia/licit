@@ -5,6 +5,7 @@ import { TextSelection } from 'prosemirror-state';
 import { Transform } from 'prosemirror-transform';
 
 import { PARAGRAPH, TABLE, TABLE_CELL, TABLE_ROW } from './NodeNames.js';
+import { canNodeTypeReplaceBlockAt } from './canNodeTypeReplaceBlock.js';
 
 export default function insertTable(
   tr: Transform,
@@ -26,6 +27,14 @@ export default function insertTable(
   const row = nodes[TABLE_ROW];
   const table = nodes[TABLE];
   if (!(cell && paragraph && row && table)) {
+    return tr;
+  }
+
+  // Do not insert a table when the block containing the selection lives in
+  // a parent that cannot hold it (e.g. enhanced_table_figure_notes);
+  // replacement fitting would move the table outside that boundary and
+  // split the surrounding structure.
+  if (!canNodeTypeReplaceBlockAt(tr.doc, from, table)) {
     return tr;
   }
 
