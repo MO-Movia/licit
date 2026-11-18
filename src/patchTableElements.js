@@ -10,6 +10,9 @@ export default function patchTableElements(doc: Document): void {
 // The height of each line: ~= 21px
 const LINE_HEIGHT_PT_VALUE = 15.81149997;
 
+// Upper bound for empty <p> elements injected to emulate a row "height".
+const MAX_PATCHED_ROW_LINES = 100;
+
 // Workaround to patch HTML from Google Doc that Table Cells will apply
 // its background colr to all its inner <span />.
 function patchTableCell(tdElement: HTMLElement): void {
@@ -75,9 +78,14 @@ function patchTableRow(trElement: HTMLElement): void {
     return;
   }
   let pElsNeeded = Math.round(heightNeeded / LINE_HEIGHT_PT_VALUE);
-  if (pElsNeeded <= 0) {
+  if (!Number.isFinite(pElsNeeded) || pElsNeeded <= 0) {
     return;
   }
+  // Cap the number of injected paragraphs: a hostile or malformed
+  // `height` value (e.g. `style="height:1000000px"`) would otherwise make
+  // this loop allocate an unbounded number of <p> elements and freeze the
+  // editor while processing pasted content.
+  pElsNeeded = Math.min(pElsNeeded, MAX_PATCHED_ROW_LINES);
   const frag = doc.createDocumentFragment();
   const line = doc.createElement('p');
   while (pElsNeeded > 0) {
