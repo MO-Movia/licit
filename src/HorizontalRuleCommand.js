@@ -7,6 +7,7 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import { HORIZONTAL_RULE } from './NodeNames.js';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { canNodeTypeReplaceBlockAt } from './canNodeTypeReplaceBlock.js';
 
 function insertHorizontalRule(tr: Transform, schema: Schema): Transform {
   const { selection } = tr;
@@ -23,6 +24,14 @@ function insertHorizontalRule(tr: Transform, schema: Schema): Transform {
     return tr;
   }
 
+  // Do not insert a horizontal rule when the block containing the
+  // selection lives in a parent that cannot hold it (e.g.
+  // enhanced_table_figure_notes); replacement fitting would move the node
+  // outside that boundary and split the surrounding structure.
+  if (!canNodeTypeReplaceBlockAt(tr.doc, from, horizontalRule)) {
+    return tr;
+  }
+
   const node = horizontalRule.create({}, null, null);
   const frag = Fragment.from(node);
   tr = tr.insert(from, frag);
@@ -30,6 +39,18 @@ function insertHorizontalRule(tr: Transform, schema: Schema): Transform {
 }
 
 class HorizontalRuleCommand extends UICommand {
+  isEnabled = (state: EditorState): boolean => {
+    const horizontalRule = state.schema.nodes[HORIZONTAL_RULE];
+    if (!horizontalRule) {
+      return false;
+    }
+    return canNodeTypeReplaceBlockAt(
+      state.doc,
+      state.selection.from,
+      horizontalRule
+    );
+  };
+
   execute = (
     state: EditorState,
     dispatch: ?(tr: Transform) => void,

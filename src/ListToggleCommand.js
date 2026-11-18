@@ -12,6 +12,7 @@ import {
   isNodeSelectionForNodeType,
 } from '@modusoperandi/licit-ui-commands';
 import { UICommand } from '@modusoperandi/licit-doc-attrs-step';
+import { canNodeTypeReplaceBlockAt } from './canNodeTypeReplaceBlock.js';
 
 export class ListToggleCommand extends UICommand {
   _ordered: boolean;
@@ -34,9 +35,19 @@ export class ListToggleCommand extends UICommand {
   };
 
   isEnabled = (state: EditorState, view: ?EditorView): boolean => {
-    let bOK = false;
-    bOK = hasImageNode(state);
-    return !bOK;
+    if (hasImageNode(state)) {
+      return false;
+    }
+    // Disable when the block containing the selection lives in a parent
+    // that cannot hold a list (e.g. enhanced_table_figure_notes), so the
+    // toggle cannot escape that boundary via replacement fitting.
+    const nodeType = state.schema.nodes[
+      this._ordered ? ORDERED_LIST : BULLET_LIST
+    ];
+    if (!nodeType) {
+      return false;
+    }
+    return canNodeTypeReplaceBlockAt(state.doc, state.selection.from, nodeType);
   };
 
   execute = (
